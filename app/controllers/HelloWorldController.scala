@@ -20,19 +20,19 @@ import javax.inject.{Inject, Singleton}
 
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import config.AppConfig
+import config.FrontendAppConfig
 import views.html.HelloWorldPage
 
 import scala.concurrent.Future
 
 @Singleton
 class HelloWorldController @Inject()(
-  appConfig: AppConfig,
-  mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage)
+                                      appConfig: FrontendAppConfig,
+                                      mcc: MessagesControllerComponents,
+                                      helloWorldPage: HelloWorldPage)
     extends FrontendController(mcc) {
 
-  implicit val config: AppConfig = appConfig
+  implicit val config: FrontendAppConfig = appConfig
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(helloWorldPage()))

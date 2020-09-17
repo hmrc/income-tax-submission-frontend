@@ -23,7 +23,7 @@ import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import config.AppConfig
+import config.FrontendAppConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.HelloWorldPage
@@ -35,7 +35,7 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
   private val configuration = Configuration.load(env)
 
   private val serviceConfig = new ServicesConfig(configuration)
-  private val appConfig     = new AppConfig(configuration, serviceConfig)
+  private val appConfig     = new FrontendAppConfig(configuration, serviceConfig)
 
   val helloWorldPage: HelloWorldPage = app.injector.instanceOf[HelloWorldPage]
 
