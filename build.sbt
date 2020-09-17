@@ -41,10 +41,11 @@ lazy val twirlImports: Seq[String] = Seq(
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
+  .settings(PlayKeys.playDefaultPort := 9302)
   .settings(
-    majorVersion                     := 0,
-    scalaVersion                     := "2.12.11",
-    libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
+    majorVersion := 0,
+    scalaVersion := "2.12.11",
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     TwirlKeys.templateImports ++= twirlImports,
     scalacOptions += "-P:silencer:pathFilters=routes",
     libraryDependencies ++= Seq(
