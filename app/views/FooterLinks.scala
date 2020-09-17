@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.incometaxsubmissionfrontend.views
+package views
 
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.footer.FooterItem
-import uk.gov.hmrc.incometaxsubmissionfrontend.config.AppConfig
+import config.AppConfig
 
 object FooterLinks {
   def apply()(implicit messages: Messages, appConfig: AppConfig): Seq[FooterItem] = appConfig.footerLinkItems.flatMap { item =>

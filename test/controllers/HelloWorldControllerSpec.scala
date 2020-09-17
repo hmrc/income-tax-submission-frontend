@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.incometaxsubmissionfrontend.controllers
+package controllers
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -23,10 +23,10 @@ import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
+import config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import uk.gov.hmrc.incometaxsubmissionfrontend.config.AppConfig
-import uk.gov.hmrc.incometaxsubmissionfrontend.views.html.HelloWorldPage
+import views.html.HelloWorldPage
 
 class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   private val fakeRequest = FakeRequest("GET", "/")

@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.incometaxsubmissionfrontend.config
+package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import uk.gov.hmrc.incometaxsubmissionfrontend.views.html.ErrorTemplate
+import play.api.mvc._
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import config.AppConfig
+import views.html.HelloWorldPage
+
+import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
-    extends FrontendErrorHandler {
+class HelloWorldController @Inject()(
+  appConfig: AppConfig,
+  mcc: MessagesControllerComponents,
+  helloWorldPage: HelloWorldPage)
+    extends FrontendController(mcc) {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    errorTemplate(pageTitle, heading, message)
+  implicit val config: AppConfig = appConfig
+
+  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(helloWorldPage()))
+  }
+
 }
