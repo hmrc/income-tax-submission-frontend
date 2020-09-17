@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package views
+package views.headerFooterTemplate
 
+import config.AppConfig
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.footer.FooterItem
-import config.AppConfig
 
 object FooterLinks {
   def apply()(implicit messages: Messages, appConfig: AppConfig): Seq[FooterItem] = appConfig.footerLinkItems.flatMap { item =>
