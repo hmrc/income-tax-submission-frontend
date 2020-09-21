@@ -4,3 +4,6 @@
 ->         /hmrc-frontend           hmrcfrontend.Routes
 GET        /hello-world             controllers.HelloWorldController.helloWorld
 GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
+
+GET        /individual/start              controllers.StartPageController.individual
+GET        /agent/start                   controllers.StartPageController.agent

@@ -10,3 +10,16 @@ footer.termsConditions.text = Terms and conditions
 footer.termsConditions.url = /help/terms-and-conditions
 footer.govukHelp.text = Help using GOV.UK
 footer.govukHelp.url = https://www.gov.uk/help
+
+startPage.taxYear = 2020 to 2021 Income Tax
+startPage.heading.individual = Tell HMRC about your Income Tax
+startPage.heading.agent = Tell HMRC about your client’s Income Tax
+startPage.individual1 = You can use this service to make updates to your Income Tax Self Assessment throughout the year.
+startPage.individual2 = We’re still working on this service, so you will only be able to update your:
+startPage.agent1 = You can use this service to make updates to your client’s Income Tax Self Assessment throughout the year.
+startPage.agent2 = We’re still working on this service, so you will only be able to update their:
+startPage1 = You will be able to submit other income sources in the future.
+startPage2 = For self employment and property income, you need to use your chosen software.
+startPage.interest = interest
+startPage.dividends = dividends
+startPage.provideUpdates = Provide updates
