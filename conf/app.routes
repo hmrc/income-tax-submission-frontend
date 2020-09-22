@@ -7,3 +7,6 @@ GET        /assets/*file                        controllers.Assets.versioned(pat
 
 GET        /individual/start                    controllers.StartPageController.individual
 GET        /agent/start                         controllers.StartPageController.agent
+
+GET        /individual/index                    controllers.OverviewPageController.individual
+GET        /agent/index                         controllers.OverviewPageController.agent

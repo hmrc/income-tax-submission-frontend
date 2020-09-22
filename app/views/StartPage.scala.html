@@ -47,9 +47,9 @@
             <p>@messages("startPage2")</p>
         </div>
 
-        <button class="govuk-button" data-module="govuk-button">
+        <a href="@routes.OverviewPageController.agent().url" class="govuk-button" data-module="govuk-button">
             @messages("startPage.provideUpdates")
-        </button>
+        </a>
 
         } else {
 
@@ -70,9 +70,9 @@
             <p>@messages("startPage2")</p>
         </div>
 
-        <button class="govuk-button" data-module="govuk-button">
+        <a href="@routes.OverviewPageController.individual().url" class="govuk-button" data-module="govuk-button">
             @messages("startPage.provideUpdates")
-        </button>
+        </a>
 
         }
     </div>
