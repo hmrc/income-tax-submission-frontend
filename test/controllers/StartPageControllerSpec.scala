@@ -26,7 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import views.html.StartPageView
+import views.html.StartPage
 
 class StartPageControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
@@ -36,7 +36,7 @@ class StartPageControllerSpec extends AnyWordSpec with Matchers with GuiceOneApp
 
   private val serviceConfig = new ServicesConfig(configuration)
   private val mockAppConfig = new AppConfig(configuration, serviceConfig)
-  private val startPageView: StartPageView = app.injector.instanceOf[StartPageView]
+  private val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
   private val controller = new StartPageController(mockAppConfig, stubMessagesControllerComponents(), startPageView)
 

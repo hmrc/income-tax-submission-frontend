@@ -20,7 +20,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.StartPageView
+import views.html.StartPage
 
 import scala.concurrent.Future
 
@@ -29,7 +29,7 @@ import scala.concurrent.Future
 class StartPageController @Inject()(
                                     appConfig: AppConfig,
                                     mcc: MessagesControllerComponents,
-                                    startPageView: StartPageView) extends FrontendController(mcc){
+                                    startPageView: StartPage) extends FrontendController(mcc){
 
   implicit val config: AppConfig = appConfig
 

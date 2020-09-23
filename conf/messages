@@ -1,4 +1,4 @@
-service.name = income-tax-submission-frontend
+service.name = Income Tax Submission
 service.homePageUrl = /income-tax-submission-frontend
 service.text = This is your new service
 
