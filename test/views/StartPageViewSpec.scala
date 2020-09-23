@@ -36,6 +36,10 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     val individualPageHeading = "#main-content > div > div > main > div > h1"
     val agentPageHeading = "#main-content > div > div > main > div > h1"
     val provideUpdates = "#main-content > div > div > main > div > button"
+    val p1Individual =  "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(1)"
+    val p1Agent = "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(1)"
+    val p2Individual = "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(2)"
+    val p2Agent = "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(2)"
 
   }
 
@@ -67,6 +71,16 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
       elementText(Selectors.individualPageHeading) shouldBe "Tell HMRC about your Income Tax"
     }
+
+    "have the correct 1st paragraph" in {
+      elementText(Selectors.p1Individual) shouldBe "You can use this service to make updates to your Income Tax Self" +
+        " Assessment throughout the year."
+    }
+
+    "have the correct 2nd paragraph" in {
+      elementText(Selectors.p2Individual) shouldBe "We’re still working on this service, so you will only be able to " +
+        "update your:"
+    }
   }
 
   "rendering the start page when the user is an agent" should {
@@ -75,6 +89,16 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     "have the correct page heading" in {
       elementText(Selectors.agentPageHeading) shouldBe "Tell HMRC about your client’s Income Tax"
+    }
+
+    "have the correct 1st paragraph" in {
+      elementText(Selectors.p1Agent) shouldBe "You can use this service to make updates to your client’s Income Tax " +
+        "Self Assessment throughout the year."
+    }
+
+    "have the correct 2nd paragraph" in {
+      elementText(Selectors.p2Agent) shouldBe "We’re still working on this service, so you will only be able to " +
+        "update their:"
     }
   }
 
