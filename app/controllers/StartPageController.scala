@@ -16,26 +16,29 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import config.FrontendAppConfig
-import views.html.HelloWorldPage
+import views.html.StartPage
 
 import scala.concurrent.Future
 
+
 @Singleton
-class HelloWorldController @Inject()(
-                                      appConfig: FrontendAppConfig,
-                                      mcc: MessagesControllerComponents,
-                                      helloWorldPage: HelloWorldPage)
-    extends FrontendController(mcc) {
+class StartPageController @Inject()(
+                                    appConfig: FrontendAppConfig,
+                                    mcc: MessagesControllerComponents,
+                                    startPageView: StartPage) extends FrontendController(mcc){
 
   implicit val config: FrontendAppConfig = appConfig
 
-  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
+  def individual: Action[AnyContent] = Action.async{ implicit request =>
+    Future.successful(Ok(startPageView(isAgent = false)))
+  }
+
+  def agent:Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(startPageView(isAgent = true)))
   }
 
 }
