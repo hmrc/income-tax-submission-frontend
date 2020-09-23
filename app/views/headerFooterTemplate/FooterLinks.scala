@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views
+package views.headerFooterTemplate
 
+import config.FrontendAppConfig
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.footer.FooterItem
-import config.AppConfig
 
 object FooterLinks {
-  def apply()(implicit messages: Messages, appConfig: AppConfig): Seq[FooterItem] = appConfig.footerLinkItems.flatMap { item =>
+  def apply()(implicit messages: Messages, appConfig: FrontendAppConfig): Seq[FooterItem] = appConfig.footerLinkItems.flatMap { item =>
     val keyPrefix = s"footer.$item"
     val textKey = s"$keyPrefix.text"
     val urlKey = s"$keyPrefix.url"
