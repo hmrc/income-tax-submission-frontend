@@ -16,7 +16,7 @@
 
 package views
 
-import config.AppConfig
+import config.FrontendAppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.matchers.should.Matchers
@@ -26,7 +26,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import views.html.ErrorTemplate
+import views.html.templates.ErrorTemplate
 
 class ErrorTemplateViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
@@ -40,7 +40,7 @@ class ErrorTemplateViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPe
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val mockConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   val pageHeading = "This page can’t be found"
   val pageTitle = "Income Tax Submission"

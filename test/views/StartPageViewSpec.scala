@@ -17,7 +17,7 @@
 package views
 
 
-import config.AppConfig
+import config.FrontendAppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -48,7 +48,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val mockConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   def element(cssSelector: String)(implicit document: Document): Element = {
     val elements = document.select(cssSelector)

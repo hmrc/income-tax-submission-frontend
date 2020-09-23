@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.AppConfig
+import config.FrontendAppConfig
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -35,7 +35,7 @@ class StartPageControllerSpec extends AnyWordSpec with Matchers with GuiceOneApp
   private val configuration = Configuration.load(env)
 
   private val serviceConfig = new ServicesConfig(configuration)
-  private val mockAppConfig = new AppConfig(configuration, serviceConfig)
+  private val mockAppConfig = new FrontendAppConfig(configuration, serviceConfig)
   private val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
   private val controller = new StartPageController(mockAppConfig, stubMessagesControllerComponents(), startPageView)
