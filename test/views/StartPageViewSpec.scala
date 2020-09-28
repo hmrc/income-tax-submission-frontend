@@ -35,7 +35,6 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   object Selectors{
     val individualPageHeading = "#main-content > div > div > main > div > h1"
     val agentPageHeading = "#main-content > div > div > main > div > h1"
-    val provideUpdates = "#main-content > div > div > main > div > button"
     val p1Individual =  "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(1)"
     val p1Agent = "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(1)"
     val p2Individual = "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(2)"
@@ -101,18 +100,5 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
         "update their:"
     }
   }
-
-  "have a 'provide updates' button" which {
-    lazy val view: Html = startPageView(true)(fakeRequest,messages,mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
-
-    "has the text 'provide updates" in {
-      elementText(Selectors.provideUpdates) shouldBe "Provide updates"
-
-    }
-  }
-
-
-
 
 }
