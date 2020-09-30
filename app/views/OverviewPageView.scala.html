@@ -22,78 +22,81 @@
 @(isAgent: Boolean)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @breadcrumbs = {
-<div class="govuk-breadcrumbs ">
- <ol class="govuk-breadcrumbs__list">
-  <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href="#">Income Tax</a>
-  </li>
-  <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href="#">Income Tax Submission</a>
-  </li>
-  <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link">2020 to 2021 Income Tax</a>
-  </li>
- </ol>
-</div>
+    <div class="govuk-breadcrumbs ">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="#">Income Tax</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="#">Income Tax Submission</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link">2020 to 2021 Income Tax</a>
+            </li>
+        </ol>
+    </div>
 }
 
 @taskWithActionList(heading: String, action: String, index: Int) = {
-<li>
- <h2 class="app-task-list__section">
-  <span class="app-task-list__section-number">@index. </span> @heading
- </h2>
- <ol class="app-task-list__items">
-  <li class="app-task-list__item">
-              <span class="app-task-list__task-name">
-                <a href="#">
-                  @action
-                </a>
-              </span>
-   <span class="hmrc-status-tag">Not Complete</span>
-  </li>
- </ol>
-</li>
+    <li>
+        <h2 class="app-task-list__section">
+            <span class="app-task-list__section-number">@index. </span> @heading
+        </h2>
+        <ol class="app-task-list__items">
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a href="#">
+                    @action
+                    </a>
+                </span>
+                <span class="hmrc-status-tag">Not Complete</span>
+            </li>
+        </ol>
+    </li>
 }
 
 @taskWithCaption(heading: String, caption: String, index: Int) = {
- <li>
-  <h2 class="app-task-list__section">
-   <span class="app-task-list__section-number">@index. </span> @heading
-  </h2>
-  <ul class="app-task-list__items">
-   <span class="govuk-caption-m">@caption</span>
-  </ul>
- </li>
+    <li>
+        <h2 class="app-task-list__section">
+            <span class="app-task-list__section-number">@index. </span> @heading
+        </h2>
+        <ul class="app-task-list__items">
+            <span class="govuk-caption-m">@caption</span>
+        </ul>
+    </li>
 }
 
 @overview = {
-<ol class="app-task-list">
- @if(isAgent){
- @taskWithActionList(messages("overview.agent.task1.heading"),messages("overview.individual.task1.income"),1)
- @taskWithCaption(messages("overview.agent.task2.heading"),messages("overview.agent.task2.caption"),2)
- @taskWithCaption(messages("overview.agent.task3.heading"),messages("overview.agent.task3.caption"),3)
- @taskWithCaption(messages("overview.agent.task4.heading"),messages("overview.agent.task4.caption"),4)
- }else{
- @taskWithActionList(messages("overview.individual.task1.heading"),messages("overview.individual.task1.income"),1)
- @taskWithCaption(messages("overview.individual.task2.heading"),messages("overview.individual.task2.caption"),2)
- @taskWithCaption(messages("overview.individual.task3.heading"),messages("overview.individual.task3.caption"),3)
- @taskWithCaption(messages("overview.individual.task4.heading"),messages("overview.individual.task4.caption"),4)
- }
-</ol>
-}
-
-@layout(pageTitle = Some(messages("service.name"))) {
 
 @breadcrumbs
 
-<span class="govuk-caption-xl">@messages("overview.caption", "2020", "2021")</span>
-@if(isAgent){
- <h1 class="govuk-heading-xl">@messages("overview.agent.heading")</h1>
-}else{
- <h1 class="govuk-heading-xl">@messages("overview.individual.heading")</h1>
-}
+    <main class="govuk-main-wrapper">
+        <div class="govuk-width-container">
 
-@overview
+            <span class="govuk-caption-xl">@messages("overview.caption", "2020", "2021")</span>
+            @if(isAgent) {
+                <h1 class="govuk-heading-xl">@messages("overview.agent.heading")</h1>
+            } else {
+                <h1 class="govuk-heading-xl">@messages("overview.individual.heading")</h1>
+            }
+
+            <ol class="app-task-list">
+            @if(isAgent) {
+                @taskWithActionList(messages("overview.agent.task1.heading"), messages("overview.individual.task1.income"), 1)
+                @taskWithCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption"), 2)
+                @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption"), 3)
+                @taskWithCaption(messages("overview.agent.task4.heading"), messages("overview.agent.task4.caption"), 4)
+            } else {
+                @taskWithActionList(messages("overview.individual.task1.heading"), messages("overview.individual.task1.income"), 1)
+                @taskWithCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption"), 2)
+                @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption"), 3)
+                @taskWithCaption(messages("overview.individual.task4.heading"), messages("overview.individual.task4.caption"), 4)
+            }
+            </ol>
+        </div>
+    </main>
+
 
 }
+@layout(pageTitle = Some(messages("service.name")))(overview)
 
