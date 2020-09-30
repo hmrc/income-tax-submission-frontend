@@ -27,7 +27,7 @@ lazy val coverageSettings: Seq[Setting[_]] = {
   Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
     ScoverageKeys.coverageMinimum := 95,
-    ScoverageKeys.coverageFailOnMinimum := false, //TODO Set to true when we delete hello world content
+    ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
 }
@@ -53,8 +53,12 @@ lazy val microservice = Project(appName, file("."))
       "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
     )
   )
+  .settings(
+    fork in Test := false
+  )
   .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
+  .settings(unmanagedResourceDirectories in IntegrationTest += baseDirectory.value / "it" / "resources")
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(coverageSettings: _*)

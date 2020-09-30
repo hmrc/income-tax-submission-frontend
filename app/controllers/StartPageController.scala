@@ -16,8 +16,11 @@
 
 package controllers
 
+import common.AffinityKeys
 import config.FrontendAppConfig
+import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
+import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.StartPage
@@ -26,19 +29,13 @@ import scala.concurrent.Future
 
 
 @Singleton
-class StartPageController @Inject()(
-                                    appConfig: FrontendAppConfig,
-                                    mcc: MessagesControllerComponents,
-                                    startPageView: StartPage) extends FrontendController(mcc){
+class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
+                                    val startPageView: StartPage,
+                                    implicit val appConfig: FrontendAppConfig,
+                                    val mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
-  implicit val config: FrontendAppConfig = appConfig
-
-  def individual: Action[AnyContent] = Action.async{ implicit request =>
-    Future.successful(Ok(startPageView(isAgent = false)))
-  }
-
-  def agent:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(startPageView(isAgent = true)))
+  def show(affinityType: String): Action[AnyContent] = authorisedAction.async { implicit request =>
+    Future.successful(Ok(startPageView(isAgent = affinityType.toUpperCase == AffinityKeys.agent.toUpperCase)))
   }
 
 }
