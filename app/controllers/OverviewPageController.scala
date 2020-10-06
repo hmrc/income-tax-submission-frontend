@@ -36,8 +36,8 @@ class OverviewPageController @Inject()(
 
   implicit val config: FrontendAppConfig = appConfig
 
-  def show(affinityType: String): Action[AnyContent] = authorisedAction.async { implicit request =>
-    Future.successful(Ok(overviewPageView(isAgent = affinityType.toUpperCase == AffinityKeys.agent.toUpperCase)))
+  def show: Action[AnyContent] = authorisedAction.async { implicit user =>
+    Future.successful(Ok(overviewPageView(isAgent = user.isAgent)))
   }
 
 }

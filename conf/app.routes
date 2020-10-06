@@ -5,5 +5,5 @@
 
 GET        /assets/*file               controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /:affinityType/start        controllers.StartPageController.show(affinityType)
-GET        /:affinityType/index        controllers.OverviewPageController.show(affinityType)
+GET        /start        controllers.StartPageController.show
+GET        /index        controllers.OverviewPageController.show

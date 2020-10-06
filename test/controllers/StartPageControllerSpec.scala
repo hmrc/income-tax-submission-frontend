@@ -51,7 +51,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth()
-          controller.show(AffinityKeys.individual)(fakeGetRequest)
+          controller.show(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -59,7 +59,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "return HTML" in {
         val result = {
           mockAuth()
-          controller.show(AffinityKeys.individual)(fakeGetRequest)
+          controller.show(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
@@ -75,7 +75,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuthAsAgent()
-          controller.show(AffinityKeys.agent)(fakeGetRequest)
+          controller.show(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -83,7 +83,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "return HTML" in {
         val result = {
           mockAuthAsAgent()
-          controller.show(AffinityKeys.agent)(fakeGetRequest)
+          controller.show(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")

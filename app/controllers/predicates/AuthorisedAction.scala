@@ -55,11 +55,10 @@ class AuthorisedAction @Inject()(
         checkAuthorisation(block, enrolments)(request, headerCarrier)
     } recover {
       case _: NoActiveSession =>
-        logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to {appConfig.signInUrl}")
+        logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
         Redirect(appConfig.signInUrl) //TODO Check this is the correct location
       case _: AuthorisationException =>
-        logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client. " +
-          s"Redirecting to {appConfig.agentClientUnauthorisedUrl(request.uri)}")
+        logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
         Unauthorized("") //TODO Redirect to unauthorised page
     }
   }
@@ -67,19 +66,24 @@ class AuthorisedAction @Inject()(
   def checkAuthorisation[A](block: User[A] => Future[Result], enrolments: Enrolments, isAgent: Boolean = false)
                            (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
 
+    println(Console.GREEN + enrolments + Console.RESET)
+
     val neededKey = if (isAgent) EnrolmentKeys.Agent else EnrolmentKeys.Individual
     val neededIdentifier = if (isAgent) EnrolmentIdentifiers.agentReference else EnrolmentIdentifiers.individualId
 
     enrolmentGetIdentifierValue(neededKey, neededIdentifier, enrolments).fold(
       Future.successful(Unauthorized("No MTDITID"))
-    ) { mtditid =>
-      if (isAgent) agentAuthentication(block, mtditid) else individualAuthentication(block, enrolments, mtditid)
+    ) { userId =>
+      println(Console.YELLOW + s"GOT IT, AM I AN AGENT: $isAgent" + Console.RESET)
+      if (isAgent) agentAuthentication(block, userId) else individualAuthentication(block, enrolments, userId)
     }
 
   }
 
-  private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], mtditid: String)
+  private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], userId: String)
                                                 (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
+    println(Console.YELLOW + "Calling AGENT auth with: " + userId + Console.RESET)
+
     val agentDelegatedAuthRuleKey = "mtd-vat-auth"
 
     val agentAuthPredicate: String => Enrolment = identifierId =>
@@ -87,23 +91,26 @@ class AuthorisedAction @Inject()(
         .withIdentifier(EnrolmentIdentifiers.individualId, identifierId) //TODO clarify identifier values
         .withDelegatedAuthRule(agentDelegatedAuthRuleKey)
 
-    authService.authorised(agentAuthPredicate(mtditid))
+    authService
+      .authorised(agentAuthPredicate(userId)) //TODO this needs changing to be an identifier of the user
       .retrieve(allEnrolments) { enrolments =>
-        enrolments.enrolments.collectFirst {
-          case Enrolment(EnrolmentKeys.Agent, EnrolmentIdentifier(_, arn) :: _, "Activated", _) => arn
-        } match {
-          case Some(arn) => block(User(mtditid, Some(arn)))
+
+        println(Console.YELLOW + enrolments + Console.RESET)
+        println(Console.YELLOW + enrolments.enrolments + Console.RESET)
+
+        enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
+          case Some(arn) => block(User(userId, Some(arn)))
           case None =>
             logger.debug("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
             Future.successful(Forbidden("")) //TODO add agent unauthorised page
         }
       } recover {
       case _: NoActiveSession =>
-        logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to {appConfig.signInUrl}")
+        logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
         Redirect(appConfig.signInUrl) //TODO Check this is the correct location
       case _: AuthorisationException =>
-        logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client. " +
-          s"Redirecting to {appConfig.agentClientUnauthorisedUrl(request.uri)}")
+        println(Console.YELLOW + "NOOOOOOOOOOOOOOOOOOO" + Console.RESET)
+        logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
         Unauthorized("") //TODO Redirect to unauthorised page
     }
   }
@@ -111,10 +118,11 @@ class AuthorisedAction @Inject()(
   private[predicates] def individualAuthentication[A](block: User[A] => Future[Result], enrolments: Enrolments, mtditid: String)
                                                      (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
     enrolments.enrolments.collectFirst {
-      case Enrolment(EnrolmentKeys.Individual, EnrolmentIdentifier(EnrolmentIdentifiers.individualId, _) :: _, _, _) =>
+      case Enrolment(EnrolmentKeys.Individual, enrolmentIdentifiers, _, _)
+        if enrolmentIdentifiers.exists(identifier => identifier.key == EnrolmentIdentifiers.individualId) =>
         block(User(mtditid, None))
     } getOrElse {
-      logger.warn("[AuthorisedAction][IndividualAuthentication] Non-agent with an invalid UTR.")
+      logger.warn("[AuthorisedAction][IndividualAuthentication] Non-agent with an invalid MTDITID.")
       Future.successful(Forbidden("")) //TODO send to an unauthorised page
     }
   }
@@ -124,7 +132,9 @@ class AuthorisedAction @Inject()(
                                                        checkedIdentifier: String,
                                                        enrolments: Enrolments
                                                      ): Option[String] = enrolments.enrolments.collectFirst {
-    case Enrolment(`checkedKey`, EnrolmentIdentifier(`checkedIdentifier`, identifierValue) :: _, _, _) => identifierValue
-  }
+    case Enrolment(`checkedKey`, enrolmentIdentifiers, _, _) => enrolmentIdentifiers.collectFirst {
+      case EnrolmentIdentifier(`checkedIdentifier`, identifierValue) => identifierValue
+    }
+  }.flatten
 
 }
