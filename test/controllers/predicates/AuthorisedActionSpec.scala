@@ -296,6 +296,20 @@ class AuthorisedActionSpec extends UnitTest {
         status(result) shouldBe UNAUTHORIZED
       }
 
+      "there is no MTDITID value in session" in {
+        lazy val result = {
+          lazy val enrolments = Enrolments(Set(
+            Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
+          ))
+          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
+            .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup, *, *)
+            .returning(Future.successful(new ~(enrolments, Some(AffinityGroup.Agent))))
+
+          auth.invokeBlock(fakeRequest, block)
+        }
+        status(result) shouldBe UNAUTHORIZED
+      }
+
     }
 
     "redirect to the sign in page" when {

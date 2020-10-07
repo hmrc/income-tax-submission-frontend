@@ -21,7 +21,9 @@ lazy val coverageSettings: Seq[Setting[_]] = {
     "testOnly.*",
     "testOnlyDoNotUseInAppConf.*",
     ".*feedback*.*",
-    "partials.*"
+    "partials.*",
+    "controllers.testOnly.*",
+    "views.html.*[Tt]emplate*"
   )
 
   Seq(

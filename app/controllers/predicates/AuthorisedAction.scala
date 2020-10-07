@@ -80,42 +80,31 @@ class AuthorisedAction @Inject()(
   private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], userId: String)
                                                 (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
 
-    println(Console.GREEN + "Muh user ID: " + userId + Console.RESET)
-
     val agentDelegatedAuthRuleKey = "mtd-it-auth"
 
     val agentAuthPredicate: String => Enrolment = identifierId =>
       Enrolment(EnrolmentKeys.Individual)
-        .withIdentifier(EnrolmentIdentifiers.individualId, identifierId) //TODO clarify identifier values
+        .withIdentifier(EnrolmentIdentifiers.individualId, identifierId)
         .withDelegatedAuthRule(agentDelegatedAuthRuleKey)
 
     request.session.get(SessionValues.CLIENT_MTDITID) match {
       case Some(mtditid) =>
-
-        println(Console.GREEN + "Thuh usuh idee: " + mtditid + Console.RESET)
-
         authService
-          .authorised(agentAuthPredicate(userId)) //TODO this needs changing to be an identifier of the user
+          .authorised(agentAuthPredicate(mtditid))
           .retrieve(allEnrolments) { enrolments =>
-
-          println(Console.GREEN + enrolments.enrolments + Console.RESET)
 
           enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
             case Some(arn) =>
               block(User(mtditid, Some(arn)))
             case None =>
-              println(Console.YELLOW + "No arn there m8" + Console.RESET)
               logger.debug("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
               Future.successful(Forbidden("")) //TODO add agent unauthorised page
           }
         } recover {
           case _: NoActiveSession =>
-            println(Console.YELLOW + "Not here m8" + Console.RESET)
             logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
             Redirect(appConfig.signInUrl) //TODO Check this is the correct location
           case ex: AuthorisationException =>
-            println(Console.YELLOW + ex + Console.RESET)
-            println(Console.YELLOW + "Not authed m8" + Console.RESET)
             logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
             Unauthorized("") //TODO Redirect to unauthorised page
         }

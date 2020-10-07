@@ -16,7 +16,6 @@
 
 package controllers
 
-import common.AffinityKeys
 import config.FrontendAppConfig
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}

@@ -17,6 +17,5 @@
 package common
 
 object SessionValues {
-  val CLIENT_NINO = "NINO"
   val CLIENT_MTDITID = "MTDITID"
 }
