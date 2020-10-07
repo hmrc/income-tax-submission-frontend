@@ -16,10 +16,7 @@
 
 package controllers
 
-import common.AffinityKeys
 import config.FrontendAppConfig
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.test.FakeRequest
