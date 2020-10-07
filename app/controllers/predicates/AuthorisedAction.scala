@@ -66,8 +66,6 @@ class AuthorisedAction @Inject()(
   def checkAuthorisation[A](block: User[A] => Future[Result], enrolments: Enrolments, isAgent: Boolean = false)
                            (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
 
-    println(Console.GREEN + enrolments + Console.RESET)
-
     val neededKey = if (isAgent) EnrolmentKeys.Agent else EnrolmentKeys.Individual
     val neededIdentifier = if (isAgent) EnrolmentIdentifiers.agentReference else EnrolmentIdentifiers.individualId
 
