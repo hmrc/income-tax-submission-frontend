@@ -32,7 +32,7 @@ import views.html.OverviewPageView
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "12234567890")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 

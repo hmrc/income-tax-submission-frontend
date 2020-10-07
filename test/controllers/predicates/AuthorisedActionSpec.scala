@@ -112,15 +112,15 @@ class AuthorisedActionSpec extends UnitTest {
   ".agentAuthenticated" should {
 
     val block: User[AnyContent] => Future[Result] = user => Future.successful(Ok(s"${user.mtditid} ${user.arn.get}"))
-    val mtditid = "1234567890"
-    val arn = "1234567890"
+    val arn = "0987654321"
 
     "perform the block action" when {
+
       "the agent is authorised for the given user" which {
 
         val enrolments = Enrolments(Set(
           Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
-          Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "1234567890")), "Activated")
+          Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
         ))
 
         lazy val result = {
@@ -128,7 +128,7 @@ class AuthorisedActionSpec extends UnitTest {
             .expects(*, *, *, *)
             .returning(Future.successful(enrolments))
 
-          auth.agentAuthentication(block, mtditid)
+          auth.agentAuthentication(block, arn)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
 
         "has a status of OK" in {
@@ -136,7 +136,7 @@ class AuthorisedActionSpec extends UnitTest {
         }
 
         "has the correct body" in {
-          bodyOf(result) shouldBe "1234567890 1234567890"
+          bodyOf(result) shouldBe "1234567890 0987654321"
         }
       }
     }
@@ -148,7 +148,7 @@ class AuthorisedActionSpec extends UnitTest {
 
         lazy val result = {
           mockAuthReturnException(AuthException)
-          auth.agentAuthentication(block, mtditid)
+          auth.agentAuthentication(block, arn)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
         status(result) shouldBe UNAUTHORIZED
       }
@@ -156,12 +156,13 @@ class AuthorisedActionSpec extends UnitTest {
     }
 
     "redirect to the sign in page" when {
+
       "the authorisation service returns a NoActiveSession exception" in {
         object NoActiveSession extends NoActiveSession("Some reason")
 
         lazy val result = {
           mockAuthReturnException(NoActiveSession)
-          auth.agentAuthentication(block, mtditid)
+          auth.agentAuthentication(block, arn)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
 
         status(result) shouldBe SEE_OTHER
@@ -169,16 +170,17 @@ class AuthorisedActionSpec extends UnitTest {
     }
 
     "return a Forbidden" when {
+
       "the user does not have an enrolment for the agent" in {
         val enrolments = Enrolments(Set(
-          Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
+          Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated")
         ))
 
         lazy val result = {
           (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
             .expects(*, *, *, *)
             .returning(Future.successful(enrolments))
-          auth.agentAuthentication(block, mtditid)
+          auth.agentAuthentication(block, arn)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
         status(result) shouldBe FORBIDDEN
       }
@@ -217,7 +219,7 @@ class AuthorisedActionSpec extends UnitTest {
             .expects(*, *, *, *)
             .returning(Future.successful(enrolments))
 
-          auth.checkAuthorisation(block, enrolments, isAgent = true)
+          auth.checkAuthorisation(block, enrolments, isAgent = true)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
 
         "returns an OK (200) status" in {
@@ -260,12 +262,12 @@ class AuthorisedActionSpec extends UnitTest {
 
         lazy val result = {
           mockAuthAsAgent()
-          auth.invokeBlock(fakeRequest, block)
+          auth.invokeBlock(fakeRequestWithMtditid, block)
         }
 
         "should return an OK(200) status" in {
           status(result) shouldBe OK
-          bodyOf(result) shouldBe "mtditid: 1234567890 arn: 1234567890"
+          bodyOf(result) shouldBe "mtditid: 1234567890 arn: 0987654321"
         }
       }
 

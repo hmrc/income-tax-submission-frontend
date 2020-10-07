@@ -16,7 +16,7 @@
 
 package controllers.predicates
 
-import common.{EnrolmentIdentifiers, EnrolmentKeys}
+import common.{EnrolmentIdentifiers, EnrolmentKeys, SessionValues}
 import config.AppConfig
 import javax.inject.Inject
 import models.User
@@ -27,7 +27,7 @@ import services.AuthService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments}
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -74,7 +74,6 @@ class AuthorisedAction @Inject()(
     enrolmentGetIdentifierValue(neededKey, neededIdentifier, enrolments).fold(
       Future.successful(Unauthorized("No MTDITID"))
     ) { userId =>
-      println(Console.YELLOW + s"GOT IT, AM I AN AGENT: $isAgent" + Console.RESET)
       if (isAgent) agentAuthentication(block, userId) else individualAuthentication(block, enrolments, userId)
     }
 
@@ -82,36 +81,34 @@ class AuthorisedAction @Inject()(
 
   private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], userId: String)
                                                 (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
-    println(Console.YELLOW + "Calling AGENT auth with: " + userId + Console.RESET)
+    request.session.get(SessionValues.CLIENT_MTDITID) match {
+      case Some(mtditid) =>
+        val agentDelegatedAuthRuleKey = "mtd-vat-auth"
 
-    val agentDelegatedAuthRuleKey = "mtd-vat-auth"
+        val agentAuthPredicate: String => Enrolment = identifierId =>
+          Enrolment(EnrolmentKeys.Individual)
+            .withIdentifier(EnrolmentIdentifiers.individualId, identifierId) //TODO clarify identifier values
+            .withDelegatedAuthRule(agentDelegatedAuthRuleKey)
 
-    val agentAuthPredicate: String => Enrolment = identifierId =>
-      Enrolment(EnrolmentKeys.Individual)
-        .withIdentifier(EnrolmentIdentifiers.individualId, identifierId) //TODO clarify identifier values
-        .withDelegatedAuthRule(agentDelegatedAuthRuleKey)
+        authService
+          .authorised(agentAuthPredicate(mtditid)) //TODO this needs changing to be an identifier of the user
+          .retrieve(allEnrolments) { enrolments =>
 
-    authService
-      .authorised(agentAuthPredicate(userId)) //TODO this needs changing to be an identifier of the user
-      .retrieve(allEnrolments) { enrolments =>
-
-        println(Console.YELLOW + enrolments + Console.RESET)
-        println(Console.YELLOW + enrolments.enrolments + Console.RESET)
-
-        enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
-          case Some(arn) => block(User(userId, Some(arn)))
-          case None =>
-            logger.debug("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-            Future.successful(Forbidden("")) //TODO add agent unauthorised page
+          enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
+            case Some(arn) => block(User(mtditid, Some(arn)))
+            case None =>
+              logger.debug("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+              Future.successful(Forbidden("")) //TODO add agent unauthorised page
+          }
+        } recover {
+          case _: NoActiveSession =>
+            logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
+            Redirect(appConfig.signInUrl) //TODO Check this is the correct location
+          case _: AuthorisationException =>
+            logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
+            Unauthorized("") //TODO Redirect to unauthorised page
         }
-      } recover {
-      case _: NoActiveSession =>
-        logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
-        Redirect(appConfig.signInUrl) //TODO Check this is the correct location
-      case _: AuthorisationException =>
-        println(Console.YELLOW + "NOOOOOOOOOOOOOOOOOOO" + Console.RESET)
-        logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
-        Unauthorized("") //TODO Redirect to unauthorised page
+      case None => Future.successful(Unauthorized("No MTDITID"))
     }
   }
 
