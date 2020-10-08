@@ -17,28 +17,27 @@
 package controllers
 
 import config.FrontendAppConfig
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Configuration, Environment}
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import utils.UnitTest
 import views.html.StartPage
 
-class StartPageControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeRequest = FakeRequest("GET", "/")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "1234567890")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
   private val serviceConfig = new ServicesConfig(configuration)
-  private val mockAppConfig = new FrontendAppConfig(configuration, serviceConfig)
+  private val mockFrontendAppConfig = new FrontendAppConfig(configuration, serviceConfig)
   private val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
-  private val controller = new StartPageController(mockAppConfig, stubMessagesControllerComponents(), startPageView)
+  private val controller = new StartPageController(authorisedAction, startPageView, mockFrontendAppConfig, stubMessagesControllerComponents())
 
   "calling the individual action" when {
 
@@ -46,12 +45,18 @@ class StartPageControllerSpec extends AnyWordSpec with Matchers with GuiceOneApp
 
       "GET '/' for an individual and return 200" in {
 
-        val result = controller.individual(fakeRequest)
+        val result = {
+          mockAuth()
+          controller.show(fakeGetRequest)
+        }
         status(result) shouldBe Status.OK
       }
 
       "return HTML" in {
-        val result = controller.individual(fakeRequest)
+        val result = {
+          mockAuth()
+          controller.show(fakeGetRequest)
+        }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
       }
@@ -64,12 +69,18 @@ class StartPageControllerSpec extends AnyWordSpec with Matchers with GuiceOneApp
 
       "GET '/' for an agent and return 200" in {
 
-        val result = controller.agent(fakeRequest)
+        val result = {
+          mockAuthAsAgent()
+          controller.show(fakeGetRequest)
+        }
         status(result) shouldBe Status.OK
       }
 
       "return HTML" in {
-        val result = controller.agent(fakeRequest)
+        val result = {
+          mockAuthAsAgent()
+          controller.show(fakeGetRequest)
+        }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
       }

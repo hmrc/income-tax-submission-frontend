@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.testOnly
 
 import config.FrontendAppConfig
-import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.StartPage
+import views.html.OverviewPageView
 
 import scala.concurrent.Future
 
-
 @Singleton
-class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
-                                    val startPageView: StartPage,
-                                    implicit val appConfig: FrontendAppConfig,
-                                    val mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+class AgentAccessController @Inject()(
+                                        appConfig: FrontendAppConfig,
+                                        mcc: MessagesControllerComponents,
+                                        overviewPageView: OverviewPageView) extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = authorisedAction.async { implicit user =>
-    Future.successful(Ok(startPageView(isAgent = user.isAgent)))
+  implicit val config: FrontendAppConfig = appConfig
+
+  def show(mtdItId: String): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Redirect(controllers.routes.StartPageController.show()).addingToSession("MTDITID" -> mtdItId))
   }
 
 }
+
