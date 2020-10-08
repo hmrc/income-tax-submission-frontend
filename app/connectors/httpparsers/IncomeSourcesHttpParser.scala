@@ -22,25 +22,32 @@ import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object IncomeSourcesHttpParser {
-  type IncomeSourcesResponse = Either[IncomeSourcesFailure, IncomeSourcesModel]
+  type IncomeSourcesResponse = Either[IncomeSourcesException, IncomeSourcesModel]
 
   implicit object IncomeSourcesHttpReads extends HttpReads[IncomeSourcesResponse] {
     override def read(method: String, url: String, response: HttpResponse): IncomeSourcesResponse = {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
           jsonErrors =>
-            Left(IncomeSourcesJsonFail),
+            Left(IncomeSourcesInvalidJsonException),
           parsedModel =>
             Right(parsedModel)
         )
+        case NOT_FOUND => Left(IncomeSourcesNotFoundException)
+        case SERVICE_UNAVAILABLE => Left(IncomeSourcesServiceUnavailableException)
+        case _ => Left(IncomeSourcesUnhandledException)
       }
     }
   }
 
 
 
-  sealed trait IncomeSourcesFailure
+  sealed trait IncomeSourcesException
 
-  object IncomeSourcesJsonFail extends IncomeSourcesFailure
+  object IncomeSourcesInvalidJsonException extends IncomeSourcesException
+  object IncomeSourcesServiceUnavailableException extends IncomeSourcesException
+  object IncomeSourcesNotFoundException extends IncomeSourcesException
+  object IncomeSourcesUnhandledException extends IncomeSourcesException
+
 
 }

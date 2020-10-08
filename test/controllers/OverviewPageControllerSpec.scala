@@ -22,6 +22,7 @@ import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
+import services.IncomeSourcesService
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
@@ -36,8 +37,11 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val serviceConfig = new ServicesConfig(configuration)
   private val mockFrontendAppConfig = new FrontendAppConfig(configuration, serviceConfig)
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
+  private val incomeSourcesService = app.injector.instanceOf[IncomeSourcesService]
 
-  private val controller = new OverviewPageController(mockFrontendAppConfig, stubMessagesControllerComponents(), overviewPageView, authorisedAction)
+  private val controller = new OverviewPageController(
+    mockFrontendAppConfig, stubMessagesControllerComponents(), incomeSourcesService, overviewPageView, authorisedAction
+  )
 
   "calling the individual action" when {
 

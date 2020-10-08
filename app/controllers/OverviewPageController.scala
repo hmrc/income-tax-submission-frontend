@@ -33,7 +33,7 @@ class OverviewPageController @Inject()(
                                         mcc: MessagesControllerComponents,
                                         incomeSourcesService: IncomeSourcesService,
                                         overviewPageView: OverviewPageView,
-                                      authorisedAction: AuthorisedAction) extends FrontendController(mcc) with I18nSupport {
+                                        authorisedAction: AuthorisedAction) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: FrontendAppConfig = appConfig
 
