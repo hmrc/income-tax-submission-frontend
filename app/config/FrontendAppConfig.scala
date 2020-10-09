@@ -26,6 +26,9 @@ trait AppConfig {
 
   val signInContinueUrl: String
   val signInUrl: String
+
+  val incomeTaxSubmissionBaseUrl: String
+  val incomeTaxSubmissionUrl: String
 }
 
 @Singleton
@@ -37,4 +40,7 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   override val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl).encodedUrl //TODO add redirect to overview page
   private val signInOrigin = servicesConfig.getString("appName")
   override val signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
+
+  lazy val incomeTaxSubmissionBaseUrl: String = servicesConfig.baseUrl("income-tax-submission")
+  lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax"
 }

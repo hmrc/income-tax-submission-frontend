@@ -14,12 +14,28 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-class MockAppConfig extends AppConfig {
-  override val footerLinkItems: Seq[String] = Seq("Item1", "Item2")
-  override val signInContinueUrl: String = "/signInContinue"
-  override val signInUrl: String = "/signIn"
-  override val incomeTaxSubmissionBaseUrl: String = "/incomeTaxSubmission"
-  override val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/index"
+import play.api.libs.json.{JsObject, Json}
+import utils.UnitTest
+
+class DividendsModelSpec extends UnitTest {
+
+  val model: DividendsModel = DividendsModel("11111", "11111")
+  val jsonModel: JsObject = Json.obj(
+    "ukDividends" -> "11111",
+    "otherUkDividends" -> "11111"
+  )
+
+  "DividendsModel" should {
+
+    "parse to Json" in {
+      Json.toJson(model) shouldBe jsonModel
+    }
+
+    "parse from Json" in {
+      jsonModel.as[DividendsModel]
+    }
+  }
+
 }

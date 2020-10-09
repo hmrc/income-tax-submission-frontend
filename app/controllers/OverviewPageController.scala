@@ -23,15 +23,17 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
+import services.IncomeSourcesService
 
 import scala.concurrent.Future
 
 @Singleton
 class OverviewPageController @Inject()(
-                                      appConfig: FrontendAppConfig,
-                                      mcc: MessagesControllerComponents,
-                                      overviewPageView: OverviewPageView,
-                                      authorisedAction: AuthorisedAction) extends FrontendController(mcc) with I18nSupport {
+                                        appConfig: FrontendAppConfig,
+                                        mcc: MessagesControllerComponents,
+                                        incomeSourcesService: IncomeSourcesService,
+                                        overviewPageView: OverviewPageView,
+                                        authorisedAction: AuthorisedAction) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: FrontendAppConfig = appConfig
 

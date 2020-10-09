@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-class MockAppConfig extends AppConfig {
-  override val footerLinkItems: Seq[String] = Seq("Item1", "Item2")
-  override val signInContinueUrl: String = "/signInContinue"
-  override val signInUrl: String = "/signIn"
-  override val incomeTaxSubmissionBaseUrl: String = "/incomeTaxSubmission"
-  override val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/index"
+import play.api.libs.json.{Json, OFormat}
+
+case class DividendsModel(ukDividends: String, otherUkDividends: String)
+
+object DividendsModel {
+  implicit val formats: OFormat[DividendsModel] = Json.format[DividendsModel]
 }

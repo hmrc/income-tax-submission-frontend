@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package config
+package services
 
-class MockAppConfig extends AppConfig {
-  override val footerLinkItems: Seq[String] = Seq("Item1", "Item2")
-  override val signInContinueUrl: String = "/signInContinue"
-  override val signInUrl: String = "/signIn"
-  override val incomeTaxSubmissionBaseUrl: String = "/incomeTaxSubmission"
-  override val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/index"
+import connectors.IncomeSourcesConnector
+import connectors.httpparsers.IncomeSourcesHttpParser.IncomeSourcesResponse
+import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.Future
+
+
+@Singleton
+class IncomeSourcesService @Inject()(incomeSourcesConnector: IncomeSourcesConnector){
+  def getIncomeSources(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] =
+    incomeSourcesConnector.getIncomeSources(nino, taxYear)
+
 }
