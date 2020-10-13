@@ -19,18 +19,20 @@ package controllers
 import config.FrontendAppConfig
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
+import models.IncomeSourcesModel
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 import services.IncomeSourcesService
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverviewPageController @Inject()(
                                         appConfig: FrontendAppConfig,
                                         mcc: MessagesControllerComponents,
+                                        implicit val ec: ExecutionContext,
                                         incomeSourcesService: IncomeSourcesService,
                                         overviewPageView: OverviewPageView,
                                         authorisedAction: AuthorisedAction) extends FrontendController(mcc) with I18nSupport {
@@ -38,8 +40,12 @@ class OverviewPageController @Inject()(
   implicit val config: FrontendAppConfig = appConfig
 
   def show: Action[AnyContent] = authorisedAction.async { implicit user =>
-    Future.successful(Ok(overviewPageView(isAgent = user.isAgent)))
+    incomeSourcesService.getIncomeSources(user.mtditid, 2021).map{
+      case Right(incomeSources) => Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources)))
+      case _ => Ok(overviewPageView(isAgent = user.isAgent, None))
+    }
   }
+
 
 }
 

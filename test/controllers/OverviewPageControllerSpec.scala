@@ -40,7 +40,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val incomeSourcesService = app.injector.instanceOf[IncomeSourcesService]
 
   private val controller = new OverviewPageController(
-    mockFrontendAppConfig, stubMessagesControllerComponents(), incomeSourcesService, overviewPageView, authorisedAction
+    mockFrontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, incomeSourcesService, overviewPageView, authorisedAction
   )
 
   "calling the individual action" when {

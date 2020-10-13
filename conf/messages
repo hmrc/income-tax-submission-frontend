@@ -26,21 +26,17 @@ startPage.provideUpdates = Provide updates
 
 overview.agent.heading = Your client''s Income Tax Return
 overview.caption = {0} to {1} Income Tax
-overview.agent.task1.heading = Tailor your client''s return
-overview.agent.task1.income = Add or remove income sources
-overview.agent.task2.heading = Provide updates
-overview.agent.task2.caption = Complete the tailor your client''s return section before you can start making updates to your return.
-overview.agent.task3.heading = View estimates
-overview.agent.task3.caption = Provide at least one update before you can view your client''s estimate.
-overview.agent.task4.heading = Submit return
-overview.agent.task4.caption = Complete all your updates for the year before you can view your client''s calculation and submit your return
+
+overview.task1.heading = Provide updates
+overview.task1.caption = Complete the sections that apply to you.
+
+overview.agent.task2.heading = View Tax calculation to date
+overview.agent.task2.caption = Provide at least one update before you can view your estimate.
+overview.agent.task3.heading = Submit return
+overview.agent.task3.caption = You will be able to submit your client''s return from the 6 April {0} after providing your client''s updates.
 
 overview.individual.heading = Your Income Tax Return
-overview.individual.task1.heading = Tailor your return
-overview.individual.task1.income = Add or remove income sources
-overview.individual.task2.heading = Provide updates
-overview.individual.task2.caption = Complete the tailor your return section before you can start making updates to your return.
-overview.individual.task3.heading = View estimates
-overview.individual.task3.caption = Provide at least one update before you can view your estimate.
-overview.individual.task4.heading = Submit return
-overview.individual.task4.caption = Complete all your updates for the year before you can view your calculation and submit your return
+overview.individual.task2.heading = View Tax calculation to date
+overview.individual.task2.caption = Provide at least one update before you can view your estimate.
+overview.individual.task3.heading = Submit return
+overview.individual.task3.caption = You will be able to submit your return from the 6 April {0} after providing your updates.
