@@ -30,7 +30,7 @@ import views.html.OverviewPageView
 class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val individualHeading = "Your Income Tax Return"
-  val agentHeading = "Your client's Income Tax Return"
+  val agentHeading = "Your client’s Income Tax Return"
   val task1Heading = "Provide updates"
   val task2Heading = "View Tax calculation to date"
   val task3Heading = "Submit return"
