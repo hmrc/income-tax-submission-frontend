@@ -30,12 +30,11 @@ import views.html.OverviewPageView
 class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val individualHeading = "Your Income Tax Return"
-  val agentHeading = "Your client's Income Tax Return"
-  val agentTask1Heading = "Tailor your client's return"
-  val individualTask1Heading = "Tailor your return"
-  val task2Heading = "Provide updates"
-  val task3Heading = "View estimates"
-  val task4Heading = "Submit return"
+  val agentHeading = "Your client’s Income Tax Return"
+  val task1Heading = "Provide updates"
+  val task2Heading = "View Tax calculation to date"
+  val task3Heading = "Submit return"
+
 
 
   implicit val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -47,7 +46,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
 
   class Setup(isAgent : Boolean) {
-    val page : HtmlFormat.Appendable = overviewPageView(isAgent)(FakeRequest(), implicitly, appConfig)
+    val page : HtmlFormat.Appendable = overviewPageView(isAgent, None)(FakeRequest(), implicitly, appConfig)
     val document: Document = Jsoup.parse(page.body)
   }
 
@@ -62,17 +61,15 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
     }
     "have a task list with individual content" in new Setup(false) {
       val taskList: String = document.select(s"""[class=app-task-list]""").text
-      taskList.contains(individualTask1Heading) shouldBe true
+      taskList.contains(task1Heading) shouldBe true
       taskList.contains(task2Heading) shouldBe true
       taskList.contains(task3Heading) shouldBe true
-      taskList.contains(task4Heading) shouldBe true
     }
     "have a task list with agent content" in new Setup(true) {
       val taskList: String = document.select(s"""[class=app-task-list]""").text
-      taskList.contains(agentTask1Heading) shouldBe true
+      taskList.contains(task1Heading) shouldBe true
       taskList.contains(task2Heading) shouldBe true
       taskList.contains(task3Heading) shouldBe true
-      taskList.contains(task4Heading) shouldBe true
     }
   }
 }
