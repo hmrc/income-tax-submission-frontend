@@ -22,4 +22,7 @@ class MockAppConfig extends AppConfig {
   override val signInUrl: String = "/signIn"
   override val incomeTaxSubmissionBaseUrl: String = "/incomeTaxSubmission"
   override val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/index"
+  override val personalIncomeTaxSubmissionBaseUrl: String = "/personalIncomeTaxSubmissionFrontend"
+  override val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
+  override val personalIncomeTaxSubmissionDividendsUrl: String =  s"$personalIncomeTaxSubmissionUrl/dividends"
 }

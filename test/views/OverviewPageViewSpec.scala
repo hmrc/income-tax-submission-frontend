@@ -34,8 +34,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val task1Heading = "Provide updates"
   val task2Heading = "View Tax calculation to date"
   val task3Heading = "Submit return"
-
-
+  val dividendsLink = "http://localhost:9308/income-through-software/return/personal-income/dividends/uk-dividends"
 
   implicit val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -50,7 +49,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
     val document: Document = Jsoup.parse(page.body)
   }
 
-  "Business Start Date" must {
+  "The Overview Page" must {
     "have the correct individual heading with caption" in new Setup(false) {
       document.getElementsByTag("h1").text shouldBe individualHeading
       document.select(s"""[class=govuk-caption-xl]""").text shouldBe "2020 to 2021 Income Tax"
@@ -70,6 +69,10 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
       taskList.contains(task1Heading) shouldBe true
       taskList.contains(task2Heading) shouldBe true
       taskList.contains(task3Heading) shouldBe true
+    }
+    "have a link to the dividends section" in new Setup(false) {
+      val taskList: String = document.select(s"""[id=dividends_link]""").attr("href")
+      taskList.contains(dividendsLink) shouldBe true
     }
   }
 }
