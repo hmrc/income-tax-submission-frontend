@@ -17,11 +17,14 @@
 @import config.FrontendAppConfig
 @import views.html.headerFooterTemplate.Head
 @import views.headerFooterTemplate.FooterLinks
+@import views.html.headerFooterTemplate.BeforeBodyContent
 
 @this(
         govukLayout: GovukLayout,
-        head: Head
+        head: Head,
+        beforeBodyContent: BeforeBodyContent
 )
+
 @(pageTitle: Option[String] = None,
         headBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None
@@ -31,6 +34,6 @@
     pageTitle = pageTitle,
     headBlock = Some(head(headBlock)),
     scriptsBlock = scriptsBlock,
-    beforeContentBlock = None,
+    beforeContentBlock = Some(beforeBodyContent(Some(2020))),
     footerItems = FooterLinks()
 )(contentBlock)
