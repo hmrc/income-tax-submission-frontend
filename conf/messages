@@ -11,6 +11,10 @@ footer.termsConditions.url = /help/terms-and-conditions
 footer.govukHelp.text = Help using GOV.UK
 footer.govukHelp.url = https://www.gov.uk/help
 
+breadcrumb.incomeTaxAccount = Income Tax
+breadcrumb.incomeTaxReturn = Income Tax Return
+breadcrumb.incomeTaxYear = {0} to {1} Income Tax
+
 startPage.taxYear = 2020 to 2021 Income Tax
 startPage.heading.individual = Tell HMRC about your Income Tax
 startPage.heading.agent = Tell HMRC about your client’s Income Tax

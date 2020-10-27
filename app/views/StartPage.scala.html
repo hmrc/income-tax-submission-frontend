@@ -23,10 +23,6 @@
 
 @mainHTML = {
 
-@breadcrumbs
-
-<main class="govuk-main-wrapper">
-    <div class="govuk-width-container">
         <span class="govuk-caption-xl">@messages("startPage.taxYear")</span>
 
         @if(isAgent){
@@ -75,24 +71,6 @@
         </a>
 
         }
-    </div>
-</main>
+
 } @layout(pageTitle = Some(messages("service.name")))(mainHTML)
 
-
-@breadcrumbs = {
-<div class="govuk-breadcrumbs ">
-    <ol class="govuk-breadcrumbs__list">
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="#">Income Tax</a>
-        </li>
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="#">Income Tax Submission</a>
-        </li>
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link">2020 to 2021 Income Tax</a>
-        </li>
-    </ol>
-</div>
-
-}

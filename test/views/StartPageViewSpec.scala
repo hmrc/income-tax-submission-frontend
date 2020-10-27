@@ -33,13 +33,12 @@ import play.twirl.api.Html
 class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   object Selectors{
-    val individualPageHeading = "#main-content > div > div > main > div > h1"
-    val agentPageHeading = "#main-content > div > div > main > div > h1"
-    val p1Individual =  "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(1)"
-    val p1Agent = "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(1)"
-    val p2Individual = "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(2)"
-    val p2Agent = "#main-content > div > div > main > div > div:nth-child(3) > p:nth-child(2)"
-
+    val individualPageHeading = "#main-content > div > div > h1"
+    val agentPageHeading = "#main-content > div > div > h1"
+    val p1Individual =  "#main-content > div > div > div:nth-child(3) > p:nth-child(1)"
+    val p1Agent = "#main-content > div > div > div:nth-child(3) > p:nth-child(1)"
+    val p2Individual = "#main-content > div > div > div:nth-child(3) > p:nth-child(2)"
+    val p2Agent = "#main-content > div > div > div:nth-child(3) > p:nth-child(2)"
   }
 
   val startPageView: StartPage = app.injector.instanceOf[StartPage]
