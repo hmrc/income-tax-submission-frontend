@@ -49,4 +49,6 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   lazy val personalIncomeTaxSubmissionBaseUrl: String = servicesConfig.baseUrl("personal-income-tax-submission-frontend")
   lazy val personalIncomeTaxSubmissionUrl: String =s"$personalIncomeTaxSubmissionBaseUrl/income-through-software/return/personal-income"
   lazy val personalIncomeTaxSubmissionDividendsUrl: String =s"$personalIncomeTaxSubmissionUrl/dividends/uk-dividends"
+
+  lazy val googleTagManagerId: String = config.get[String]("google-tag-manager.id")
 }
