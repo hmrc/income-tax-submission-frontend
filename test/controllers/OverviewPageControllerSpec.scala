@@ -46,7 +46,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
 
   def mockGetIncomeSourcesValid(): CallHandler3[String, Int, HeaderCarrier, Future[IncomeSourcesResponse]] = {
-    val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(Some(DividendsModel("",""))))
+    val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(Some(DividendsModel(None,None))))
     (mockIncomeSourcesService.getIncomeSources(_: String, _: Int)(_: HeaderCarrier))
       .expects(*, *, *)
       .returning(Future.successful(validIncomeSource))

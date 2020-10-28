@@ -29,7 +29,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
 
   val nino: String = "123456789"
   val taxYear: Int = 1999
-  val dividendResult: String = "1111111111"
+  val dividendResult: Option[BigDecimal] = Some(1111111111)
 
 
   ".IncomeSourcesConnector" should {
