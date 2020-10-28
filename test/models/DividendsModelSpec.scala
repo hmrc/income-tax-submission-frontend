@@ -21,10 +21,10 @@ import utils.UnitTest
 
 class DividendsModelSpec extends UnitTest {
 
-  val model: DividendsModel = DividendsModel("11111", "11111")
+  val model: DividendsModel = DividendsModel(Some(11111), Some(11111))
   val jsonModel: JsObject = Json.obj(
-    "ukDividends" -> "11111",
-    "otherUkDividends" -> "11111"
+    "ukDividends" -> 11111,
+    "otherUkDividends" -> 11111
   )
 
   "DividendsModel" should {
