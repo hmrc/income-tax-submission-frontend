@@ -16,6 +16,7 @@
 
 package controllers
 
+import common.SessionValues.DIVIDENDS_PRIOR_SUB
 import config.FrontendAppConfig
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesNotFoundException, IncomeSourcesResponse}
 import models.{DividendsModel, IncomeSourcesModel}
@@ -89,13 +90,13 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         charset(result) shouldBe Some("utf-8")
       }
 
-      "Set the session value" in {
+      "Set the session value for dividends prior sub" in {
         val result = {
           mockAuth()
           mockGetIncomeSourcesValid()
           controller.show(fakeGetRequest)
         }
-        session(result).get("DIVIDENDS_PRIOR_SUB") shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
+        session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
       }
     }
     "the user is an individual without existing income sources" should {
