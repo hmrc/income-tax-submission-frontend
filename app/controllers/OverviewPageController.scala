@@ -43,11 +43,10 @@ class OverviewPageController @Inject()(
   def show: Action[AnyContent] = authorisedAction.async { implicit user =>
     incomeSourcesService.getIncomeSources(user.mtditid, 2021).map{
       case Right(incomeSources) => {
-        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources))).addingToSession((DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString()))
+        val processedDividends = Json.toJson(incomeSources.dividends).toString()
+        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources))).addingToSession(DIVIDENDS_PRIOR_SUB -> processedDividends)
       }
-      case _ => {
-        Ok(overviewPageView(isAgent = user.isAgent, None))
-      }
+      case _ => Ok(overviewPageView(isAgent = user.isAgent, None))
     }
   }
 
