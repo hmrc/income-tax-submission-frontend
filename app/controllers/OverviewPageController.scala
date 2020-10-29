@@ -19,12 +19,14 @@ package controllers
 import config.FrontendAppConfig
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
-import models.IncomeSourcesModel
+import models.{DividendsModel, IncomeSourcesModel}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 import services.IncomeSourcesService
+import common.SessionValues.DIVIDENDS_PRIOR_SUB
+import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,8 +43,12 @@ class OverviewPageController @Inject()(
 
   def show: Action[AnyContent] = authorisedAction.async { implicit user =>
     incomeSourcesService.getIncomeSources(user.mtditid, 2021).map{
-      case Right(incomeSources) => Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources)))
-      case _ => Ok(overviewPageView(isAgent = user.isAgent, None))
+      case Right(incomeSources) => {
+        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources))).addingToSession((DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString()))
+      }
+      case _ => {
+        Ok(overviewPageView(isAgent = user.isAgent, None))
+      }
     }
   }
 
