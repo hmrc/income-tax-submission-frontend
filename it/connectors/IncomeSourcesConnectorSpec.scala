@@ -20,7 +20,6 @@ import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonE
 import models.{DividendsModel, IncomeSourcesModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.IntegrationTest
 
 class IncomeSourcesConnectorSpec extends IntegrationTest {

@@ -19,7 +19,6 @@ package controllers
 import config.FrontendAppConfig
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
-import models.{DividendsModel, IncomeSourcesModel}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -28,7 +27,7 @@ import services.IncomeSourcesService
 import common.SessionValues.DIVIDENDS_PRIOR_SUB
 import play.api.libs.json.Json
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class OverviewPageController @Inject()(
