@@ -22,9 +22,11 @@ import models.{DividendsModel, IncomeSourcesModel}
 import org.scalamock.handlers.CallHandler3
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
+import play.mvc.Http.Session
 import services.IncomeSourcesService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -85,6 +87,15 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
+      }
+
+      "Set the session value" in {
+        val result = {
+          mockAuth()
+          mockGetIncomeSourcesValid()
+          controller.show(fakeGetRequest)
+        }
+        session(result).get("DIVIDENDS_PRIOR_SUB") shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
       }
     }
     "the user is an individual without existing income sources" should {
