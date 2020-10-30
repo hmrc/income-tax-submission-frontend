@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{Format, Json, OFormat, OWrites, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(dividends: Option[DividendsModel])
 

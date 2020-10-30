@@ -20,7 +20,6 @@ import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonE
 import models.{DividendsModel, IncomeSourcesModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.IntegrationTest
 
 class IncomeSourcesConnectorSpec extends IntegrationTest {
@@ -29,7 +28,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
 
   val nino: String = "123456789"
   val taxYear: Int = 1999
-  val dividendResult: String = "1111111111"
+  val dividendResult: Option[BigDecimal] = Some(1111111111)
 
 
   ".IncomeSourcesConnector" should {

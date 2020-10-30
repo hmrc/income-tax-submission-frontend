@@ -16,12 +16,14 @@
 
 package controllers
 
+import common.SessionValues.DIVIDENDS_PRIOR_SUB
 import config.FrontendAppConfig
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesNotFoundException, IncomeSourcesResponse}
 import models.{DividendsModel, IncomeSourcesModel}
 import org.scalamock.handlers.CallHandler3
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
@@ -46,7 +48,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
 
   def mockGetIncomeSourcesValid(): CallHandler3[String, Int, HeaderCarrier, Future[IncomeSourcesResponse]] = {
-    val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(Some(DividendsModel("",""))))
+    val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(Some(DividendsModel(None,None))))
     (mockIncomeSourcesService.getIncomeSources(_: String, _: Int)(_: HeaderCarrier))
       .expects(*, *, *)
       .returning(Future.successful(validIncomeSource))
@@ -85,6 +87,15 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
+      }
+
+      "Set the session value for dividends prior sub" in {
+        val result = {
+          mockAuth()
+          mockGetIncomeSourcesValid()
+          controller.show(fakeGetRequest)
+        }
+        session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
       }
     }
     "the user is an individual without existing income sources" should {
