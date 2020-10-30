@@ -72,6 +72,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
     }
     "have a link to the dividends section" in new Setup(false) {
       val taskList: String = document.select(s"""[id=dividends_link]""").attr("href")
+      println(taskList)
       taskList.contains(dividendsLink) shouldBe true
     }
   }
