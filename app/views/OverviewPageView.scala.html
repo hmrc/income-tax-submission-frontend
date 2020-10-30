@@ -25,7 +25,7 @@
 @taskWithActionList(heading: String, caption: String, index: Int, incomeSources: IncomeSourcesModel) = {
     <li>
         <h2 class="app-task-list__section">
-            <span class="app-task-list__section-number">@index. </span> @heading
+            <span class="app-task-list__section-number">@index</span> @heading
         </h2>
         <ol class="app-task-list__items">
             <span class="govuk-caption-m">@caption</span>
@@ -40,12 +40,12 @@
             </li>
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                    <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends==None){"@{appConfig.personalIncomeTaxSubmissionDividendsUrl}"}else{"@{appConfig.personalIncomeTaxSubmissionCYAUrl}"}>
+                    <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends==None){ @{appConfig.personalIncomeTaxSubmissionDividendsUrl.toString()}}else{ @{appConfig.personalIncomeTaxSubmissionCYAUrl.toString()}}>
                     Dividends
                     </a>
                 </span>
                 <span class="hmrc-status-tag">
-                    @incomeSources.dividends.getOrElse("Not Started")
+                @if(incomeSources.dividends.isDefined){Updated}else{Not Started}
                 </span>
             </li>
         </ol>
