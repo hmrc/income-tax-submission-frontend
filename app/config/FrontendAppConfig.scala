@@ -46,7 +46,7 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
 
   lazy val incomeTaxSubmissionBaseUrl: String = servicesConfig.baseUrl("income-tax-submission")
   lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax"
-  lazy val personalIncomeTaxSubmissionBaseUrl: String = servicesConfig.baseUrl("personal-income-tax-submission-frontend")
+  lazy val personalIncomeTaxSubmissionBaseUrl: String = config.get[String](ConfigKeys.personalIncomeBaseUrl)
   lazy val personalIncomeTaxSubmissionUrl: String =s"$personalIncomeTaxSubmissionBaseUrl/income-through-software/return/personal-income"
   lazy val personalIncomeTaxSubmissionDividendsUrl: String =s"$personalIncomeTaxSubmissionUrl/dividends/uk-dividends"
   lazy val personalIncomeTaxSubmissionCYAUrl: String = s"$personalIncomeTaxSubmissionUrl/dividends/check-your-answers"
