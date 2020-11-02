@@ -19,4 +19,5 @@ package config
 object ConfigKeys {
   val signInUrl = "signIn.url"
   val signInContinueBaseUrl = "signIn.continueBaseUrl"
+  val personalIncomeBaseUrl = "personalIncome.url"
 }
