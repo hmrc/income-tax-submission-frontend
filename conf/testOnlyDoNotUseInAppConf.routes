@@ -12,4 +12,5 @@
 # Add all the application routes to the prod.routes file
 
 GET        /income-through-software/return/test-only/agent-access/:mtdItId        controllers.testOnly.AgentAccessController.show(mtdItId)
-->         /                          prod.Routes
+GET        /income-through-software/return/test-only/prior-submission             controllers.testOnly.PriorSubmissionController.show(ukDividends: Option[String], otherDividends: Option[String])
+->         /                                                                      prod.Routes
