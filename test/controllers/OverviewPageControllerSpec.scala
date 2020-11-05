@@ -20,7 +20,7 @@ import common.SessionValues.DIVIDENDS_PRIOR_SUB
 import config.FrontendAppConfig
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesNotFoundException, IncomeSourcesResponse}
 import models.{DividendsModel, IncomeSourcesModel}
-import org.scalamock.handlers.CallHandler3
+import org.scalamock.handlers.{CallHandler3, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.libs.json.Json
@@ -47,16 +47,16 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
 
-  def mockGetIncomeSourcesValid(): CallHandler3[String, Int, HeaderCarrier, Future[IncomeSourcesResponse]] = {
+  def mockGetIncomeSourcesValid(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
     val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(Some(DividendsModel(None,None))))
-    (mockIncomeSourcesService.getIncomeSources(_: String, _: Int)(_: HeaderCarrier))
-      .expects(*, *, *)
+    (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
       .returning(Future.successful(validIncomeSource))
   }
-  def mockGetIncomeSourcesNone(): CallHandler3[String, Int, HeaderCarrier, Future[IncomeSourcesResponse]] = {
+  def mockGetIncomeSourcesNone(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
     val invalidIncomeSource: IncomeSourcesResponse = Left(IncomeSourcesNotFoundException)
-    (mockIncomeSourcesService.getIncomeSources(_: String, _: Int)(_: HeaderCarrier))
-      .expects(*, *, *)
+    (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
       .returning(Future.successful(invalidIncomeSource))
   }
 
@@ -74,7 +74,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth()
           mockGetIncomeSourcesValid()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -83,7 +83,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth()
           mockGetIncomeSourcesValid()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
@@ -93,7 +93,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth()
           mockGetIncomeSourcesValid()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
       }
@@ -105,7 +105,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth()
           mockGetIncomeSourcesNone()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -114,7 +114,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth()
           mockGetIncomeSourcesNone()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
@@ -131,7 +131,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesValid()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -140,7 +140,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesValid()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
@@ -153,7 +153,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesNone()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -162,7 +162,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesNone()
-          controller.show(fakeGetRequest)
+          controller.show(2020)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")

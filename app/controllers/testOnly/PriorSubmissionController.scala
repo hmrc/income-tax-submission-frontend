@@ -34,14 +34,14 @@ class PriorSubmissionController @Inject()(
 
   implicit val config: FrontendAppConfig = appConfig
 
-  def show(ukDividends: Option[String], otherDividends: Option[String]): Action[AnyContent] = Action.async { implicit request =>
+  def show(ukDividends: Option[String], otherDividends: Option[String], taxYear: Int): Action[AnyContent] = Action.async { implicit request =>
 
     val json = Json.obj(
       "ukDividends" -> ukDividends,
       "otherDividends" -> otherDividends
     )
 
-    Future.successful(Redirect(controllers.routes.StartPageController.show()).addingToSession("DIVIDENDS_PRIOR_SUB" -> json.toString()))
+    Future.successful(Redirect(controllers.routes.StartPageController.show(taxYear)).addingToSession("DIVIDENDS_PRIOR_SUB" -> json.toString()))
   }
 
 }
