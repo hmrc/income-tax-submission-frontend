@@ -45,7 +45,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
 
   class Setup(isAgent : Boolean) {
-    val page : HtmlFormat.Appendable = overviewPageView(isAgent, None)(FakeRequest(), implicitly, appConfig)
+    val page : HtmlFormat.Appendable = overviewPageView(isAgent, None, 2021)(FakeRequest(), implicitly, appConfig)
     val document: Document = Jsoup.parse(page.body)
   }
 

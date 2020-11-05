@@ -62,7 +62,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   }
   "Rendering the start page when the user is an individual" should {
 
-    lazy val view: Html = startPageView(false)(fakeRequest,messages,mockConfig)
+    lazy val view: Html = startPageView(false, 2020)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
     "have the correct page heading" in {
@@ -82,7 +82,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   }
 
   "rendering the start page when the user is an agent" should {
-    lazy val view: Html = startPageView(true)(fakeRequest,messages,mockConfig)
+    lazy val view: Html = startPageView(true, 2020)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
     "have the correct page heading" in {

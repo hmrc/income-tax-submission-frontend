@@ -40,13 +40,13 @@ class OverviewPageController @Inject()(
 
   implicit val config: FrontendAppConfig = appConfig
 
-  def show: Action[AnyContent] = authorisedAction.async { implicit user =>
-    incomeSourcesService.getIncomeSources(user.mtditid, 2021).map{
+  def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+    incomeSourcesService.getIncomeSources(user.mtditid, taxYear).map{
       case Right(incomeSources) => {
         val processedDividends = Json.toJson(incomeSources.dividends).toString()
-        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources))).addingToSession(DIVIDENDS_PRIOR_SUB -> processedDividends)
+        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear)).addingToSession(DIVIDENDS_PRIOR_SUB -> processedDividends)
       }
-      case _ => Ok(overviewPageView(isAgent = user.isAgent, None))
+      case _ => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
     }
   }
 

@@ -28,7 +28,7 @@ class IncomeSourcesConnector @Inject()(val http: HttpClient,
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def getIncomeSources(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] = {
-    val incomeSourcesUrl: String = config.incomeTaxSubmissionUrl + s"/nino/$nino/sources?taxYear=$taxYear"
+    val incomeSourcesUrl: String = config.incomeTaxSubmissionUrl + s"/nino/$nino/sources?taxYear=$taxYear&mtditid=968501689"
     http.GET[IncomeSourcesResponse](incomeSourcesUrl)
   }
 

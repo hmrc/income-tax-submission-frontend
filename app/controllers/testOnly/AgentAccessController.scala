@@ -33,8 +33,8 @@ class AgentAccessController @Inject()(
 
   implicit val config: FrontendAppConfig = appConfig
 
-  def show(mtdItId: String): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Redirect(controllers.routes.StartPageController.show()).addingToSession("MTDITID" -> mtdItId))
+  def show(mtdItId: String, taxYear: Int): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Redirect(controllers.routes.StartPageController.show(taxYear)).addingToSession("MTDITID" -> mtdItId))
   }
 
 }
