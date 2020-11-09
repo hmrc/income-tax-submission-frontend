@@ -28,6 +28,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
 
   val nino: String = "123456789"
   val taxYear: Int = 1999
+  val mtditid: String = "968501689"
   val dividendResult: Option[BigDecimal] = Some(1111111111)
 
 
@@ -36,18 +37,18 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       "all optional values are present" in {
         val expectedResult = IncomeSourcesModel(Some(DividendsModel(dividendResult, dividendResult)))
 
-        stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK, Json.toJson(expectedResult).toString())
+        stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", OK, Json.toJson(expectedResult).toString())
 
-        val result = await(connector.getIncomeSources(nino, taxYear))
+        val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
 
         result shouldBe Right(expectedResult)
       }
       "no optional values are present" in {
         val expectedResult = IncomeSourcesModel(None)
 
-        stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK, Json.toJson(expectedResult).toString())
+        stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", OK, Json.toJson(expectedResult).toString())
 
-        val result = await(connector.getIncomeSources(nino, taxYear))
+        val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
 
         result shouldBe Right(expectedResult)
       }
@@ -59,32 +60,32 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
 
       val expectedResult = IncomeSourcesInvalidJsonException
 
-      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK, invalidJson.toString())
-      val result = await(connector.getIncomeSources(nino, taxYear))
+      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", OK, invalidJson.toString())
+      val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
 
       result shouldBe Left(expectedResult)
     }
     "return a IncomeSourcesServiceUnavailableException" in {
       val expectedResult = IncomeSourcesServiceUnavailableException
 
-      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", SERVICE_UNAVAILABLE, "{}")
-      val result = await(connector.getIncomeSources(nino, taxYear))
+      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", SERVICE_UNAVAILABLE, "{}")
+      val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
 
       result shouldBe Left(expectedResult)
     }
     "return a IncomeSourcesNotFoundException" in {
       val expectedResult = IncomeSourcesNotFoundException
 
-      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", NOT_FOUND, "{}")
-      val result = await(connector.getIncomeSources(nino, taxYear))
+      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", NOT_FOUND, "{}")
+      val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
 
       result shouldBe Left(expectedResult)
     }
     "return a IncomeSourcesUnhandledException" in {
       val expectedResult = IncomeSourcesUnhandledException
 
-      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", BAD_REQUEST, "{}")
-      val result = await(connector.getIncomeSources(nino, taxYear))
+      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", BAD_REQUEST, "{}")
+      val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
 
       result shouldBe Left(expectedResult)
     }

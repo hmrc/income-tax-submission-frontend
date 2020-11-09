@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 @Singleton
 class IncomeSourcesService @Inject()(incomeSourcesConnector: IncomeSourcesConnector){
-  def getIncomeSources(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] =
-    incomeSourcesConnector.getIncomeSources(nino, taxYear)
+  def getIncomeSources(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] =
+    incomeSourcesConnector.getIncomeSources(nino, taxYear, mtditid)
 
 }

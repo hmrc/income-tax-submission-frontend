@@ -33,8 +33,8 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
                                     implicit val appConfig: FrontendAppConfig,
                                     val mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = authorisedAction.async { implicit user =>
-    Future.successful(Ok(startPageView(isAgent = user.isAgent)))
+  def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+    Future.successful(Ok(startPageView(isAgent = user.isAgent, taxYear)))
   }
 
 }

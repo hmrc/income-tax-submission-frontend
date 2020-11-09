@@ -19,11 +19,11 @@
 
 @this(layout: Layout)
 
-@(isAgent: Boolean)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(isAgent: Boolean, taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @mainHTML = {
 
-        <span class="govuk-caption-xl">@messages("startPage.taxYear")</span>
+        <span class="govuk-caption-xl">@messages("startPage.taxYear", (taxYear -1).toString, taxYear.toString)</span>
 
         @if(isAgent){
         <h1 id = "agentHeader" class="govuk-heading-xl">@messages("startPage.heading.agent")</h1>
@@ -43,7 +43,7 @@
             <p>@messages("startPage2")</p>
         </div>
 
-        <a href="@routes.OverviewPageController.show.url" class="govuk-button" data-module="govuk-button">
+        <a href="@routes.OverviewPageController.show(taxYear).url" class="govuk-button" data-module="govuk-button">
             @messages("startPage.provideUpdates")
         </a>
 
@@ -66,11 +66,11 @@
             <p>@messages("startPage2")</p>
         </div>
 
-        <a href="@routes.OverviewPageController.show.url" class="govuk-button" data-module="govuk-button">
+        <a href="@routes.OverviewPageController.show(taxYear).url" class="govuk-button" data-module="govuk-button">
             @messages("startPage.provideUpdates")
         </a>
 
         }
 
-} @layout(pageTitle = Some(messages("service.name")))(mainHTML)
+} @layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear))(mainHTML)
 

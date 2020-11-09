@@ -27,13 +27,14 @@
 
 @(pageTitle: Option[String] = None,
         headBlock: Option[Html] = None,
-        scriptsBlock: Option[Html] = None
+        scriptsBlock: Option[Html] = None,
+        taxYear: Option[Int] =  None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @govukLayout(
     pageTitle = pageTitle,
     headBlock = Some(head(headBlock)),
     scriptsBlock = scriptsBlock,
-    beforeContentBlock = Some(beforeBodyContent(Some(2020))),
+    beforeContentBlock = Some(beforeBodyContent(taxYear)),
     footerItems = FooterLinks()
 )(contentBlock)

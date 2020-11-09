@@ -20,7 +20,7 @@ breadcrumb.incomeTaxAccount = Income Tax
 breadcrumb.incomeTaxReturn = Income Tax Return
 breadcrumb.incomeTaxYear = {0} to {1} Income Tax
 
-startPage.taxYear = 2020 to 2021 Income Tax
+startPage.taxYear = {0} to {1} Income Tax
 startPage.heading.individual = Tell HMRC about your Income Tax
 startPage.heading.agent = Tell HMRC about your client’s Income Tax
 startPage.individual1 = You can use this service to make updates to your Income Tax Self Assessment throughout the year.
