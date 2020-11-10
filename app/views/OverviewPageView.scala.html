@@ -40,7 +40,7 @@
             </li>
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                    <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends==None){ @{appConfig.personalIncomeTaxSubmissionDividendsUrl.toString()}}else{ @{appConfig.personalIncomeTaxSubmissionCYAUrl.toString()}}>
+                    <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends==None){ @{appConfig.personalIncomeTaxDividendsUrl(taxYear).toString()}}else{ @{appConfig.personalIncomeTaxSubmissionCYAUrl(taxYear).toString()}}>
                     Dividends
                     </a>
                 </span>

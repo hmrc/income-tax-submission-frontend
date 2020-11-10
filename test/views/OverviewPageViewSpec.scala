@@ -34,7 +34,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val task1Heading = "Provide updates"
   val task2Heading = "View Tax calculation to date"
   val task3Heading = "Submit return"
-  val dividendsLink = "http://localhost:9308/income-through-software/return/personal-income/dividends/uk-dividends"
+  val dividendsLink = "http://localhost:9308/income-through-software/return/personal-income/2021/dividends/uk-dividends"
 
   implicit val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
