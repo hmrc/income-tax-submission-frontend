@@ -31,7 +31,7 @@ trait AppConfig {
   val incomeTaxSubmissionUrl: String
   val personalIncomeTaxSubmissionBaseUrl: String
   val personalIncomeTaxSubmissionUrl: String
-  val personalIncomeTaxSubmissionDividendsUrl: String
+  def personalIncomeTaxDividendsUrl(taxYear: Int): String
 }
 
 @Singleton
@@ -48,8 +48,8 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax"
   lazy val personalIncomeTaxSubmissionBaseUrl: String = config.get[String](ConfigKeys.personalIncomeBaseUrl)
   lazy val personalIncomeTaxSubmissionUrl: String =s"$personalIncomeTaxSubmissionBaseUrl/income-through-software/return/personal-income"
-  lazy val personalIncomeTaxSubmissionDividendsUrl: String =s"$personalIncomeTaxSubmissionUrl/dividends/uk-dividends"
-  lazy val personalIncomeTaxSubmissionCYAUrl: String = s"$personalIncomeTaxSubmissionUrl/dividends/check-your-answers"
+  def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/uk-dividends"
+  def personalIncomeTaxSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-your-answers"
 
   lazy val googleTagManagerId: String = config.get[String]("google-tag-manager.id")
 }
