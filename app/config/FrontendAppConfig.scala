@@ -51,5 +51,4 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/uk-dividends"
   def personalIncomeTaxSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-your-answers"
 
-  lazy val googleTagManagerId: String = config.get[String]("google-tag-manager.id")
 }
