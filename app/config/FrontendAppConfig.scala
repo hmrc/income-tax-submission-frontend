@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+//new line
+
 package config
 
 import javax.inject.{Inject, Singleton}
