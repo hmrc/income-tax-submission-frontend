@@ -16,6 +16,7 @@
 
 package controllers
 
+import common.SessionValues
 import common.SessionValues.DIVIDENDS_PRIOR_SUB
 import config.FrontendAppConfig
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesNotFoundException, IncomeSourcesResponse}
@@ -38,7 +39,8 @@ import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "12234567890")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "12234567890", "NINO" -> "AA123456A")
+  private val fakeGetRequestWithoutNino = FakeRequest("GET", "/").withSession("MTDITID" -> "12234567890")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
@@ -118,6 +120,17 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
+      }
+    }
+    "there is no nino in session" should {
+
+      s"GET '/' for an individual and return $SEE_OTHER" in {
+
+        val result = {
+          mockAuth()
+          controller.show(2020)(fakeGetRequestWithoutNino)
+        }
+        status(result) shouldBe Status.SEE_OTHER
       }
     }
   }
