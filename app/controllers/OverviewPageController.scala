@@ -16,6 +16,7 @@
 
 package controllers
 
+import common.SessionValues
 import config.FrontendAppConfig
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
@@ -27,7 +28,7 @@ import services.IncomeSourcesService
 import common.SessionValues.DIVIDENDS_PRIOR_SUB
 import play.api.libs.json.Json
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverviewPageController @Inject()(
@@ -41,12 +42,17 @@ class OverviewPageController @Inject()(
   implicit val config: FrontendAppConfig = appConfig
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
-    incomeSourcesService.getIncomeSources(user.mtditid, taxYear, user.mtditid).map{
-      case Right(incomeSources) => {
-        val processedDividends = Json.toJson(incomeSources.dividends).toString()
-        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear)).addingToSession(DIVIDENDS_PRIOR_SUB -> processedDividends)
-      }
-      case _ => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
+    user.session.get(SessionValues.NINO) match {
+      case Some(nino) =>
+        incomeSourcesService.getIncomeSources(nino, taxYear, user.mtditid).map{
+          case Right(incomeSources) => {
+            val processedDividends = Json.toJson(incomeSources.dividends).toString()
+            Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear)).addingToSession(DIVIDENDS_PRIOR_SUB -> processedDividends)
+          }
+          case _ => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
+        }
+      case _ =>
+        Future.successful(Redirect(appConfig.signInUrl))
     }
   }
 
