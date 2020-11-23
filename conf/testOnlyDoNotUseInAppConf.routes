@@ -13,4 +13,5 @@
 
 GET        /income-through-software/return/test-only/:taxYear/agent-access/:mtdItId        controllers.testOnly.AgentAccessController.show(mtdItId, taxYear: Int)
 GET        /income-through-software/return/test-only/:taxYear/prior-submission             controllers.testOnly.PriorSubmissionController.show(ukDividends: Option[String], otherUkDividends: Option[String], taxYear: Int)
-->         /                                                                      prod.Routes
+GET        /income-through-software/return/test-only/:taxYear/additional-parameters        controllers.testOnly.AdditionalSessionDataController.show(taxYear: Int)
+->         /                                                                               prod.Routes
