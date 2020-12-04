@@ -32,6 +32,7 @@ trait AppConfig {
   val personalIncomeTaxSubmissionBaseUrl: String
   val personalIncomeTaxSubmissionUrl: String
   def personalIncomeTaxDividendsUrl(taxYear: Int): String
+  def personalIncomeTaxInterestUrl(taxYear: Int): String
 }
 
 @Singleton
@@ -50,5 +51,6 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   lazy val personalIncomeTaxSubmissionUrl: String =s"$personalIncomeTaxSubmissionBaseUrl/income-through-software/return/personal-income"
   def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/uk-dividends"
   def personalIncomeTaxSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-your-answers"
+  def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
 
 }
