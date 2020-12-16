@@ -16,11 +16,11 @@
 
 package controllers
 
-import common.SessionValues
-import common.SessionValues.DIVIDENDS_PRIOR_SUB
+
+import common.SessionValues._
 import config.FrontendAppConfig
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesNotFoundException, IncomeSourcesResponse}
-import models.{DividendsModel, IncomeSourcesModel}
+import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import org.scalamock.handlers.{CallHandler3, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
@@ -49,8 +49,13 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
 
+
+
   def mockGetIncomeSourcesValid(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
-    val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(Some(DividendsModel(None,None))))
+    val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(
+      Some(DividendsModel(None,None)),
+      Some(Seq(InterestModel("", "", None, Some(500))))
+    ))
     (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
       .returning(Future.successful(validIncomeSource))
@@ -98,6 +103,15 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
           controller.show(2020)(fakeGetRequest)
         }
         session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
+      }
+
+      "Set the session value for interests prior sub" in {
+        val result = {
+          mockAuth()
+          mockGetIncomeSourcesValid()
+          controller.show(2020)(fakeGetRequest)
+        }
+        session(result).get(INTEREST_PRIOR_SUB) shouldBe Some(Json.toJson(Seq(InterestModel("", "", None, Some(500)))).toString())
       }
     }
     "the user is an individual without existing income sources" should {
