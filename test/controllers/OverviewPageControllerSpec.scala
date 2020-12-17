@@ -21,7 +21,7 @@ import common.SessionValues._
 import config.FrontendAppConfig
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesNotFoundException, IncomeSourcesResponse}
 import models.{DividendsModel, IncomeSourcesModel, InterestModel}
-import org.scalamock.handlers.{CallHandler3, CallHandler4}
+import org.scalamock.handlers.CallHandler4
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.libs.json.Json
@@ -60,6 +60,27 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       .expects(*, *, *, *)
       .returning(Future.successful(validIncomeSource))
   }
+
+  def mockGetIncomeSourcesDividends(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
+    val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(
+      Some(DividendsModel(None,None)),
+      None
+    ))
+    (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(validIncomeSource))
+  }
+
+  def mockGetIncomeSourcesinterest(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
+    val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(
+      None,
+      Some(Seq(InterestModel("", "", None, Some(500))))
+    ))
+    (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(validIncomeSource))
+  }
+
   def mockGetIncomeSourcesNone(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
     val invalidIncomeSource: IncomeSourcesResponse = Left(IncomeSourcesNotFoundException)
     (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
@@ -96,21 +117,33 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         charset(result) shouldBe Some("utf-8")
       }
 
-      "Set the session value for dividends prior sub" in {
+      "Set the session value for All prior sub" in {
         val result = {
           mockAuth()
           mockGetIncomeSourcesValid()
           controller.show(2020)(fakeGetRequest)
         }
         session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
+        session(result).get(INTEREST_PRIOR_SUB) shouldBe Some(Json.toJson(Seq(InterestModel("", "", None, Some(500)))).toString())
+      }
+
+      "Set the session value for dividends prior sub" in {
+        val result = {
+          mockAuth()
+          mockGetIncomeSourcesDividends()
+          controller.show(2020)(fakeGetRequest)
+        }
+        session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
+        session(result).get(INTEREST_PRIOR_SUB) shouldBe None
       }
 
       "Set the session value for interests prior sub" in {
         val result = {
           mockAuth()
-          mockGetIncomeSourcesValid()
+          mockGetIncomeSourcesinterest()
           controller.show(2020)(fakeGetRequest)
         }
+        session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe None
         session(result).get(INTEREST_PRIOR_SUB) shouldBe Some(Json.toJson(Seq(InterestModel("", "", None, Some(500)))).toString())
       }
     }

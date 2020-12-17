@@ -17,17 +17,16 @@
 package controllers
 
 import common.SessionValues
+import common.SessionValues._
 import config.FrontendAppConfig
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc._
+import services.IncomeSourcesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
-import services.IncomeSourcesService
-import common.SessionValues._
-import models.{IncomeSourcesModel, User}
-import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
 
