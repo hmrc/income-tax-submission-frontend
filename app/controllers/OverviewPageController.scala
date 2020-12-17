@@ -26,6 +26,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 import services.IncomeSourcesService
 import common.SessionValues._
+import models.{IncomeSourcesModel, User}
 import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,13 +47,16 @@ class OverviewPageController @Inject()(
       case Some(nino) =>
         incomeSourcesService.getIncomeSources(nino, taxYear, user.mtditid).map{
           case Right(incomeSources) => {
-            val processedDividends = Json.toJson(incomeSources.dividends).toString()
-            val processedInterests = Json.toJson(incomeSources.interests).toString()
-            Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
-              .addingToSession(
-                DIVIDENDS_PRIOR_SUB -> processedDividends,
-                INTEREST_PRIOR_SUB -> processedInterests
-              )
+            var result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
+
+            if (incomeSources.dividends.isDefined){
+              result = result.addingToSession(DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString())
+            }
+            if (incomeSources.interests.isDefined){
+              result = result.addingToSession(INTEREST_PRIOR_SUB -> Json.toJson(incomeSources.interests).toString())
+            }
+
+            result
           }
           case _ => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
         }
