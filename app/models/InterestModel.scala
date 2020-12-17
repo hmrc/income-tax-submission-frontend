@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object SessionValues {
-  val CLIENT_MTDITID = "MTDITID"
-  val NINO = "NINO"
+import play.api.libs.json.{Json, OFormat}
 
-  val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
-  val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
+case class InterestModel(
+                          accountName: String,
+                          incomeSourceId: String,
+                          taxedUkInterest: Option[BigDecimal],
+                          untaxedUkInterest: Option[BigDecimal]
+                        )
+
+object InterestModel {
+  implicit val formats: OFormat[InterestModel] = Json.format[InterestModel]
 }

@@ -19,37 +19,24 @@ package models
 import play.api.libs.json.{JsObject, Json}
 import utils.UnitTest
 
-class IncomeSourcesModelSpec extends UnitTest {
+class InterestModelSpec  extends UnitTest {
 
-
-  val dividendModel: DividendsModel = DividendsModel(Some(11111), Some(11111))
-  val jsonDividendsModel: JsObject = Json.obj(
-    "ukDividends" -> 11111,
-    "otherUkDividends" -> 11111
-  )
-
-  val interestModel: Seq[InterestModel] = Seq(InterestModel("account", "1234567890", Some(500), Some(500)))
-  val jsonInterestModel: Seq[JsObject] = Seq(Json.obj(
+  val model: InterestModel = InterestModel("account", "1234567890", Some(500), Some(500))
+  val jsonModel: JsObject = Json.obj(
     "accountName" -> "account",
     "incomeSourceId" -> "1234567890",
     "taxedUkInterest" -> 500,
     "untaxedUkInterest" -> 500,
-  ))
-
-  val model: IncomeSourcesModel = IncomeSourcesModel(Some(dividendModel),Some(interestModel))
-  val jsonModel: JsObject = Json.obj(
-    "dividends" -> jsonDividendsModel,
-            "interests"-> jsonInterestModel
   )
 
-  "IncomeSourcesModel" should {
+  "InterestModel" should {
 
     "parse to Json" in {
       Json.toJson(model) shouldBe jsonModel
     }
 
     "parse from Json" in {
-      jsonModel.as[IncomeSourcesModel]
+      jsonModel.as[DividendsModel]
     }
   }
 

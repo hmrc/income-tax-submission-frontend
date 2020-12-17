@@ -73,11 +73,11 @@
             }
             <ol class="app-task-list">
             @if(isAgent) {
-                @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None)))
+                @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
                 @taskWithCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption"), 2)
                 @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
             } else {
-                @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None)))
+                @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
                 @taskWithCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption"), 2)
                 @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
             }

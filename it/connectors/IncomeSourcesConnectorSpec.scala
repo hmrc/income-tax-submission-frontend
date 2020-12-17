@@ -17,7 +17,7 @@
 package connectors
 
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonException, IncomeSourcesNotFoundException, IncomeSourcesServiceUnavailableException, IncomeSourcesUnhandledException}
-import models.{DividendsModel, IncomeSourcesModel}
+import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
 import utils.IntegrationTest
@@ -29,13 +29,14 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
   val nino: String = "123456789"
   val taxYear: Int = 1999
   val mtditid: String = "968501689"
-  val dividendResult: Option[BigDecimal] = Some(1111111111)
+  val dividendResult: Option[DividendsModel] = Some(DividendsModel(Some(500), Some(600)))
+  val interestResult: Option[Seq[InterestModel]] = Some(Seq(InterestModel("account", "1234567890", Some(500), Some(500))))
 
 
   ".IncomeSourcesConnector" should {
     "return a IncomeSourcesModel" when {
       "all optional values are present" in {
-        val expectedResult = IncomeSourcesModel(Some(DividendsModel(dividendResult, dividendResult)))
+        val expectedResult = IncomeSourcesModel(dividendResult, interestResult)
 
         stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", OK, Json.toJson(expectedResult).toString())
 
@@ -44,7 +45,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
         result shouldBe Right(expectedResult)
       }
       "no optional values are present" in {
-        val expectedResult = IncomeSourcesModel(None)
+        val expectedResult = IncomeSourcesModel(None, None)
 
         stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", OK, Json.toJson(expectedResult).toString())
 
