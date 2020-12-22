@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(
                                dividends: Option[DividendsModel] = None,
-                               interests: Option[Seq[InterestModel]] = None
+                               interest: Option[Seq[InterestModel]] = None
                              )
 
 object IncomeSourcesModel {
