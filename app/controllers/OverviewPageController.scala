@@ -51,8 +51,8 @@ class OverviewPageController @Inject()(
             if (incomeSources.dividends.isDefined){
               result = result.addingToSession(DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString())
             }
-            if (incomeSources.interests.isDefined){
-              result = result.addingToSession(INTEREST_PRIOR_SUB -> Json.toJson(incomeSources.interests).toString())
+            if (incomeSources.interest.isDefined){
+              result = result.addingToSession(INTEREST_PRIOR_SUB -> Json.toJson(incomeSources.interest).toString())
             }
 
             result

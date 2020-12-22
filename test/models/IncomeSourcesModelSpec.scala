@@ -36,10 +36,10 @@ class IncomeSourcesModelSpec extends UnitTest {
     "untaxedUkInterest" -> 500,
   ))
 
-  val model: IncomeSourcesModel = IncomeSourcesModel(Some(dividendModel),Some(interestModel))
+  val model: IncomeSourcesModel = IncomeSourcesModel(Some(dividendModel), Some(interestModel))
   val jsonModel: JsObject = Json.obj(
     "dividends" -> jsonDividendsModel,
-            "interests"-> jsonInterestModel
+    "interest" -> jsonInterestModel
   )
 
   "IncomeSourcesModel" should {
