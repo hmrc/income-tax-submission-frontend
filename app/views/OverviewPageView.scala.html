@@ -32,11 +32,13 @@
             <li class="app-task-list__item"></li>
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                    <a class="govuk-link" id="interest_link" href=@{appConfig.personalIncomeTaxInterestUrl(taxYear).toString()}>
+                    <a class="govuk-link" id="interest_link" href=@if(incomeSources.dividends==None){ @{appConfig.personalIncomeTaxInterestUrl(taxYear).toString()}}else{ @{appConfig.personalIncomeTaxSubmissionCYAUrl(taxYear).toString()}}>
                     Interest
                     </a>
                 </span>
-                <span class="hmrc-status-tag">Not Started</span>
+                <span class="hmrc-status-tag">
+                    @if(incomeSources.interests.isDefined){Updated}else{Not Started}
+                </span>
             </li>
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
