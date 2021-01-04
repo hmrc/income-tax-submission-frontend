@@ -25,7 +25,7 @@
 @taskWithActionList(heading: String, caption: String, index: Int, incomeSources: IncomeSourcesModel) = {
     <li>
         <h2 class="app-task-list__section">
-            <span class="app-task-list__section-number">@index</span> @heading
+            <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <ol class="app-task-list__items">
             <span class="govuk-caption-m">@caption</span>
@@ -57,7 +57,7 @@
 @taskWithCaption(heading: String, caption: String, index: Int) = {
     <li>
         <h2 class="app-task-list__section">
-            <span class="app-task-list__section-number">@index.  </span> @heading
+            <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <ul class="app-task-list__items">
             <span class="govuk-caption-m">@caption</span>

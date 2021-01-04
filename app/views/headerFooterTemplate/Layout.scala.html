@@ -16,13 +16,14 @@
 
 @import config.FrontendAppConfig
 @import views.html.headerFooterTemplate.Head
-@import views.headerFooterTemplate.FooterLinks
 @import views.html.headerFooterTemplate.BeforeBodyContent
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
 
 @this(
         govukLayout: GovukLayout,
         head: Head,
-        beforeBodyContent: BeforeBodyContent
+        beforeBodyContent: BeforeBodyContent,
+        hmrcStandardFooter: HmrcStandardFooter
 )
 
 @(pageTitle: Option[String] = None,
@@ -36,5 +37,5 @@
     headBlock = Some(head(headBlock)),
     scriptsBlock = scriptsBlock,
     beforeContentBlock = Some(beforeBodyContent(taxYear)),
-    footerItems = FooterLinks()
+    footerBlock = Some(hmrcStandardFooter())
 )(contentBlock)
