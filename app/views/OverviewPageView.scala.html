@@ -32,8 +32,8 @@
             <li class="app-task-list__item"></li>
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                    <a class="govuk-link" id="interest_link" href=@if(incomeSources.dividends==None){ @{appConfig.personalIncomeTaxInterestUrl(taxYear).toString()}}else{ @{appConfig.personalIncomeTaxSubmissionCYAUrl(taxYear).toString()}}>
-                    Interest
+                    <a class="govuk-link" id="interest_link" href=@if(incomeSources.interest.isEmpty){ @{appConfig.personalIncomeTaxInterestUrl(taxYear)}}else{ @{appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)}}>
+                        Interest
                     </a>
                 </span>
                 <span class="hmrc-status-tag">
@@ -42,12 +42,12 @@
             </li>
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                    <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends==None){ @{appConfig.personalIncomeTaxDividendsUrl(taxYear).toString()}}else{ @{appConfig.personalIncomeTaxSubmissionCYAUrl(taxYear).toString()}}>
-                    Dividends
+                    <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends.isEmpty){ @{appConfig.personalIncomeTaxDividendsUrl(taxYear)}}else{ @{appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)}}>
+                        Dividends
                     </a>
                 </span>
                 <span class="hmrc-status-tag">
-                @if(incomeSources.dividends.isDefined){Updated}else{Not Started}
+                    @if(incomeSources.dividends.isDefined){Updated}else{Not Started}
                 </span>
             </li>
         </ol>
@@ -66,25 +66,23 @@
 }
 
 @overview = {
-
-            <span class="govuk-caption-xl">@messages("overview.caption", (taxYear - 1).toString, taxYear.toString)</span>
-            @if(isAgent) {
-                <h1 class="govuk-heading-xl">@messages("overview.agent.heading")</h1>
-            } else {
-                <h1 class="govuk-heading-xl">@messages("overview.individual.heading")</h1>
-            }
-            <ol class="app-task-list">
-            @if(isAgent) {
-                @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                @taskWithCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption"), 2)
-                @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
-            } else {
-                @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                @taskWithCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption"), 2)
-                @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
-            }
-            </ol>
-
+    <span class="govuk-caption-xl">@messages("overview.caption", (taxYear - 1).toString, taxYear.toString)</span>
+    @if(isAgent) {
+        <h1 class="govuk-heading-xl">@messages("overview.agent.heading")</h1>
+    } else {
+        <h1 class="govuk-heading-xl">@messages("overview.individual.heading")</h1>
+    }
+    <ol class="app-task-list">
+    @if(isAgent) {
+        @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+        @taskWithCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption"), 2)
+        @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
+    } else {
+        @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+        @taskWithCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption"), 2)
+        @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
+    }
+    </ol>
 }
 @layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear))(overview)
 
