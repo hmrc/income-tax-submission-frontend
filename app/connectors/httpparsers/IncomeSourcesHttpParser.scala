@@ -28,10 +28,8 @@ object IncomeSourcesHttpParser {
     override def read(method: String, url: String, response: HttpResponse): IncomeSourcesResponse = {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
-          jsonErrors =>
-            Left(IncomeSourcesInvalidJsonException),
-          parsedModel =>
-            Right(parsedModel)
+          jsonErrors => Left(IncomeSourcesInvalidJsonException),
+          parsedModel => Right(parsedModel)
         )
         case NOT_FOUND => Left(IncomeSourcesNotFoundException)
         case SERVICE_UNAVAILABLE => Left(IncomeSourcesServiceUnavailableException)
