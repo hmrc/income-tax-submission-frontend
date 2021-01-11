@@ -64,6 +64,10 @@ class OverviewPageController @Inject()(
     }
   }
 
+  def getCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+    Future.successful(Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> ""))
+  }
+
 
 }
 

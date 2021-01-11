@@ -7,3 +7,4 @@ GET        /assets/*file          controllers.Assets.versioned(path = "/public",
 
 GET        /:taxYear/start                 controllers.StartPageController.show(taxYear: Int)
 GET        /:taxYear/view                  controllers.OverviewPageController.show(taxYear: Int)
+GET        /:taxYear/calculate             controllers.OverviewPageController.getCalculation(taxYear: Int)

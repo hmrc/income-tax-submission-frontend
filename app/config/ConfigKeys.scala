@@ -20,4 +20,5 @@ object ConfigKeys {
   val signInUrl = "signIn.url"
   val signInContinueBaseUrl = "signIn.continueBaseUrl"
   val personalIncomeBaseUrl = "personalIncome.url"
+  val viewAndChangeBaseUrl = "view-and-change.baseUrl"
 }

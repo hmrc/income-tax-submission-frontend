@@ -230,4 +230,46 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
     }
   }
 
+  "Calling the .getCalculation method" when {
+
+    "The user is an individual" should {
+
+      "GET '/' for an individual and return a redirect" in {
+
+        val result = {
+          mockAuth()
+          controller.getCalculation(2020)(fakeGetRequest)
+        }
+        status(result) shouldBe Status.SEE_OTHER
+      }
+
+      "Set a session value " in {
+        val result = {
+          mockAuth()
+          controller.getCalculation(2020)(fakeGetRequest)
+        }
+        session(result).get(CALCULATION_ID) shouldBe Some("")
+      }
+    }
+
+    "The user is an agent" should {
+
+      "GET '/' for an individual and return a redirect" in {
+
+        val result = {
+          mockAuthAsAgent()
+          controller.getCalculation(2020)(fakeGetRequest)
+        }
+        status(result) shouldBe Status.SEE_OTHER
+      }
+
+      "Set a session value " in {
+        val result = {
+          mockAuthAsAgent()
+          controller.getCalculation(2020)(fakeGetRequest)
+        }
+        session(result).get(CALCULATION_ID) shouldBe Some("")
+      }
+    }
+  }
 }
