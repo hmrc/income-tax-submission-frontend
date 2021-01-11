@@ -54,6 +54,23 @@
     </li>
 }
 
+@taskWithActionOrCaption(heading: String, action: String, caption: String, index: Int) = {
+    <li>
+        <h2 class="app-task-list__section">
+            <span class="app-task-list__section-number">@index.</span> @heading
+        </h2>
+        <ul class="app-task-list__items">
+            @if(incomeSources.isDefined) {
+            <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
+                @action
+            </a>
+            }else{
+            <span class="govuk-caption-m">@caption</span>
+            }
+        </ul>
+    </li>
+}
+
 @taskWithCaption(heading: String, caption: String, index: Int) = {
     <li>
         <h2 class="app-task-list__section">
@@ -66,23 +83,23 @@
 }
 
 @overview = {
-    <span class="govuk-caption-xl">@messages("overview.caption", (taxYear - 1).toString, taxYear.toString)</span>
-    @if(isAgent) {
-        <h1 class="govuk-heading-xl">@messages("overview.agent.heading")</h1>
-    } else {
-        <h1 class="govuk-heading-xl">@messages("overview.individual.heading")</h1>
-    }
-    <ol class="app-task-list">
-    @if(isAgent) {
-        @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-        @taskWithCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption"), 2)
-        @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
-    } else {
-        @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-        @taskWithCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption"), 2)
-        @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
-    }
-    </ol>
+            <span class="govuk-caption-xl">@messages("overview.caption", (taxYear - 1).toString, taxYear.toString)</span>
+            @if(isAgent) {
+                <h1 class="govuk-heading-xl">@messages("overview.agent.heading")</h1>
+            } else {
+                <h1 class="govuk-heading-xl">@messages("overview.individual.heading")</h1>
+            }
+            <ol class="app-task-list">
+            @if(isAgent) {
+                @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                @taskWithActionOrCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2)
+                @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
+            } else {
+                @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                @taskWithActionOrCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2)
+                @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
+            }
+            </ol>
 }
 @layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear))(overview)
 

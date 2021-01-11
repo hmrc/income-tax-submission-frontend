@@ -31,6 +31,7 @@ trait AppConfig {
   val personalIncomeTaxSubmissionUrl: String
   def personalIncomeTaxDividendsUrl(taxYear: Int): String
   def personalIncomeTaxInterestUrl(taxYear: Int): String
+  def viewAndChangeCalculationUrl(taxYear: Int): String
 }
 
 @Singleton
@@ -50,5 +51,7 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-your-answers"
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-your-answers"
   def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
+  private val vcBaseUrl: String = config.get[String](ConfigKeys.viewAndChangeBaseUrl)
+  def viewAndChangeCalculationUrl(taxYear: Int): String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
 
 }
