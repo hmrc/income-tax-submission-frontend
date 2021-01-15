@@ -17,6 +17,7 @@
 package utils
 
 import config.AppConfig
+import controllers.predicates.AuthorisedAction
 import helpers.WireMockHelper
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
@@ -24,9 +25,12 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.{Application, Environment, Mode}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.MessagesControllerComponents
+import services.AuthService
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{Await, Awaitable}
+import scala.concurrent.{Await, Awaitable, Future}
 import scala.concurrent.duration.Duration
 
 trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with WireMockHelper with BeforeAndAfterAll{
@@ -39,7 +43,9 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite
     "auditing.enabled" -> "false",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.host" -> wiremockHost,
-    "microservice.services.income-tax-submission.port" -> wiremockPort.toString
+    "microservice.services.income-tax-submission.port" -> wiremockPort.toString,
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -59,5 +65,27 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite
     super.afterAll()
   }
 
+  lazy val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+
+  val defaultAcceptedConfidenceLevels = Seq(
+    ConfidenceLevel.L200,
+    ConfidenceLevel.L300,
+    ConfidenceLevel.L500
+  )
+
+  def authService(stubbedRetrieval: Future[_], acceptedConfidenceLevel: Seq[ConfidenceLevel]) = new AuthService(
+    new MockAuthConnector(stubbedRetrieval, acceptedConfidenceLevel)
+  )
+
+  def authAction(stubbedRetrieval: Future[_], acceptedConfidenceLevel: Seq[ConfidenceLevel] = Seq.empty[ConfidenceLevel]) = new AuthorisedAction(
+    appConfig
+  )(
+    authService(stubbedRetrieval, if(acceptedConfidenceLevel.nonEmpty) {
+      acceptedConfidenceLevel
+    } else {
+      defaultAcceptedConfidenceLevels
+    }),
+    mcc
+  )
 
 }
