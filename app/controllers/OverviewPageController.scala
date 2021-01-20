@@ -20,6 +20,8 @@ import common.SessionValues
 import common.SessionValues._
 import config.FrontendAppConfig
 import controllers.predicates.AuthorisedAction
+import models.User
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -42,25 +44,20 @@ class OverviewPageController @Inject()(
   implicit val config: FrontendAppConfig = appConfig
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
-    user.session.get(SessionValues.NINO) match {
-      case Some(nino) =>
-        incomeSourcesService.getIncomeSources(nino, taxYear, user.mtditid).map{
-          case Right(incomeSources) => {
-            var result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
+    incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
+      case Right(incomeSources) => {
+        var result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
 
-            if (incomeSources.dividends.isDefined){
-              result = result.addingToSession(DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString())
-            }
-            if (incomeSources.interest.isDefined){
-              result = result.addingToSession(INTEREST_PRIOR_SUB -> Json.toJson(incomeSources.interest).toString())
-            }
-
-            result
-          }
-          case _ => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
+        if (incomeSources.dividends.isDefined) {
+          result = result.addingToSession(DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString())
         }
-      case _ =>
-        Future.successful(Redirect(appConfig.signInUrl))
+        if (incomeSources.interest.isDefined) {
+          result = result.addingToSession(INTEREST_PRIOR_SUB -> Json.toJson(incomeSources.interest).toString())
+        }
+
+        result
+      }
+      case _ => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
     }
   }
 
