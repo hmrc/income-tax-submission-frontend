@@ -33,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthorisedActionSpec extends UnitTest {
 
   val auth: AuthorisedAction = authorisedAction
-  val nino = "AA123456A"
 
   ".enrolmentGetIdentifierValue" should {
 
@@ -79,7 +78,7 @@ class AuthorisedActionSpec extends UnitTest {
         val mtditid = "AAAAAA"
         val enrolments = Enrolments(Set(Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated")))
 
-        lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid, nino)(fakeRequest, emptyHeaderCarrier)
+        lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid)(fakeRequest, emptyHeaderCarrier)
 
         "returns an OK status" in {
           status(result) shouldBe OK
@@ -99,7 +98,7 @@ class AuthorisedActionSpec extends UnitTest {
         val mtditid = "AAAAAA"
         val enrolments = Enrolments(Set(Enrolment("notAnIndividualOops", Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated")))
 
-        lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid, nino)(fakeRequest, emptyHeaderCarrier)
+        lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid)(fakeRequest, emptyHeaderCarrier)
 
         "returns a forbidden" in {
           status(result) shouldBe FORBIDDEN
@@ -129,7 +128,7 @@ class AuthorisedActionSpec extends UnitTest {
             .expects(*, *, *, *)
             .returning(Future.successful(enrolments))
 
-          auth.agentAuthentication(block, arn, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
+          auth.agentAuthentication(block, arn)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
 
         "has a status of OK" in {
@@ -149,7 +148,7 @@ class AuthorisedActionSpec extends UnitTest {
 
         lazy val result = {
           mockAuthReturnException(AuthException)
-          auth.agentAuthentication(block, arn, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
+          auth.agentAuthentication(block, arn)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
         status(result) shouldBe UNAUTHORIZED
       }
@@ -163,7 +162,7 @@ class AuthorisedActionSpec extends UnitTest {
 
         lazy val result = {
           mockAuthReturnException(NoActiveSession)
-          auth.agentAuthentication(block, arn, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
+          auth.agentAuthentication(block, arn)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
 
         status(result) shouldBe SEE_OTHER
@@ -181,7 +180,7 @@ class AuthorisedActionSpec extends UnitTest {
           (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
             .expects(*, *, *, *)
             .returning(Future.successful(enrolments))
-          auth.agentAuthentication(block, arn, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
+          auth.agentAuthentication(block, arn)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
         status(result) shouldBe FORBIDDEN
       }
@@ -196,8 +195,7 @@ class AuthorisedActionSpec extends UnitTest {
 
     lazy val enrolments = Enrolments(Set(
       Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
-      Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "1234567890")), "Activated"),
-      Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
+      Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "1234567890")), "Activated")
     ))
 
     "perform the block action" when {
@@ -238,17 +236,13 @@ class AuthorisedActionSpec extends UnitTest {
     "return an Unauthorised" when {
 
       "the enrolments do not contain an MTDITID for a user" in {
-        lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
-          Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-        )))
+        lazy val result = auth.checkAuthorisation(block, Enrolments(Set()))
 
         status(result) shouldBe UNAUTHORIZED
       }
 
       "the enrolments do not contain an AgentReferenceNumber for an agent" in {
-        lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
-          Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-        )), isAgent = true)
+        lazy val result = auth.checkAuthorisation(block, Enrolments(Set()), isAgent = true)
 
         status(result) shouldBe UNAUTHORIZED
       }
@@ -267,7 +261,7 @@ class AuthorisedActionSpec extends UnitTest {
       "the user is successfully verified as an agent" which {
 
         lazy val result = {
-          mockAuthAsAgent(Some(nino))
+          mockAuthAsAgent()
           auth.invokeBlock(fakeRequestWithMtditid, block)
         }
 
@@ -280,7 +274,7 @@ class AuthorisedActionSpec extends UnitTest {
       "the user is successfully verified as an individual" in {
 
         lazy val result = {
-          mockAuth(Some(nino))
+          mockAuth()
           auth.invokeBlock(fakeRequest, block)
         }
 
@@ -305,8 +299,7 @@ class AuthorisedActionSpec extends UnitTest {
       "there is no MTDITID value in session" in {
         lazy val result = {
           lazy val enrolments = Enrolments(Set(
-            Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated"),
-            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
+            Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
           ))
           (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
             .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup, *, *)
