@@ -1,5 +1,5 @@
 service.name = Income Tax Submission
-service.homePageUrl = /income-tax-submission-frontend
+service.homePageUrl = /income-through-software/return/2020/start
 service.text = This is your new service
 
 betaBar.beta = beta

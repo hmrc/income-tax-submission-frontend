@@ -15,12 +15,14 @@
  *@
 
 @import config.FrontendAppConfig
-@import views.html.headerFooterTemplate.Head
-@import views.html.headerFooterTemplate.BeforeBodyContent
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
+@import views.html.headerFooterTemplate.{BeforeBodyContent, Head}
 
 @this(
         govukLayout: GovukLayout,
+        govukHeader: GovukHeader,
         head: Head,
         beforeBodyContent: BeforeBodyContent,
         hmrcStandardFooter: HmrcStandardFooter
@@ -32,9 +34,18 @@
         taxYear: Option[Int] =  None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
+@headerBlock = {
+    @govukHeader(Header(
+        homepageUrl = Some("https://www.gov.uk/"),
+        serviceName = Some(messages("service.name")),
+        serviceUrl = Some(messages("service.homePageUrl", "2022"))
+    ))
+}
+
 @govukLayout(
     pageTitle = pageTitle,
     headBlock = Some(head(headBlock)),
+    headerBlock = Some(headerBlock),
     scriptsBlock = scriptsBlock,
     beforeContentBlock = Some(beforeBodyContent(taxYear)),
     footerBlock = Some(hmrcStandardFooter())
