@@ -16,18 +16,20 @@
 
 package controllers
 
-import common.SessionValues
+import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.FrontendAppConfig
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{OK, UNAUTHORIZED}
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core.{Enrolment, _}
 import utils.IntegrationTest
 import views.html.StartPage
-import play.api.test.Helpers.{OK, UNAUTHORIZED}
 
 import scala.concurrent.Future
 
 class StartPageControllerTest extends IntegrationTest {
+
+  private val taxYear = 2021
 
   lazy val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -44,11 +46,13 @@ class StartPageControllerTest extends IntegrationTest {
 
       "all auth requirements are met" in {
         val retrieval: Future[Enrolments ~ Some[AffinityGroup]] = Future.successful(new ~(
-          Enrolments(Set(Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None))),
-          Some(AffinityGroup.Individual)
+          Enrolments(Set(
+            Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None),
+            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
+          )), Some(AffinityGroup.Individual)
         ))
 
-        val result = await(controller(retrieval).show(2021)(FakeRequest()))
+        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
 
         result.header.status shouldBe OK
       }
@@ -63,18 +67,21 @@ class StartPageControllerTest extends IntegrationTest {
           Some(AffinityGroup.Individual)
         ))
 
-        val result = await(controller(retrieval, Seq(ConfidenceLevel.L500)).show(2021)(FakeRequest()))
+        val result = await(controller(retrieval, Seq(ConfidenceLevel.L500)).show(taxYear)(FakeRequest()))
 
         result.header.status shouldBe UNAUTHORIZED
       }
 
       "it contains the wrong credentials" in {
         val retrieval: Future[Enrolments ~ Some[AffinityGroup]] = Future.successful(new ~(
-          Enrolments(Set(Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("UTR", "1234567890")), "Activated", None))),
+          Enrolments(Set(
+            Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("UTR", "1234567890")), "Activated", None),
+            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
+          )),
           Some(AffinityGroup.Individual)
         ))
 
-        val result = await(controller(retrieval).show(2021)(FakeRequest()))
+        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
 
         result.header.status shouldBe UNAUTHORIZED
       }
