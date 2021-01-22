@@ -260,7 +260,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
           mockAuthAsAgent()
           controller.getCalculation(2020)(fakeGetRequest)
         }
-        status(result) shouldBe Status.SEE_OTHER
+        status(result) shouldBe Status.OK
       }
 
       "Set a session value " in {
@@ -268,7 +268,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
           mockAuthAsAgent()
           controller.getCalculation(2020)(fakeGetRequest)
         }
-        session(result).get(CALCULATION_ID) shouldBe Some("")
+        session(result).get(CALCULATION_ID) shouldBe None
       }
     }
   }
