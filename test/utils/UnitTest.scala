@@ -53,6 +53,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
 
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val fakeRequestWithMtditid: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("MTDITID" -> "1234567890")
+  val fakeRequestWithMtditidAndNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("MTDITID" -> "1234567890", "NINO" -> "AA123456A")
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   val mockAppConfig: AppConfig = new MockAppConfig()
@@ -71,11 +72,15 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   }
 
   //noinspection ScalaStyle
-  def mockAuth() = {
+  def mockAuth(nino: Option[String] = None) = {
+    val ninoEnrolment: Seq[Enrolment] = nino.fold(Seq.empty[Enrolment])(unwrappedNino => Seq(
+      Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, unwrappedNino)), "Activated")
+    ))
+
     val enrolments = Enrolments(Set(
       Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
       Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
-    ))
+    ) ++ ninoEnrolment)
     (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
       .expects(*, *, *, *)
       .returning(Future.successful(new ~(enrolments, None)))
