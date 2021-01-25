@@ -29,7 +29,7 @@ import views.html.StartPage
 
 class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "1234567890")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "1234567890", "NINO" -> "AA123456A")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
@@ -72,7 +72,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "GET '/' for an agent and return 200" in {
 
         val result = {
-          mockAuthAsAgent(nino)
+          mockAuthAsAgent()
           controller.show(2020)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -80,7 +80,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
       "return HTML" in {
         val result = {
-          mockAuthAsAgent(nino)
+          mockAuthAsAgent()
           controller.show(2020)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")

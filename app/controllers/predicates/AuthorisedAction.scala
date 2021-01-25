@@ -70,7 +70,11 @@ class AuthorisedAction @Inject()(
     val neededIdentifier = if (isAgent) EnrolmentIdentifiers.agentReference else EnrolmentIdentifiers.individualId
 
     val userIdentifier: Option[String] = enrolmentGetIdentifierValue(neededKey, neededIdentifier, enrolments)
-    val optionalNino: Option[String] = enrolmentGetIdentifierValue(EnrolmentKeys.nino, EnrolmentIdentifiers.ninoId, enrolments)
+    val optionalNino: Option[String] = if(isAgent) {
+      request.session.get(SessionValues.CLIENT_NINO)
+    } else {
+      enrolmentGetIdentifierValue(EnrolmentKeys.nino, EnrolmentIdentifiers.ninoId, enrolments)
+    }
 
     (userIdentifier, optionalNino) match {
       case (Some(userId), Some(nino)) => if (isAgent) agentAuthentication(block, userId, nino) else individualAuthentication(block, enrolments, userId, nino)

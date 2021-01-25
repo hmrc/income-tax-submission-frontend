@@ -240,15 +240,16 @@ class AuthorisedActionSpec extends UnitTest {
       "the enrolments do not contain an MTDITID for a user" in {
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
           Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-        )))
+        )))(fakeRequest.withSession("NINO" -> "AA123456A"), emptyHeaderCarrier)
 
         status(result) shouldBe UNAUTHORIZED
       }
 
       "the enrolments do not contain an AgentReferenceNumber for an agent" in {
-        lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
-          Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-        )), isAgent = true)
+        lazy val result = auth.checkAuthorisation(block, Enrolments(Set.empty[Enrolment]), isAgent = true)(
+          fakeRequest.withSession("NINO" -> "AA123456A"),
+          emptyHeaderCarrier
+        )
 
         status(result) shouldBe UNAUTHORIZED
       }
@@ -267,7 +268,7 @@ class AuthorisedActionSpec extends UnitTest {
       "the user is successfully verified as an agent" which {
 
         lazy val result = {
-          mockAuthAsAgent(Some(nino))
+          mockAuthAsAgent()
           auth.invokeBlock(fakeRequestWithMtditid, block)
         }
 
@@ -312,7 +313,7 @@ class AuthorisedActionSpec extends UnitTest {
             .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup, *, *)
             .returning(Future.successful(new ~(enrolments, Some(AffinityGroup.Agent))))
 
-          auth.invokeBlock(fakeRequest, block)
+          auth.invokeBlock(fakeRequest.withSession("NINO" -> "AA123456A"), block)
         }
         status(result) shouldBe UNAUTHORIZED
       }

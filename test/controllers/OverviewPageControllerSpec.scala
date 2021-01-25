@@ -39,7 +39,7 @@ import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "12234567890")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "12234567890", "NINO" -> "AA123456A")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
@@ -189,7 +189,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "GET '/' for an agent and return 200" in {
 
         val result = {
-          mockAuthAsAgent(nino)
+          mockAuthAsAgent()
           mockGetIncomeSourcesValid()
           controller.show(taxYear)(fakeGetRequest)
         }
@@ -198,7 +198,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
       "return HTML" in {
         val result = {
-          mockAuthAsAgent(nino)
+          mockAuthAsAgent()
           mockGetIncomeSourcesValid()
           controller.show(taxYear)(fakeGetRequest)
         }
@@ -211,7 +211,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "GET '/' for an agent and return 200" in {
 
         val result = {
-          mockAuthAsAgent(nino)
+          mockAuthAsAgent()
           mockGetIncomeSourcesNone()
           controller.show(taxYear)(fakeGetRequest)
         }
@@ -220,7 +220,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
       "return HTML" in {
         val result = {
-          mockAuthAsAgent(nino)
+          mockAuthAsAgent()
           mockGetIncomeSourcesNone()
           controller.show(taxYear)(fakeGetRequest)
         }
@@ -257,7 +257,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "GET '/' for an individual and return a redirect" in {
 
         val result = {
-          mockAuthAsAgent(nino)
+          mockAuthAsAgent()
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.SEE_OTHER
@@ -265,7 +265,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
       "Set a session value " in {
         val result = {
-          mockAuthAsAgent(nino)
+          mockAuthAsAgent()
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
         session(result).get(CALCULATION_ID) shouldBe Some("")
