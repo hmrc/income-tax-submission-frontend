@@ -74,7 +74,6 @@ class AuthorisedAction @Inject()(
     ) { userId =>
       if (isAgent) agentAuthentication(block, userId) else individualAuthentication(block, enrolments, userId)
     }
-
   }
 
   private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], userId: String)
