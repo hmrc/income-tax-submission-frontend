@@ -21,4 +21,5 @@ object ConfigKeys {
   val signInContinueBaseUrl = "signIn.continueBaseUrl"
   val personalIncomeBaseUrl = "personalIncome.url"
   val viewAndChangeBaseUrl = "view-and-change.baseUrl"
+  val defaultTaxYear = "defaultTaxYear"
 }

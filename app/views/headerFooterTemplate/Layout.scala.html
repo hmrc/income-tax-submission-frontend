@@ -31,14 +31,14 @@
 @(pageTitle: Option[String] = None,
         headBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
-        taxYear: Int
+        taxYear: Option[Int] =  None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @headerBlock = {
     @govukHeader(Header(
-        homepageUrl = Some("https://www.gov.uk/"),
+        homepageUrl = Some(controllers.routes.StartPageController.show(taxYear.getOrElse(appConfig.defaultTaxYear)).url),
         serviceName = Some(messages("service.name")),
-        serviceUrl =  Some(controllers.routes.StartPageController.show(taxYear).url)
+        serviceUrl =  Some(controllers.routes.StartPageController.show(taxYear.getOrElse(appConfig.defaultTaxYear)).url)
     ))
 }
 
@@ -47,6 +47,6 @@
     headBlock = Some(head(headBlock)),
     headerBlock = Some(headerBlock),
     scriptsBlock = scriptsBlock,
-    beforeContentBlock = Some(beforeBodyContent(Some(taxYear))),
+    beforeContentBlock = Some(beforeBodyContent(taxYear)),
     footerBlock = Some(hmrcStandardFooter())
 )(contentBlock)
