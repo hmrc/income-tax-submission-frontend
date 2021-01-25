@@ -38,7 +38,7 @@
     @govukHeader(Header(
         homepageUrl = Some("https://www.gov.uk/"),
         serviceName = Some(messages("service.name")),
-        serviceUrl = Some(messages("service.homePageUrl", "2022"))
+        serviceUrl =  Some(messages("service.homePageUrl", taxYear.getOrElse(2020).toString))
     ))
 }
 
