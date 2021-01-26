@@ -36,7 +36,7 @@
 
 @headerBlock = {
     @govukHeader(Header(
-        homepageUrl = Some(controllers.routes.StartPageController.show(taxYear.getOrElse(appConfig.defaultTaxYear)).url),
+        homepageUrl = Some("https://www.gov.uk/"),
         serviceName = Some(messages("service.name")),
         serviceUrl =  Some(controllers.routes.StartPageController.show(taxYear.getOrElse(appConfig.defaultTaxYear)).url)
     ))
