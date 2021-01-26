@@ -55,7 +55,7 @@ class AuthorisedAction @Inject()(
         checkAuthorisation(block, enrolments)(request, headerCarrier)
     } recover {
       case _: NoActiveSession =>
-        logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
+        logger.debug(s"[AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
         Redirect(appConfig.signInUrl) //TODO Check this is the correct location
       case _: AuthorisationException =>
         logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
@@ -69,14 +69,21 @@ class AuthorisedAction @Inject()(
     val neededKey = if (isAgent) EnrolmentKeys.Agent else EnrolmentKeys.Individual
     val neededIdentifier = if (isAgent) EnrolmentIdentifiers.agentReference else EnrolmentIdentifiers.individualId
 
-    enrolmentGetIdentifierValue(neededKey, neededIdentifier, enrolments).fold(
-      Future.successful(Unauthorized("No relevant identifier. Is agent: " + isAgent))
-    ) { userId =>
-      if (isAgent) agentAuthentication(block, userId) else individualAuthentication(block, enrolments, userId)
+    val userIdentifier: Option[String] = enrolmentGetIdentifierValue(neededKey, neededIdentifier, enrolments)
+    val optionalNino: Option[String] = if(isAgent) {
+      request.session.get(SessionValues.CLIENT_NINO)
+    } else {
+      enrolmentGetIdentifierValue(EnrolmentKeys.nino, EnrolmentIdentifiers.ninoId, enrolments)
+    }
+
+    (userIdentifier, optionalNino) match {
+      case (Some(userId), Some(nino)) => if (isAgent) agentAuthentication(block, userId, nino) else individualAuthentication(block, enrolments, userId, nino)
+      case (_, None) => Future.successful(Redirect(appConfig.signInUrl))
+      case (None, _) => Future.successful(Unauthorized("No relevant identifier. Is agent: " + isAgent))
     }
   }
 
-  private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], userId: String)
+  private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], userId: String, nino: String)
                                                 (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
 
     val agentDelegatedAuthRuleKey = "mtd-it-auth"
@@ -94,7 +101,7 @@ class AuthorisedAction @Inject()(
 
           enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
             case Some(arn) =>
-              block(User(mtditid, Some(arn)))
+              block(User(mtditid, Some(arn),nino))
             case None =>
               logger.debug("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
               Future.successful(Forbidden("")) //TODO add agent unauthorised page
@@ -112,12 +119,12 @@ class AuthorisedAction @Inject()(
     }
   }
 
-  private[predicates] def individualAuthentication[A](block: User[A] => Future[Result], enrolments: Enrolments, mtditid: String)
+  private[predicates] def individualAuthentication[A](block: User[A] => Future[Result], enrolments: Enrolments, mtditid: String, nino: String)
                                                      (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
     enrolments.enrolments.collectFirst {
       case Enrolment(EnrolmentKeys.Individual, enrolmentIdentifiers, _, _)
         if enrolmentIdentifiers.exists(identifier => identifier.key == EnrolmentIdentifiers.individualId) =>
-        block(User(mtditid, None))
+        block(User(mtditid, None, nino))
     } getOrElse {
       logger.warn("[AuthorisedAction][IndividualAuthentication] Non-agent with an invalid MTDITID.")
       Future.successful(Forbidden("")) //TODO send to an unauthorised page
