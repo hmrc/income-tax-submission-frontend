@@ -33,16 +33,12 @@
         </div>
 
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("startPage.interest")</li>
-            <li>@messages("startPage.dividends")</li>
+            <li>@messages(s"startPage.interestBullet.agent.$isAgent")</li>
+            <li>@messages("startPage.dividendsBullet")</li>
         </ul>
 
         <div class="govuk-body">
-            @if(isAgent){
-            <p>@messages("startPage.agent1")</p>
-            } else {
-            <p>@messages("startPage.individual1")</p>
-            }
+            <p>@messages(s"startPage3.agent.$isAgent")</p>
         </div>
 
         <a id="continue" href="@routes.OverviewPageController.show(taxYear).url" class="govuk-button" data-module="govuk-button">

@@ -36,9 +36,10 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   val pageHeadingText = "Update and submit an Income Tax Return"
   val p1Text = "Use this service to update and submit an Income Tax Return."
   val p2Text = "This is a new service. At the moment you can only update information about:"
-  val bullet1Text = "interest paid to you in the UK"
+  val bullet1AgentText = "interest paid to your client in the UK"
+  val bullet1IndividualText = "interest paid to you in the UK"
   val bullet2Text = "dividends from UK companies, trusts and open-ended investment companies"
-  val p3AgentText = "To update your client's self-employment and property income, you must use your chosen commercial software."
+  val p3AgentText = "To update your client’s self-employment and property income, you must use your chosen commercial software."
   val p3IndividualText = "To update your self-employment and property income, you must use your chosen commercial software."
   val continueButtonText = "Continue"
   val continueButtonHref = s"/income-through-software/return/$taxYear/view"
@@ -90,8 +91,8 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       elementText(Selectors.p2) shouldBe p2Text
     }
 
-    s"have a 1st bullet point of '$bullet1Text'" in {
-      elementText(Selectors.bullet1) shouldBe bullet1Text
+    s"have a 1st bullet point of '$bullet1IndividualText'" in {
+      elementText(Selectors.bullet1) shouldBe bullet1IndividualText
     }
 
     s"have a 2nd bullet point of '$bullet2Text'" in {
@@ -129,8 +130,8 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       elementText(Selectors.p2) shouldBe p2Text
     }
 
-    s"have a 1st bullet point of '$bullet1Text'" in {
-      elementText(Selectors.bullet1) shouldBe bullet1Text
+    s"have a 1st bullet point of '$bullet1AgentText'" in {
+      elementText(Selectors.bullet1) shouldBe bullet1AgentText
     }
 
     s"have a 2nd bullet point of '$bullet2Text'" in {
