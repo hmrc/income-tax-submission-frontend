@@ -43,7 +43,7 @@ class ErrorTemplateViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPe
   implicit lazy val mockConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   val pageHeading = "This page can’t be found"
-  val pageTitle = "Income Tax Submission"
+  val pageTitle = "Update and Submit an Income Tax Return"
   val paragraph = "Please check that you have entered the correct web address."
 
   def element(cssSelector: String)(implicit document: Document): Element = {
@@ -65,7 +65,7 @@ class ErrorTemplateViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPe
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
     "have the correct page title" in {
-      elementText(Selectors.pageTitle) shouldBe "Income Tax Submission"
+      elementText(Selectors.pageTitle) shouldBe "Update and Submit an Income Tax Return"
     }
 
     "have the correct page heading" in {
