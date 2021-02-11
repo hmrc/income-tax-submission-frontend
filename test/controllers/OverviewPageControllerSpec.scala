@@ -19,7 +19,7 @@ package controllers
 
 import common.SessionValues._
 import config.{ErrorHandler, FrontendAppConfig}
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesNotFoundError, IncomeSourcesResponse}
+import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesInternalServerError, IncomeSourcesNotFoundError, IncomeSourcesResponse}
 import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -35,6 +35,8 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
 import views.html.OverviewPageView
+import play.api.mvc.Results._
+import views.html.errors.InternalServerErrorPage
 
 import scala.concurrent.Future
 
@@ -85,6 +87,13 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   def mockGetIncomeSourcesNone(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
     val invalidIncomeSource: IncomeSourcesResponse = Left(IncomeSourcesNotFoundError)
+    (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(invalidIncomeSource))
+  }
+
+  def mockGetIncomeSourcesError(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
+    val invalidIncomeSource: IncomeSourcesResponse = Left(IncomeSourcesInternalServerError)
     (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
       .returning(Future.successful(invalidIncomeSource))
@@ -154,6 +163,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         session(result).get(INTEREST_PRIOR_SUB) shouldBe Some(Json.toJson(Seq(InterestModel("", "", None, Some(500.00)))).toString())
       }
     }
+
     "the user is an individual without existing income sources" should {
 
       "GET '/' for an individual and return 200" in {
@@ -166,6 +176,18 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         status(result) shouldBe Status.OK
       }
 
+      "GET '/' for an individual and return 500 if connector returns 500" in {
+        val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
+
+        val result = {
+          mockAuth(nino)
+          mockGetIncomeSourcesError()
+          mockHandleError(InternalServerError(internalServerErrorPage()))
+          controller.show(taxYear)(fakeGetRequest)
+        }
+        status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+      }
+
       "return HTML" in {
         val result = {
           mockAuth(nino)
@@ -176,6 +198,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         charset(result) shouldBe Some("utf-8")
       }
     }
+
     "there is no nino in session" should {
 
       s"GET '/' for an individual and return $SEE_OTHER" in {

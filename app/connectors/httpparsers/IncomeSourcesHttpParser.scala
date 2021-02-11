@@ -16,7 +16,8 @@
 
 package connectors.httpparsers
 
-
+import utils.PagerDutyHelper.PagerDutyKeys._
+import utils.PagerDutyHelper._
 import models.IncomeSourcesModel
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
@@ -28,14 +29,29 @@ object IncomeSourcesHttpParser {
     override def read(method: String, url: String, response: HttpResponse): IncomeSourcesResponse = {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
-          jsonErrors => Left(IncomeSourcesInvalidJsonError),
+          jsonErrors => {
+            pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, Some(s"[SubmittedDividendsParser][read] Invalid Json from API."))
+            Left(IncomeSourcesInvalidJsonError)
+          },
           parsedModel => Right(parsedModel)
         )
-        case NOT_FOUND => Left(IncomeSourcesNotFoundError)
-        case INTERNAL_SERVER_ERROR => Left(IncomeSourcesInternalServerError)
-        case SERVICE_UNAVAILABLE => Left(IncomeSourcesServiceUnavailableError)
-        case _ => Left(IncomeSourcesUnhandledError)
+        case NOT_FOUND =>
+          pagerDutyLog(NOT_FOUND_FROM_API, logMessage(response))
+          Left(IncomeSourcesNotFoundError)
+        case INTERNAL_SERVER_ERROR =>
+          pagerDutyLog(INTERNAL_SERVER_ERROR_FROM_API, logMessage(response))
+          Left(IncomeSourcesInternalServerError)
+        case SERVICE_UNAVAILABLE =>
+          pagerDutyLog(SERVICE_UNAVAILABLE_FROM_API, logMessage(response))
+          Left(IncomeSourcesServiceUnavailableError)
+        case _ =>
+          pagerDutyLog(UNEXPECTED_RESPONSE_FROM_API, logMessage(response))
+          Left(IncomeSourcesUnhandledError)
       }
+    }
+
+    private def logMessage(response:HttpResponse): Option[String] ={
+      Some(s"[SubmittedDividendsParser][read] Received ${response.status} from income-tax-dividends. Body:${response.body}")
     }
   }
 

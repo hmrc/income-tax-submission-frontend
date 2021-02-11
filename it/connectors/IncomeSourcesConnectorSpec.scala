@@ -16,7 +16,7 @@
 
 package connectors
 
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonError, IncomeSourcesNotFoundError, IncomeSourcesServiceUnavailableError, IncomeSourcesUnhandledError}
+import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInternalServerError, IncomeSourcesInvalidJsonError, IncomeSourcesNotFoundError, IncomeSourcesServiceUnavailableError, IncomeSourcesUnhandledError}
 import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
@@ -78,6 +78,14 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       val expectedResult = IncomeSourcesNotFoundError
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", NOT_FOUND, "{}")
+      val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
+
+      result shouldBe Left(expectedResult)
+    }
+    "return a IncomeSourcesInternalServerError" in {
+      val expectedResult = IncomeSourcesInternalServerError
+
+      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", INTERNAL_SERVER_ERROR, "{}")
       val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
 
       result shouldBe Left(expectedResult)
