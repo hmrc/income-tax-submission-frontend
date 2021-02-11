@@ -37,7 +37,7 @@
                     </a>
                 </span>
                 <span class="hmrc-status-tag">
-                    @if(incomeSources.interest.isDefined){Updated}else{Not Started}
+                    @if(incomeSources.interest.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
                 </span>
             </li>
             <li class="app-task-list__item">
@@ -47,7 +47,7 @@
                     </a>
                 </span>
                 <span class="hmrc-status-tag">
-                    @if(incomeSources.dividends.isDefined){Updated}else{Not Started}
+                    @if(incomeSources.dividends.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
                 </span>
             </li>
         </ol>
