@@ -16,7 +16,7 @@
 
 package controllers.testOnly
 
-import config.FrontendAppConfig
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -27,11 +27,11 @@ import scala.concurrent.Future
 
 @Singleton
 class AgentAccessController @Inject()(
-                                        appConfig: FrontendAppConfig,
+                                        appConfig: AppConfig,
                                         mcc: MessagesControllerComponents,
                                         overviewPageView: OverviewPageView) extends FrontendController(mcc) with I18nSupport {
 
-  implicit val config: FrontendAppConfig = appConfig
+  implicit val config: AppConfig = appConfig
 
   def show(mtdItId: String, taxYear: Int): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Redirect(controllers.routes.StartPageController.show(taxYear)).addingToSession("MTDITID" -> mtdItId))

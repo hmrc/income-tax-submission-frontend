@@ -16,7 +16,7 @@
 
 package controllers.testOnly
 
-import config.FrontendAppConfig
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -28,11 +28,11 @@ import scala.concurrent.Future
 
 @Singleton
 class PriorSubmissionController @Inject()(
-                                           appConfig: FrontendAppConfig,
+                                           appConfig: AppConfig,
                                            mcc: MessagesControllerComponents,
                                            overviewPageView: OverviewPageView) extends FrontendController(mcc) with I18nSupport {
 
-  implicit val config: FrontendAppConfig = appConfig
+  implicit val config: AppConfig = appConfig
 
   def show(ukDividends: Option[String], otherUkDividends: Option[String], taxYear: Int): Action[AnyContent] = Action.async { implicit request =>
 

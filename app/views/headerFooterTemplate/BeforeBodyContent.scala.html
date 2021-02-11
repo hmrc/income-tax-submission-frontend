@@ -19,7 +19,7 @@
 
 @this(betaBar: BetaBar, breadcrumb: Breadcrumb)
 
-@(breadcrumbTaxYear: Option[Int] = None )(implicit messages: Messages)
+@(breadcrumbTaxYear: Option[Int] = None )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @betaBar()
 
