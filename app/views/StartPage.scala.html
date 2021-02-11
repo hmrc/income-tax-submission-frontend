@@ -25,52 +25,25 @@
 
         <span class="govuk-caption-xl">@messages("startPage.taxYear", (taxYear -1).toString, taxYear.toString)</span>
 
-        @if(isAgent){
-        <h1 id = "agentHeader" class="govuk-heading-xl">@messages("startPage.heading.agent")</h1>
-
-        <div class="govuk-body">
-            <p>@messages("startPage.agent1")</p>
-            <p>@messages("startPage.agent2")</p>
-        </div>
-
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("startPage.interest")</li>
-            <li>@messages("startPage.dividends")</li>
-        </ul>
+        <h1 id="header" class="govuk-heading-xl">@messages("startPage.heading")</h1>
 
         <div class="govuk-body">
             <p>@messages("startPage1")</p>
             <p>@messages("startPage2")</p>
         </div>
 
-        <a href="@routes.OverviewPageController.show(taxYear).url" class="govuk-button" data-module="govuk-button">
-            @messages("startPage.provideUpdates")
-        </a>
-
-        } else {
-
-        <h1 class="govuk-heading-xl">@messages("startPage.heading.individual")</h1>
-
-        <div class="govuk-body">
-            <p>@messages("startPage.individual1")</p>
-            <p>@messages("startPage.individual2")</p>
-        </div>
-
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("startPage.interest")</li>
-            <li>@messages("startPage.dividends")</li>
+            <li>@messages(s"startPage.interestBullet.agent.$isAgent")</li>
+            <li>@messages("startPage.dividendsBullet")</li>
         </ul>
 
         <div class="govuk-body">
-            <p>@messages("startPage1")</p>
-            <p>@messages("startPage2")</p>
+            <p>@messages(s"startPage3.agent.$isAgent")</p>
         </div>
 
-        <a href="@routes.OverviewPageController.show(taxYear).url" class="govuk-button" data-module="govuk-button">
-            @messages("startPage.provideUpdates")
+        <a id="continue" href="@routes.OverviewPageController.show(taxYear).url" class="govuk-button" data-module="govuk-button">
+            @messages("startPage.continue")
         </a>
-
-        }
 
 } @layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear))(mainHTML)
 
