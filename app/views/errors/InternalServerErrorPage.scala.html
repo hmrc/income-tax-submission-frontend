@@ -1,0 +1,40 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+
+@this(hmrcPageHeading : HmrcPageHeading)
+
+@()
+
+@hmrcPageHeading(PageHeading(
+text = "Sorry, there is a problem with the service"
+))
+<p class="govuk-body">Try again later.</p>
+
+<p class="govuk-body">You can also:</p>
+<ul>
+ <li>
+  <p class="govuk-body">
+   go to the <a href="https://www.gov.uk/income-tax" class="govuk-link">Income Tax home page (opens in new tab)</a> for more information
+  </p>
+ </li>
+ <li>
+  <p class="govuk-body">
+   use <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link">Self Assessment: general enquiries (opens in new tab)</a> to speak to someone about your income tax
+  </p>
+ </li>
+</ul>

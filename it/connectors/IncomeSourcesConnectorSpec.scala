@@ -16,7 +16,7 @@
 
 package connectors
 
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonException, IncomeSourcesNotFoundException, IncomeSourcesServiceUnavailableException, IncomeSourcesUnhandledException}
+import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonError, IncomeSourcesNotFoundError, IncomeSourcesServiceUnavailableError, IncomeSourcesUnhandledError}
 import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
@@ -59,7 +59,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
         "dividends" -> ""
       )
 
-      val expectedResult = IncomeSourcesInvalidJsonException
+      val expectedResult = IncomeSourcesInvalidJsonError
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", OK, invalidJson.toString())
       val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
@@ -67,7 +67,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       result shouldBe Left(expectedResult)
     }
     "return a IncomeSourcesServiceUnavailableException" in {
-      val expectedResult = IncomeSourcesServiceUnavailableException
+      val expectedResult = IncomeSourcesServiceUnavailableError
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", SERVICE_UNAVAILABLE, "{}")
       val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
@@ -75,7 +75,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       result shouldBe Left(expectedResult)
     }
     "return a IncomeSourcesNotFoundException" in {
-      val expectedResult = IncomeSourcesNotFoundException
+      val expectedResult = IncomeSourcesNotFoundError
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", NOT_FOUND, "{}")
       val result = await(connector.getIncomeSources(nino, taxYear, mtditid))
@@ -83,7 +83,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       result shouldBe Left(expectedResult)
     }
     "return a IncomeSourcesUnhandledException" in {
-      val expectedResult = IncomeSourcesUnhandledException
+      val expectedResult = IncomeSourcesUnhandledError
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", BAD_REQUEST, "{}")
       val result = await(connector.getIncomeSources(nino, taxYear, mtditid))

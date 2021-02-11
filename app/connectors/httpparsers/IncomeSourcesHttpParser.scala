@@ -22,30 +22,29 @@ import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object IncomeSourcesHttpParser {
-  type IncomeSourcesResponse = Either[IncomeSourcesException, IncomeSourcesModel]
+  type IncomeSourcesResponse = Either[IncomeSourcesError, IncomeSourcesModel]
 
   implicit object IncomeSourcesHttpReads extends HttpReads[IncomeSourcesResponse] {
     override def read(method: String, url: String, response: HttpResponse): IncomeSourcesResponse = {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
-          jsonErrors => Left(IncomeSourcesInvalidJsonException),
+          jsonErrors => Left(IncomeSourcesInvalidJsonError),
           parsedModel => Right(parsedModel)
         )
-        case NOT_FOUND => Left(IncomeSourcesNotFoundException)
-        case SERVICE_UNAVAILABLE => Left(IncomeSourcesServiceUnavailableException)
-        case _ => Left(IncomeSourcesUnhandledException)
+        case NOT_FOUND => Left(IncomeSourcesNotFoundError)
+        case INTERNAL_SERVER_ERROR => Left(IncomeSourcesInternalServerError)
+        case SERVICE_UNAVAILABLE => Left(IncomeSourcesServiceUnavailableError)
+        case _ => Left(IncomeSourcesUnhandledError)
       }
     }
   }
 
+  sealed trait IncomeSourcesError
 
-
-  sealed trait IncomeSourcesException
-
-  object IncomeSourcesInvalidJsonException extends IncomeSourcesException
-  object IncomeSourcesServiceUnavailableException extends IncomeSourcesException
-  object IncomeSourcesNotFoundException extends IncomeSourcesException
-  object IncomeSourcesUnhandledException extends IncomeSourcesException
-
+  object IncomeSourcesInvalidJsonError extends IncomeSourcesError
+  object IncomeSourcesServiceUnavailableError extends IncomeSourcesError
+  object IncomeSourcesInternalServerError extends IncomeSourcesError
+  object IncomeSourcesNotFoundError extends IncomeSourcesError
+  object IncomeSourcesUnhandledError extends IncomeSourcesError
 
 }

@@ -16,17 +16,32 @@
 
 package config
 
+import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesNotFoundError, IncomeSourcesServiceUnavailableError}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
-import play.api.mvc.Request
+import play.api.mvc.Results._
+import play.api.mvc.{Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.templates.ErrorTemplate
-
+import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)(implicit appConfig: FrontendAppConfig)
+class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi,
+                             internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
+                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: FrontendAppConfig)
   extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
     errorTemplate(pageTitle, heading, message)
+
+  override def notFoundTemplate(implicit request: Request[_]): Html = notFoundPage()
+
+  override def internalServerErrorTemplate(implicit request: Request[_]): Html = internalServerErrorPage()
+
+  def handleError(error: IncomeSourcesError)(implicit request: Request[_]): Result = {
+    error match {
+      case IncomeSourcesServiceUnavailableError => ServiceUnavailable(serviceUnavailablePage())
+      case _ => InternalServerError(internalServerErrorPage())
+    }
+  }
 }
