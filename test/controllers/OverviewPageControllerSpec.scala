@@ -18,7 +18,7 @@ package controllers
 
 
 import common.SessionValues._
-import config.FrontendAppConfig
+import config.AppConfig
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesNotFoundException, IncomeSourcesResponse}
 import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import org.scalamock.handlers.CallHandler4
@@ -44,7 +44,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val configuration = Configuration.load(env)
 
   private val serviceConfig = new ServicesConfig(configuration)
-  private val mockFrontendAppConfig = new FrontendAppConfig(configuration, serviceConfig)
+  private val mockFrontendAppConfig = new AppConfig(serviceConfig)
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
 

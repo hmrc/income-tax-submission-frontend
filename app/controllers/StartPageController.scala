@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.AppConfig
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -30,7 +30,7 @@ import scala.concurrent.Future
 @Singleton
 class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
                                     val startPageView: StartPage,
-                                    implicit val appConfig: FrontendAppConfig,
+                                    implicit val appConfig: AppConfig,
                                     val mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
