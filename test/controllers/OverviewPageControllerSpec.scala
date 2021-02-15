@@ -47,7 +47,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val configuration = Configuration.load(env)
 
   private val serviceConfig = new ServicesConfig(configuration)
-  private val mockFrontendAppConfig = new FrontendAppConfig(configuration, serviceConfig)
+  private val mockFrontendAppConfig = new AppConfig(serviceConfig)
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
   private val mockErrorHandler = mock[ErrorHandler]

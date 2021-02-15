@@ -17,7 +17,7 @@
 package views
 
 
-import config.FrontendAppConfig
+import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -32,13 +32,26 @@ import play.twirl.api.Html
 
 class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
+  val taxYear = 2022
+  val pageHeadingText = "Update and submit an Income Tax Return"
+  val p1Text = "Use this service to update and submit an Income Tax Return."
+  val p2Text = "This is a new service. At the moment you can only update information about:"
+  val bullet1AgentText = "interest paid to your client in the UK"
+  val bullet1IndividualText = "interest paid to you in the UK"
+  val bullet2Text = "dividends from UK companies, trusts and open-ended investment companies"
+  val p3AgentText = "To update your client’s self-employment and property income, you must use your chosen commercial software."
+  val p3IndividualText = "To update your self-employment and property income, you must use your chosen commercial software."
+  val continueButtonText = "Continue"
+  val continueButtonHref = s"/income-through-software/return/$taxYear/view"
+
   object Selectors{
-    val individualPageHeading = "#main-content > div > div > h1"
-    val agentPageHeading = "#main-content > div > div > h1"
-    val p1Individual =  "#main-content > div > div > div:nth-child(3) > p:nth-child(1)"
-    val p1Agent = "#main-content > div > div > div:nth-child(3) > p:nth-child(1)"
-    val p2Individual = "#main-content > div > div > div:nth-child(3) > p:nth-child(2)"
-    val p2Agent = "#main-content > div > div > div:nth-child(3) > p:nth-child(2)"
+    val pageHeading = "#header"
+    val p1 = "#main-content > div > div > div:nth-child(3) > p:nth-child(1)"
+    val p2 = "#main-content > div > div > div:nth-child(3) > p:nth-child(2)"
+    val bullet1 = "#main-content > div > div > ul > li:nth-child(1)"
+    val bullet2 = "#main-content > div > div > ul > li:nth-child(2)"
+    val p3 =  "#main-content > div > div > div:nth-child(5) > p"
+    val continueButton = "#continue"
   }
 
   val startPageView: StartPage = app.injector.instanceOf[StartPage]
@@ -46,7 +59,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit lazy val mockConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   def element(cssSelector: String)(implicit document: Document): Element = {
     val elements = document.select(cssSelector)
@@ -60,44 +73,82 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     def elementText(selector: String)(implicit document: Document): String = {
     element(selector).text()
   }
+
   "Rendering the start page when the user is an individual" should {
 
-    lazy val view: Html = startPageView(false, 2020)(fakeRequest,messages,mockConfig)
+    lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
-    "have the correct page heading" in {
-
-      elementText(Selectors.individualPageHeading) shouldBe "Tell HMRC about your Income Tax"
+    s"have a page heading of '$pageHeadingText'" in {
+      elementText(Selectors.pageHeading) shouldBe pageHeadingText
     }
 
-    "have the correct 1st paragraph" in {
-      elementText(Selectors.p1Individual) shouldBe "You can use this service to make updates to your Income Tax Self" +
-        " Assessment throughout the year."
+    s"have a 1st paragraph of '$p1Text.'" in {
+      elementText(Selectors.p1) shouldBe p1Text
     }
 
-    "have the correct 2nd paragraph" in {
-      elementText(Selectors.p2Individual) shouldBe "We’re still working on this service, so you will only be able to " +
-        "update your:"
+    s"have a 2nd paragraph of '$p2Text'" in {
+      elementText(Selectors.p2) shouldBe p2Text
+    }
+
+    s"have a 1st bullet point of '$bullet1IndividualText'" in {
+      elementText(Selectors.bullet1) shouldBe bullet1IndividualText
+    }
+
+    s"have a 2nd bullet point of '$bullet2Text'" in {
+      elementText(Selectors.bullet2) shouldBe bullet2Text
+    }
+
+    s"have a 3rd Paragraph of '$p3IndividualText'" in {
+      elementText(Selectors.p3) shouldBe p3IndividualText
+    }
+
+    s"have a continue button" which {
+      s"has the text '$continueButtonText'" in {
+        elementText(Selectors.continueButton) shouldBe continueButtonText
+      }
+      s"has a href to '$continueButtonHref'" in {
+        element(Selectors.continueButton).attr("href") shouldBe continueButtonHref
+      }
     }
   }
 
-  "rendering the start page when the user is an agent" should {
-    lazy val view: Html = startPageView(true, 2020)(fakeRequest,messages,mockConfig)
+  "Rendering the start page when the user is an agent" should {
+
+    lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
-    "have the correct page heading" in {
-      elementText(Selectors.agentPageHeading) shouldBe "Tell HMRC about your client’s Income Tax"
+    s"have a page heading of '$pageHeadingText'" in {
+      elementText(Selectors.pageHeading) shouldBe pageHeadingText
     }
 
-    "have the correct 1st paragraph" in {
-      elementText(Selectors.p1Agent) shouldBe "You can use this service to make updates to your client’s Income Tax " +
-        "Self Assessment throughout the year."
+    s"have a 1st paragraph of '$p1Text.'" in {
+      elementText(Selectors.p1) shouldBe p1Text
     }
 
-    "have the correct 2nd paragraph" in {
-      elementText(Selectors.p2Agent) shouldBe "We’re still working on this service, so you will only be able to " +
-        "update their:"
+    s"have a 2nd paragraph of '$p2Text'" in {
+      elementText(Selectors.p2) shouldBe p2Text
+    }
+
+    s"have a 1st bullet point of '$bullet1AgentText'" in {
+      elementText(Selectors.bullet1) shouldBe bullet1AgentText
+    }
+
+    s"have a 2nd bullet point of '$bullet2Text'" in {
+      elementText(Selectors.bullet2) shouldBe bullet2Text
+    }
+
+    s"have a 3rd Paragraph of '$p3AgentText'" in {
+      elementText(Selectors.p3) shouldBe p3AgentText
+    }
+
+    s"have a continue button" which {
+      s"has the text '$continueButtonText'" in {
+        elementText(Selectors.continueButton) shouldBe continueButtonText
+      }
+      s"has a href to '$continueButtonHref'" in {
+        element(Selectors.continueButton).attr("href") shouldBe continueButtonHref
+      }
     }
   }
-
 }

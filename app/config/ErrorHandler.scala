@@ -29,6 +29,7 @@ import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavaila
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
                              serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: FrontendAppConfig)
+
   extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =

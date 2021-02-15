@@ -16,7 +16,7 @@
 
 package controllers.testOnly
 
-import config.FrontendAppConfig
+import config.AppConfig
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -26,11 +26,11 @@ import views.html.OverviewPageView
 import scala.concurrent.Future
 
 class AdditionalSessionDataController @Inject()(
-                                                 appConfig: FrontendAppConfig,
+                                                 appConfig: AppConfig,
                                                  mcc: MessagesControllerComponents,
                                                  overviewPageView: OverviewPageView) extends FrontendController(mcc) with I18nSupport {
 
-  implicit val config: FrontendAppConfig = appConfig
+  implicit val config: AppConfig = appConfig
 
   def show(taxYear: Int): Action[AnyContent] = Action.async { implicit request =>
 

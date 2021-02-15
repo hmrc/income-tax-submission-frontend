@@ -16,43 +16,41 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-trait AppConfig {
-  val signInContinueUrl: String
-  val signInUrl: String
-
-  val incomeTaxSubmissionBaseUrl: String
-  val incomeTaxSubmissionUrl: String
-  val personalIncomeTaxSubmissionBaseUrl: String
-  val personalIncomeTaxSubmissionUrl: String
-  def personalIncomeTaxDividendsUrl(taxYear: Int): String
-  def personalIncomeTaxInterestUrl(taxYear: Int): String
-  def viewAndChangeCalculationUrl(taxYear: Int): String
-}
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) extends AppConfig {
+class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
-  private val signInBaseUrl: String = config.get[String](ConfigKeys.signInUrl)
-  lazy val defaultTaxYear: Int = config.get[Int](ConfigKeys.defaultTaxYear)
-  private val signInContinueBaseUrl: String = config.get[String](ConfigKeys.signInContinueBaseUrl)
-  override val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl).encodedUrl //TODO add redirect to overview page
-  private val signInOrigin = servicesConfig.getString("appName")
-  override val signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
+  private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
+  lazy val defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
+  private lazy val signInContinueBaseUrl: String = servicesConfig.getString(ConfigKeys.signInContinueBaseUrl)
+  lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl).encodedUrl //TODO add redirect to overview page
+  private lazy val signInOrigin = servicesConfig.getString("appName")
+  lazy val signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
 
   lazy val incomeTaxSubmissionBaseUrl: String = servicesConfig.baseUrl("income-tax-submission")
   lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax"
-  lazy val personalIncomeTaxSubmissionBaseUrl: String = config.get[String](ConfigKeys.personalIncomeBaseUrl)
+  lazy val personalIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.personalIncomeBaseUrl)
   lazy val personalIncomeTaxSubmissionUrl: String =s"$personalIncomeTaxSubmissionBaseUrl/income-through-software/return/personal-income"
   def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/uk-dividends"
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-your-answers"
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-your-answers"
   def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
-  private val vcBaseUrl: String = config.get[String](ConfigKeys.viewAndChangeBaseUrl)
+  private lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeBaseUrl)
   def viewAndChangeCalculationUrl(taxYear: Int): String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
 
+  lazy private val appUrl: String = servicesConfig.getString("microservice.url")
+  lazy private val contactFrontEndUrl = servicesConfig.baseUrl("contact-frontend")
+
+  lazy private val contactFormServiceIdentifier = "update-and-submit-income-tax-return"
+
+  private def requestUri(implicit request: RequestHeader): String = SafeRedirectUrl(appUrl + request.uri).encodedUrl
+
+  def feedbackUrl(implicit request: RequestHeader): String = {
+    s"$contactFrontEndUrl/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=$requestUri"
+  }
 }
