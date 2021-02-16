@@ -1,6 +1,10 @@
 service.name = Update and submit an Income Tax Return
 service.text = This is your new service
 
+common.opensInNewWindowOrTab = (opens in new tab)
+
+common.help.getHelpWithThisPage = Get help with this page
+
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
 betaBar.banner.message.2 = feedback
