@@ -44,5 +44,5 @@
             @messages("startPage.continue")
         </a>
 
-} @layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear))(mainHTML)
+} @layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear), isAgent = isAgent)(mainHTML),
 

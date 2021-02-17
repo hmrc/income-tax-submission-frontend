@@ -29,6 +29,8 @@
 @(pageTitle: Option[String] = None,
         headBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
+        isAgent: Boolean = false,
+        isOverviewPage: Boolean = false,
         taxYear: Option[Int] =  None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -45,6 +47,6 @@
     headBlock = Some(head(headBlock)),
     headerBlock = Some(headerBlock),
     scriptsBlock = scriptsBlock,
-    beforeContentBlock = Some(beforeBodyContent(taxYear)),
+    beforeContentBlock = Some(beforeBodyContent(taxYear, isAgent, isOverviewPage)),
     footerBlock = Some(hmrcStandardFooter())
 )(contentBlock)

@@ -34,6 +34,11 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val taxYear = 2080
   val taxYearMinusOne: Int = taxYear - 1
   val taxYearPlusOne: Int = taxYear + 1
+  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/client"
+  val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
+  val vcBreadcrumb = "Income Tax"
+  val startPageBreadcrumb = "Update and submit an Income Tax Return"
+  val overviewBreadcrumb = "Your Income Tax Return"
   val caption = s"$taxYearMinusOne to $taxYear Income Tax"
   val individualHeading = "Your Income Tax Return"
   val agentHeading = "Your client’s Income Tax Return"
@@ -57,6 +62,9 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val task3p1Individual = s"You will be able to submit your return from 6 April $taxYearPlusOne after providing your updates."
   val task3p1Agent = s"You will be able to submit your client’s return from 6 April $taxYearPlusOne after providing your client’s updates."
 
+  val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
+  val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
+  val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3) > a"
   val captionSelector = "#main-content > div > div > span"
   val headerSelector = "#main-content > div > div > h1"
   val task1HeaderSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
@@ -94,6 +102,19 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   "The Overview Page with no prior data" should {
 
     "Have the correct content for an individual" which {
+
+      s"has a view and change breadcrumb of $vcBreadcrumb" in {
+        individualWithNoPriorData.select(vcBreadcrumbSelector).text shouldBe vcBreadcrumb
+        individualWithNoPriorData.select(vcBreadcrumbSelector).attr("href") shouldBe vcBreadcrumbUrl
+      }
+
+      s"has a start page breadcrumb of $startPageBreadcrumb" in {
+        individualWithNoPriorData.select(startPageBreadcrumbSelector).text shouldBe startPageBreadcrumb
+      }
+
+      s"has a overview breadcrumb of $overviewBreadcrumb" in {
+        individualWithNoPriorData.select(overviewBreadcrumbSelector).text shouldBe overviewBreadcrumb
+      }
 
       s"has a header of $individualHeading" in {
         individualWithNoPriorData.select(headerSelector).text shouldBe individualHeading
@@ -157,6 +178,19 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
     }
 
     "Have the correct content for an agent" which {
+
+      s"has a view and change breadcrumb of $vcBreadcrumb" in {
+        agentWithNoPriorData.select(vcBreadcrumbSelector).text shouldBe vcBreadcrumb
+        agentWithNoPriorData.select(vcBreadcrumbSelector).attr("href") shouldBe vcAgentBreadcrumbUrl
+      }
+
+      s"has a start page breadcrumb of $startPageBreadcrumb" in {
+        agentWithNoPriorData.select(startPageBreadcrumbSelector).text shouldBe startPageBreadcrumb
+      }
+
+      s"has a overviewBreadcrumb of $overviewBreadcrumb" in {
+        agentWithNoPriorData.select(overviewBreadcrumbSelector).text shouldBe overviewBreadcrumb
+      }
 
       s"has a header of $agentHeading" in {
         agentWithNoPriorData.select(headerSelector).text shouldBe agentHeading
@@ -223,6 +257,18 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   "The Overview Page with prior data" should {
 
     "Have the correct content for an individual with prior data" which {
+
+      s"has a view and change breadcrumb of $vcBreadcrumb" in {
+        individualWithNoPriorData.select(vcBreadcrumbSelector).text shouldBe vcBreadcrumb
+      }
+
+      s"has a start page breadcrumb of $startPageBreadcrumb" in {
+        individualWithNoPriorData.select(startPageBreadcrumbSelector).text shouldBe startPageBreadcrumb
+      }
+
+      s"has a overviewBreadcrumb of $overviewBreadcrumb" in {
+        individualWithPriorData.select(overviewBreadcrumbSelector).text shouldBe overviewBreadcrumb
+      }
 
       s"has a header of $individualHeading" in {
         individualWithPriorData.select(headerSelector).text shouldBe individualHeading
