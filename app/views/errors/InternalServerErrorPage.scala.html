@@ -15,26 +15,29 @@
  *@
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import views.html.headerFooterTemplate.Layout
 
-@this(hmrcPageHeading : HmrcPageHeading)
+@this(hmrcPageHeading: HmrcPageHeading, layout: Layout)
 
-@()
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@hmrcPageHeading(PageHeading(
-text = "Sorry, there is a problem with the service"
-))
-<p class="govuk-body">Try again later.</p>
+@layout(pageTitle = Some(messages("errors.500.heading"))) = {
 
-<p class="govuk-body">You can also:</p>
+@hmrcPageHeading(PageHeading(text = messages("errors.500.heading")))
+
+<p class="govuk-body">messages("errors.500.p1")</p>
+
+<p class="govuk-body">messages("errors.500.p2")</p>
 <ul>
  <li>
   <p class="govuk-body">
-   go to the <a href="https://www.gov.uk/income-tax" class="govuk-link">Income Tax home page (opens in new tab)</a> for more information
+   messages("errors.500.p3") <a href="https://www.gov.uk/income-tax" class="govuk-link" id= "govuk-income-tax-link" target="_blank">messages("errors.500.p4")</a> messages("errors.500.p5")
   </p>
  </li>
  <li>
   <p class="govuk-body">
-   use <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link">Self Assessment: general enquiries (opens in new tab)</a> to speak to someone about your income tax
+   messages("errors.500.p6") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link" id= "govuk-self-assessment-link" target="_blank">messages("errors.500.p7")</a> messages("errors.500.p8")
   </p>
  </li>
 </ul>
+}

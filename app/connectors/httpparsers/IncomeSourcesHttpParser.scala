@@ -30,7 +30,7 @@ object IncomeSourcesHttpParser {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
           jsonErrors => {
-            pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, Some(s"[SubmittedDividendsParser][read] Invalid Json from API."))
+            pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, Some(s"[IncomeSourcesHttpParser][read] Invalid Json from API."))
             Left(IncomeSourcesInvalidJsonError)
           },
           parsedModel => Right(parsedModel)
@@ -51,7 +51,7 @@ object IncomeSourcesHttpParser {
     }
 
     private def logMessage(response:HttpResponse): Option[String] ={
-      Some(s"[SubmittedDividendsParser][read] Received ${response.status} from income-tax-dividends. Body:${response.body}")
+      Some(s"[IncomeSourcesHttpParser][read] Received ${response.status} from income-sources. Body:${response.body}")
     }
   }
 

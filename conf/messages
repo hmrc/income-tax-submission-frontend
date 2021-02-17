@@ -42,3 +42,30 @@ overview.individual.task2.caption.noUpdate = Provide at least one update before 
 overview.individual.task2.caption.update = View estimation
 overview.individual.task3.heading = Submit return
 overview.individual.task3.caption = You will be able to submit your return from 6 April {0} after providing your updates.
+
+errors.500.heading = Sorry, there is a problem with the service
+errors.500.p1 = Try again later.
+errors.500.p2 = You can also:
+errors.500.p3 = go to the
+errors.500.p4 = Income Tax home page (opens in new tab)
+errors.500.p5 = for more information
+errors.500.p6 = use
+errors.500.p7 = Self Assessment: general enquiries (opens in new tab)
+errors.500.p8 = to speak to someone about your income tax
+
+errors.404.heading = Page not found
+errors.404.p1 = If you typed the web address, check it is correct.
+errors.404.p2 = If you used ‘copy and paste’ to enter the web address, check you copied the full address.
+errors.404.p3 = If the website address is correct or you selected a link or button, you can use
+errors.404.p4 = Self Assessment: general enquiries (opens in new tab)
+errors.404.p5 = to speak to someone about your income tax.
+
+errors.503.heading = Sorry, the service is unavailable
+errors.503.p1 = You will be able to use the service later.
+errors.503.p2 = You can also:
+errors.503.p3 = go to the
+errors.503.p4 = Income Tax home page (opens in new tab)
+errors.503.p5 = for more information
+errors.503.p6 = use
+errors.503.p7 = Self Assessment: general enquiries (opens in new tab)
+errors.503.p8 = to speak to someone about your income tax
