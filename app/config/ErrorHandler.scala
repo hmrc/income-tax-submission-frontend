@@ -16,19 +16,21 @@
 
 package config
 
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesNotFoundError, IncomeSourcesServiceUnavailableError}
 import javax.inject.{Inject, Singleton}
+
+import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesServiceUnavailableError}
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc.{Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.templates.ErrorTemplate
 import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
+import views.html.templates.ErrorTemplate
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
                              serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: FrontendAppConfig)
+
   extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =

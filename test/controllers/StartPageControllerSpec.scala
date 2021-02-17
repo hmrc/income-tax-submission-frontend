@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.AppConfig
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.test.FakeRequest
@@ -34,7 +34,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val configuration = Configuration.load(env)
 
   private val serviceConfig = new ServicesConfig(configuration)
-  private val mockFrontendAppConfig = new FrontendAppConfig(configuration, serviceConfig)
+  private val mockFrontendAppConfig = new AppConfig(serviceConfig)
   private val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
   private val controller = new StartPageController(authorisedAction, startPageView, mockFrontendAppConfig, stubMessagesControllerComponents())

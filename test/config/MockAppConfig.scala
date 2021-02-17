@@ -16,15 +16,24 @@
 
 package config
 
-class MockAppConfig extends AppConfig {
-  override val signInContinueUrl: String = "/signInContinue"
-  override val signInUrl: String = "/signIn"
-  override val incomeTaxSubmissionBaseUrl: String = "/incomeTaxSubmission"
-  override val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/index"
-  override val personalIncomeTaxSubmissionBaseUrl: String = "/personalIncomeTaxSubmissionFrontend"
-  override val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
-  override def personalIncomeTaxDividendsUrl(taxYear: Int): String =  s"$personalIncomeTaxSubmissionUrl/2021/dividends"
-  override def personalIncomeTaxInterestUrl(taxYear: Int): String =  s"$personalIncomeTaxSubmissionUrl/2021/interest"
-  def viewAndChangeCalculationUrl(taxYear: Int): String = s"/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
+import org.scalamock.scalatest.MockFactory
+import play.api.mvc.RequestHeader
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+class MockAppConfig extends MockFactory {
+
+  val config = new AppConfig(mock[ServicesConfig]) {
+    override lazy val signInContinueUrl: String = "/signInContinue"
+    override lazy val signInUrl: String = "/signIn"
+    override lazy val incomeTaxSubmissionBaseUrl: String = "/incomeTaxSubmission"
+    override lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/index"
+    override lazy val personalIncomeTaxSubmissionBaseUrl: String = "/personalIncomeTaxSubmissionFrontend"
+    override lazy val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
+    override def personalIncomeTaxDividendsUrl(taxYear: Int): String =  s"$personalIncomeTaxSubmissionUrl/2021/dividends"
+    override def personalIncomeTaxInterestUrl(taxYear: Int): String =  s"$personalIncomeTaxSubmissionUrl/2021/interest"
+    override def viewAndChangeCalculationUrl(taxYear: Int): String = s"/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
+
+    override def feedbackUrl(implicit request: RequestHeader): String = "feedbackUrl"
+  }
 
 }

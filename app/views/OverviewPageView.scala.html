@@ -14,12 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import views.html.headerFooterTemplate.Layout
 
 @this(layout: Layout)
 
-@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
 @taskWithActionList(heading: String, caption: String, index: Int, incomeSources: IncomeSourcesModel) = {
@@ -37,7 +36,7 @@
                     </a>
                 </span>
                 <span class="hmrc-status-tag">
-                    @if(incomeSources.interest.isDefined){Updated}else{Not Started}
+                    @if(incomeSources.interest.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
                 </span>
             </li>
             <li class="app-task-list__item">
@@ -47,7 +46,7 @@
                     </a>
                 </span>
                 <span class="hmrc-status-tag">
-                    @if(incomeSources.dividends.isDefined){Updated}else{Not Started}
+                    @if(incomeSources.dividends.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
                 </span>
             </li>
         </ol>

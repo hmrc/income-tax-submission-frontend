@@ -14,11 +14,9 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
-@import views.html.headerFooterTemplate.{BeforeBodyContent, Head}
 
 @this(
         govukLayout: GovukLayout,
@@ -32,7 +30,7 @@
         headBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
         taxYear: Option[Int] =  None
-)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @headerBlock = {
     @govukHeader(Header(
