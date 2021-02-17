@@ -17,13 +17,15 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
+@import views.html.templates.helpers.Link
 
 @this(
         govukLayout: GovukLayout,
         govukHeader: GovukHeader,
         head: Head,
         beforeBodyContent: BeforeBodyContent,
-        hmrcStandardFooter: HmrcStandardFooter
+        hmrcStandardFooter: HmrcStandardFooter,
+        getHelpLink: Link,
 )
 
 @(pageTitle: Option[String] = None,
@@ -40,6 +42,14 @@
     ))
 }
 
+@content = {
+    @contentBlock
+
+    <div>
+        @getHelpLink(appConfig.contactUrl, messages("common.help.getHelpWithThisPage"))
+    </div>
+}
+
 @govukLayout(
     pageTitle = pageTitle,
     headBlock = Some(head(headBlock)),
@@ -47,4 +57,4 @@
     scriptsBlock = scriptsBlock,
     beforeContentBlock = Some(beforeBodyContent(taxYear)),
     footerBlock = Some(hmrcStandardFooter())
-)(contentBlock)
+)(content)
