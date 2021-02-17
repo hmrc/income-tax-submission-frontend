@@ -17,11 +17,10 @@
 package controllers
 
 import common.SessionValues._
-import config.{ErrorHandler, FrontendAppConfig}
+import config.{AppConfig, ErrorHandler}
 import connectors.httpparsers.IncomeSourcesHttpParser.IncomeSourcesNotFoundError
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
-import config.AppConfig
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -29,7 +28,6 @@ import services.IncomeSourcesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

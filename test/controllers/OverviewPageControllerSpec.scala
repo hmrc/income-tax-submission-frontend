@@ -18,13 +18,15 @@ package controllers
 
 
 import common.SessionValues._
-import config.{ErrorHandler, FrontendAppConfig}
+import config.{AppConfig, ErrorHandler}
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesInternalServerError, IncomeSourcesNotFoundError, IncomeSourcesResponse}
 import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
+import play.api.i18n.Messages
 import play.api.libs.json.Json
+import play.api.mvc.Results._
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -35,9 +37,9 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
 import views.html.OverviewPageView
-import play.api.mvc.Results._
 import views.html.errors.InternalServerErrorPage
 
+import scala.collection.mutable
 import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
@@ -47,7 +49,8 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val configuration = Configuration.load(env)
 
   private val serviceConfig = new ServicesConfig(configuration)
-  private val mockFrontendAppConfig = new AppConfig(serviceConfig)
+  private implicit val frontendAppConfig: AppConfig = new AppConfig(serviceConfig)
+  private implicit val messages: Messages = mock[Messages]
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
   private val mockErrorHandler = mock[ErrorHandler]
@@ -106,7 +109,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   }
 
   private val controller = new OverviewPageController(
-    mockFrontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, mockIncomeSourcesService, overviewPageView, authorisedAction, mockErrorHandler
+    frontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, mockIncomeSourcesService, overviewPageView, authorisedAction, mockErrorHandler
   )
 
   "calling the individual action" when {
@@ -180,6 +183,9 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
 
         val result = {
+          (messages.apply(_: String, _: Any))
+            .expects(*, *)
+            .returning("")
           mockAuth(nino)
           mockGetIncomeSourcesError()
           mockHandleError(InternalServerError(internalServerErrorPage()))

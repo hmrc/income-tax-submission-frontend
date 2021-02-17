@@ -29,7 +29,7 @@ import views.html.templates.ErrorTemplate
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
-                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: FrontendAppConfig)
+                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
 
   extends FrontendErrorHandler {
 

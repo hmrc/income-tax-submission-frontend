@@ -21,7 +21,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("errors.500.heading"))) = {
+@layout(pageTitle = Some(messages("errors.500.heading"))) {
 
 @hmrcPageHeading(PageHeading(text = messages("errors.500.heading")))
 

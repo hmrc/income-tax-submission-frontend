@@ -19,44 +19,43 @@ package config
 import connectors.httpparsers.IncomeSourcesHttpParser._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
-import play.api.mvc.Results._
 import utils.UnitTest
 import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
 import views.html.templates.ErrorTemplate
 
 class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  val mockMessagesApi: MessagesApi = mock[MessagesApi]
 
   val errorTemplate: ErrorTemplate = app.injector.instanceOf[ErrorTemplate]
   val serviceUnavailable: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
   val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
   val notFoundPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
 
-  implicit val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  val errorHandler = new ErrorHandler(errorTemplate, mockMessagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable)
+  val errorHandler = new ErrorHandler(errorTemplate, messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable)
 
   ".handleError" should {
 
     "return a 503 page for IncomeSourcesServiceUnavailableError" in {
 
-      errorHandler.handleError(IncomeSourcesServiceUnavailableError) shouldBe ServiceUnavailable(serviceUnavailable())
+      errorHandler.handleError(IncomeSourcesServiceUnavailableError).header.status shouldBe 503
     }
 
     "return a 500 page for IncomeSourcesInvalidJsonError" in {
 
-      errorHandler.handleError(IncomeSourcesInvalidJsonError) shouldBe InternalServerError(internalServerErrorPage())
+      errorHandler.handleError(IncomeSourcesInvalidJsonError).header.status shouldBe 500
     }
 
     "return a 500 page for IncomeSourcesInternalServerError" in {
 
-      errorHandler.handleError(IncomeSourcesInternalServerError) shouldBe InternalServerError(internalServerErrorPage())
+      errorHandler.handleError(IncomeSourcesInternalServerError).header.status shouldBe 500
     }
 
     "return a 500 page for IncomeSourcesUnhandledError" in {
 
-      errorHandler.handleError(IncomeSourcesUnhandledError) shouldBe InternalServerError(internalServerErrorPage())
+      errorHandler.handleError(IncomeSourcesUnhandledError).header.status shouldBe 500
     }
   }
 
