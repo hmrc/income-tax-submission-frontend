@@ -42,9 +42,14 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
   private lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeBaseUrl)
   def viewAndChangeCalculationUrl(taxYear: Int): String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
+  def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view"
+  def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/client"
 
   lazy private val appUrl: String = servicesConfig.getString("microservice.url")
-  lazy private val contactFrontEndUrl = servicesConfig.baseUrl("contact-frontend")
+  lazy private val contactFrontEndUrl = {
+    val contactUrl = servicesConfig.baseUrl("contact-frontend")
+    servicesConfig.getConfString("contact-frontend.baseUrl", contactUrl)
+  }
 
   lazy private val contactFormServiceIdentifier = "update-and-submit-income-tax-return"
 

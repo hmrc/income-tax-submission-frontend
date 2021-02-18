@@ -16,18 +16,23 @@
 
 @this()
 
-@(breadcrumbTaxYear: Int)(implicit messages: Messages)
+@(breadcrumbTaxYear: Int, isAgent: Boolean, isOverviewPage: Boolean)(implicit messages: Messages, appConfig: AppConfig)
+
+@vcAgent = @{ if(isAgent) appConfig.viewAndChangeViewUrlAgent else appConfig.viewAndChangeViewUrl }
 
 <div class="govuk-breadcrumbs ">
     <ol class="govuk-breadcrumbs__list">
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="#">@messages("breadcrumb.incomeTaxAccount")</a>
+            <a class="govuk-breadcrumbs__link" href="@vcAgent">@messages("breadcrumb.incomeTaxAccount")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="#">@messages("breadcrumb.updateSubmitIncomeTaxReturn")</a>
+            <a class="govuk-breadcrumbs__link" @if(isOverviewPage) {
+               href="@controllers.routes.StartPageController.show(breadcrumbTaxYear).url" } >@messages("breadcrumb.updateSubmitIncomeTaxReturn")</a>
         </li>
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link">@messages("breadcrumb.incomeTaxYear", (breadcrumbTaxYear - 1).toString, breadcrumbTaxYear.toString )</a>
-        </li>
+        @if(isOverviewPage){
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link">@messages("breadcrumb.yourIncomeTaxReturn")</a>
+            </li>
+        }
     </ol>
 </div>
