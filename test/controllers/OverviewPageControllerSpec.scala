@@ -24,7 +24,7 @@ import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{Request, Result}
@@ -39,7 +39,6 @@ import utils.UnitTest
 import views.html.OverviewPageView
 import views.html.errors.InternalServerErrorPage
 
-import scala.collection.mutable
 import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
@@ -50,7 +49,8 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   private val serviceConfig = new ServicesConfig(configuration)
   private implicit val frontendAppConfig: AppConfig = new AppConfig(serviceConfig)
-  private implicit val messages: Messages = mock[Messages]
+  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
   private val mockErrorHandler = mock[ErrorHandler]
