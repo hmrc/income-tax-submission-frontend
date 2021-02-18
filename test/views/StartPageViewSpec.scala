@@ -50,13 +50,13 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
   object Selectors{
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
-    val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
-    val pageHeading = "#header"
-    val p1 = "#main-content > div > div > div:nth-child(3) > p:nth-child(1)"
-    val p2 = "#main-content > div > div > div:nth-child(3) > p:nth-child(2)"
+    val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2)"
+    val pageHeading = "#main-content > div > div > header > h1"
+    val p1 = "#main-content > div > div > div:nth-child(2) > p:nth-child(1)"
+    val p2 = "#main-content > div > div > div:nth-child(2) > p:nth-child(2)"
     val bullet1 = "#main-content > div > div > ul > li:nth-child(1)"
     val bullet2 = "#main-content > div > div > ul > li:nth-child(2)"
-    val p3 =  "#main-content > div > div > div:nth-child(5) > p"
+    val p3 =  "#main-content > div > div > div:nth-child(4) > p"
     val continueButton = "#continue"
   }
 
