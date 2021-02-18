@@ -14,19 +14,13 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
 
-@this(govukPhaseBanner : GovukPhaseBanner)
+@this(hmrcPageHeading : HmrcPageHeading)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(heading: String, subheading: String)
 
-@govukPhaseBanner(PhaseBanner(
-    tag = Some(Tag(
-    content = Text(messages("betaBar.beta"))
-    )),
-    content = HtmlContent(content)
+@hmrcPageHeading(PageHeading(
+    text = heading,
+    section = Some(subheading)
 ))
-
-@content = {
-    @messages("betaBar.banner.message.1") <a class="govuk-link" href="@{appConfig.feedbackUrl}">@messages("betaBar.banner.message.2")</a> @messages("betaBar.banner.message.3")
-}

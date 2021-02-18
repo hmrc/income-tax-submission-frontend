@@ -15,16 +15,14 @@
  *@
 
 @import views.html.headerFooterTemplate.Layout
+@import views.html.templates.helpers.Heading
 
-@this(layout: Layout)
+@this(layout: Layout, heading: Heading)
 
 @(isAgent: Boolean, taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainHTML = {
-
-        <span class="govuk-caption-xl">@messages("startPage.taxYear", (taxYear -1).toString, taxYear.toString)</span>
-
-        <h1 id="header" class="govuk-heading-xl">@messages("startPage.heading")</h1>
+        @heading(messages("startPage.heading"), messages("startPage.taxYear", (taxYear -1).toString, taxYear.toString))
 
         <div class="govuk-body">
             <p>@messages("startPage1")</p>
@@ -40,7 +38,7 @@
             <p>@messages(s"startPage3.agent.$isAgent")</p>
         </div>
 
-        <a id="continue" href="@routes.OverviewPageController.show(taxYear).url" class="govuk-button" data-module="govuk-button">
+        <a id="continue" href="@routes.OverviewPageController.show(taxYear).url" role="button" class="govuk-button" data-module="govuk-button">
             @messages("startPage.continue")
         </a>
 

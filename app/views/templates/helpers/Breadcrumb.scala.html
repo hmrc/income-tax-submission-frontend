@@ -14,25 +14,30 @@
  * limitations under the License.
  *@
 
-@this()
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(govukBreadcrumbs : GovukBreadcrumbs)
 
 @(breadcrumbTaxYear: Int, isAgent: Boolean, isOverviewPage: Boolean)(implicit messages: Messages, appConfig: AppConfig)
 
 @vcAgent = @{ if(isAgent) appConfig.viewAndChangeViewUrlAgent else appConfig.viewAndChangeViewUrl }
 
-<div class="govuk-breadcrumbs ">
-    <ol class="govuk-breadcrumbs__list">
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@vcAgent">@messages("breadcrumb.incomeTaxAccount")</a>
-        </li>
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" @if(isOverviewPage) {
-               href="@controllers.routes.StartPageController.show(breadcrumbTaxYear).url" } >@messages("breadcrumb.updateSubmitIncomeTaxReturn")</a>
-        </li>
-        @if(isOverviewPage){
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link">@messages("breadcrumb.yourIncomeTaxReturn")</a>
-            </li>
+@govukBreadcrumbs(Breadcrumbs(
+    items = Seq(
+        Some(BreadcrumbsItem(
+            content = Text(messages("breadcrumb.incomeTaxAccount")),
+            href = Some(vcAgent)
+        )),
+        Some(BreadcrumbsItem(
+            content = Text(messages("breadcrumb.updateSubmitIncomeTaxReturn")),
+            href = if(isOverviewPage) Some(controllers.routes.StartPageController.show(breadcrumbTaxYear).url) else None
+        )),
+        if(isOverviewPage){
+            Some(BreadcrumbsItem(
+                content = Text(messages("breadcrumb.yourIncomeTaxReturn"))
+            ))
+        } else {
+            None
         }
-    </ol>
-</div>
+    ).flatten
+))
