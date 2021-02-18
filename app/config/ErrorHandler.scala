@@ -17,15 +17,16 @@
 package config
 
 import javax.inject.{Inject, Singleton}
-
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesServiceUnavailableError}
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
 import views.html.templates.ErrorTemplate
+
+import scala.concurrent.Future
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
@@ -46,4 +47,12 @@ class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: Mess
       case _ => InternalServerError(internalServerErrorPage())
     }
   }
+
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
+    statusCode match {
+      case play.mvc.Http.Status.NOT_FOUND =>
+        Future.successful(NotFound(notFoundTemplate(request.withBody(""))))
+      case _ =>
+        Future.successful(BadRequest(badRequestTemplate(request.withBody(""))))
+    }
 }
