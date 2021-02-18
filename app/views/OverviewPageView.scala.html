@@ -83,11 +83,7 @@
 
 @overview = {
             <span class="govuk-caption-xl">@messages("overview.caption", (taxYear - 1).toString, taxYear.toString)</span>
-            @if(isAgent) {
-                <h1 class="govuk-heading-xl">@messages("overview.agent.heading")</h1>
-            } else {
-                <h1 class="govuk-heading-xl">@messages("overview.individual.heading")</h1>
-            }
+            <h1 class="govuk-heading-xl">@messages(s"overview.heading.isAgent.$isAgent")</h1>
             <ol class="app-task-list">
             @if(isAgent) {
                 @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
@@ -100,5 +96,5 @@
             }
             </ol>
 }
-@layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear))(overview)
+@layout(pageTitle = Some(messages(s"overview.title.isAgent.$isAgent")), taxYear = Some(taxYear))(overview)
 

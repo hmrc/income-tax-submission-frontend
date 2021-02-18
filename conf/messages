@@ -5,6 +5,8 @@ common.opensInNewWindowOrTab = (opens in new tab)
 
 common.help.getHelpWithThisPage = Get help with this page
 
+common.govUk = Gov.UK
+
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
 betaBar.banner.message.2 = feedback
@@ -15,6 +17,7 @@ breadcrumb.updateSubmitIncomeTaxReturn = Update and submit an Income Tax Return
 breadcrumb.incomeTaxYear = {0} to {1} Income Tax
 
 startPage.taxYear = {0} to {1} Income Tax
+startPage.title = Update and submit an Income Tax Return - Update and submit an Income Tax Return - Gov.UK
 startPage.heading = Update and submit an Income Tax Return
 startPage1 = Use this service to update and submit an Income Tax Return.
 startPage2 = This is a new service. At the moment you can only update information about:
@@ -25,7 +28,6 @@ startPage3.agent.true = To update your client’s self-employment and property i
 startPage3.agent.false = To update your self-employment and property income, you must use your chosen commercial software.
 startPage.continue = Continue
 
-overview.agent.heading = Your client’s Income Tax Return
 overview.caption = {0} to {1} Income Tax
 
 overview.task1.heading = Provide updates
@@ -38,12 +40,16 @@ overview.agent.task2.caption.update = View estimation
 overview.agent.task3.heading = Submit return
 overview.agent.task3.caption = You will be able to submit your client’s return from 6 April {0} after providing your client’s updates.
 
-overview.individual.heading = Your Income Tax Return
 overview.individual.task2.heading = View Tax calculation to date
 overview.individual.task2.caption.noUpdate = Provide at least one update before you can view your estimate.
 overview.individual.task2.caption.update = View estimation
 overview.individual.task3.heading = Submit return
 overview.individual.task3.caption = You will be able to submit your return from 6 April {0} after providing your updates.
+
+overview.title.isAgent.true = Your client’s Income Tax Return - Update and submit an Income Tax Return - Gov.UK
+overview.title.isAgent.false = Your Income Tax Return - Update and submit an Income Tax Return - Gov.UK
+overview.heading.isAgent.true = Your client’s Income Tax Return
+overview.heading.isAgent.false = Your Income Tax Return
 
 overview.notStarted = Not started
 overview.updated = Updated

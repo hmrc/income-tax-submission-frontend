@@ -16,21 +16,17 @@
 
 package views
 
-
-import config.AppConfig
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import views.html.StartPage
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
 import play.twirl.api.Html
+import utils.ViewTest
 
 
-class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest{
 
   val taxYear = 2022
   val pageHeadingText = "Update and submit an Income Tax Return"
@@ -56,28 +52,14 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
   val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
-  def element(cssSelector: String)(implicit document: Document): Element = {
-    val elements = document.select(cssSelector)
-
-    if(elements.size == 0) {
-      fail(s"No element exists with the selector '$cssSelector'")
-    }
-
-    document.select(cssSelector).first()
-  }
-    def elementText(selector: String)(implicit document: Document): String = {
-    element(selector).text()
-  }
-
   "Rendering the start page when the user is an individual" should {
 
     lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
+
+    s"has a title of $pageHeadingText" in {
+      document.title() shouldBe s"$pageHeadingText - $serviceName - $govUkExtension"
+    }
 
     s"have a page heading of '$pageHeadingText'" in {
       elementText(Selectors.pageHeading) shouldBe pageHeadingText
@@ -117,6 +99,10 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
+
+    s"has a title of $pageHeadingText" in {
+      document.title() shouldBe s"$pageHeadingText - $serviceName - $govUkExtension"
+    }
 
     s"have a page heading of '$pageHeadingText'" in {
       elementText(Selectors.pageHeading) shouldBe pageHeadingText
