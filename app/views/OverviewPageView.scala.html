@@ -100,5 +100,5 @@
             }
             </ol>
 }
-@layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear))(overview)
+@layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(overview)
 
