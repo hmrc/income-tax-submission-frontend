@@ -259,11 +259,12 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
     "Have the correct content for an individual with prior data" which {
 
       s"has a view and change breadcrumb of $vcBreadcrumb" in {
-        individualWithNoPriorData.select(vcBreadcrumbSelector).text shouldBe vcBreadcrumb
+        individualWithPriorData.select(vcBreadcrumbSelector).text shouldBe vcBreadcrumb
+        individualWithPriorData.select(vcBreadcrumbSelector).attr("href") shouldBe vcBreadcrumbUrl
       }
 
       s"has a start page breadcrumb of $startPageBreadcrumb" in {
-        individualWithNoPriorData.select(startPageBreadcrumbSelector).text shouldBe startPageBreadcrumb
+        individualWithPriorData.select(startPageBreadcrumbSelector).text shouldBe startPageBreadcrumb
       }
 
       s"has a overviewBreadcrumb of $overviewBreadcrumb" in {
