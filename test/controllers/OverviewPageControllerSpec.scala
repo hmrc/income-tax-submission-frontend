@@ -173,7 +173,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
-          mockGetIncomeSourcesValid()
+          mockGetIncomeSourcesNone()
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -183,10 +183,6 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
 
         val result = {
-
-//          (messages.apply(_: String, _: Any))
-//            .expects(*, *)
-//            .returning("")
 
           mockAuth(nino)
           mockGetIncomeSourcesError()

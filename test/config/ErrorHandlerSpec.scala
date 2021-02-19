@@ -18,7 +18,8 @@ package config
 
 import connectors.httpparsers.IncomeSourcesHttpParser._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.test.FakeRequest
 import utils.UnitTest
 import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
 import views.html.templates.ErrorTemplate
@@ -33,6 +34,7 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
 
   val errorHandler = new ErrorHandler(errorTemplate, messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable)
 

@@ -18,7 +18,7 @@ package controllers
 
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
-import connectors.httpparsers.IncomeSourcesHttpParser.IncomeSourcesNotFoundError
+import connectors.httpparsers.IncomeSourcesHttpParser.IncomeSourcesNoContentError
 import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -56,7 +56,7 @@ class OverviewPageController @Inject()(
 
         sessionWithInterest
       }
-      case Left(IncomeSourcesNotFoundError) => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
+      case Left(IncomeSourcesNoContentError) => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
       case Left(error) => errorHandler.handleError(error)
     }
   }

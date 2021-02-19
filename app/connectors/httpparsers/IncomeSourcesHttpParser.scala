@@ -35,6 +35,9 @@ object IncomeSourcesHttpParser {
           },
           parsedModel => Right(parsedModel)
         )
+        case NO_CONTENT =>
+          pagerDutyLog(NO_CONTENT_FROM_API, logMessage(response))
+          Left(IncomeSourcesNoContentError)
         case NOT_FOUND =>
           pagerDutyLog(NOT_FOUND_FROM_API, logMessage(response))
           Left(IncomeSourcesNotFoundError)
@@ -62,5 +65,6 @@ object IncomeSourcesHttpParser {
   object IncomeSourcesInternalServerError extends IncomeSourcesError
   object IncomeSourcesNotFoundError extends IncomeSourcesError
   object IncomeSourcesUnhandledError extends IncomeSourcesError
+  object IncomeSourcesNoContentError extends IncomeSourcesError
 
 }

@@ -16,9 +16,9 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesServiceUnavailableError}
-import play.api.i18n.MessagesApi
+import javax.inject.{Inject, Singleton}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
@@ -27,10 +27,11 @@ import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavaila
 import views.html.templates.ErrorTemplate
 
 import scala.concurrent.Future
+
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
-                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
+                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
   extends FrontendErrorHandler {
 
@@ -48,11 +49,12 @@ class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: Mess
     }
   }
 
-  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
+  override def onClientError(requestHeader: RequestHeader, statusCode: Int, message: String): Future[Result] = Future.successful {
     statusCode match {
       case play.mvc.Http.Status.NOT_FOUND =>
-        Future.successful(NotFound(notFoundTemplate(request.withBody(""))))
+        NotFound(notFoundTemplate(requestHeader.withBody("")))
       case _ =>
-        Future.successful(BadRequest(badRequestTemplate(request.withBody(""))))
+        InternalServerError(internalServerErrorPage()(request, messages, appConfig))
     }
+  }
 }
