@@ -17,7 +17,7 @@ breadcrumb.updateSubmitIncomeTaxReturn = Update and submit an Income Tax Return
 breadcrumb.yourIncomeTaxReturn = Your Income Tax Return
 
 startPage.taxYear = {0} to {1} Income Tax
-startPage.title = Update and submit an Income Tax Return - Update and submit an Income Tax Return - Gov.UK
+startPage.title = Update and submit an Income Tax Return
 startPage.heading = Update and submit an Income Tax Return
 startPage1 = Use this service to update and submit an Income Tax Return.
 startPage2 = This is a new service. At the moment you can only update information about:
@@ -46,8 +46,8 @@ overview.individual.task2.caption.update = View estimation
 overview.individual.task3.heading = Submit return
 overview.individual.task3.caption = You will be able to submit your return from 6 April {0} after providing your updates.
 
-overview.title.isAgent.true = Your client’s Income Tax Return - Update and submit an Income Tax Return - Gov.UK
-overview.title.isAgent.false = Your Income Tax Return - Update and submit an Income Tax Return - Gov.UK
+overview.title.isAgent.true = Your client’s Income Tax Return
+overview.title.isAgent.false = Your Income Tax Return
 overview.heading.isAgent.true = Your client’s Income Tax Return
 overview.heading.isAgent.false = Your Income Tax Return
 

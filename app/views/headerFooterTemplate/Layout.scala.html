@@ -28,7 +28,7 @@
         getHelpLink: Link,
 )
 
-@(pageTitle: Option[String] = None,
+@(pageTitle: String,
         headBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
         isAgent: Boolean = false,
@@ -53,7 +53,7 @@
 }
 
 @govukLayout(
-    pageTitle = pageTitle,
+    pageTitle = Some(pageTitle + " - " + messages("service.name") + " - " + messages("common.govUk")),
     headBlock = Some(head(headBlock)),
     headerBlock = Some(headerBlock),
     scriptsBlock = scriptsBlock,
