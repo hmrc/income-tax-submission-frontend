@@ -64,9 +64,9 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
   val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
   val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
-  val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3) > a"
-  val captionSelector = "#main-content > div > div > span"
-  val headerSelector = "#main-content > div > div > h1"
+  val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3)"
+  val captionSelector = "#main-content > div > div > header > p"
+  val headerSelector = "#main-content > div > div > header > h1"
   val task1HeaderSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
   val task1p1Selector = "#main-content > div > div > ol > li:nth-child(1) > ol > span"
   val task1InterestsSelector = "#interest_link"
