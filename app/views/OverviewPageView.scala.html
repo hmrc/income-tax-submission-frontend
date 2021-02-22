@@ -15,8 +15,9 @@
  *@
 
 @import views.html.headerFooterTemplate.Layout
+@import views.html.templates.helpers.Heading
 
-@this(layout: Layout)
+@this(layout: Layout, heading: Heading)
 
 @(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -60,11 +61,11 @@
         </h2>
         <ul class="app-task-list__items">
             @if(incomeSources.isDefined) {
-            <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
-                @action
-            </a>
-            }else{
-            <span class="govuk-caption-m">@caption</span>
+                <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
+                    @action
+                </a>
+            } else {
+                <span class="govuk-caption-m">@caption</span>
             }
         </ul>
     </li>
@@ -82,18 +83,17 @@
 }
 
 @overview = {
-            <span class="govuk-caption-xl">@messages("overview.caption", (taxYear - 1).toString, taxYear.toString)</span>
-            <h1 class="govuk-heading-xl">@messages(s"overview.heading.isAgent.$isAgent")</h1>
+            @heading(messages(s"overview.heading.isAgent.$isAgent"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
             <ol class="app-task-list">
-            @if(isAgent) {
-                @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                @taskWithActionOrCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2)
-                @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
-            } else {
-                @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                @taskWithActionOrCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2)
-                @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
-            }
+                @if(isAgent) {
+                    @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                    @taskWithActionOrCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2)
+                    @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
+                } else {
+                    @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                    @taskWithActionOrCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2)
+                    @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
+                }
             </ol>
 }
 @layout(pageTitle = messages(s"overview.title.isAgent.$isAgent"), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(overview)
