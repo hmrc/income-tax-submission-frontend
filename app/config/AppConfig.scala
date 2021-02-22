@@ -55,9 +55,23 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
   private def requestUri(implicit request: RequestHeader): String = SafeRedirectUrl(appUrl + request.uri).encodedUrl
 
-  def feedbackUrl(implicit request: RequestHeader): String = {
+  def betaFeedbackUrl(implicit request: RequestHeader): String = {
     s"$contactFrontEndUrl/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=$requestUri"
   }
 
+  private lazy val feedbackFrontendUrl = {
+    val feedbackSurveyUrl = servicesConfig.baseUrl("feedback-frontend")
+    servicesConfig.getConfString("feedback-frontend.relativeUrl", feedbackSurveyUrl)
+  }
+
+  lazy val feedbackSurveyUrl: String = s"$feedbackFrontendUrl/feedback/$contactFormServiceIdentifier"
+
   lazy val contactUrl = s"$contactFrontEndUrl/contact/contact-hmrc?service=$contactFormServiceIdentifier"
+
+  private lazy val basGatewayUrl = {
+    val basGatewayUrl = servicesConfig.baseUrl("bas-gateway-frontend")
+    servicesConfig.getConfString("bas-gateway-frontend.relativeUrl", basGatewayUrl)
+  }
+
+  lazy val signOutUrl: String = s"$basGatewayUrl/bas-gateway/sign-out-without-state"
 }

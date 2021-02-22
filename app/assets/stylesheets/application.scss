@@ -3,3 +3,12 @@ $hmrc-assets-path: "/income-through-software/return/assets/lib/hmrc-frontend/hmr
 
 @import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
+
+
+a.govuk-link.hmrc-sign-out-nav__link:active {
+  color: black;
+}
+
+a.govuk-link.hmrc-sign-out-nav__link:focus {
+  color: black;
+}
