@@ -89,7 +89,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   }
 
   def mockGetIncomeSourcesNone(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
-    val invalidIncomeSource: IncomeSourcesResponse = Left(IncomeSourcesNotFoundError)
+    val invalidIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel())
     (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
       .returning(Future.successful(invalidIncomeSource))

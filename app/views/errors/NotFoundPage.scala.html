@@ -23,10 +23,11 @@
 
 @layout(pageTitle = Some(messages("errors.404.heading"))) {
 
-@hmrcPageHeading(PageHeading(text = messages("errors.404.heading")))
-<p class="govuk-body">@messages("errors.404.p1")</p>
-<p class="govuk-body">@messages("errors.404.p2")</p>
-<p class="govuk-body">
- @messages("errors.404.p3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link" id= "govuk-income-tax-link" target="_blank" >@messages("errors.404.p4")</a> @messages("errors.404.p5")
-</p>
+    @hmrcPageHeading(PageHeading(text = messages("errors.404.heading")))
+
+    <p class="govuk-body">@messages("errors.404.p1")</p>
+    <p class="govuk-body">@messages("errors.404.p2")</p>
+    <p class="govuk-body">
+        @messages("errors.404.p3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link" id= "govuk-income-tax-link" target="_blank" >@messages("errors.404.p4")</a> @messages("errors.404.p5")
+    </p>
 }

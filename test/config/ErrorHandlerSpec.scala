@@ -59,6 +59,10 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
       errorHandler.handleError(IncomeSourcesUnhandledError).header.status shouldBe 500
     }
+    "return a 404 page" in {
+
+      errorHandler.onClientError(fakeRequest, 404,"").map(_.header.status shouldBe 404)
+    }
   }
 
 }

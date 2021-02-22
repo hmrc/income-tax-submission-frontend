@@ -31,7 +31,7 @@ import scala.concurrent.Future
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
-                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
 
   extends FrontendErrorHandler {
 
@@ -54,7 +54,7 @@ class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: Mess
       case play.mvc.Http.Status.NOT_FOUND =>
         NotFound(notFoundTemplate(requestHeader.withBody("")))
       case _ =>
-        InternalServerError(internalServerErrorPage()(request, messages, appConfig))
+        InternalServerError(internalServerErrorPage()(requestHeader.withBody(""), messagesApi.preferred(requestHeader), appConfig))
     }
   }
 }

@@ -16,11 +16,11 @@
 
 package connectors.httpparsers
 
-import utils.PagerDutyHelper.PagerDutyKeys._
-import utils.PagerDutyHelper._
 import models.IncomeSourcesModel
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import utils.PagerDutyHelper.PagerDutyKeys._
+import utils.PagerDutyHelper.pagerDutyLog
 
 object IncomeSourcesHttpParser {
   type IncomeSourcesResponse = Either[IncomeSourcesError, IncomeSourcesModel]
@@ -35,12 +35,10 @@ object IncomeSourcesHttpParser {
           },
           parsedModel => Right(parsedModel)
         )
-        case NO_CONTENT =>
-          pagerDutyLog(NO_CONTENT_FROM_API, logMessage(response))
-          Left(IncomeSourcesNoContentError)
+        case NO_CONTENT => Right(IncomeSourcesModel())
         case NOT_FOUND =>
           pagerDutyLog(NOT_FOUND_FROM_API, logMessage(response))
-          Left(IncomeSourcesNotFoundError)
+          Right(IncomeSourcesModel())
         case INTERNAL_SERVER_ERROR =>
           pagerDutyLog(INTERNAL_SERVER_ERROR_FROM_API, logMessage(response))
           Left(IncomeSourcesInternalServerError)
@@ -65,6 +63,5 @@ object IncomeSourcesHttpParser {
   object IncomeSourcesInternalServerError extends IncomeSourcesError
   object IncomeSourcesNotFoundError extends IncomeSourcesError
   object IncomeSourcesUnhandledError extends IncomeSourcesError
-  object IncomeSourcesNoContentError extends IncomeSourcesError
 
 }

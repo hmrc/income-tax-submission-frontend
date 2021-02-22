@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package itUtils
 
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
