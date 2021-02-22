@@ -35,13 +35,13 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   val startPageBreadcrumb = "Update and submit an Income Tax Return"
   val pageTitleText = "Update and submit an Income Tax Return"
   val pageHeadingText = "Update and submit an Income Tax Return"
-  val p1Text = "Use this service to update and submit an Income Tax Return."
-  val p2Text = "This is a new service. At the moment you can only update information about:"
-  val bullet1AgentText = "interest paid to your client in the UK"
-  val bullet1IndividualText = "interest paid to you in the UK"
-  val bullet2Text = "dividends from UK companies, trusts and open-ended investment companies"
-  val p3AgentText = "To update your client’s self-employment and property income, you must use your chosen commercial software."
-  val p3IndividualText = "To update your self-employment and property income, you must use your chosen commercial software."
+  val useThisServiceText = "Use this service to update and submit an Income Tax Return."
+  val newServiceText = "This is a new service. At the moment you can only update information about:"
+  val bullet1InterestPaidAgentText = "interest paid to your client in the UK"
+  val bullet1InterestPaidIndividualText = "interest paid to you in the UK"
+  val bullet2DividendsFromUKText = "dividends from UK companies, trusts and open-ended investment companies"
+  val toUpdateIncomeAgentText = "To update your client’s self-employment and property income, you must use your chosen commercial software."
+  val toUpdateIncomeIndividualText = "To update your self-employment and property income, you must use your chosen commercial software."
   val continueButtonText = "Continue"
   val continueButtonHref = s"/income-through-software/return/$taxYear/view"
 
@@ -66,11 +66,11 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     titleCheck(pageTitleText)
     h1Check(pageHeadingText)
-    textOnPageCheck(p1Text, Selectors.p1)
-    textOnPageCheck(p2Text, Selectors.p2)
-    textOnPageCheck(bullet1IndividualText, Selectors.bullet1)
-    textOnPageCheck(bullet2Text, Selectors.bullet2)
-    textOnPageCheck(p3IndividualText, Selectors.p3)
+    textOnPageCheck(useThisServiceText, Selectors.p1)
+    textOnPageCheck(newServiceText, Selectors.p2)
+    textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
+    textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
+    textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
     buttonCheck(continueButtonText, Selectors.continueButton, continueButtonHref)
   }
 
@@ -90,11 +90,11 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     titleCheck(pageTitleText)
     h1Check(pageHeadingText)
-    textOnPageCheck(p1Text, Selectors.p1)
-    textOnPageCheck(p2Text, Selectors.p2)
-    textOnPageCheck(bullet1AgentText, Selectors.bullet1)
-    textOnPageCheck(bullet2Text, Selectors.bullet2)
-    textOnPageCheck(p3AgentText, Selectors.p3)
+    textOnPageCheck(useThisServiceText, Selectors.p1)
+    textOnPageCheck(newServiceText, Selectors.p2)
+    textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
+    textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
+    textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
     buttonCheck(continueButtonText, Selectors.continueButton, continueButtonHref)
   }
 }
