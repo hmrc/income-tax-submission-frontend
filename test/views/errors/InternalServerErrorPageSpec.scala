@@ -75,15 +75,15 @@ class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with GuiceOn
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
     "have the correct page title" in {
-      elementText(Selectors.pageTitle) shouldBe "Update and submit an Income Tax Return"
+      elementText(Selectors.pageTitle) shouldBe "Sorry, there is a problem with the service - Update and submit an Income Tax Return - GOV.UK"
     }
 
     "have the correct page heading" in {
-      elementText(Selectors.pageHeading) shouldBe "This page can’t be found"
+      elementText(Selectors.pageHeading) shouldBe "Sorry, there is a problem with the service"
     }
 
     "have the correct paragraph text" in {
-      elementText(Selectors.paragraph) shouldBe "Please check that you have entered the correct web address."
+      elementText(Selectors.paragraph) shouldBe "Try again later."
     }
   }
 }
