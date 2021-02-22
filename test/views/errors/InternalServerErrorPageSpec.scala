@@ -59,6 +59,16 @@ class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with GuiceOn
     element(selector).text()
   }
 
+  //errors.500.heading = Sorry, there is a problem with the service
+  //errors.500.p1 = Try again later.
+  //errors.500.p2 = You can also:
+  //errors.500.p3 = go to the
+  //errors.500.p4 = Income Tax home page (opens in new tab)
+  //errors.500.p5 = for more information
+  //errors.500.p6 = use
+  //errors.500.p7 = Self Assessment: general enquiries (opens in new tab)
+  //errors.500.p8 = to speak to someone about your income tax
+
   "Rendering the error page when there is an error" should {
 
     lazy val view: Html = internalServerErrorPage()(fakeRequest,messages,mockConfig)

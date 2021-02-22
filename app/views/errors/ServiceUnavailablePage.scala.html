@@ -16,21 +16,23 @@
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import views.html.headerFooterTemplate.Layout
+@import views.html.templates.helpers.Heading
 
-@this(hmrcPageHeading : HmrcPageHeading, layout: Layout)
+@this(heading : Heading, layout: Layout)
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("errors.503.heading"))) {
 
-    @hmrcPageHeading(PageHeading(text = messages("errors.503.heading")))
+    @heading(messages("errors.503.heading"))
+
     <p class="govuk-body">@messages("errors.503.p1")</p>
 
     <p class="govuk-body">@messages("errors.503.p2")</p>
     <ul>
         <li>
             <p class="govuk-body">
-                @messages("errors.503.p3") <a href="https://www.gov.uk/income-tax" class="govuk-link">@messages("errors.503.p4")</a> @messages("errors.503.p5")
+                @messages("errors.503.p3") <a href="https://www.gov.uk/income-tax" target="_blank" class="govuk-link">@messages("errors.503.p4")</a> @messages("errors.503.p5")
             </p>
         </li>
         <li>

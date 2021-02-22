@@ -19,8 +19,8 @@
 
 @this(betaBar: BetaBar, breadcrumb: Breadcrumb)
 
-@(breadcrumbTaxYear: Option[Int] = None )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(breadcrumbTaxYear: Option[Int] = None, isAgent: Boolean, isOverviewPage: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @betaBar()
 
-@if(breadcrumbTaxYear.isDefined){ @breadcrumb(breadcrumbTaxYear.get)}
+@if(breadcrumbTaxYear.isDefined){ @breadcrumb(breadcrumbTaxYear.get, isAgent, isOverviewPage)}

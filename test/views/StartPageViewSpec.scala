@@ -33,6 +33,10 @@ import play.twirl.api.Html
 class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val taxYear = 2022
+  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/client"
+  val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
+  val vcBreadcrumb = "Income Tax"
+  val startPageBreadcrumb = "Update and submit an Income Tax Return"
   val pageHeadingText = "Update and submit an Income Tax Return"
   val p1Text = "Use this service to update and submit an Income Tax Return."
   val p2Text = "This is a new service. At the moment you can only update information about:"
@@ -45,12 +49,14 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   val continueButtonHref = s"/income-through-software/return/$taxYear/view"
 
   object Selectors{
-    val pageHeading = "#header"
-    val p1 = "#main-content > div > div > div:nth-child(3) > p:nth-child(1)"
-    val p2 = "#main-content > div > div > div:nth-child(3) > p:nth-child(2)"
+    val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
+    val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2)"
+    val pageHeading = "#main-content > div > div > header > h1"
+    val p1 = "#main-content > div > div > div:nth-child(2) > p:nth-child(1)"
+    val p2 = "#main-content > div > div > div:nth-child(2) > p:nth-child(2)"
     val bullet1 = "#main-content > div > div > ul > li:nth-child(1)"
     val bullet2 = "#main-content > div > div > ul > li:nth-child(2)"
-    val p3 =  "#main-content > div > div > div:nth-child(5) > p"
+    val p3 =  "#main-content > div > div > div:nth-child(4) > p"
     val continueButton = "#continue"
   }
 
@@ -78,6 +84,15 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
+
+    s"has a view and change breadcrumb of $vcBreadcrumb" in {
+      elementText(Selectors.vcBreadcrumbSelector) shouldBe vcBreadcrumb
+      document.select(Selectors.vcBreadcrumbSelector).attr("href") shouldBe vcBreadcrumbUrl
+    }
+
+    s"has a start page breadcrumb of $startPageBreadcrumb" in {
+      elementText(Selectors.startPageBreadcrumbSelector) shouldBe startPageBreadcrumb
+    }
 
     s"have a page heading of '$pageHeadingText'" in {
       elementText(Selectors.pageHeading) shouldBe pageHeadingText
@@ -117,6 +132,15 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
+
+    s"has a view and change breadcrumb of $vcBreadcrumb" in {
+      elementText(Selectors.vcBreadcrumbSelector) shouldBe vcBreadcrumb
+      document.select(Selectors.vcBreadcrumbSelector).attr("href") shouldBe vcAgentBreadcrumbUrl
+    }
+
+    s"has a start page breadcrumb of $startPageBreadcrumb" in {
+      elementText(Selectors.startPageBreadcrumbSelector) shouldBe startPageBreadcrumb
+    }
 
     s"have a page heading of '$pageHeadingText'" in {
       elementText(Selectors.pageHeading) shouldBe pageHeadingText
