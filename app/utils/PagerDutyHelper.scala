@@ -22,12 +22,10 @@ object PagerDutyHelper extends Logging {
 
   object PagerDutyKeys extends Enumeration {
     val BAD_SUCCESS_JSON_FROM_API: PagerDutyKeys.Value = Value
-    val BAD_REQUEST_FROM_API: PagerDutyKeys.Value = Value
     val SERVICE_UNAVAILABLE_FROM_API: PagerDutyKeys.Value = Value
     val INTERNAL_SERVER_ERROR_FROM_API: PagerDutyKeys.Value = Value
     val UNEXPECTED_RESPONSE_FROM_API: PagerDutyKeys.Value = Value
     val NOT_FOUND_FROM_API: PagerDutyKeys.Value = Value
-    val NO_CONTENT_FROM_API: PagerDutyKeys.Value = Value
   }
 
   def pagerDutyLog(pagerDutyKey: PagerDutyKeys.Value, otherDetail: Option[String] = None): Unit = {
