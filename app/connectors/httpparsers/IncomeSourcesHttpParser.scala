@@ -61,7 +61,6 @@ object IncomeSourcesHttpParser {
   object IncomeSourcesInvalidJsonError extends IncomeSourcesError
   object IncomeSourcesServiceUnavailableError extends IncomeSourcesError
   object IncomeSourcesInternalServerError extends IncomeSourcesError
-  object IncomeSourcesNotFoundError extends IncomeSourcesError
   object IncomeSourcesUnhandledError extends IncomeSourcesError
 
 }

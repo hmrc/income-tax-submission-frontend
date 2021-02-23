@@ -19,7 +19,7 @@ package controllers
 
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesInternalServerError, IncomeSourcesNotFoundError, IncomeSourcesResponse}
+import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesInternalServerError, IncomeSourcesResponse}
 import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

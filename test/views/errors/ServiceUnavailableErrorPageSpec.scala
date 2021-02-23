@@ -26,9 +26,9 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import views.html.errors.InternalServerErrorPage
+import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
 
-class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class ServiceUnavailableErrorPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   object Selectors{
     val pageTitle = "head > title"
@@ -40,8 +40,8 @@ class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with GuiceOn
     val link = "#govuk-income-tax-link"
     val link2 = "#main-content > div > div > ul > li:nth-child(2) > p > a"
   }
-
-  val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
+  
+  val internalServerErrorPage: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
 
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -67,11 +67,11 @@ class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with GuiceOn
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
     "have the correct page title" in {
-      elementText(Selectors.pageTitle) shouldBe "Sorry, there is a problem with the service - Update and submit an Income Tax Return - GOV.UK"
+      elementText(Selectors.pageTitle) shouldBe "Sorry, the service is unavailable - Update and submit an Income Tax Return - GOV.UK"
     }
 
     "have the correct page heading" in {
-      elementText(Selectors.pageHeading) shouldBe "Sorry, there is a problem with the service"
+      elementText(Selectors.pageHeading) shouldBe "Sorry, the service is unavailable"
     }
 
     "have the correct links" in {
@@ -80,7 +80,7 @@ class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with GuiceOn
     }
 
     "have the correct paragraph text" in {
-      elementText(Selectors.paragraph) shouldBe "Try again later."
+      elementText(Selectors.paragraph) shouldBe "You will be able to use the service later."
       elementText(Selectors.paragraph2) shouldBe "You can also:"
       elementText(Selectors.paragraph3) shouldBe "go to the Income Tax home page (opens in new tab) for more information"
       elementText(Selectors.paragraph4) shouldBe "use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax"

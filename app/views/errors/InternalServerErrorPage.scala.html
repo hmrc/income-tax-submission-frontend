@@ -22,7 +22,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("errors.500.heading"))) {
+@layout(pageTitle = messages("errors.500.heading")) {
 
    @heading(messages("errors.500.heading"))
 

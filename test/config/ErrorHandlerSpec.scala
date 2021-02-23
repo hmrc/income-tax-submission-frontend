@@ -22,12 +22,9 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.FakeRequest
 import utils.UnitTest
 import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
-import views.html.templates.ErrorTemplate
 
 class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-
-  val errorTemplate: ErrorTemplate = app.injector.instanceOf[ErrorTemplate]
   val serviceUnavailable: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
   val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
   val notFoundPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
@@ -36,7 +33,7 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
 
-  val errorHandler = new ErrorHandler(errorTemplate, messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable)
+  val errorHandler = new ErrorHandler(messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable)
 
   ".handleError" should {
 

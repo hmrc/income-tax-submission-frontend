@@ -83,11 +83,7 @@
 }
 
 @overview = {
-            @if(isAgent) {
-                @heading(messages("overview.agent.heading"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
-            } else {
-                @heading(messages("overview.individual.heading"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
-            }
+            @heading(messages(s"overview.heading.isAgent.$isAgent"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
             <ol class="app-task-list">
                 @if(isAgent) {
                     @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
@@ -100,5 +96,5 @@
                 }
             </ol>
 }
-@layout(pageTitle = Some(messages("service.name")), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(overview)
+@layout(pageTitle = messages(s"overview.title.isAgent.$isAgent"), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(overview)
 

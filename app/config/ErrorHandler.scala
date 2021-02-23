@@ -24,12 +24,11 @@ import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
-import views.html.templates.ErrorTemplate
 
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi,
+class ErrorHandler @Inject()(val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
                              serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
 
