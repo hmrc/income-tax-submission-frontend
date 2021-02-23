@@ -15,13 +15,13 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
 @import views.html.templates.helpers.Link
 
 @this(
         govukLayout: GovukLayout,
-        govukHeader: GovukHeader,
+        hmrcHeader: HmrcHeader,
         head: Head,
         beforeBodyContent: BeforeBodyContent,
         hmrcStandardFooter: HmrcStandardFooter,
@@ -33,14 +33,16 @@
         scriptsBlock: Option[Html] = None,
         isAgent: Boolean = false,
         isOverviewPage: Boolean = false,
-        taxYear: Option[Int] =  None
+        taxYear: Option[Int] =  None,
+        showSignOut: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @headerBlock = {
-    @govukHeader(Header(
-        homepageUrl = Some("https://www.gov.uk/"),
+    @hmrcHeader(Header(
+        homepageUrl = "https://www.gov.uk/",
         serviceName = Some(messages("service.name")),
-        serviceUrl =  Some(controllers.routes.StartPageController.show(taxYear.getOrElse(appConfig.defaultTaxYear)).url)
+        serviceUrl =  controllers.routes.StartPageController.show(taxYear.getOrElse(appConfig.defaultTaxYear)).url,
+        signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut().url) else None
     ))
 }
 
