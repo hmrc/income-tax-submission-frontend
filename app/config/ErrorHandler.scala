@@ -16,17 +16,44 @@
 
 package config
 
+import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesServiceUnavailableError}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
-import play.api.mvc.Request
+import play.api.mvc.Results._
+import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.templates.ErrorTemplate
+import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
+
+import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
+class ErrorHandler @Inject()(val messagesApi: MessagesApi,
+                             internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
+                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
+
   extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    errorTemplate(pageTitle, heading, message)
+    internalServerErrorPage()
+
+  override def notFoundTemplate(implicit request: Request[_]): Html = notFoundPage()
+
+  override def internalServerErrorTemplate(implicit request: Request[_]): Html = internalServerErrorPage()
+
+  def handleError(error: IncomeSourcesError)(implicit request: Request[_]): Result = {
+    error match {
+      case IncomeSourcesServiceUnavailableError => ServiceUnavailable(serviceUnavailablePage())
+      case _ => InternalServerError(internalServerErrorPage())
+    }
+  }
+
+  override def onClientError(requestHeader: RequestHeader, statusCode: Int, message: String): Future[Result] = Future.successful {
+    statusCode match {
+      case play.mvc.Http.Status.NOT_FOUND =>
+        NotFound(notFoundTemplate(requestHeader.withBody("")))
+      case _ =>
+        InternalServerError(internalServerErrorPage()(requestHeader.withBody(""), messagesApi.preferred(requestHeader), appConfig))
+    }
+  }
 }

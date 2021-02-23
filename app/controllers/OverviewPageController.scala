@@ -17,8 +17,9 @@
 package controllers
 
 import common.SessionValues._
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -26,7 +27,6 @@ import services.IncomeSourcesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -36,25 +36,26 @@ class OverviewPageController @Inject()(
                                         implicit val ec: ExecutionContext,
                                         incomeSourcesService: IncomeSourcesService,
                                         overviewPageView: OverviewPageView,
-                                        authorisedAction: AuthorisedAction) extends FrontendController(mcc) with I18nSupport {
+                                        authorisedAction: AuthorisedAction,
+                                        errorHandler: ErrorHandler) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: AppConfig = appConfig
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
     incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
       case Right(incomeSources) => {
-        var result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
+        val result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
 
-        if (incomeSources.dividends.isDefined) {
-          result = result.addingToSession(DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString())
+        val sessionWithDividends = incomeSources.dividends.fold(result) { _ =>
+          result.addingToSession(DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString())
         }
-        if (incomeSources.interest.isDefined) {
-          result = result.addingToSession(INTEREST_PRIOR_SUB -> Json.toJson(incomeSources.interest).toString())
+        val sessionWithInterest = incomeSources.interest.fold(sessionWithDividends) { _ =>
+          sessionWithDividends.addingToSession(INTEREST_PRIOR_SUB -> Json.toJson(incomeSources.interest).toString())
         }
 
-        result
+        sessionWithInterest
       }
-      case _ => Ok(overviewPageView(isAgent = user.isAgent, None, taxYear))
+      case Left(error) => errorHandler.handleError(error)
     }
   }
 
@@ -64,4 +65,3 @@ class OverviewPageController @Inject()(
 
 
 }
-

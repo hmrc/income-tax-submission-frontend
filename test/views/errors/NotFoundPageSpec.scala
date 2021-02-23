@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.errors
 
 import config.AppConfig
 import org.jsoup.Jsoup
@@ -26,25 +26,25 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import views.html.templates.ErrorTemplate
+import views.html.errors.NotFoundPage
 
-class ErrorTemplateViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class NotFoundPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   object Selectors{
-    val pageTitle = "body > header > div > div.govuk-header__content > a"
-    val pageHeading = "#main-content > div > div > h1"
-    val paragraph = "#main-content > div > div > p"
+    val pageTitle = "head > title"
+    val pageHeading = "#main-content > div > div > header > h1"
+    val link = "#govuk-income-tax-link"
+    val paragraph = "#main-content > div > div > p:nth-child(2)"
+    val paragraph2 = "#main-content > div > div > p:nth-child(3)"
+    val paragraph3 = "#main-content > div > div > p:nth-child(4)"
   }
-  val errorTemplateView: ErrorTemplate = app.injector.instanceOf[ErrorTemplate]
+
+  val internalServerErrorPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
 
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
   implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
-  val pageHeading = "This page can’t be found"
-  val pageTitle = "Update and submit an Income Tax Return"
-  val paragraph = "Please check that you have entered the correct web address."
 
   def element(cssSelector: String)(implicit document: Document): Element = {
     val elements = document.select(cssSelector)
@@ -61,19 +61,26 @@ class ErrorTemplateViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPe
 
   "Rendering the error page when there is an error" should {
 
-    lazy val view: Html = errorTemplateView(pageTitle,pageHeading,paragraph)(fakeRequest,messages,mockConfig)
+    lazy val view: Html = internalServerErrorPage()(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
     "have the correct page title" in {
-      elementText(Selectors.pageTitle) shouldBe "Update and submit an Income Tax Return"
+      elementText(Selectors.pageTitle) shouldBe "Page not found - Update and submit an Income Tax Return - GOV.UK"
     }
 
     "have the correct page heading" in {
-      elementText(Selectors.pageHeading) shouldBe "This page can’t be found"
+      elementText(Selectors.pageHeading) shouldBe "Page not found"
+    }
+
+    "have the correct link" in {
+      document.select(Selectors.link).attr("href") shouldBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
+
     }
 
     "have the correct paragraph text" in {
-      elementText(Selectors.paragraph) shouldBe "Please check that you have entered the correct web address."
+      elementText(Selectors.paragraph) shouldBe "If you typed the web address, check it is correct."
+      elementText(Selectors.paragraph2) shouldBe "If you used ‘copy and paste’ to enter the web address, check you copied the full address."
+      elementText(Selectors.paragraph3) shouldBe "If the website address is correct or you selected a link or button, you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
     }
   }
 }

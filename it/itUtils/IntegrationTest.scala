@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package itUtils
 
 import config.AppConfig
 import controllers.predicates.AuthorisedAction

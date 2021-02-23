@@ -18,11 +18,11 @@ package controllers
 
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.AppConfig
+import itUtils.IntegrationTest
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, UNAUTHORIZED}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{Enrolment, _}
-import utils.IntegrationTest
 import views.html.StartPage
 
 import scala.concurrent.Future

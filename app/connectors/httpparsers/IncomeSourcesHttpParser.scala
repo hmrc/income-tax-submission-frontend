@@ -16,36 +16,51 @@
 
 package connectors.httpparsers
 
-
 import models.IncomeSourcesModel
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import utils.PagerDutyHelper.PagerDutyKeys._
+import utils.PagerDutyHelper.pagerDutyLog
 
 object IncomeSourcesHttpParser {
-  type IncomeSourcesResponse = Either[IncomeSourcesException, IncomeSourcesModel]
+  type IncomeSourcesResponse = Either[IncomeSourcesError, IncomeSourcesModel]
 
   implicit object IncomeSourcesHttpReads extends HttpReads[IncomeSourcesResponse] {
     override def read(method: String, url: String, response: HttpResponse): IncomeSourcesResponse = {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
-          jsonErrors => Left(IncomeSourcesInvalidJsonException),
+          jsonErrors => {
+            pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, Some(s"[IncomeSourcesHttpParser][read] Invalid Json from API."))
+            Left(IncomeSourcesInvalidJsonError)
+          },
           parsedModel => Right(parsedModel)
         )
-        case NOT_FOUND => Left(IncomeSourcesNotFoundException)
-        case SERVICE_UNAVAILABLE => Left(IncomeSourcesServiceUnavailableException)
-        case _ => Left(IncomeSourcesUnhandledException)
+        case NO_CONTENT => Right(IncomeSourcesModel())
+        case NOT_FOUND =>
+          pagerDutyLog(NOT_FOUND_FROM_API, logMessage(response))
+          Right(IncomeSourcesModel())
+        case INTERNAL_SERVER_ERROR =>
+          pagerDutyLog(INTERNAL_SERVER_ERROR_FROM_API, logMessage(response))
+          Left(IncomeSourcesInternalServerError)
+        case SERVICE_UNAVAILABLE =>
+          pagerDutyLog(SERVICE_UNAVAILABLE_FROM_API, logMessage(response))
+          Left(IncomeSourcesServiceUnavailableError)
+        case _ =>
+          pagerDutyLog(UNEXPECTED_RESPONSE_FROM_API, logMessage(response))
+          Left(IncomeSourcesUnhandledError)
       }
+    }
+
+    private def logMessage(response:HttpResponse): Option[String] ={
+      Some(s"[IncomeSourcesHttpParser][read] Received ${response.status} from income-sources. Body:${response.body}")
     }
   }
 
+  sealed trait IncomeSourcesError
 
-
-  sealed trait IncomeSourcesException
-
-  object IncomeSourcesInvalidJsonException extends IncomeSourcesException
-  object IncomeSourcesServiceUnavailableException extends IncomeSourcesException
-  object IncomeSourcesNotFoundException extends IncomeSourcesException
-  object IncomeSourcesUnhandledException extends IncomeSourcesException
-
+  object IncomeSourcesInvalidJsonError extends IncomeSourcesError
+  object IncomeSourcesServiceUnavailableError extends IncomeSourcesError
+  object IncomeSourcesInternalServerError extends IncomeSourcesError
+  object IncomeSourcesUnhandledError extends IncomeSourcesError
 
 }
