@@ -26,7 +26,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import views.html.errors.{InternalServerErrorPage, NotFoundPage}
+import views.html.errors.NotFoundPage
 
 class NotFoundPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
