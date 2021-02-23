@@ -45,11 +45,13 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val dividendsLinkText = "Dividends"
   val dividendsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/uk-dividends"
   val dividendsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/check-your-answers"
+  val dividendsNotStartedText = "Not started"
+  val dividendsUpdatedText = "Updated"
   val interestsLinkText = "Interest"
   val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
   val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-your-answers"
-  val notStartedText = "Not started"
-  val updatedText = "Updated"
+  val interestsNotStartedText = "Not started"
+  val interestsUpdatedText = "Updated"
   val viewTaxCalcText = "2. View Tax calculation to date"
   val provideUpdateIndividualText = "Provide at least one update before you can view your estimate."
   val provideUpdateAgentText = "Provide at least one update before you can view your client’s estimate."
@@ -68,8 +70,10 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > span"
   val interestLinkSelector = "#interest_link"
   val interestNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
+  val interestUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
   val dividendsLinkSelector = "#dividends_link"
   val dividendsNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+  val dividendsUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
   val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
   val interestProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > span"
   val viewEstimateSelector = "#calculation_link"
@@ -92,28 +96,25 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
 
-      s"has a view and change breadcrumb of $vcBreadcrumb" in {
-        individualWithNoPriorData.select(vcBreadcrumbSelector).text shouldBe vcBreadcrumb
-        individualWithNoPriorData.select(vcBreadcrumbSelector).attr("href") shouldBe vcBreadcrumbUrl
-      }
-
-      s"has a start page breadcrumb of $startPageBreadcrumb" in {
-        individualWithNoPriorData.select(startPageBreadcrumbSelector).text shouldBe startPageBreadcrumb
-      }
-
-      s"has a overview breadcrumb of $overviewBreadcrumb" in {
-        individualWithNoPriorData.select(overviewBreadcrumbSelector).text shouldBe overviewBreadcrumb
-      }
+      linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+      textOnPageCheck(startPageBreadcrumb, startPageBreadcrumbSelector)
+      textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
       titleCheck(individualHeading)
       h1Check(individualHeading)
       textOnPageCheck(caption, captionSelector)
       textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
       textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
-      linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
-      textOnPageCheck(notStartedText, dividendsNotStartedSelector)
-      linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
-      textOnPageCheck(notStartedText, interestNotStartedSelector)
+
+      "has a dividends section" which{
+        linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+        textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+      }
+
+      "has an interest section" which{
+        linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+        textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+      }
       textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
       textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
       textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -124,28 +125,25 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
 
-      s"has a view and change breadcrumb of $vcBreadcrumb" in {
-        agentWithNoPriorData.select(vcBreadcrumbSelector).text shouldBe vcBreadcrumb
-        agentWithNoPriorData.select(vcBreadcrumbSelector).attr("href") shouldBe vcAgentBreadcrumbUrl
-      }
-
-      s"has a start page breadcrumb of $startPageBreadcrumb" in {
-        agentWithNoPriorData.select(startPageBreadcrumbSelector).text shouldBe startPageBreadcrumb
-      }
-
-      s"has a overviewBreadcrumb of $overviewBreadcrumb" in {
-        agentWithNoPriorData.select(overviewBreadcrumbSelector).text shouldBe overviewBreadcrumb
-      }
+      linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+      textOnPageCheck(startPageBreadcrumb, startPageBreadcrumbSelector)
+      textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
       titleCheck(agentHeading)
       h1Check(agentHeading)
       textOnPageCheck(caption, captionSelector)
       textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
       textOnPageCheck(completeSectionsAgentText, completeSectionsSelector)
-      linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
-      textOnPageCheck(notStartedText, dividendsNotStartedSelector)
-      linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
-      textOnPageCheck(notStartedText, interestNotStartedSelector)
+
+      "has a dividends section" which{
+        linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+        textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+      }
+
+      "has an interest section" which{
+        linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+        textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+      }
       textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
       textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
       textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -159,28 +157,26 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
 
-      s"has a view and change breadcrumb of $vcBreadcrumb" in {
-        individualWithPriorData.select(vcBreadcrumbSelector).text shouldBe vcBreadcrumb
-        individualWithPriorData.select(vcBreadcrumbSelector).attr("href") shouldBe vcBreadcrumbUrl
-      }
-
-      s"has a start page breadcrumb of $startPageBreadcrumb" in {
-        individualWithPriorData.select(startPageBreadcrumbSelector).text shouldBe startPageBreadcrumb
-      }
-
-      s"has a overviewBreadcrumb of $overviewBreadcrumb" in {
-        individualWithPriorData.select(overviewBreadcrumbSelector).text shouldBe overviewBreadcrumb
-      }
+      linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+      textOnPageCheck(startPageBreadcrumb, startPageBreadcrumbSelector)
+      textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
       titleCheck(individualHeading)
       h1Check(individualHeading)
       textOnPageCheck(caption, captionSelector)
       textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
       textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
-      linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
-      textOnPageCheck(updatedText, dividendsNotStartedSelector)
-      linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
-      textOnPageCheck(updatedText, interestNotStartedSelector)
+
+      "has a dividends section" which{
+        linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
+        textOnPageCheck(dividendsUpdatedText, dividendsUpdatedSelector)
+      }
+
+      "has an interest section" which{
+        linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
+        textOnPageCheck(interestsUpdatedText, interestUpdatedSelector)
+      }
+
       textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
       linkCheck(viewEstimateLinkText, viewEstimateSelector, viewEstimateLink)
       textOnPageCheck(submitReturnText, submitReturnSelector)

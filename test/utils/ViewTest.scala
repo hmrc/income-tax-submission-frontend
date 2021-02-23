@@ -62,7 +62,7 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
 
   def h1Check(header: String)(implicit document: Document): Unit = {
     s"have a page heading of '$header'" in {
-      document.select("#header").text() shouldBe header
+      document.select("#main-content > div > div > header > h1").text() shouldBe header
     }
   }
 

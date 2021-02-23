@@ -64,6 +64,9 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
+    linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcBreadcrumbUrl)
+    textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
+
     titleCheck(pageTitleText)
     h1Check(pageHeadingText)
     textOnPageCheck(useThisServiceText, Selectors.p1)
@@ -79,14 +82,8 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest,messages,mockConfig)
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
-    s"has a view and change breadcrumb of $vcBreadcrumb" in {
-      elementText(Selectors.vcBreadcrumbSelector) shouldBe vcBreadcrumb
-      document.select(Selectors.vcBreadcrumbSelector).attr("href") shouldBe vcAgentBreadcrumbUrl
-    }
-
-    s"has a start page breadcrumb of $startPageBreadcrumb" in {
-      elementText(Selectors.startPageBreadcrumbSelector) shouldBe startPageBreadcrumb
-    }
+    linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+    textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
 
     titleCheck(pageTitleText)
     h1Check(pageHeadingText)
