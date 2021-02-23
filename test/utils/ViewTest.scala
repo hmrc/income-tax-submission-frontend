@@ -32,7 +32,7 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
   implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   val serviceName = "Update and submit an Income Tax Return"
-  val govUkExtension = "Gov.UK"
+  val govUkExtension = "GOV.UK"
 
   type IntString = Int => String
 

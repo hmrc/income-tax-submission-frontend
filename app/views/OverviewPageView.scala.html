@@ -83,7 +83,7 @@
 }
 
 @overview = {
-            @heading(messages(s"overview.title.isAgent.$isAgent"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
+            @heading(messages(s"overview.heading.isAgent.$isAgent"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
             <ol class="app-task-list">
                 @if(isAgent) {
                     @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))

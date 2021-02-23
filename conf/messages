@@ -5,7 +5,7 @@ common.opensInNewWindowOrTab = (opens in new tab)
 
 common.help.getHelpWithThisPage = Get help with this page
 
-common.govUk = Gov.UK
+common.govUk = GOV.UK
 
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
