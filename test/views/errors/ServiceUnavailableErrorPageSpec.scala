@@ -33,12 +33,12 @@ class ServiceUnavailableErrorPageSpec extends AnyWordSpec with Matchers with Gui
   object Selectors{
     val pageTitle = "head > title"
     val pageHeading = "#main-content > div > div > header > h1"
-    val paragraph = "#main-content > div > div > p"
-    val paragraph2 = "#main-content > div > div > p:nth-child(3)"
-    val paragraph3 = "#main-content > div > div > ul > li:nth-child(1) > p"
-    val paragraph4 = "#main-content > div > div > ul > li:nth-child(2) > p"
+    val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
+    val paragraph2 = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+    val paragraph3 = "#main-content > div > div > ul > li:nth-child(1)"
+    val paragraph4 = "#main-content > div > div > ul > li:nth-child(2)"
     val link = "#govuk-income-tax-link"
-    val link2 = "#main-content > div > div > ul > li:nth-child(2) > p > a"
+    val link2 = "#govuk-self-assessment-link"
   }
   
   val internalServerErrorPage: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]

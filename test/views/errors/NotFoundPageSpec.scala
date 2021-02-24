@@ -34,9 +34,9 @@ class NotFoundPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuit
     val pageTitle = "head > title"
     val pageHeading = "#main-content > div > div > header > h1"
     val link = "#govuk-income-tax-link"
-    val paragraph = "#main-content > div > div > p:nth-child(2)"
-    val paragraph2 = "#main-content > div > div > p:nth-child(3)"
-    val paragraph3 = "#main-content > div > div > p:nth-child(4)"
+    val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
+    val paragraph2 = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+    val paragraph3 = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
   }
 
   val internalServerErrorPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]

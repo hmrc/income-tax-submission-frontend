@@ -23,21 +23,15 @@
 
 @layout(pageTitle = messages("errors.500.heading")) {
 
-   @heading(messages("errors.500.heading"))
+    @heading(messages("errors.500.heading"))
 
-   <p class="govuk-body">@messages("errors.500.p1")</p>
+    <div class="govuk-body">
+        <p>@messages("errors.500.p1")</p>
+        <p>@messages("errors.500.p2")</p>
+    </div>
 
-   <p class="govuk-body">@messages("errors.500.p2")</p>
-   <ul>
-       <li>
-           <p class="govuk-body">
-               @messages("errors.500.p3") <a href="https://www.gov.uk/income-tax" class="govuk-link" id= "govuk-income-tax-link" target="_blank">@messages("errors.500.p4")</a> @messages("errors.500.p5")
-           </p>
-       </li>
-       <li>
-           <p class="govuk-body">
-               @messages("errors.500.p6") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link" id= "govuk-self-assessment-link" target="_blank">@messages("errors.500.p7")</a> @messages("errors.500.p8")
-           </p>
-       </li>
-   </ul>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("errors.500.p3") <a href="https://www.gov.uk/income-tax" class="govuk-link" id= "govuk-income-tax-link" target="_blank">@messages("errors.500.p4")</a> @messages("errors.500.p5")</li>
+        <li>@messages("errors.500.p6") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link" id= "govuk-self-assessment-link" target="_blank">@messages("errors.500.p7")</a> @messages("errors.500.p8")</li>
+    </ul>
 }

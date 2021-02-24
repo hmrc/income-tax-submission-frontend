@@ -25,19 +25,14 @@
 
     @heading(messages("errors.503.heading"))
 
-    <p class="govuk-body">@messages("errors.503.p1")</p>
+    <div class="govuk-body">
+        <p>@messages("errors.503.p1")</p>
+        <p>@messages("errors.503.p2")</p>
+    </div>
 
-    <p class="govuk-body">@messages("errors.503.p2")</p>
-    <ul>
-        <li>
-            <p class="govuk-body">
-                @messages("errors.503.p3") <a href="https://www.gov.uk/income-tax" target="_blank" class="govuk-link" id= "govuk-income-tax-link">@messages("errors.503.p4")</a> @messages("errors.503.p5")
-            </p>
-        </li>
-        <li>
-            <p class="govuk-body">
-             @messages("errors.503.p6") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link" target="_blank" >@messages("errors.503.p7")</a> @messages("errors.503.p8")
-            </p>
-        </li>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("errors.503.p3") <a href="https://www.gov.uk/income-tax" target="_blank" class="govuk-link" id= "govuk-income-tax-link">@messages("errors.503.p4")</a> @messages("errors.503.p5")</li>
+        <li>@messages("errors.503.p6") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link" target="_blank" id= "govuk-self-assessment-link" >@messages("errors.503.p7")</a> @messages("errors.503.p8")</li>
     </ul>
+
 }
