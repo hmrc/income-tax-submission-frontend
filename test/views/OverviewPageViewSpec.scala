@@ -35,6 +35,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
   val vcBreadcrumb = "Income Tax"
   val startPageBreadcrumb = "Update and submit an Income Tax Return"
+  val startPageBreadcrumbUrl = s"/income-through-software/return/$taxYear/start"
   val overviewBreadcrumb = "Your Income Tax Return"
   val caption = s"$taxYearMinusOne to $taxYear Income Tax"
   val individualHeading = "Your Income Tax Return"
@@ -97,7 +98,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
       lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
 
       linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
-      textOnPageCheck(startPageBreadcrumb, startPageBreadcrumbSelector)
+      linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
       textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
       titleCheck(individualHeading)
@@ -126,7 +127,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
       lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
 
       linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
-      textOnPageCheck(startPageBreadcrumb, startPageBreadcrumbSelector)
+      linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
       textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
       titleCheck(agentHeading)
@@ -158,7 +159,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
       lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
 
       linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
-      textOnPageCheck(startPageBreadcrumb, startPageBreadcrumbSelector)
+      linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
       textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
       titleCheck(individualHeading)
