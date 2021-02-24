@@ -29,9 +29,14 @@ class MockAppConfig extends MockFactory {
     override lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/index"
     override lazy val personalIncomeTaxSubmissionBaseUrl: String = "/personalIncomeTaxSubmissionFrontend"
     override lazy val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
-    override def personalIncomeTaxDividendsUrl(taxYear: Int): String =  s"$personalIncomeTaxSubmissionUrl/2021/dividends"
-    override def personalIncomeTaxInterestUrl(taxYear: Int): String =  s"$personalIncomeTaxSubmissionUrl/2021/interest"
+
+    override def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/2021/dividends"
+
+    override def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/2021/interest"
+
     override def viewAndChangeCalculationUrl(taxYear: Int): String = s"/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
+
+    override lazy val defaultTaxYear: Int = 2021
 
     override lazy val feedbackSurveyUrl: String = "/feedbackUrl"
 

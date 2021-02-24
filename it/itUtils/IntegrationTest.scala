@@ -29,6 +29,7 @@ import play.api.mvc.MessagesControllerComponents
 import services.AuthService
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.HeaderCarrier
+import views.html.authErrorPages.AgentAuthErrorPageView
 
 import scala.concurrent.{Await, Awaitable, Future}
 import scala.concurrent.duration.Duration
@@ -65,6 +66,7 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite
     super.afterAll()
   }
 
+  lazy val agentAuthErrorPage: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
   lazy val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
   val defaultAcceptedConfidenceLevels = Seq(
@@ -78,7 +80,8 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite
   )
 
   def authAction(stubbedRetrieval: Future[_], acceptedConfidenceLevel: Seq[ConfidenceLevel] = Seq.empty[ConfidenceLevel]) = new AuthorisedAction(
-    appConfig
+    appConfig,
+    agentAuthErrorPage
   )(
     authService(stubbedRetrieval, if(acceptedConfidenceLevel.nonEmpty) {
       acceptedConfidenceLevel

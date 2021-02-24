@@ -19,6 +19,7 @@ package controllers.predicates
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import models.User
 import play.api.http.Status._
+import play.api.i18n.Messages
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.auth.core._
@@ -129,7 +130,7 @@ class AuthorisedActionSpec extends UnitTest {
             .expects(*, *, *, *)
             .returning(Future.successful(enrolments))
 
-          auth.agentAuthentication(block, arn, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
+          auth.agentAuthentication(block, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
 
         "has a status of OK" in {
@@ -149,7 +150,8 @@ class AuthorisedActionSpec extends UnitTest {
 
         lazy val result = {
           mockAuthReturnException(AuthException)
-          auth.agentAuthentication(block, arn, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
+
+          auth.agentAuthentication(block, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
         status(result) shouldBe UNAUTHORIZED
       }
@@ -163,7 +165,7 @@ class AuthorisedActionSpec extends UnitTest {
 
         lazy val result = {
           mockAuthReturnException(NoActiveSession)
-          auth.agentAuthentication(block, arn, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
+          auth.agentAuthentication(block, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
 
         status(result) shouldBe SEE_OTHER
@@ -181,7 +183,7 @@ class AuthorisedActionSpec extends UnitTest {
           (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
             .expects(*, *, *, *)
             .returning(Future.successful(enrolments))
-          auth.agentAuthentication(block, arn, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
+          auth.agentAuthentication(block, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
         status(result) shouldBe FORBIDDEN
       }

@@ -18,9 +18,11 @@ package controllers.predicates
 
 import common.{EnrolmentIdentifiers, EnrolmentKeys, SessionValues}
 import config.AppConfig
+
 import javax.inject.Inject
 import models.User
 import play.api.Logger
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.Results._
 import play.api.mvc._
 import services.AuthService
@@ -29,18 +31,22 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolment
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import views.html.authErrorPages.AgentAuthErrorPageView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisedAction @Inject()(
-                                  appConfig: AppConfig
+                                  appConfig: AppConfig,
+                                  val agentAuthErrorPage: AgentAuthErrorPageView
                                 )(
                                   implicit val authService: AuthService,
                                   val mcc: MessagesControllerComponents
-                                ) extends ActionBuilder[User, AnyContent] {
+                                ) extends ActionBuilder[User, AnyContent] with I18nSupport{
 
   implicit val executionContext: ExecutionContext = mcc.executionContext
   lazy val logger: Logger = Logger.apply(this.getClass)
+  implicit val config: AppConfig = appConfig
+  implicit val messagesApi = mcc.messagesApi
 
   override def parser: BodyParser[AnyContent] = mcc.parsers.default
 
@@ -77,13 +83,13 @@ class AuthorisedAction @Inject()(
     }
 
     (userIdentifier, optionalNino) match {
-      case (Some(userId), Some(nino)) => if (isAgent) agentAuthentication(block, userId, nino) else individualAuthentication(block, enrolments, userId, nino)
+      case (Some(userId), Some(nino)) => if (isAgent) agentAuthentication(block, nino) else individualAuthentication(block, enrolments, userId, nino)
       case (_, None) => Future.successful(Redirect(appConfig.signInUrl))
       case (None, _) => Future.successful(Unauthorized("No relevant identifier. Is agent: " + isAgent))
     }
   }
 
-  private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], userId: String, nino: String)
+  private[predicates] def agentAuthentication[A](block: User[A] => Future[Result], nino: String)
                                                 (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
 
     val agentDelegatedAuthRuleKey = "mtd-it-auth"
@@ -104,7 +110,7 @@ class AuthorisedAction @Inject()(
               block(User(mtditid, Some(arn),nino))
             case None =>
               logger.debug("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-              Future.successful(Forbidden("")) //TODO add agent unauthorised page
+              Future.successful(Forbidden(""))
           }
         } recover {
           case _: NoActiveSession =>
@@ -112,7 +118,7 @@ class AuthorisedAction @Inject()(
             Redirect(appConfig.signInUrl) //TODO Check this is the correct location
           case ex: AuthorisationException =>
             logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
-            Unauthorized("") //TODO Redirect to unauthorised page
+            Unauthorized(agentAuthErrorPage())
         }
       case None =>
         Future.successful(Unauthorized("No MTDITID in session."))
