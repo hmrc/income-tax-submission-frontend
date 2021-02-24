@@ -54,12 +54,44 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
     !document.select(selector).isEmpty
   }
 
-  def assertTitle(title: String)(implicit document: Document): Assertion = {
-    elementText("title") shouldBe title
+  def titleCheck(title: String)(implicit document: Document): Unit = {
+    s"has a title of $title" in {
+      document.title() shouldBe s"$title - $serviceName - $govUkExtension"
+    }
   }
 
-  def assertH1(text: String)(implicit document: Document): Assertion = {
-    elementText("h1") shouldBe text
+  def h1Check(header: String)(implicit document: Document): Unit = {
+    s"have a page heading of '$header'" in {
+      document.select("#main-content > div > div > header > h1").text() shouldBe header
+    }
+  }
+
+  def textOnPageCheck(text: String, selector: String)(implicit document: Document): Unit = {
+    s"have text on the screen of '$text'" in {
+      document.select(selector).text() shouldBe text
+    }
+  }
+
+  def buttonCheck(text: String, selector: String, href: String)(implicit document: Document): Unit = {
+    s"have a $text button" which {
+      s"has the text '$text'" in {
+        document.select(selector).text() shouldBe text
+      }
+      s"has a href to '$href'" in {
+        document.select(selector).attr("href") shouldBe href
+      }
+    }
+  }
+
+  def linkCheck(text: String, selector: String, href: String)(implicit document: Document): Unit = {
+    s"have a $text link" which {
+      s"has the text '$text'" in {
+        document.select(selector).text() shouldBe text
+      }
+      s"has a href to '$href'" in {
+        document.select(selector).attr("href") shouldBe href
+      }
+    }
   }
 
   def assertCaption(text: String, selector: String = ".govuk-caption-l")(implicit document: Document): Assertion = {
