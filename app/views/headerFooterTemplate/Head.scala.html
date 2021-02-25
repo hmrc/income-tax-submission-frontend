@@ -19,7 +19,7 @@
 
 @this(hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet, hmrcTimeoutDialog: HmrcTimeoutDialog)
 
-@(headBlock: Option[Html] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(headBlock: Option[Html] = None, timeout: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @headBlock
 
 @hmrcTrackingConsentSnippet(nonce = CSPNonce.get)
@@ -28,12 +28,14 @@
 <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
 <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
 
-@hmrcTimeoutDialog(
-   TimeoutDialog(
-       timeout = Some(appConfig.timeoutDialogTimeout),
-       countdown = Some(appConfig.timeoutDialogCountdown),
-       keepAliveUrl = Some("/keep-alive"),
-       signOutUrl = Some("/timeout"),
-       language = Some(messages.lang.code)
-   )
-)
+@if(timeout) {
+    @hmrcTimeoutDialog(
+       TimeoutDialog(
+           timeout = Some(appConfig.timeoutDialogTimeout),
+           countdown = Some(appConfig.timeoutDialogCountdown),
+           keepAliveUrl = Some("/income-through-software/return/keep-alive"),
+           signOutUrl = Some("/income-through-software/return/timeout"),
+           language = Some(messages.lang.code)
+       )
+    )
+}
