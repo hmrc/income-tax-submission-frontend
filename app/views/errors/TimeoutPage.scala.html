@@ -22,7 +22,7 @@
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = messages("timeout.heading"), timeout = false) {
+@layout(pageTitle = messages("timeout.heading"), timeout = false, showSignOut = false) {
 
     @heading(messages("timeout.heading"))
 
