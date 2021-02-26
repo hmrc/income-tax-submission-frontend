@@ -74,7 +74,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
     textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
     textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
-    buttonCheck(continueButtonText, Selectors.continueButton, continueButtonHref)
+    buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
   }
 
   "Rendering the start page when the user is an agent" should {
@@ -92,6 +92,6 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
     textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
     textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
-    buttonCheck(continueButtonText, Selectors.continueButton, continueButtonHref)
+    buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
   }
 }
