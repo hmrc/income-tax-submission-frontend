@@ -18,11 +18,9 @@ package controllers.predicates
 
 import common.{EnrolmentIdentifiers, EnrolmentKeys, SessionValues}
 import config.AppConfig
-
-import javax.inject.Inject
 import models.User
 import play.api.Logger
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.Results._
 import play.api.mvc._
 import services.AuthService
@@ -33,6 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import views.html.authErrorPages.AgentAuthErrorPageView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisedAction @Inject()(
@@ -126,7 +125,7 @@ class AuthorisedAction @Inject()(
   }
 
   private[predicates] def individualAuthentication[A](block: User[A] => Future[Result], enrolments: Enrolments, mtditid: String, nino: String)
-                                                     (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
+                                                     (implicit request: Request[A]): Future[Result] = {
     enrolments.enrolments.collectFirst {
       case Enrolment(EnrolmentKeys.Individual, enrolmentIdentifiers, _, _)
         if enrolmentIdentifiers.exists(identifier => identifier.key == EnrolmentIdentifiers.individualId) =>

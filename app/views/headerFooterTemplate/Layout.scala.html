@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
 @import views.html.templates.helpers.Link
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardHeader
 
 @this(
         govukLayout: GovukLayout,
-        hmrcHeader: HmrcHeader,
+        hmrcHeader: HmrcStandardHeader,
         head: Head,
         beforeBodyContent: BeforeBodyContent,
         hmrcStandardFooter: HmrcStandardFooter,
@@ -38,12 +37,11 @@
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @headerBlock = {
-    @hmrcHeader(Header(
-        homepageUrl = "https://www.gov.uk/",
+    @hmrcHeader(
         serviceName = Some(messages("service.name")),
-        serviceUrl =  controllers.routes.StartPageController.show(taxYear.getOrElse(appConfig.defaultTaxYear)).url,
-        signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut().url) else None
-    ))
+        serviceUrl =  Some(controllers.routes.StartPageController.show(taxYear.getOrElse(appConfig.defaultTaxYear)).url),
+        signOutUrl = if(showSignOut) Some(controllers.routes.SignOutController.signOut().url) else None
+    )
 }
 
 @content = {
