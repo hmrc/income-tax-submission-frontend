@@ -10,3 +10,6 @@ GET        /sign-out                       controllers.SignOutController.signOut
 GET        /:taxYear/start                 controllers.StartPageController.show(taxYear: Int)
 GET        /:taxYear/view                  controllers.OverviewPageController.show(taxYear: Int)
 GET        /:taxYear/calculate             controllers.OverviewPageController.getCalculation(taxYear: Int)
+
+GET        /keep-alive                     controllers.SessionExpiredController.keepAlive
+GET        /timeout                        controllers.SessionExpiredController.timeout

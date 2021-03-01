@@ -43,7 +43,7 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
   def element(selector: String)(implicit document: Document): Element = {
     val elements = document.select(selector)
 
-    if(elements.size() == 0) {
+    if (elements.size() == 0) {
       fail(s"No elements exist with the selector '$selector'")
     }
 
@@ -72,13 +72,22 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
     }
   }
 
-  def buttonCheck(text: String, selector: String, href: String)(implicit document: Document): Unit = {
-    s"have a $text button" which {
-      s"has the text '$text'" in {
-        document.select(selector).text() shouldBe text
+  def buttonCheck(text: String, selector: String, href: Option[String] = None)(implicit document: Document): Unit = {
+
+    if (href.isDefined) {
+      s"have a $text button" which {
+        s"has the text '$text'" in {
+          document.select(selector).text() shouldBe text
+        }
+        s"has a href to '${href.get}'" in {
+          document.select(selector).attr("href") shouldBe href.get
+        }
       }
-      s"has a href to '$href'" in {
-        document.select(selector).attr("href") shouldBe href
+    } else {
+      s"have a $text button" which {
+        s"has the text '$text'" in {
+          document.select(selector).text() shouldBe text
+        }
       }
     }
   }

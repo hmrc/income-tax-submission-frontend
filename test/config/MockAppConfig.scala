@@ -45,6 +45,10 @@ class MockAppConfig extends MockFactory {
     override lazy val contactUrl: String = "/contact-frontend/contact"
 
     override lazy val signOutUrl: String = "/sign-out-url"
+
+    override lazy val timeoutDialogCountdown: Int = 120
+
+    override lazy val timeoutDialogTimeout: Int = 900
   }
 
 }

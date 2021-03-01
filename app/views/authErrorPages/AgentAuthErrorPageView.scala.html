@@ -21,12 +21,14 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @layout(messages("error.agent.title")) {
-@heading(messages("error.agent.title"), "")
-<p class="govuk-body">@{messages("error.agent.paragraph1")}
-    <a class="govuk-link" id="client_auth_link", href="https://www.gov.uk/guidance/client-authorisation-an-overview" target="_blank" rel="noopener noreferrer">
-     @{messages("error.agent.paragraph2")}</a>
- @{messages("error.agent.paragraph3")}
-</p>
-<p class="govuk-body">@{messages("error.agent.paragraph4")}</p>
+
+    @heading(messages("error.agent.title"), "")
+
+    <p class="govuk-body">@{messages("error.agent.paragraph1")}
+        <a class="govuk-link" id="client_auth_link", href="https://www.gov.uk/guidance/client-authorisation-an-overview" target="_blank" rel="noopener noreferrer">
+         @{messages("error.agent.paragraph2")}</a>
+     @{messages("error.agent.paragraph3")}
+    </p>
+    <p class="govuk-body">@{messages("error.agent.paragraph4")}</p>
 
 }

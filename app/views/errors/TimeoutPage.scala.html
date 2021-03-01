@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package common
+@import views.html.headerFooterTemplate.Layout
+@import views.html.templates.helpers.Heading
+@import views.html.templates.helpers.Button
 
-object SessionValues {
-  val CLIENT_MTDITID = "MTDITID"
-  val CLIENT_NINO = "NINO"
+@this(heading : Heading, layout: Layout, formHelper: FormWithCSRF, button: Button)
 
-  val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
-  val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "CALCULATION_ID"
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-  val TAX_YEAR = "TAX_YEAR"
+@layout(pageTitle = messages("timeout.heading"), timeout = false, showSignOut = false) {
+
+    @heading(messages("timeout.heading"))
+
+    <div class="govuk-body">
+        <p>@messages("timeout.p1")</p>
+    </div>
+
+    @formHelper(postAction) {
+        @button("timeout.button")
+    }
+
 }

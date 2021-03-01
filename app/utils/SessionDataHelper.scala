@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package common
+package utils
 
-object SessionValues {
-  val CLIENT_MTDITID = "MTDITID"
-  val CLIENT_NINO = "NINO"
+import play.api.libs.json.{Json, Reads}
+import play.api.mvc.Request
 
-  val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
-  val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "CALCULATION_ID"
-
-  val TAX_YEAR = "TAX_YEAR"
+trait SessionDataHelper {
+  def getSessionData[T](key: String)(implicit request: Request[_], reads: Reads[T]): Option[T] = {
+    request.session.get(key).flatMap { stringValue =>
+      Json.parse(stringValue).asOpt[T]
+    }
+  }
 }

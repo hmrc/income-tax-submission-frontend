@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package common
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-object SessionValues {
-  val CLIENT_MTDITID = "MTDITID"
-  val CLIENT_NINO = "NINO"
+@this(govukButton : GovukButton)
 
-  val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
-  val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "CALCULATION_ID"
+@(alternativeText: String = "startPage.continue", classes: Option[String] = None)(implicit messages: Messages)
 
-  val TAX_YEAR = "TAX_YEAR"
-}
+@govukButton(Button(
+    attributes = Map("id" -> "continue"),
+    preventDoubleClick = true,
+    content = Text(messages(alternativeText)),
+    classes = classes.getOrElse("")
+))
