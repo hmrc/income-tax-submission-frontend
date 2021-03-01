@@ -89,6 +89,9 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
           document.select(selector).text() shouldBe text
         }
       }
+      s"has a role of button" in {
+        document.select(selector).attr("role") shouldBe "button"
+      }
     }
   }
 

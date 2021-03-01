@@ -66,7 +66,6 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcBreadcrumbUrl)
     textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
-
     titleCheck(pageTitleText)
     h1Check(pageHeadingText)
     textOnPageCheck(useThisServiceText, Selectors.p1)
