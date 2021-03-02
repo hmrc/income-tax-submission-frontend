@@ -19,13 +19,12 @@ package controllers.predicates
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import models.User
 import play.api.http.Status._
-import play.api.i18n.Messages
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
 
@@ -80,7 +79,7 @@ class AuthorisedActionSpec extends UnitTest {
         val mtditid = "AAAAAA"
         val enrolments = Enrolments(Set(Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated")))
 
-        lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid, nino)(fakeRequest, emptyHeaderCarrier)
+        lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid, nino)(fakeRequest)
 
         "returns an OK status" in {
           status(result) shouldBe OK
@@ -100,7 +99,7 @@ class AuthorisedActionSpec extends UnitTest {
         val mtditid = "AAAAAA"
         val enrolments = Enrolments(Set(Enrolment("notAnIndividualOops", Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated")))
 
-        lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid, nino)(fakeRequest, emptyHeaderCarrier)
+        lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid, nino)(fakeRequest)
 
         "returns a forbidden" in {
           status(result) shouldBe FORBIDDEN
@@ -114,7 +113,6 @@ class AuthorisedActionSpec extends UnitTest {
   ".agentAuthenticated" should {
 
     val block: User[AnyContent] => Future[Result] = user => Future.successful(Ok(s"${user.mtditid} ${user.arn.get}"))
-    val arn = "0987654321"
 
     "perform the block action" when {
 
