@@ -82,7 +82,7 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
         s"has a href to '${href.get}'" in {
           document.select(selector).attr("href") shouldBe href.get
         }
-        s"has a role of button" in {
+        "has a role of button" in {
           document.select(selector).attr("role") shouldBe "button"
         }
       }
