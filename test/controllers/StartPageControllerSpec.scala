@@ -29,7 +29,7 @@ import views.html.StartPage
 
 class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "1234567890", "NINO" -> "AA123456A")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
