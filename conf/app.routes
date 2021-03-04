@@ -13,3 +13,6 @@ GET        /:taxYear/calculate             controllers.OverviewPageController.ge
 
 GET        /keep-alive                     controllers.SessionExpiredController.keepAlive
 GET        /timeout                        controllers.SessionExpiredController.timeout
+
+GET        /iv-uplift                      controllers.IVUpliftController.initialiseJourney
+GET        /iv-uplift-callback             controllers.IVUpliftController.callback

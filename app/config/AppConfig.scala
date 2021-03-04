@@ -75,6 +75,18 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
   lazy val signOutUrl: String = s"$basGatewayUrl/bas-gateway/sign-out-without-state"
 
+  private lazy val ivUrl = {
+    val ivBaseUrl = servicesConfig.baseUrl("identity-verification-frontend")
+    servicesConfig.getConfString("identity-verification-frontend.relativeUrl", ivBaseUrl)
+  }
+
+  lazy val ivSuccessUrl: String = s"$appUrl/income-through-software/return/iv-uplift-callback"
+  lazy val ivFailureUrl: String = s"$appUrl/income-through-software/return/error/we-could-not-confirm-your-details"
+
+  lazy val ivUpliftUrl: String = {
+    s"$ivUrl/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
+  }
+
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")
   lazy val timeoutDialogCountdown: Int = servicesConfig.getInt("timeoutDialogCountdown")
 
