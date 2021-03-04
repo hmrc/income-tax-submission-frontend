@@ -16,7 +16,7 @@ breadcrumb.incomeTaxAccount = Income Tax
 breadcrumb.updateSubmitIncomeTaxReturn = Update and submit an Income Tax Return
 breadcrumb.yourIncomeTaxReturn = Your Income Tax Return
 
-startPage.taxYear = {0} to {1} Income Tax
+startPage.taxYear = 6 April {0} to 5 April {1}
 startPage.title = Update and submit an Income Tax Return
 startPage.heading = Update and submit an Income Tax Return
 startPage1 = Use this service to update and submit an Income Tax Return.
@@ -28,7 +28,7 @@ startPage3.agent.true = To update your client’s self-employment and property i
 startPage3.agent.false = To update your self-employment and property income, you must use your chosen commercial software.
 startPage.continue = Continue
 
-overview.caption = {0} to {1} Income Tax
+overview.caption = 6 April {0} to 5 April {1}
 
 overview.task1.heading = Provide updates
 overview.agent.task1.caption = Complete the sections that apply to your client.
