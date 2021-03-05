@@ -54,7 +54,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val fakeRequestWithMtditid: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("MTDITID" -> "1234567890", "NINO" -> "AA123456A")
+  val fakeRequestWithMtditid: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   val mockAppConfig: AppConfig = new MockAppConfig().config

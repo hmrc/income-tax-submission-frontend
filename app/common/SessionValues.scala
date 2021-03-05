@@ -17,12 +17,12 @@
 package common
 
 object SessionValues {
-  val CLIENT_MTDITID = "MTDITID"
-  val CLIENT_NINO = "NINO"
+  val CLIENT_MTDITID = "ClientMTDID"
+  val CLIENT_NINO = "ClientNino"
 
   val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
   val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "CALCULATION_ID"
+  val CALCULATION_ID = "calculationId"
 
   val TAX_YEAR = "TAX_YEAR"
 }

@@ -43,7 +43,7 @@ import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "12234567890", "NINO" -> "AA123456A")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession("ClientMTDID" -> "12234567890", "ClientNino" -> "AA123456A")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
