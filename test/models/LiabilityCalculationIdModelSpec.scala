@@ -23,7 +23,7 @@ class LiabilityCalculationIdModelSpec extends UnitTest {
 
   val model: LiabilityCalculationIdModel = LiabilityCalculationIdModel("calId")
   val jsonModel: JsObject = Json.obj(
-    "incomeSourceId" -> "calId"
+    "id" -> "calId"
   )
 
   "LiabilityCalculationIdModelSpec" should {
