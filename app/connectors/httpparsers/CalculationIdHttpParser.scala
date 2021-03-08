@@ -19,7 +19,7 @@ package connectors.httpparsers
 import models.LiabilityCalculationIdModel
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-import utils.PagerDutyHelper.PagerDutyKeys._
+import utils.PagerDutyHelper.PagerDutyKeys.{FOURXX_RESPONSE_FROM_DES, _}
 import utils.PagerDutyHelper.pagerDutyLog
 
 object CalculationIdHttpParser {
@@ -41,6 +41,9 @@ object CalculationIdHttpParser {
         case SERVICE_UNAVAILABLE =>
           pagerDutyLog(SERVICE_UNAVAILABLE_FROM_API, logMessage(response))
           Left(CalculationIdErrorServiceUnavailableError)
+        case BAD_REQUEST | NOT_FOUND | CONFLICT =>
+          pagerDutyLog(FOURXX_RESPONSE_FROM_DES, logMessage(response))
+          Left(CalculationIdErrorFourxxError)
         case _ =>
           pagerDutyLog(UNEXPECTED_RESPONSE_FROM_API, logMessage(response))
           Left(CalculationIdErrorUnhandledError)
@@ -55,6 +58,7 @@ object CalculationIdHttpParser {
   sealed trait CalculationIdError
 
   object CalculationIdErrorInvalidJsonError extends CalculationIdError
+  object CalculationIdErrorFourxxError extends CalculationIdError
   object CalculationIdErrorServiceUnavailableError extends CalculationIdError
   object CalculationIdErrorInternalServerError extends CalculationIdError
   object CalculationIdErrorUnhandledError extends CalculationIdError

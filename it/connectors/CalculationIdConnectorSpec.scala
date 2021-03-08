@@ -78,6 +78,15 @@ class CalculationIdConnectorSpec extends IntegrationTest {
     "return a CalculationIdErrorUnhandledError" in {
         val expectedResult = CalculationIdErrorUnhandledError
 
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", GONE, "{}")
+
+        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
+
+        result shouldBe Left(expectedResult)
+      }
+    "return a CalculationIdErrorFourxxError" in {
+        val expectedResult = CalculationIdErrorFourxxError
+
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", BAD_REQUEST, "{}")
 
         val result = await(connector.getCalculationId(nino, taxYear, mtditid))
