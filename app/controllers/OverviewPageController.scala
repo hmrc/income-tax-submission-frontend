@@ -18,14 +18,18 @@ package controllers
 
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
+import connectors.httpparsers.CalculationIdHttpParser.CalculationIdErrorServiceUnavailableError
 import controllers.predicates.AuthorisedAction
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
+import play.api.mvc.Results.{InternalServerError, ServiceUnavailable}
 import play.api.mvc._
-import services.IncomeSourcesService
+import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
+import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,8 +39,11 @@ class OverviewPageController @Inject()(
                                         mcc: MessagesControllerComponents,
                                         implicit val ec: ExecutionContext,
                                         incomeSourcesService: IncomeSourcesService,
+                                        calculationIdService: CalculationIdService,
                                         overviewPageView: OverviewPageView,
                                         authorisedAction: AuthorisedAction,
+                                        internalServerErrorPage: InternalServerErrorPage,
+                                        serviceUnavailablePage: ServiceUnavailablePage,
                                         errorHandler: ErrorHandler) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: AppConfig = appConfig
@@ -60,7 +67,13 @@ class OverviewPageController @Inject()(
   }
 
   def getCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
-    Future.successful(Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> ""))
+    calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
+      case Right(calculationId) =>
+        Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+      case Left(CalculationIdErrorServiceUnavailableError) => ServiceUnavailable(serviceUnavailablePage())
+      case Left(_) => InternalServerError(internalServerErrorPage())
+    }
+
   }
 
 
