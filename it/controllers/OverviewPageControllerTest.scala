@@ -23,11 +23,12 @@ import models.{DividendsModel, InterestModel}
 import play.api.libs.ws.WSClient
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER, UNAUTHORIZED}
-import services.IncomeSourcesService
+import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.auth.core.{Enrolment, _}
 import views.html.OverviewPageView
+import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
 
 import scala.concurrent.Future
 
@@ -44,8 +45,11 @@ class OverviewPageControllerTest extends IntegrationTest {
     mcc,
     scala.concurrent.ExecutionContext.Implicits.global,
     app.injector.instanceOf[IncomeSourcesService],
+    app.injector.instanceOf[CalculationIdService],
     app.injector.instanceOf[OverviewPageView],
     authAction(stubbedRetrieval),
+    app.injector.instanceOf[InternalServerErrorPage],
+    app.injector.instanceOf[ServiceUnavailablePage],
     app.injector.instanceOf[ErrorHandler]
   )
 
