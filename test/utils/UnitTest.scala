@@ -34,6 +34,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.authErrorPages.AgentAuthErrorPageView
@@ -85,7 +86,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     ) ++ ninoEnrolment)
     (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
       .expects(*, *, *, *)
-      .returning(Future.successful(new ~(enrolments, None)))
+      .returning(Future.successful(enrolments and Some(AffinityGroup.Individual) and ConfidenceLevel.L200))
   }
 
   //noinspection ScalaStyle
@@ -95,8 +96,8 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
     ))
     (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup, *, *)
-      .returning(Future.successful(new ~(enrolments, Some(AffinityGroup.Agent))))
+      .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup and Retrievals.confidenceLevel, *, *)
+      .returning(Future.successful(enrolments and Some(AffinityGroup.Agent) and ConfidenceLevel.L200))
 
     (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
       .expects(*, *, *, *)

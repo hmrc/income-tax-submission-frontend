@@ -17,33 +17,41 @@
 package controllers
 
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import itUtils.IntegrationTest
+import models.{DividendsModel, InterestModel}
+import play.api.libs.ws.WSClient
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER, UNAUTHORIZED}
+import services.IncomeSourcesService
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.auth.core.{Enrolment, _}
-import views.html.StartPage
+import views.html.OverviewPageView
 
 import scala.concurrent.Future
 
-class StartPageControllerTest extends IntegrationTest {
+class OverviewPageControllerTest extends IntegrationTest {
 
   private val taxYear = 2021
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  def controller(stubbedRetrieval: Future[_]): StartPageController = new StartPageController(
-    authAction(stubbedRetrieval),
-    app.injector.instanceOf[StartPage],
+  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
+
+  def controller(stubbedRetrieval: Future[_]): OverviewPageController = new OverviewPageController(
     frontendAppConfig,
-    mcc
+    mcc,
+    scala.concurrent.ExecutionContext.Implicits.global,
+    app.injector.instanceOf[IncomeSourcesService],
+    app.injector.instanceOf[OverviewPageView],
+    authAction(stubbedRetrieval),
+    app.injector.instanceOf[ErrorHandler]
   )
 
   "Hitting the show endpoint" should {
 
-    s"return an OK ($OK)" when {
+    s"return an OK ($OK) and no prior data" when {
 
       "all auth requirements are met" in {
         val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
@@ -52,6 +60,39 @@ class StartPageControllerTest extends IntegrationTest {
             Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
           )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
         )
+
+        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2021&mtditid=1234567890", OK, "{}")
+
+        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
+
+        result.header.status shouldBe OK
+      }
+
+    }
+
+    s"return an OK ($OK) with prior data" when {
+
+      "all auth requirements are met" in {
+        val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
+          Enrolments(Set(
+            Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None),
+            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
+          )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
+        )
+
+        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2021&mtditid=1234567890", OK,
+          """{
+            |	"dividends": {
+            |		"ukDividends": 69.99,
+            |		"otherUkDividends": 63.99
+            |	},
+            |	"interest": [{
+            |		"accountName": "BANK",
+            |		"incomeSourceId": "12345678908765432",
+            |		"taxedUkInterest": 44.66,
+            |		"untaxedUkInterest": 66.44
+            |	}]
+            |}""".stripMargin)
 
         val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
 

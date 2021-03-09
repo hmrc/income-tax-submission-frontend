@@ -113,7 +113,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
     request.session.get(SessionValues.CLIENT_MTDITID) match {
       case Some(mtditid) =>
         authService
-          .authorised(agentAuthPredicate(mtditid) and ConfidenceLevel.L200)
+          .authorised(agentAuthPredicate(mtditid))
           .retrieve(allEnrolments) { enrolments =>
 
             enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {

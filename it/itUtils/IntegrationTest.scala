@@ -75,19 +75,15 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite
     ConfidenceLevel.L500
   )
 
-  def authService(stubbedRetrieval: Future[_], acceptedConfidenceLevel: Seq[ConfidenceLevel]) = new AuthService(
-    new MockAuthConnector(stubbedRetrieval, acceptedConfidenceLevel)
+  def authService(stubbedRetrieval: Future[_]) = new AuthService(
+    new MockAuthConnector(stubbedRetrieval)
   )
 
-  def authAction(stubbedRetrieval: Future[_], acceptedConfidenceLevel: Seq[ConfidenceLevel] = Seq.empty[ConfidenceLevel]) = new AuthorisedAction(
+  def authAction(stubbedRetrieval: Future[_]) = new AuthorisedAction(
     appConfig,
     agentAuthErrorPage
   )(
-    authService(stubbedRetrieval, if(acceptedConfidenceLevel.nonEmpty) {
-      acceptedConfidenceLevel
-    } else {
-      defaultAcceptedConfidenceLevels
-    }),
+    authService(stubbedRetrieval),
     mcc
   )
 
