@@ -46,6 +46,8 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
   implicit val config: AppConfig = appConfig
   implicit val messagesApi: MessagesApi = mcc.messagesApi
 
+  val minimumConfidenceLevel: Int = ConfidenceLevel.L200.level
+
   override def parser: BodyParser[AnyContent] = mcc.parsers.default
 
   override def invokeBlock[A](request: Request[A], block: User[A] => Future[Result]): Future[Result] = {
@@ -55,7 +57,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
     authService.authorised.retrieve(allEnrolments and affinityGroup and confidenceLevel) {
       case enrolments ~ Some(AffinityGroup.Agent) ~ _ =>
         checkAuthorisation(block, enrolments, isAgent = true)(request, headerCarrier)
-      case enrolments ~ _ ~ (L200 | L300 | L500) =>
+      case enrolments ~ _ ~ confidenceLevel if confidenceLevel.level >= minimumConfidenceLevel =>
         checkAuthorisation(block, enrolments)(request, headerCarrier)
       case _ =>
         logger.info("[AuthorisedAction][invokeBlock] User has confidence level below 200, routing user to IV uplift.")
@@ -64,7 +66,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
       case _: NoActiveSession =>
         logger.info(s"[AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
         Redirect(appConfig.signInUrl) //TODO Check this is the correct location
-      case e: NoSuchElementException => {
+      case e: NoSuchElementException =>
         if (e.getMessage.contains("Illegal confidence level")) {
           logger.error("[AuthorisedAction][invokeBlock] User has invalid confidence level, routing user to IV uplift.")
           Redirect(routes.IVUpliftController.initialiseJourney())
@@ -72,7 +74,6 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
           logger.error("[AuthorisedAction][invokeBlock] Received NoSuchElementException form auth when retrieving confidence level.")
           Unauthorized("")
         }
-      }
       case _: AuthorisationException =>
         logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
         Unauthorized("") //TODO Redirect to unauthorised page
