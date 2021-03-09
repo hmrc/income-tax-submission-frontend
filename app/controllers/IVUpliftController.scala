@@ -32,10 +32,12 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
   def initialiseJourney: Action[AnyContent] = Action { _ =>
+    //TODO Implement handoff audit event
     Redirect(appConfig.ivUpliftUrl)
   }
 
   def callback: Action[AnyContent] = Action { implicit request =>
+    //TODO Implement success audit event
     getSessionData[Int](SessionValues.TAX_YEAR) match {
       case Some(taxYear) => Redirect(routes.StartPageController.show(taxYear))
       case None => Redirect(routes.StartPageController.show(appConfig.defaultTaxYear))
