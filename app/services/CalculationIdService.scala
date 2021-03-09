@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package common
+package services
 
-object SessionValues {
-  val CLIENT_MTDITID = "ClientMTDID"
-  val CLIENT_NINO = "ClientNino"
+import connectors.CalculationIdConnector
+import connectors.httpparsers.CalculationIdHttpParser.CalculationIdResponse
+import uk.gov.hmrc.http.HeaderCarrier
 
-  val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
-  val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "calculationId"
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
-  val TAX_YEAR = "TAX_YEAR"
+
+@Singleton
+class CalculationIdService @Inject()(calculationIdConnector: CalculationIdConnector) {
+  def getCalculationId(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[CalculationIdResponse] =
+    calculationIdConnector.getCalculationId(nino, taxYear, mtditid)
+
 }

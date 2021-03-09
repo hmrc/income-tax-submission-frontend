@@ -37,7 +37,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val startPageBreadcrumb = "Update and submit an Income Tax Return"
   val startPageBreadcrumbUrl = s"/income-through-software/return/$taxYear/start"
   val overviewBreadcrumb = "Your Income Tax Return"
-  val caption = s"$taxYearMinusOne to $taxYear Income Tax"
+  val caption = s"6 April $taxYearMinusOne to 5 April $taxYear"
   val individualHeading = "Your Income Tax Return"
   val agentHeading = "Your client’s Income Tax Return"
   val provideUpdatesText = "1. Provide updates"

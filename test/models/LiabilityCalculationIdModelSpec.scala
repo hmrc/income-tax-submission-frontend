@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object SessionValues {
-  val CLIENT_MTDITID = "ClientMTDID"
-  val CLIENT_NINO = "ClientNino"
+import play.api.libs.json.{JsObject, Json}
+import utils.UnitTest
 
-  val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
-  val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "calculationId"
+class LiabilityCalculationIdModelSpec extends UnitTest {
 
-  val TAX_YEAR = "TAX_YEAR"
+  val model: LiabilityCalculationIdModel = LiabilityCalculationIdModel("calId")
+  val jsonModel: JsObject = Json.obj(
+    "id" -> "calId"
+  )
+
+  "LiabilityCalculationIdModelSpec" should {
+
+    "parse to Json" in {
+      Json.toJson(model) shouldBe jsonModel
+    }
+
+    "parse from Json" in {
+      jsonModel.as[LiabilityCalculationIdModel]
+    }
+  }
+
 }

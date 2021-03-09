@@ -45,6 +45,8 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.host" -> wiremockHost,
     "microservice.services.income-tax-submission.port" -> wiremockPort.toString,
+    "microservice.services.income-tax-calculation.host" -> wiremockHost,
+    "microservice.services.income-tax-calculation.port" -> wiremockPort.toString,
     "microservice.services.auth.host" -> wiremockHost,
     "microservice.services.auth.port" -> wiremockPort.toString
   )

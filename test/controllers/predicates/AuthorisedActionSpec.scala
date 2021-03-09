@@ -241,14 +241,14 @@ class AuthorisedActionSpec extends UnitTest {
       "the enrolments do not contain an MTDITID for a user" in {
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
           Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-        )))(fakeRequest.withSession("NINO" -> "AA123456A"), emptyHeaderCarrier)
+        )))(fakeRequest.withSession("ClientNino" -> "AA123456A"), emptyHeaderCarrier)
 
         status(result) shouldBe UNAUTHORIZED
       }
 
       "the enrolments do not contain an AgentReferenceNumber for an agent" in {
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set.empty[Enrolment]), isAgent = true)(
-          fakeRequest.withSession("NINO" -> "AA123456A"),
+          fakeRequest.withSession("ClientNino" -> "AA123456A"),
           emptyHeaderCarrier
         )
 
@@ -314,7 +314,7 @@ class AuthorisedActionSpec extends UnitTest {
             .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup and Retrievals.confidenceLevel, *, *)
             .returning(Future.successful(enrolments and Some(AffinityGroup.Agent) and ConfidenceLevel.L200))
 
-          auth.invokeBlock(fakeRequest.withSession("NINO" -> "AA123456A"), block)
+          auth.invokeBlock(fakeRequest.withSession("ClientNino" -> "AA123456A"), block)
         }
         status(result) shouldBe UNAUTHORIZED
       }

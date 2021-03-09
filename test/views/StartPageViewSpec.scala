@@ -35,6 +35,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   val startPageBreadcrumb = "Update and submit an Income Tax Return"
   val pageTitleText = "Update and submit an Income Tax Return"
   val pageHeadingText = "Update and submit an Income Tax Return"
+  val caption = s"6 April ${taxYear - 1} to 5 April $taxYear"
   val useThisServiceText = "Use this service to update and submit an Income Tax Return."
   val newServiceText = "This is a new service. At the moment you can only update information about:"
   val bullet1InterestPaidAgentText = "interest paid to your client in the UK"
@@ -49,6 +50,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
     val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2)"
     val pageHeading = "#main-content > div > div > header > h1"
+    val caption = "#main-content > div > div > header > p"
     val p1 = "#main-content > div > div > div:nth-child(2) > p:nth-child(1)"
     val p2 = "#main-content > div > div > div:nth-child(2) > p:nth-child(2)"
     val bullet1 = "#main-content > div > div > ul > li:nth-child(1)"
@@ -68,6 +70,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
     titleCheck(pageTitleText)
     h1Check(pageHeadingText)
+    textOnPageCheck(caption, Selectors.caption)
     textOnPageCheck(useThisServiceText, Selectors.p1)
     textOnPageCheck(newServiceText, Selectors.p2)
     textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
@@ -86,6 +89,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     titleCheck(pageTitleText)
     h1Check(pageHeadingText)
+    textOnPageCheck(caption, Selectors.caption)
     textOnPageCheck(useThisServiceText, Selectors.p1)
     textOnPageCheck(newServiceText, Selectors.p2)
     textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)

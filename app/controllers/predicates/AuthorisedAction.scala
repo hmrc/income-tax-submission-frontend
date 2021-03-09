@@ -62,7 +62,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         Future(Redirect(routes.IVUpliftController.initialiseJourney()))
     } recover {
       case _: NoActiveSession =>
-        logger.debug(s"[AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
+        logger.info(s"[AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
         Redirect(appConfig.signInUrl) //TODO Check this is the correct location
       case e: NoSuchElementException => {
         if (e.getMessage.contains("Illegal confidence level")) {
@@ -74,7 +74,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         }
       }
       case _: AuthorisationException =>
-        logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
+        logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
         Unauthorized("") //TODO Redirect to unauthorised page
     }
   }
@@ -120,15 +120,15 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
               case Some(arn) =>
                 block(User(mtditid, Some(arn), nino))
               case None =>
-                logger.debug("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+                logger.info("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
                 Future.successful(Forbidden(""))
             }
           } recover {
           case _: NoActiveSession =>
-            logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
+            logger.info(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
             Redirect(appConfig.signInUrl) //TODO Check this is the correct location
           case ex: AuthorisationException =>
-            logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
+            logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
             Unauthorized(agentAuthErrorPage())
         }
       case None =>
@@ -153,7 +153,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         if enrolmentIdentifiers.exists(identifier => identifier.key == EnrolmentIdentifiers.individualId) =>
         block(User(mtditid, None, nino))
     } getOrElse {
-      logger.warn("[AuthorisedAction][IndividualAuthentication] Non-agent with an invalid MTDITID.")
+      logger.info("[AuthorisedAction][IndividualAuthentication] Non-agent with an invalid MTDITID.")
       Future.successful(Forbidden("")) //TODO send to an unauthorised page
     }
   }

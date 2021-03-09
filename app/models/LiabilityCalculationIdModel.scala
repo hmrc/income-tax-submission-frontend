@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object SessionValues {
-  val CLIENT_MTDITID = "ClientMTDID"
-  val CLIENT_NINO = "ClientNino"
+import play.api.libs.json.{Json, OFormat}
 
-  val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
-  val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "calculationId"
+case class LiabilityCalculationIdModel(id: String)
 
-  val TAX_YEAR = "TAX_YEAR"
+object LiabilityCalculationIdModel{
+  implicit val formats: OFormat[LiabilityCalculationIdModel] = Json.format[LiabilityCalculationIdModel]
 }

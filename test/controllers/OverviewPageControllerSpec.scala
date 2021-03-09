@@ -19,8 +19,9 @@ package controllers
 
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
+import connectors.httpparsers.CalculationIdHttpParser.{CalculationIdErrorInternalServerError, CalculationIdErrorServiceUnavailableError, CalculationIdResponse}
 import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesInternalServerError, IncomeSourcesResponse}
-import models.{DividendsModel, IncomeSourcesModel, InterestModel}
+import models.{LiabilityCalculationIdModel, DividendsModel, IncomeSourcesModel, InterestModel}
 import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
@@ -31,19 +32,19 @@ import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import services.IncomeSourcesService
+import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
 import views.html.OverviewPageView
-import views.html.errors.InternalServerErrorPage
+import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
 
 import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/").withSession("MTDITID" -> "12234567890", "NINO" -> "AA123456A")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession("ClientMTDID" -> "12234567890", "ClientNino" -> "AA123456A")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
@@ -52,8 +53,11 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
+  private val serviceUnavailablePageView: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
+  private val internalServerErrorPageView: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
   private val mockErrorHandler = mock[ErrorHandler]
+  private val mockCalculationIdService = mock[CalculationIdService]
 
   private val nino = Some("AA123456A")
   private val taxYear = 2020
@@ -108,8 +112,25 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       .returning(result)
   }
 
+  def mockGetCalculationId():CallHandler4[String, Int, String, HeaderCarrier, Future[CalculationIdResponse]] = {
+    (mockCalculationIdService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(Right(LiabilityCalculationIdModel("calculationId"))))
+  }
+  def mockGetCalculationIdInternalServiceError():CallHandler4[String, Int, String, HeaderCarrier, Future[CalculationIdResponse]] = {
+    (mockCalculationIdService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(Left(CalculationIdErrorInternalServerError)))
+  }
+  def mockGetCalculationIdServiceUnavailableError():CallHandler4[String, Int, String, HeaderCarrier, Future[CalculationIdResponse]] = {
+    (mockCalculationIdService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(Left(CalculationIdErrorServiceUnavailableError)))
+  }
+
   private val controller = new OverviewPageController(
-    frontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, mockIncomeSourcesService, overviewPageView, authorisedAction, mockErrorHandler
+    frontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, mockIncomeSourcesService, mockCalculationIdService,
+    overviewPageView, authorisedAction, internalServerErrorPageView, serviceUnavailablePageView, mockErrorHandler
   )
 
   "calling the individual action" when {
@@ -268,22 +289,39 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
     "The user is an individual" should {
 
-      "GET '/' for an individual and return a redirect" in {
+      "GET '/' for an individual and return a redirect with calculationId in session" in {
 
         val result = {
           mockAuth(nino)
+          mockGetCalculationId()
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.SEE_OTHER
+        session(result).get(CALCULATION_ID) shouldBe Some("calculationId")
       }
 
-      "Set a session value " in {
+      "return a serviceUnavailableErrorPage" in {
+
         val result = {
           mockAuth(nino)
+          mockGetCalculationIdServiceUnavailableError()
+          controller.getCalculation(taxYear)(fakeGetRequest)
+
+        }
+        status(result) shouldBe Status.SERVICE_UNAVAILABLE
+      }
+
+      "return a InternalServerErrorPage" in {
+
+        val result = {
+          mockAuth(nino)
+          mockGetCalculationIdInternalServiceError()
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
-        session(result).get(CALCULATION_ID) shouldBe Some("")
+        status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       }
+
+
     }
 
     "The user is an agent" should {
@@ -292,18 +330,34 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuthAsAgent()
+          mockGetCalculationId()
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.SEE_OTHER
+        session(result).get(CALCULATION_ID) shouldBe Some("calculationId")
       }
 
-      "Set a session value " in {
+      "return a serviceUnavailableErrorPage" in {
+
         val result = {
-          mockAuthAsAgent()
+          mockAuth(nino)
+          mockGetCalculationIdServiceUnavailableError()
+          controller.getCalculation(taxYear)(fakeGetRequest)
+
+        }
+        status(result) shouldBe Status.SERVICE_UNAVAILABLE
+      }
+
+      "return a InternalServerErrorPage" in {
+
+        val result = {
+          mockAuth(nino)
+          mockGetCalculationIdInternalServiceError()
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
-        session(result).get(CALCULATION_ID) shouldBe Some("")
+        status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       }
+
     }
   }
 }
