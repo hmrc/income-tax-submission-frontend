@@ -46,6 +46,9 @@ class IVFailureControllerSpec extends UnitTest with DefaultAwaitTimeout {
         "return status code OK if no id is supplied" in {
           status(response(None)) shouldBe OK
         }
+        "return status code OK if no id is supplied and default to session id" in {
+          status(controller.show(None)(fakeRequest.withSession("sessionId" -> "sesh id"))) shouldBe OK
+        }
       }
     }
   }

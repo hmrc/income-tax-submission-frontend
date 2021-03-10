@@ -42,7 +42,7 @@ class IVFailureController @Inject()(implicit appConfig: AppConfig,
 
     if(journeyId.isEmpty){
       logger.warn(s"[IVFailureController][show] JourneyId from IV journey is empty. Defaulting journeyId for audit purposes." +
-        s"${sessionId.map(id => s"SessionId: $id")}")
+        s"${if(sessionId.isDefined) s" SessionId: ${sessionId.get}" else ""}")
     }
 
     val idForAuditing: String = journeyId.getOrElse(sessionId.getOrElse(UUID.randomUUID().toString))

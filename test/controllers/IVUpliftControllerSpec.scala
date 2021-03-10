@@ -46,10 +46,15 @@ class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout {
       "callback() is called it" should {
 
         val response = controller.callback()(fakeRequest)
+        val response2 = controller.callback()(fakeRequest.withSession("TAX_YEAR" -> "2022"))
 
         "return status code 303" in {
           status(response) shouldBe SEE_OTHER
           await(response).header.headers shouldBe Map("Location" -> "/income-through-software/return/2021/start")
+        }
+        "return status code 303 when there is a tax year in session" in {
+          status(response2) shouldBe SEE_OTHER
+          await(response2).header.headers shouldBe Map("Location" -> "/income-through-software/return/2022/start")
         }
       }
     }
