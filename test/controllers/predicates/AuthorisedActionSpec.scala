@@ -264,6 +264,27 @@ class AuthorisedActionSpec extends UnitTest {
     lazy val block: User[AnyContent] => Future[Result] = user =>
       Future.successful(Ok(s"mtditid: ${user.mtditid}${user.arn.fold("")(arn => " arn: " + arn)}"))
 
+    "return the user to IV Uplift" when {
+      "the confidence level is invalid" which {
+
+        object ConfidenceLevelError extends NoSuchElementException("Illegal confidence level of 0")
+        object AuthError extends NoSuchElementException("Error auth")
+
+        def result(a:NoSuchElementException): Future[Result] = {
+          mockAuthReturnException(a)
+          auth.invokeBlock(fakeRequest, block)
+        }
+
+        "should return a 303" in {
+          status(result(ConfidenceLevelError)) shouldBe SEE_OTHER
+          await(result(ConfidenceLevelError)).header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
+        }
+        "should return a 401 if different message" in {
+          status(result(AuthError)) shouldBe UNAUTHORIZED
+        }
+      }
+    }
+
     "perform the block action" when {
 
       "the user is successfully verified as an agent" which {
