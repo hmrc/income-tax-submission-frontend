@@ -81,8 +81,8 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
     servicesConfig.getConfString("identity-verification-frontend.relativeUrl", ivBaseUrl)
   }
 
-  lazy val ivSuccessUrl: String = s"$appUrl/income-through-software/return/iv-uplift-callback"
-  lazy val ivFailureUrl: String = s"$appUrl/income-through-software/return/error/we-could-not-confirm-your-details"
+  lazy val ivSuccessUrl: String = s"/income-through-software/return/iv-uplift-callback"
+  lazy val ivFailureUrl: String = s"/income-through-software/return/error/we-could-not-confirm-your-details"
 
   lazy val ivUpliftUrl: String = {
     s"$ivUrl/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
