@@ -71,7 +71,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
           logger.error("[AuthorisedAction][invokeBlock] User has invalid confidence level, routing user to IV uplift.")
           Redirect(routes.IVUpliftController.initialiseJourney())
         } else {
-          logger.error("[AuthorisedAction][invokeBlock] Received NoSuchElementException form auth when retrieving confidence level.")
+          logger.error(s"[AuthorisedAction][invokeBlock] Received NoSuchElementException form auth. Exception: ${e.getMessage}")
           Unauthorized("")
         }
       case _: AuthorisationException =>
