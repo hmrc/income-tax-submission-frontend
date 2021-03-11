@@ -1,15 +1,20 @@
 # microservice specific routes
 
-->         /govuk-frontend                 govuk.Routes
-->         /hmrc-frontend                  hmrcfrontend.Routes
+->         /govuk-frontend                              govuk.Routes
+->         /hmrc-frontend                               hmrcfrontend.Routes
 
-GET        /assets/*file                   controllers.Assets.versioned(path = "/public", file: Asset)
+GET        /assets/*file                                controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /sign-out                       controllers.SignOutController.signOut()
+GET        /sign-out                                    controllers.SignOutController.signOut()
 
-GET        /:taxYear/start                 controllers.StartPageController.show(taxYear: Int)
-GET        /:taxYear/view                  controllers.OverviewPageController.show(taxYear: Int)
-GET        /:taxYear/calculate             controllers.OverviewPageController.getCalculation(taxYear: Int)
+GET        /:taxYear/start                              controllers.StartPageController.show(taxYear: Int)
+GET        /:taxYear/view                               controllers.OverviewPageController.show(taxYear: Int)
+GET        /:taxYear/calculate                          controllers.OverviewPageController.getCalculation(taxYear: Int)
 
-GET        /keep-alive                     controllers.SessionExpiredController.keepAlive
-GET        /timeout                        controllers.SessionExpiredController.timeout
+GET        /keep-alive                                  controllers.SessionExpiredController.keepAlive
+GET        /timeout                                     controllers.SessionExpiredController.timeout
+
+GET        /iv-uplift                                   controllers.IVUpliftController.initialiseJourney
+GET        /iv-uplift-callback                          controllers.IVUpliftController.callback
+
+GET        /error/we-could-not-confirm-your-details     controllers.IVFailureController.show(journeyId: Option[String] ?= None)

@@ -25,6 +25,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
 
@@ -263,6 +264,27 @@ class AuthorisedActionSpec extends UnitTest {
     lazy val block: User[AnyContent] => Future[Result] = user =>
       Future.successful(Ok(s"mtditid: ${user.mtditid}${user.arn.fold("")(arn => " arn: " + arn)}"))
 
+    "return the user to IV Uplift" when {
+      "the confidence level is invalid" which {
+
+        object ConfidenceLevelError extends NoSuchElementException("Illegal confidence level of 0")
+        object AuthError extends NoSuchElementException("Error auth")
+
+        def result(a:NoSuchElementException): Future[Result] = {
+          mockAuthReturnException(a)
+          auth.invokeBlock(fakeRequest, block)
+        }
+
+        "should return a 303" in {
+          status(result(ConfidenceLevelError)) shouldBe SEE_OTHER
+          await(result(ConfidenceLevelError)).header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
+        }
+        "should return a 401 if different message" in {
+          status(result(AuthError)) shouldBe UNAUTHORIZED
+        }
+      }
+    }
+
     "perform the block action" when {
 
       "the user is successfully verified as an agent" which {
@@ -310,8 +332,8 @@ class AuthorisedActionSpec extends UnitTest {
             Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
           ))
           (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup, *, *)
-            .returning(Future.successful(new ~(enrolments, Some(AffinityGroup.Agent))))
+            .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup and Retrievals.confidenceLevel, *, *)
+            .returning(Future.successful(enrolments and Some(AffinityGroup.Agent) and ConfidenceLevel.L200))
 
           auth.invokeBlock(fakeRequest.withSession("ClientNino" -> "AA123456A"), block)
         }
