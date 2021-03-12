@@ -31,7 +31,7 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                    mcc: MessagesControllerComponents,
                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
-  def initialiseJourney: Action[AnyContent] = Action { _ =>
+  def initialiseJourney: Action[AnyContent] = Action { implicit request =>
     //TODO Implement handoff audit event
     Redirect(appConfig.ivUpliftUrl)
   }
