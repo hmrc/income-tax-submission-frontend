@@ -21,6 +21,8 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
 
@@ -32,6 +34,9 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
   def initialiseJourney: Action[AnyContent] = Action { implicit request =>
+
+    implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+
     //TODO Implement handoff audit event
     Redirect(appConfig.ivUpliftUrl)
   }
