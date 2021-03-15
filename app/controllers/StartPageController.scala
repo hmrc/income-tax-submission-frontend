@@ -17,12 +17,14 @@
 package controllers
 
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, TaxYearAction}
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.StartPage
+import TaxYearAction.taxYearAction
 
 import scala.concurrent.Future
 
@@ -31,9 +33,9 @@ import scala.concurrent.Future
 class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
                                     val startPageView: StartPage,
                                     implicit val appConfig: AppConfig,
-                                    val mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+                                    implicit val mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
-  def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     Future.successful(Ok(startPageView(isAgent = user.isAgent, taxYear)))
   }
 
