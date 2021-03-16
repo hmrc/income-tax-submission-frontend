@@ -22,7 +22,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class MockAppConfig extends MockFactory {
 
-  val config = new AppConfig(mock[ServicesConfig]) {
+  val config: AppConfig = new AppConfig(mock[ServicesConfig]) {
     override lazy val signInContinueUrl: String = "/signInContinue"
     override lazy val signInUrl: String = "/signIn"
     override lazy val incomeTaxSubmissionBaseUrl: String = "/incomeTaxSubmission"
@@ -53,6 +53,8 @@ class MockAppConfig extends MockFactory {
     override lazy val timeoutDialogCountdown: Int = 120
 
     override lazy val timeoutDialogTimeout: Int = 900
+
+    override lazy val taxYearErrorFeature: Boolean = true
   }
 
 }

@@ -18,3 +18,5 @@ GET        /iv-uplift                                   controllers.IVUpliftCont
 GET        /iv-uplift-callback                          controllers.IVUpliftController.callback
 
 GET        /error/we-could-not-confirm-your-details     controllers.IVFailureController.show(journeyId: Option[String] ?= None)
+
+GET        /error/wrong-tax-year                        controllers.TaxYearErrorController.show

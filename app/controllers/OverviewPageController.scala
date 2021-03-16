@@ -20,7 +20,7 @@ import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import connectors.httpparsers.CalculationIdHttpParser.CalculationIdErrorServiceUnavailableError
 import controllers.predicates.AuthorisedAction
-
+import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class OverviewPageController @Inject()(
                                         appConfig: AppConfig,
-                                        mcc: MessagesControllerComponents,
+                                        implicit val mcc: MessagesControllerComponents,
                                         implicit val ec: ExecutionContext,
                                         incomeSourcesService: IncomeSourcesService,
                                         calculationIdService: CalculationIdService,
@@ -48,7 +48,7 @@ class OverviewPageController @Inject()(
 
   implicit val config: AppConfig = appConfig
 
-  def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
       case Right(incomeSources) => {
         val result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))

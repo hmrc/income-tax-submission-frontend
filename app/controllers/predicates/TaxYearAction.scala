@@ -16,32 +16,39 @@
 
 package controllers.predicates
 
+import common.SessionValues
 import config.AppConfig
 import models.User
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc._
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearAction @Inject()(taxYear: Int)(
-                               appConfig: AppConfig,
-                               val mcc: MessagesControllerComponents
-                             ) extends ActionRefiner[User, User] with I18nSupport {
+  appConfig: AppConfig,
+  val messages: MessagesApi
+) extends ActionRefiner[User, User] with I18nSupport {
 
-  implicit val executionContext: ExecutionContext = mcc.executionContext
+  implicit val executionContext: ExecutionContext = ExecutionContext.global
   lazy val logger: Logger = Logger.apply(this.getClass)
   implicit val config: AppConfig = appConfig
-  implicit val messagesApi: MessagesApi = mcc.messagesApi
+  implicit val messagesApi: MessagesApi = messages
 
-  override protected def refine[A](request: User[A]): Future[Either[Result, User[A]]] = {
-    Future.successful(if(taxYear == 2020) Right(request) else Left(InternalServerError("You didn't say the magic word")))
+  override def refine[A](request: User[A]): Future[Either[Result, User[A]]] = {
+    Future.successful(
+      if (taxYear == appConfig.defaultTaxYear || !appConfig.taxYearErrorFeature) {
+        Right(request)
+      } else {
+        Left(Redirect(controllers.routes.TaxYearErrorController.show()).addingToSession(SessionValues.TAX_YEAR -> config.defaultTaxYear.toString)(request))
+      }
+    )
   }
-
 }
 
 object TaxYearAction {
-  def taxYearAction(taxYear: Int)(implicit appConfig: AppConfig, messages: MessagesControllerComponents) = new TaxYearAction(taxYear)(appConfig, messages)
+  def taxYearAction(taxYear: Int)(implicit appConfig: AppConfig, messages: MessagesApi): TaxYearAction =
+    new TaxYearAction(taxYear)(appConfig, messages)
 }

@@ -98,3 +98,6 @@ ivFailurePage.li2 = you have failed to answer enough questions correctly
 ivFailurePage.li3 = we could not match your details to our system
 
 signout.button = Sign out
+
+error.tax-year.paragraph1 = You can only enter information for the 2021 to 2022 tax year.
+error.tax-year.paragraph2 = Check that you’ve entered the correct web address.
