@@ -40,6 +40,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val controller = new StartPageController(authorisedAction, startPageView, mockFrontendAppConfig, stubMessagesControllerComponents())
 
   private val nino: Option[String] = Some("AA123456A")
+  private val taxYear = 2022
 
   "calling the individual action" when {
 
@@ -49,7 +50,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
-          controller.show(2020)(fakeGetRequest)
+          controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -57,7 +58,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "return HTML" in {
         val result = {
           mockAuth(nino)
-          controller.show(2020)(fakeGetRequest)
+          controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
@@ -73,7 +74,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuthAsAgent()
-          controller.show(2020)(fakeGetRequest)
+          controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -81,7 +82,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "return HTML" in {
         val result = {
           mockAuthAsAgent()
-          controller.show(2020)(fakeGetRequest)
+          controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")

@@ -60,7 +60,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val mockCalculationIdService = mock[CalculationIdService]
 
   private val nino = Some("AA123456A")
-  private val taxYear = 2020
+  private val taxYear = 2022
 
   def mockGetIncomeSourcesValid(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
     val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(

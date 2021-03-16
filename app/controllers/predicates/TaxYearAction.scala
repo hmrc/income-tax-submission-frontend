@@ -42,7 +42,9 @@ class TaxYearAction @Inject()(taxYear: Int)(
       if (taxYear == appConfig.defaultTaxYear || !appConfig.taxYearErrorFeature) {
         Right(request)
       } else {
-        Left(Redirect(controllers.routes.TaxYearErrorController.show()).addingToSession(SessionValues.TAX_YEAR -> config.defaultTaxYear.toString)(request))
+        logger.info(s"Invalid tax year, adding default tax year to session")
+        Left(Redirect(controllers.routes.TaxYearErrorController.show())
+          .addingToSession(SessionValues.TAX_YEAR -> config.defaultTaxYear.toString)(request))
       }
     )
   }
