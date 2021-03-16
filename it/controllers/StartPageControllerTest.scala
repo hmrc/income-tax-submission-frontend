@@ -30,7 +30,7 @@ import scala.concurrent.Future
 
 class StartPageControllerTest extends IntegrationTest {
 
-  private val taxYear = 2021
+  private val taxYear = 2022
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

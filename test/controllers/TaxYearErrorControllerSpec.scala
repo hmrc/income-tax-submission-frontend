@@ -25,9 +25,9 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
-import views.html.StartPage
+import views.html.errors.WrongTaxYearPage
 
-class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
+class TaxYearErrorControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   private val fakeGetRequest = FakeRequest("GET", "/").withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
   private val env = Environment.simple()
@@ -35,12 +35,11 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   private val serviceConfig = new ServicesConfig(configuration)
   private val mockFrontendAppConfig = new AppConfig(serviceConfig)
-  private val startPageView: StartPage = app.injector.instanceOf[StartPage]
+  private val wrongTaxYearPageView: WrongTaxYearPage = app.injector.instanceOf[WrongTaxYearPage]
 
-  private val controller = new StartPageController(authorisedAction, startPageView, mockFrontendAppConfig, stubMessagesControllerComponents())
+  private val controller = new TaxYearErrorController(authorisedAction, stubMessagesControllerComponents(), wrongTaxYearPageView, mockFrontendAppConfig)
 
   private val nino: Option[String] = Some("AA123456A")
-  private val taxYear = 2022
 
   "calling the individual action" when {
 
@@ -50,7 +49,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
-          controller.show(taxYear)(fakeGetRequest)
+          controller.show()(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -58,7 +57,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "return HTML" in {
         val result = {
           mockAuth(nino)
-          controller.show(taxYear)(fakeGetRequest)
+          controller.show()(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
@@ -74,7 +73,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuthAsAgent()
-          controller.show(taxYear)(fakeGetRequest)
+          controller.show()(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
       }
@@ -82,12 +81,11 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       "return HTML" in {
         val result = {
           mockAuthAsAgent()
-          controller.show(taxYear)(fakeGetRequest)
+          controller.show()(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
       }
     }
   }
-
 }

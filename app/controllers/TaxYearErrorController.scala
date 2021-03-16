@@ -17,26 +17,22 @@
 package controllers
 
 import config.AppConfig
-import controllers.predicates.{AuthorisedAction, TaxYearAction}
-
-import javax.inject.{Inject, Singleton}
+import controllers.predicates.AuthorisedAction
+import javax.inject.Inject
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.StartPage
-import TaxYearAction.taxYearAction
+import views.html.errors.WrongTaxYearPage
 
 import scala.concurrent.Future
 
+class TaxYearErrorController @Inject()(val authorisedAction: AuthorisedAction,
+                                       val mcc: MessagesControllerComponents,
+                                       wrongTaxYearPage: WrongTaxYearPage,
+                                       implicit val appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-@Singleton
-class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
-                                    val startPageView: StartPage,
-                                    implicit val appConfig: AppConfig,
-                                    implicit val mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
-
-  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-    Future.successful(Ok(startPageView(isAgent = user.isAgent, taxYear)))
+  def show(): Action[AnyContent] = authorisedAction.async { implicit request =>
+    Future.successful(Ok(wrongTaxYearPage()))
   }
 
 }
