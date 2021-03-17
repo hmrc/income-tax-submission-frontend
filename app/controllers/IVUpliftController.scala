@@ -16,6 +16,8 @@
 
 package controllers
 
+import audit.{AuditModel, AuditService, IVHandoffAuditDetail}
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import common.SessionValues
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
@@ -26,18 +28,19 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                    mcc: MessagesControllerComponents,
+                                   auditService: AuditService,
                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
   def initialiseJourney: Action[AnyContent] = Action { implicit request =>
 
     implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-
-    //TODO Implement handoff audit event
+    val model = IVHandoffAuditDetail("individual", 1  , 200)
+    IVHandoffAuditSubmission(model)
     Redirect(appConfig.ivUpliftUrl)
   }
 
@@ -47,5 +50,12 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
       case Some(taxYear) => Redirect(routes.StartPageController.show(taxYear))
       case None => Redirect(routes.StartPageController.show(appConfig.defaultTaxYear))
     }
+  }
+
+  private def IVHandoffAuditSubmission(details: IVHandoffAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              executionContext: ExecutionContext): Future[AuditResult] = {
+    val event = AuditModel("LowConfidenceLevelIvHandoff", "LowConfidenceLevelIvHandoff", details)
+    auditService.auditModel(event)
   }
 }
