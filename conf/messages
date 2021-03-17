@@ -101,3 +101,9 @@ signout.button = Sign out
 
 error.tax-year.paragraph1 = You can only enter information for the 2021 to 2022 tax year.
 error.tax-year.paragraph2 = Check that you’ve entered the correct web address.
+
+error.unauthorised.title = You are not authorised to use this service
+error.unauthorised.paragraph1 = You can:
+error.unauthorised.li1 = go to the
+error.unauthorised.li2 = Income Tax home page (opens in new tab)
+error.unauthorised.li3 = for more information

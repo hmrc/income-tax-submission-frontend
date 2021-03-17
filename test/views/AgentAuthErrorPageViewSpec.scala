@@ -41,7 +41,7 @@ class AgentAuthErrorPageViewSpec extends AnyWordSpec with Matchers with GuiceOne
 
 
   "AgentAuthErrorPageView " should {
-     lazy val view  = agentAuthErrorPageView()
+    lazy val view  = agentAuthErrorPageView()
     lazy implicit val document: Document = Jsoup.parse(view.body)
 
     "have a page heading of" in {
