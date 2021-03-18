@@ -31,15 +31,13 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import views.html.authErrorPages.AgentAuthErrorPageView
-import views.html.authErrorPages.UnauthorisedUserErrorPage
 import javax.inject.Inject
 import uk.gov.hmrc.auth.core.ConfidenceLevel._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisedAction @Inject()(appConfig: AppConfig,
-                                 val agentAuthErrorPage: AgentAuthErrorPageView,
-                                 val unauthorisedUserErrorPage: UnauthorisedUserErrorPage)
+                                 val agentAuthErrorPage: AgentAuthErrorPageView)
                                 (implicit val authService: AuthService,
                                  val mcc: MessagesControllerComponents) extends ActionBuilder[User, AnyContent] with I18nSupport {
 
@@ -132,7 +130,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
             Redirect(appConfig.signInUrl) //TODO Check this is the correct location
           case ex: AuthorisationException =>
             logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
-            Unauthorized(unauthorisedUserErrorPage())
+            Unauthorized(agentAuthErrorPage())
         }
       case None =>
         Future.successful(Unauthorized("No MTDITID in session."))

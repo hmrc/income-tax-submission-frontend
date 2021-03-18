@@ -33,7 +33,7 @@ class AgentAuthErrorPageViewSpec extends AnyWordSpec with Matchers with GuiceOne
     val link = "#client_auth_link"
   }
 
-  lazy val pText1 = "You cannot view this client’s information." +
+  lazy val pText1: String = "You cannot view this client’s information." +
     " Your client needs to authorise you as their agent (open in a new tab) before you can sign into this service."
   lazy val pText2 = "Try another client’s details"
   lazy val linkText = "authorise you as their agent (open in a new tab)"
