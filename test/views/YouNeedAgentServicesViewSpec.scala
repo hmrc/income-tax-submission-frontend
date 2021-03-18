@@ -22,6 +22,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import utils.ViewTest
+import views.html.authErrorPages.YouNeedAgentServicesView
 
 class YouNeedAgentServicesViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest{
 
@@ -31,15 +32,14 @@ class YouNeedAgentServicesViewSpec extends AnyWordSpec with Matchers with GuiceO
   lazy val pageHeadingText = "You cannot view this page"
   lazy val pageTitleText = "You cannot view this page"
   lazy val youNeedText = "You need to"
-  lazy val createAnAgentText = "create an agent services account"
+  lazy val createAnAgentText = "create an agent services account (opens in new tab)"
   lazy val beforeYouCanText = "before you can view this page."
   lazy val createAnAgentLink = "https://www.gov.uk/guidance/get-an-hmrc-agent-services-account"
 
+  val youNeedAgentServicesView: YouNeedAgentServicesView = app.injector.instanceOf[YouNeedAgentServicesView]
+  lazy implicit val document: Document = Jsoup.parse(youNeedAgentServicesView().body)
 
   "YouNeedAgentServicesView " should {
-    lazy val view  = youNeedAgentServicesView()
-    lazy implicit val document: Document = Jsoup.parse(view.body)
-
     "Correctly render" which {
       titleCheck(pageTitleText)
       h1Check(pageHeadingText)

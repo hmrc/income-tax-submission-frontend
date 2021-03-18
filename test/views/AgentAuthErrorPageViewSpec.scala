@@ -21,38 +21,33 @@ import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.twirl.api.HtmlFormat
 import utils.ViewTest
 
 class AgentAuthErrorPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest{
 
-  object Selectors {
+  val p1Selector = "#main-content > div > div > p:nth-child(2)"
+  val p2Selector = "#main-content > div > div > p:nth-child(3)"
+  val authoriseAsAnAgentLinkSelector = "#client_auth_link"
 
-    val pageHeading = "#main-content > div > div > header > h1"
-    val p1 = "#main-content > div > div > p:nth-child(2)"
-    val p2 = "#main-content > div > div > p:nth-child(3)"
-    val link = "#client_auth_link"
-  }
+  val pageHeadingText = "There’s a problem"
+  val pageTitleText = "There’s a problem"
+  val youCannotViewText: String = "You cannot view this client’s information. Your client needs to"
+  val authoriseYouAsText = "authorise you as their agent (opens in new tab)"
+  val beforeYouCanTryText = "before you can sign into this service."
+  val tryAnotherClientText = "Try another client’s details"
+  val authoriseAsAnAgentLink = "https://www.gov.uk/guidance/client-authorisation-an-overview"
 
-  lazy val pText1 = "You cannot view this client’s information." +
-    " Your client needs to authorise you as their agent (open in a new tab) before you can sign into this service."
-  lazy val pText2 = "Try another client’s details"
-  lazy val linkText = "authorise you as their agent (open in a new tab)"
-  lazy val href = "https://www.gov.uk/guidance/client-authorisation-an-overview"
-
+  val view: HtmlFormat.Appendable = agentAuthErrorPageView()
+  lazy implicit val document: Document = Jsoup.parse(view.body)
 
   "AgentAuthErrorPageView " should {
-     lazy val view  = agentAuthErrorPageView()
-    lazy implicit val document: Document = Jsoup.parse(view.body)
-
-    "have a page heading of" in {
-      elementText(Selectors.pageHeading) shouldBe "There’s a problem"
+    "Render correctly" which {
+      titleCheck(pageTitleText)
+      h1Check(pageHeadingText)
+      textOnPageCheck(s"$youCannotViewText $authoriseYouAsText $beforeYouCanTryText", p1Selector)
+      linkCheck(authoriseYouAsText, authoriseAsAnAgentLinkSelector, authoriseAsAnAgentLink)
+      textOnPageCheck(tryAnotherClientText, p2Selector)
     }
-
-    "have text of " in {
-      elementText(Selectors.p1) shouldBe pText1
-      elementText(Selectors.p2) shouldBe pText2
-    }
-
-    linkCheck(linkText, Selectors.link, href)
   }
 }
