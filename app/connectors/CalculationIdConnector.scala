@@ -27,8 +27,8 @@ class CalculationIdConnector @Inject()(val http: HttpClient,
                                        val config: AppConfig
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
-  def getCalculationId(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[CalculationIdResponse] = {
-    val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation?mtditid=$mtditid"
+  def getCalculationId(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[CalculationIdResponse] = {
+    val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation"
     http.GET[CalculationIdResponse](Url)
   }
 
