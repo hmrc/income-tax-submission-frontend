@@ -17,7 +17,7 @@
 package services
 
 import connectors.CalculationIdConnector
-import connectors.httpparsers.CalculationIdHttpParser.CalculationIdResponse
+import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}

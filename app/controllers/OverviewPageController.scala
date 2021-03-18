@@ -18,20 +18,18 @@ package controllers
 
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
-import connectors.httpparsers.CalculationIdHttpParser.CalculationIdErrorServiceUnavailableError
 import controllers.predicates.AuthorisedAction
 import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
-import play.api.mvc.Results.{InternalServerError, ServiceUnavailable}
 import play.api.mvc._
 import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class OverviewPageController @Inject()(
@@ -50,7 +48,7 @@ class OverviewPageController @Inject()(
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
-      case Right(incomeSources) => {
+      case Right(incomeSources) =>
         val result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
 
         val sessionWithDividends = incomeSources.dividends.fold(result) { _ =>
@@ -61,8 +59,7 @@ class OverviewPageController @Inject()(
         }
 
         sessionWithInterest
-      }
-      case Left(error) => errorHandler.handleError(error)
+      case Left(error) => errorHandler.handleError(error.status)
     }
   }
 
@@ -70,8 +67,7 @@ class OverviewPageController @Inject()(
     calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
       case Right(calculationId) =>
         Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-      case Left(CalculationIdErrorServiceUnavailableError) => ServiceUnavailable(serviceUnavailablePage())
-      case Left(_) => InternalServerError(internalServerErrorPage())
+      case Left(error) => errorHandler.handleError(error.status)
     }
 
   }

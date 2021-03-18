@@ -17,7 +17,7 @@
 package services
 
 import connectors.IncomeSourcesConnector
-import connectors.httpparsers.IncomeSourcesHttpParser.IncomeSourcesResponse
+import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 

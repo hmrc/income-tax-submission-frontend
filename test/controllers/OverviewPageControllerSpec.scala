@@ -19,9 +19,9 @@ package controllers
 
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
-import connectors.httpparsers.CalculationIdHttpParser.{CalculationIdErrorInternalServerError, CalculationIdErrorServiceUnavailableError, CalculationIdResponse}
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesInternalServerError, IncomeSourcesResponse}
-import models.{LiabilityCalculationIdModel, DividendsModel, IncomeSourcesModel, InterestModel}
+import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
+import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
+import models.{APIErrorBodyModel, APIErrorModel, DividendsModel, IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
 import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
@@ -100,14 +100,14 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   }
 
   def mockGetIncomeSourcesError(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
-    val invalidIncomeSource: IncomeSourcesResponse = Left(IncomeSourcesInternalServerError)
+    val invalidIncomeSource: IncomeSourcesResponse = Left(error500)
     (mockIncomeSourcesService.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
       .returning(Future.successful(invalidIncomeSource))
   }
 
-  def mockHandleError(result: Result): CallHandler2[IncomeSourcesError, Request[_], Result] = {
-    (mockErrorHandler.handleError(_: IncomeSourcesError)(_: Request[_]))
+  def mockHandleError(result: Result): CallHandler2[Int, Request[_], Result] = {
+    (mockErrorHandler.handleError(_: Int)(_: Request[_]))
       .expects(*, *)
       .returning(result)
   }
@@ -120,12 +120,12 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   def mockGetCalculationIdInternalServiceError():CallHandler4[String, Int, String, HeaderCarrier, Future[CalculationIdResponse]] = {
     (mockCalculationIdService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
-      .returning(Future.successful(Left(CalculationIdErrorInternalServerError)))
+      .returning(Future.successful(Left(error500)))
   }
   def mockGetCalculationIdServiceUnavailableError():CallHandler4[String, Int, String, HeaderCarrier, Future[CalculationIdResponse]] = {
     (mockCalculationIdService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
-      .returning(Future.successful(Left(CalculationIdErrorServiceUnavailableError)))
+      .returning(Future.successful(Left(error503)))
   }
 
   private val controller = new OverviewPageController(
@@ -305,6 +305,8 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetCalculationIdServiceUnavailableError()
+          mockHandleError(ServiceUnavailable(serviceUnavailablePageView()))
+
           controller.getCalculation(taxYear)(fakeGetRequest)
 
         }
@@ -316,6 +318,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetCalculationIdInternalServiceError()
+          mockHandleError(InternalServerError(internalServerErrorPageView()))
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.INTERNAL_SERVER_ERROR
@@ -342,6 +345,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetCalculationIdServiceUnavailableError()
+          mockHandleError(ServiceUnavailable(serviceUnavailablePageView()))
           controller.getCalculation(taxYear)(fakeGetRequest)
 
         }
@@ -353,6 +357,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetCalculationIdInternalServiceError()
+          mockHandleError(InternalServerError(internalServerErrorPageView()))
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.INTERNAL_SERVER_ERROR

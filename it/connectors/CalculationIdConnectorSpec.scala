@@ -17,9 +17,9 @@
 package connectors
 
 
-import connectors.httpparsers.CalculationIdHttpParser._
+import connectors.httpParsers.CalculationIdHttpParser._
 import itUtils.IntegrationTest
-import models.LiabilityCalculationIdModel
+import models.{APIErrorBodyModel, APIErrorModel, LiabilityCalculationIdModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
 
@@ -44,8 +44,8 @@ class CalculationIdConnectorSpec extends IntegrationTest {
         result shouldBe Right(expectedResult)
       }
 
-    "return a CalculationIdErrorInvalidJsonError" in {
-        val expectedResult = CalculationIdErrorInvalidJsonError
+    "return a PARSING_ERROR" in {
+      val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("PARSING_ERROR","Error parsing response from API"))
 
         val invalidJson = Json.obj(
           "NotId" -> ""
@@ -58,25 +58,25 @@ class CalculationIdConnectorSpec extends IntegrationTest {
         result shouldBe Left(expectedResult)
       }
     "return a CalculationIdErrorServiceUnavailableError" in {
-        val expectedResult = CalculationIdErrorServiceUnavailableError
+      val expectedResult = APIErrorModel(SERVICE_UNAVAILABLE,APIErrorBodyModel("SERVICE_UNAVAILABLE","Service unavailable"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", SERVICE_UNAVAILABLE, "{}")
-
-        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
-
-        result shouldBe Left(expectedResult)
-      }
-    "return a CalculationIdErrorInternalServerError" in {
-        val expectedResult = CalculationIdErrorInternalServerError
-
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", INTERNAL_SERVER_ERROR, "{}")
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
 
         val result = await(connector.getCalculationId(nino, taxYear, mtditid))
 
         result shouldBe Left(expectedResult)
       }
-    "return a CalculationIdErrorUnhandledError" in {
-        val expectedResult = CalculationIdErrorUnhandledError
+    "return a INTERNAL_SERVER_ERROR" in {
+      val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("INTERNAL_SERVER_ERROR","Internal server error"))
+
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
+
+        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
+
+        result shouldBe Left(expectedResult)
+      }
+    "return a PARSING_ERROR when unexpected response code" in {
+      val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("PARSING_ERROR","Error parsing response from API"))
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", GONE, "{}")
 
@@ -84,10 +84,10 @@ class CalculationIdConnectorSpec extends IntegrationTest {
 
         result shouldBe Left(expectedResult)
       }
-    "return a CalculationIdErrorFourxxError" in {
-        val expectedResult = CalculationIdErrorFourxxError
+    "return a INVALID_IDTYPE" in {
+      val expectedResult = APIErrorModel(BAD_REQUEST,APIErrorBodyModel("INVALID_IDTYPE","Invalid id type"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", BAD_REQUEST, "{}")
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", BAD_REQUEST, expectedResult.toJson.toString())
 
         val result = await(connector.getCalculationId(nino, taxYear, mtditid))
 
