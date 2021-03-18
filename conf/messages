@@ -87,6 +87,12 @@ error.agent.paragraph2 = authorise you as their agent (open in a new tab)
 error.agent.paragraph3 = before you can sign into this service.
 error.agent.paragraph4 = Try another client’s details
 
+youNeedAgentServices.title = You cannot view this page
+youNeedAgentServices.heading = You cannot view this page
+youNeedAgentServices.p1 = You need to
+youNeedAgentServices.p2 = create an agent services account
+youNeedAgentServices.p3 = before you can view this page.
+
 timeout.heading = For your security, we signed you out
 timeout.p1 = We did not save your answers.
 timeout.button = Sign in
