@@ -18,27 +18,31 @@ package controllers
 
 import java.util.UUID
 
+import audit.{AuditModel, AuditService, IVFailureAuditDetail}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.Logger.logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
 import views.html.errors.IVFailurePage
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IVFailureController @Inject()(implicit appConfig: AppConfig,
                                     mcc: MessagesControllerComponents,
                                     view: IVFailurePage,
+                                    auditService: AuditService,
                                     implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
   def show(journeyId: Option[String]): Action[AnyContent] = Action { implicit request =>
 
-    val sessionId: Option[String] = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session)).sessionId.map(_.value)
+    lazy val sessionId: Option[String] = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session)).sessionId.map(_.value)
 
     if(journeyId.isEmpty){
       logger.warn(s"[IVFailureController][show] JourneyId from IV journey is empty. Defaulting journeyId for audit purposes." +
@@ -46,8 +50,13 @@ class IVFailureController @Inject()(implicit appConfig: AppConfig,
     }
 
     val idForAuditing: String = journeyId.getOrElse(sessionId.getOrElse(UUID.randomUUID().toString))
-
-    //TODO Implement handoff audit event
+    ivFailureAuditSubmission(IVFailureAuditDetail(idForAuditing))
     Ok(view(controllers.routes.SignOutController.signOut()))
+  }
+
+  private def ivFailureAuditSubmission(details: IVFailureAuditDetail)
+                                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
+    val event = AuditModel("LowConfidenceLevelIvOutcomeFail", "LowConfidenceLevelIvOutcomeFail", details)
+    auditService.auditModel(event)
   }
 }

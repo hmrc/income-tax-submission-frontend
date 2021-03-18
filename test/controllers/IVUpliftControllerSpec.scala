@@ -16,14 +16,15 @@
 
 package controllers
 
-import controllers.Assets.{SEE_OTHER, OK}
-import play.api.test.Helpers.{charset, contentType, stubMessagesControllerComponents}
-import play.api.test.{DefaultAwaitTimeout, FakeRequest}
+import config.MockAuditService
+import controllers.Assets.SEE_OTHER
+import play.api.test.DefaultAwaitTimeout
+import play.api.test.Helpers.stubMessagesControllerComponents
 import utils.UnitTest
 
-class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout {
+class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with MockAuditService{
 
-  val controller = new IVUpliftController()(mockAppConfig,stubMessagesControllerComponents,scala.concurrent.ExecutionContext.Implicits.global)
+  val controller = new IVUpliftController()(mockAppConfig,stubMessagesControllerComponents,mockAuditService, scala.concurrent.ExecutionContext.Implicits.global)
 
   "IVUpliftController" should {
 
@@ -31,9 +32,11 @@ class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout {
 
       "initialiseJourney() is called it" should {
 
+        verifyAuditEvent
         val response = controller.initialiseJourney()(fakeRequest)
 
         "return status code 303" in {
+
           status(response) shouldBe SEE_OTHER
           await(response).header.headers shouldBe Map("Location" ->
             "/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
