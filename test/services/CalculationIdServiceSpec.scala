@@ -16,9 +16,8 @@
 
 package services
 
-import connectors.httpparsers.CalculationIdHttpParser.CalculationIdResponse
-import connectors.{CalculationIdConnector, IncomeSourcesConnector}
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonError, IncomeSourcesResponse}
+import connectors.CalculationIdConnector
+import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
 import models.LiabilityCalculationIdModel
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest

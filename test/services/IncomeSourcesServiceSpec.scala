@@ -17,7 +17,7 @@
 package services
 
 import connectors.IncomeSourcesConnector
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonError, IncomeSourcesResponse}
+import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
 
@@ -31,7 +31,7 @@ class IncomeSourcesServiceSpec extends UnitTest {
   ".getIncomeSources" should {
 
     "return the connector response" in {
-      val expectedResult: IncomeSourcesResponse = Left(IncomeSourcesInvalidJsonError)
+      val expectedResult: IncomeSourcesResponse = Left(error500)
 
       (connector.getIncomeSources(_: String, _: Int, _: String)(_: HeaderCarrier))
         .expects("123456789",1999, "987654321", *)

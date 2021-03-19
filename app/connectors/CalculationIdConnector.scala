@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import connectors.httpparsers.CalculationIdHttpParser.CalculationIdResponse
+import connectors.httpParsers.CalculationIdHttpParser.{CalculationIdHttpReads, CalculationIdResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import javax.inject.Inject
 

@@ -16,12 +16,12 @@
 
 package config
 
-import connectors.httpparsers.IncomeSourcesHttpParser._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.FakeRequest
 import utils.UnitTest
 import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
+import play.api.http.Status._
 
 class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
@@ -37,28 +37,18 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   ".handleError" should {
 
-    "return a 503 page for IncomeSourcesServiceUnavailableError" in {
+    "return a 503 page for service unavailable" in {
 
-      errorHandler.handleError(IncomeSourcesServiceUnavailableError).header.status shouldBe 503
+      errorHandler.handleError(SERVICE_UNAVAILABLE).header.status shouldBe SERVICE_UNAVAILABLE
     }
 
-    "return a 500 page for IncomeSourcesInvalidJsonError" in {
+    "return a 500 page for internal server error" in {
 
-      errorHandler.handleError(IncomeSourcesInvalidJsonError).header.status shouldBe 500
-    }
-
-    "return a 500 page for IncomeSourcesInternalServerError" in {
-
-      errorHandler.handleError(IncomeSourcesInternalServerError).header.status shouldBe 500
-    }
-
-    "return a 500 page for IncomeSourcesUnhandledError" in {
-
-      errorHandler.handleError(IncomeSourcesUnhandledError).header.status shouldBe 500
+      errorHandler.handleError(INTERNAL_SERVER_ERROR).header.status shouldBe INTERNAL_SERVER_ERROR
     }
     "return a 404 page" in {
 
-      errorHandler.onClientError(fakeRequest, 404,"").map(_.header.status shouldBe 404)
+      errorHandler.onClientError(fakeRequest, NOT_FOUND,"").map(_.header.status shouldBe NOT_FOUND)
     }
   }
 

@@ -16,9 +16,9 @@
 
 package controllers
 
-import controllers.Assets.{SEE_OTHER, OK}
-import play.api.test.Helpers.{charset, contentType, stubMessagesControllerComponents}
-import play.api.test.{DefaultAwaitTimeout, FakeRequest}
+import controllers.Assets.SEE_OTHER
+import play.api.test.DefaultAwaitTimeout
+import play.api.test.Helpers.stubMessagesControllerComponents
 import utils.UnitTest
 
 class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout {

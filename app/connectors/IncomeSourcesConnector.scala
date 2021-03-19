@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import connectors.httpparsers.IncomeSourcesHttpParser.IncomeSourcesResponse
+import connectors.httpParsers.IncomeSourcesHttpParser.{IncomeSourcesHttpReads, IncomeSourcesResponse}
 import javax.inject.Inject
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
