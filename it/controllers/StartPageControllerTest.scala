@@ -65,7 +65,7 @@ class StartPageControllerTest extends IntegrationTest {
       "the confidence level is too low" in {
         val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
           Enrolments(Set(Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None))) and
-          Some(AffinityGroup.Individual) and ConfidenceLevel.L50
+            Some(AffinityGroup.Individual) and ConfidenceLevel.L50
         )
 
         val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
@@ -73,6 +73,10 @@ class StartPageControllerTest extends IntegrationTest {
         result.header.status shouldBe SEE_OTHER
         result.header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
       }
+
+    }
+
+    "returns a SEE_OTHER (303)" when {
 
       "it contains the wrong credentials" in {
         val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
@@ -85,7 +89,7 @@ class StartPageControllerTest extends IntegrationTest {
 
         val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
 
-        result.header.status shouldBe UNAUTHORIZED
+        result.header.status shouldBe SEE_OTHER
       }
 
     }
