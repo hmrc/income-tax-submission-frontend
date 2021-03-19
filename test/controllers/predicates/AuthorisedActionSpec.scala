@@ -236,7 +236,7 @@ class AuthorisedActionSpec extends UnitTest {
 
     }
 
-    "return a forbbien for an invidual, or redirect to the you ned agent services page for an agent" when {
+    "return a forbidden for an individual, or a redirect for an agent" when {
 
       "the enrolments do not contain an MTDITID for a user" in {
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
@@ -247,6 +247,7 @@ class AuthorisedActionSpec extends UnitTest {
       }
 
       "the enrolments do not contain an AgentReferenceNumber for an agent" in {
+
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set.empty[Enrolment]), isAgent = true)(
           fakeRequest.withSession("ClientNino" -> "AA123456A"),
           emptyHeaderCarrier
