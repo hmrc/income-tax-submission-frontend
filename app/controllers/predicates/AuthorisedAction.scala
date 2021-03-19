@@ -72,11 +72,11 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
           Redirect(routes.IVUpliftController.initialiseJourney())
         } else {
           logger.error(s"[AuthorisedAction][invokeBlock] Received NoSuchElementException form auth. Exception: ${e.getMessage}")
-          Unauthorized("")
+          Redirect(controllers.routes.UnauthorisedUserErrorController.show())
         }
       case _: AuthorisationException =>
         logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
-        Unauthorized("") //TODO Redirect to unauthorised page
+        Redirect(controllers.routes.UnauthorisedUserErrorController.show()) //TODO Redirect to unauthorised page
     }
   }
 
@@ -122,7 +122,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
                 block(User(mtditid, Some(arn), nino))
               case None =>
                 logger.info("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-                Future.successful(Forbidden(""))
+                Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show()))
             }
           } recover {
           case _: NoActiveSession =>
@@ -155,7 +155,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         block(User(mtditid, None, nino))
     } getOrElse {
       logger.info("[AuthorisedAction][IndividualAuthentication] Non-agent with an invalid MTDITID.")
-      Future.successful(Forbidden("")) //TODO send to an unauthorised page
+      Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show())) //TODO send to an unauthorised page
     }
   }
 

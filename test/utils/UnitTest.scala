@@ -37,7 +37,7 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import views.html.authErrorPages.{AgentAuthErrorPageView, UnauthorisedUserErrorPage}
+import views.html.authErrorPages.{AgentAuthErrorPageView, UnauthorisedUserErrorView}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
@@ -64,9 +64,8 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   implicit val mockAuthConnector: AuthConnector = mock[AuthConnector]
   implicit val mockAuthService: AuthService = new AuthService(mockAuthConnector)
   val agentAuthErrorPageView: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
-  val unauthorisedUserErrorPage: UnauthorisedUserErrorPage = app.injector.instanceOf[UnauthorisedUserErrorPage]
 
-  val authorisedAction = new AuthorisedAction(mockAppConfig, agentAuthErrorPageView, unauthorisedUserErrorPage)(
+  val authorisedAction = new AuthorisedAction(mockAppConfig, agentAuthErrorPageView)(
     mockAuthService, stubMessagesControllerComponents())
 
   def status(awaitable: Future[Result]): Int = await(awaitable).header.status

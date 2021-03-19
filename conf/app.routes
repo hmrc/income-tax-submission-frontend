@@ -21,3 +21,5 @@ GET        /error/we-could-not-confirm-your-details     controllers.IVFailureCon
 
 GET        /error/wrong-tax-year                        controllers.TaxYearErrorController.show
 
+GET        /error/not-authorised-to-use-service         controllers.UnauthorisedUserErrorController.show
+
