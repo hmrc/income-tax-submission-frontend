@@ -64,7 +64,6 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   implicit val mockAuthConnector: AuthConnector = mock[AuthConnector]
   implicit val mockAuthService: AuthService = new AuthService(mockAuthConnector)
   val agentAuthErrorPageView: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
-
   val authorisedAction = new AuthorisedAction(mockAppConfig, agentAuthErrorPageView)(mockAuthService, stubMessagesControllerComponents())
 
   def status(awaitable: Future[Result]): Int = await(awaitable).header.status
