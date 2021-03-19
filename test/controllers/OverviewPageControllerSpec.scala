@@ -21,7 +21,7 @@ import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
 import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
-import models.{APIErrorBodyModel, APIErrorModel, DividendsModel, IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
+import models.{DividendsModel, IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
 import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
