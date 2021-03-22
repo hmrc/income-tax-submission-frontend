@@ -35,14 +35,15 @@ class CalculationIdServiceSpec extends UnitTest {
       val responseBody = LiabilityCalculationIdModel("calculationId")
       val expectedResult: CalculationIdResponse = Right(responseBody)
 
-      (connector.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
-        .expects("123456789",1999, "987654321", *)
+      (connector.getCalculationId(_: String, _: Int)(_: HeaderCarrier))
+        .expects("123456789",1999, emptyHeaderCarrier.withExtraHeaders("mtditid"->"987654321"))
         .returning(Future.successful(expectedResult))
 
       val result = await(service.getCalculationId("123456789", 1999, "987654321"))
 
       result shouldBe expectedResult
     }
+
   }
 
 }

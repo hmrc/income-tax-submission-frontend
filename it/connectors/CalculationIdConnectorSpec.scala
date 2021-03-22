@@ -37,9 +37,9 @@ class CalculationIdConnectorSpec extends IntegrationTest {
     "return a CalculationIdModel" in {
         val expectedResult = LiabilityCalculationIdModel("00000000-0000-1000-8000-000000000000")
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", OK, Json.toJson(expectedResult).toString())
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation", OK, Json.toJson(expectedResult).toString())
 
-        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
+        val result = await(connector.getCalculationId(nino, taxYear))
 
         result shouldBe Right(expectedResult)
       }
@@ -51,45 +51,45 @@ class CalculationIdConnectorSpec extends IntegrationTest {
           "NotId" -> ""
         )
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", OK, Json.toJson(invalidJson).toString())
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation", OK, Json.toJson(invalidJson).toString())
 
-        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
+        val result = await(connector.getCalculationId(nino, taxYear))
 
         result shouldBe Left(expectedResult)
       }
     "return a CalculationIdErrorServiceUnavailableError" in {
       val expectedResult = APIErrorModel(SERVICE_UNAVAILABLE,APIErrorBodyModel("SERVICE_UNAVAILABLE","Service unavailable"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation", SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
 
-        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
+        val result = await(connector.getCalculationId(nino, taxYear))
 
         result shouldBe Left(expectedResult)
       }
     "return a INTERNAL_SERVER_ERROR" in {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("INTERNAL_SERVER_ERROR","Internal server error"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation", INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
 
-        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
+        val result = await(connector.getCalculationId(nino, taxYear))
 
         result shouldBe Left(expectedResult)
       }
     "return a PARSING_ERROR when unexpected response code" in {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("PARSING_ERROR","Error parsing response from API"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", GONE, "{}")
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation", GONE, "{}")
 
-        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
+        val result = await(connector.getCalculationId(nino, taxYear))
 
         result shouldBe Left(expectedResult)
       }
     "return a INVALID_IDTYPE" in {
       val expectedResult = APIErrorModel(BAD_REQUEST,APIErrorBodyModel("INVALID_IDTYPE","Invalid id type"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation\\?mtditid=$mtditid", BAD_REQUEST, expectedResult.toJson.toString())
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation", BAD_REQUEST, expectedResult.toJson.toString())
 
-        val result = await(connector.getCalculationId(nino, taxYear, mtditid))
+        val result = await(connector.getCalculationId(nino, taxYear))
 
         result shouldBe Left(expectedResult)
       }

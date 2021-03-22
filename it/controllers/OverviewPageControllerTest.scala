@@ -65,7 +65,7 @@ class OverviewPageControllerTest extends IntegrationTest {
           )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
         )
 
-        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022&mtditid=1234567890", OK, "{}")
+        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK, "{}")
 
         val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
 
@@ -84,7 +84,7 @@ class OverviewPageControllerTest extends IntegrationTest {
           )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
         )
 
-        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022&mtditid=1234567890", OK,
+        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,
           """{
             |	"dividends": {
             |		"ukDividends": 69.99,

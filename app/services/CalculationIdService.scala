@@ -27,6 +27,6 @@ import scala.concurrent.Future
 @Singleton
 class CalculationIdService @Inject()(calculationIdConnector: CalculationIdConnector) {
   def getCalculationId(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[CalculationIdResponse] =
-    calculationIdConnector.getCalculationId(nino, taxYear, mtditid)
+    calculationIdConnector.getCalculationId(nino, taxYear)(hc.withExtraHeaders("mtditid" -> mtditid))
 
 }
