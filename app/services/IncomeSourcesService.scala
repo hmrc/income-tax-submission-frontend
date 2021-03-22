@@ -17,7 +17,7 @@
 package services
 
 import connectors.IncomeSourcesConnector
-import connectors.httpparsers.IncomeSourcesHttpParser.IncomeSourcesResponse
+import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -27,6 +27,6 @@ import scala.concurrent.Future
 @Singleton
 class IncomeSourcesService @Inject()(incomeSourcesConnector: IncomeSourcesConnector){
   def getIncomeSources(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] =
-    incomeSourcesConnector.getIncomeSources(nino, taxYear, mtditid)
+    incomeSourcesConnector.getIncomeSources(nino, taxYear)(hc.withExtraHeaders("mtditid" -> mtditid))
 
 }

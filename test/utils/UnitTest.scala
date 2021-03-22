@@ -22,18 +22,20 @@ import com.codahale.metrics.SharedMetricRegistries
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.{AppConfig, MockAppConfig}
 import controllers.predicates.AuthorisedAction
+import models.{APIErrorBodyModel, APIErrorModel}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
+import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE}
 import play.api.test.{FakeRequest, Helpers}
 import services.AuthService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -65,8 +67,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   implicit val mockAuthService: AuthService = new AuthService(mockAuthConnector)
   val agentAuthErrorPageView: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
 
-  val authorisedAction = new AuthorisedAction(mockAppConfig, agentAuthErrorPageView)(
-    mockAuthService, stubMessagesControllerComponents())
+  val authorisedAction = new AuthorisedAction(mockAppConfig, agentAuthErrorPageView)(mockAuthService, stubMessagesControllerComponents())
 
   def status(awaitable: Future[Result]): Int = await(awaitable).header.status
 
@@ -111,5 +112,8 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       .expects(*, *, *, *)
       .returning(Future.failed(exception))
   }
+
+  val error500: APIErrorModel = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("INTERNAL_SERVER_ERROR","Internal server error"))
+  val error503: APIErrorModel = APIErrorModel(SERVICE_UNAVAILABLE,APIErrorBodyModel("SERVICE_UNAVAILABLE","Service unavailable"))
 
 }

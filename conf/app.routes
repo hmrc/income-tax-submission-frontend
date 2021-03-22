@@ -23,3 +23,5 @@ GET        /error/wrong-tax-year                        controllers.TaxYearError
 
 GET        /error/not-authorised-to-use-service         controllers.UnauthorisedUserErrorController.show
 
+GET        /error/you-need-agent-services-account       controllers.errors.YouNeedAgentServicesController.show
+

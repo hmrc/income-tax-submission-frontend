@@ -23,8 +23,8 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
@@ -171,7 +171,8 @@ class AuthorisedActionSpec extends UnitTest {
       }
     }
 
-    "return a redirect" when {
+
+    "return a redirect to the you need agent services page" when {
 
       "the user does not have an enrolment for the agent" in {
         val enrolments = Enrolments(Set(
@@ -236,7 +237,7 @@ class AuthorisedActionSpec extends UnitTest {
 
     }
 
-    "return an Unauthorised" when {
+    "return a forbidden for an individual, or a redirect for an agent" when {
 
       "the enrolments do not contain an MTDITID for a user" in {
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
@@ -247,12 +248,13 @@ class AuthorisedActionSpec extends UnitTest {
       }
 
       "the enrolments do not contain an AgentReferenceNumber for an agent" in {
+
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set.empty[Enrolment]), isAgent = true)(
           fakeRequest.withSession("ClientNino" -> "AA123456A"),
           emptyHeaderCarrier
         )
 
-        status(result) shouldBe UNAUTHORIZED
+        status(result) shouldBe SEE_OTHER
       }
 
     }
