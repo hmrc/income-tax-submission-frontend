@@ -54,7 +54,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       }
     }
     "non json is returned" in {
-      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", INTERNAL_SERVER_ERROR, "")
+      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", INTERNAL_SERVER_ERROR, "")
 
       val result = await(connector.getIncomeSources(nino, taxYear))
 
@@ -74,7 +74,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
             "reason" -> "ID 2 is invalid")
         )
       )
-      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear&mtditid=968501689", BAD_REQUEST, responseBody.toString())
+      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", BAD_REQUEST, responseBody.toString())
 
       val result = await(connector.getIncomeSources(nino, taxYear))
 
