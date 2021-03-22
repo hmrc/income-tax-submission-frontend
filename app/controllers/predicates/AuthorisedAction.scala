@@ -76,7 +76,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         }
       case _: AuthorisationException =>
         logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
-        Redirect(controllers.routes.UnauthorisedUserErrorController.show()) //TODO Redirect to unauthorised page
+        Redirect(controllers.routes.UnauthorisedUserErrorController.show())
     }
   }
 
@@ -155,7 +155,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         block(User(mtditid, None, nino))
     } getOrElse {
       logger.info("[AuthorisedAction][IndividualAuthentication] Non-agent with an invalid MTDITID.")
-      Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show())) //TODO send to an unauthorised page
+      Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show()))
     }
   }
 

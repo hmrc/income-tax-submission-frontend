@@ -29,8 +29,8 @@ class UnauthorisedUserErrorController @Inject()(val mcc: MessagesControllerCompo
                                                 unauthorisedUserErrorPage: UnauthorisedUserErrorView,
                                                implicit val appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-  def show(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Unauthorized(unauthorisedUserErrorPage()))
+  def show(): Action[AnyContent] = Action { implicit request =>
+    Unauthorized(unauthorisedUserErrorPage())
   }
 
 }
