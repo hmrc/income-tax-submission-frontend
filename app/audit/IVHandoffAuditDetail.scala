@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package itUtils
+package audit
 
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.{Json, OWrites}
 
-import scala.concurrent.{ExecutionContext, Future}
+case class IVHandoffAuditDetail(reasonForHandoff: String,
+                                currentConfidenceLevel: Int,
+                                minimumConfidenceLevelToProceed: Int) {
 
-class MockAuthConnector(stubbedRetrievalResult: Future[_]) extends AuthConnector {
-  def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = {
-    stubbedRetrievalResult.map(_.asInstanceOf[A])
-  }
+  val IVModel: Map[String, String] = Map(
+    "reasonForHandoff" -> reasonForHandoff,
+    "currentConfidenceLevel" -> s"CL$currentConfidenceLevel",
+    "minimumConfidenceLevelToProceed" -> s"CL$minimumConfidenceLevelToProceed"
+  )
+
+}
+
+object IVHandoffAuditDetail {
+  implicit def writes: OWrites[IVHandoffAuditDetail] = Json.writes[IVHandoffAuditDetail]
 }

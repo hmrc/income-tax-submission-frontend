@@ -19,7 +19,6 @@ package controllers
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.{AppConfig, ErrorHandler}
 import itUtils.IntegrationTest
-import models.{DividendsModel, InterestModel}
 import play.api.libs.ws.WSClient
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER, UNAUTHORIZED}
