@@ -23,8 +23,8 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
@@ -93,7 +93,7 @@ class AuthorisedActionSpec extends UnitTest {
 
     }
 
-    "return a forbidden" when {
+    "return a redirect" when {
 
       "the correct enrolment is missing" which {
         val block: User[AnyContent] => Future[Result] = user => Future.successful(Ok(user.mtditid))
@@ -102,8 +102,8 @@ class AuthorisedActionSpec extends UnitTest {
 
         lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid, nino)(fakeRequest)
 
-        "returns a forbidden" in {
-          status(result) shouldBe FORBIDDEN
+        "returns an Unauthorised" in {
+          status(result) shouldBe SEE_OTHER
         }
       }
 
@@ -171,7 +171,8 @@ class AuthorisedActionSpec extends UnitTest {
       }
     }
 
-    "return a Forbidden" when {
+
+    "return a redirect to the you need agent services page" when {
 
       "the user does not have an enrolment for the agent" in {
         val enrolments = Enrolments(Set(
@@ -184,7 +185,7 @@ class AuthorisedActionSpec extends UnitTest {
             .returning(Future.successful(enrolments))
           auth.agentAuthentication(block, nino)(fakeRequestWithMtditid, emptyHeaderCarrier)
         }
-        status(result) shouldBe FORBIDDEN
+        status(result) shouldBe SEE_OTHER
       }
     }
 
@@ -236,23 +237,24 @@ class AuthorisedActionSpec extends UnitTest {
 
     }
 
-    "return an Unauthorised" when {
+    "return a SEE_OTHER" when {
 
       "the enrolments do not contain an MTDITID for a user" in {
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
           Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
         )))(fakeRequest.withSession("ClientNino" -> "AA123456A"), emptyHeaderCarrier)
 
-        status(result) shouldBe UNAUTHORIZED
+        status(result) shouldBe SEE_OTHER
       }
 
       "the enrolments do not contain an AgentReferenceNumber for an agent" in {
+
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set.empty[Enrolment]), isAgent = true)(
           fakeRequest.withSession("ClientNino" -> "AA123456A"),
           emptyHeaderCarrier
         )
 
-        status(result) shouldBe UNAUTHORIZED
+        status(result) shouldBe SEE_OTHER
       }
 
     }
@@ -279,8 +281,8 @@ class AuthorisedActionSpec extends UnitTest {
           status(result(ConfidenceLevelError)) shouldBe SEE_OTHER
           await(result(ConfidenceLevelError)).header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
         }
-        "should return a 401 if different message" in {
-          status(result(AuthError)) shouldBe UNAUTHORIZED
+        "should return a 303 if different message" in {
+          status(result(AuthError)) shouldBe SEE_OTHER
         }
       }
     }
@@ -313,7 +315,7 @@ class AuthorisedActionSpec extends UnitTest {
       }
     }
 
-    "return an Unauthorised" when {
+    "return a redirect" when {
 
       "the authorisation service returns an AuthorisationException exception" in {
         object AuthException extends AuthorisationException("Some reason")
@@ -322,7 +324,7 @@ class AuthorisedActionSpec extends UnitTest {
           mockAuthReturnException(AuthException)
           auth.invokeBlock(fakeRequest, block)
         }
-        status(result) shouldBe UNAUTHORIZED
+        status(result) shouldBe SEE_OTHER
       }
 
       "there is no MTDITID value in session" in {

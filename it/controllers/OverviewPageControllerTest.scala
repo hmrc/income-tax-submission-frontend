@@ -65,7 +65,7 @@ class OverviewPageControllerTest extends IntegrationTest {
           )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
         )
 
-        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022&mtditid=1234567890", OK, "{}")
+        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK, "{}")
 
         val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
 
@@ -84,7 +84,7 @@ class OverviewPageControllerTest extends IntegrationTest {
           )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
         )
 
-        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022&mtditid=1234567890", OK,
+        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,
           """{
             |	"dividends": {
             |		"ukDividends": 69.99,
@@ -110,7 +110,7 @@ class OverviewPageControllerTest extends IntegrationTest {
       "the confidence level is too low" in {
         val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
           Enrolments(Set(Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None))) and
-          Some(AffinityGroup.Individual) and ConfidenceLevel.L50
+            Some(AffinityGroup.Individual) and ConfidenceLevel.L50
         )
 
         val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
@@ -118,6 +118,10 @@ class OverviewPageControllerTest extends IntegrationTest {
         result.header.status shouldBe SEE_OTHER
         result.header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
       }
+
+    }
+
+    "returns a SEE_OTHER (303)" when {
 
       "it contains the wrong credentials" in {
         val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
@@ -130,7 +134,7 @@ class OverviewPageControllerTest extends IntegrationTest {
 
         val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
 
-        result.header.status shouldBe UNAUTHORIZED
+        result.header.status shouldBe SEE_OTHER
       }
 
     }

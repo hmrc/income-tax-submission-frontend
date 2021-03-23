@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package connectors.httpparsers
+package connectors.httpParsers
 
-import models.IncomeSourcesModel
+import models.{APIErrorModel, IncomeSourcesModel}
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.PagerDutyHelper.pagerDutyLog
 
-object IncomeSourcesHttpParser {
-  type IncomeSourcesResponse = Either[IncomeSourcesError, IncomeSourcesModel]
+object IncomeSourcesHttpParser extends APIParser {
+  type IncomeSourcesResponse = Either[APIErrorModel, IncomeSourcesModel]
+
+  override val parserName: String = "IncomeSourcesHttpParser"
+  override val service: String = "income-tax-submission"
 
   implicit object IncomeSourcesHttpReads extends HttpReads[IncomeSourcesResponse] {
     override def read(method: String, url: String, response: HttpResponse): IncomeSourcesResponse = {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
-          jsonErrors => {
-            pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, Some(s"[IncomeSourcesHttpParser][read] Invalid Json from API."))
-            Left(IncomeSourcesInvalidJsonError)
-          },
+          jsonErrors => badSuccessJsonFromAPI,
           parsedModel => Right(parsedModel)
         )
         case NO_CONTENT => Right(IncomeSourcesModel())
@@ -41,26 +41,14 @@ object IncomeSourcesHttpParser {
           Right(IncomeSourcesModel())
         case INTERNAL_SERVER_ERROR =>
           pagerDutyLog(INTERNAL_SERVER_ERROR_FROM_API, logMessage(response))
-          Left(IncomeSourcesInternalServerError)
+          handleAPIError(response)
         case SERVICE_UNAVAILABLE =>
           pagerDutyLog(SERVICE_UNAVAILABLE_FROM_API, logMessage(response))
-          Left(IncomeSourcesServiceUnavailableError)
+          handleAPIError(response)
         case _ =>
           pagerDutyLog(UNEXPECTED_RESPONSE_FROM_API, logMessage(response))
-          Left(IncomeSourcesUnhandledError)
+          handleAPIError(response, Some(INTERNAL_SERVER_ERROR))
       }
     }
-
-    private def logMessage(response:HttpResponse): Option[String] ={
-      Some(s"[IncomeSourcesHttpParser][read] Received ${response.status} from income-sources. Body:${response.body}")
-    }
   }
-
-  sealed trait IncomeSourcesError
-
-  object IncomeSourcesInvalidJsonError extends IncomeSourcesError
-  object IncomeSourcesServiceUnavailableError extends IncomeSourcesError
-  object IncomeSourcesInternalServerError extends IncomeSourcesError
-  object IncomeSourcesUnhandledError extends IncomeSourcesError
-
 }

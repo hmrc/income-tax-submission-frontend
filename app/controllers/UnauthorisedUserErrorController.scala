@@ -17,22 +17,19 @@
 package controllers
 
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.errors.WrongTaxYearPage
+import views.html.authErrorPages.UnauthorisedUserErrorView
 
-import scala.concurrent.Future
+import javax.inject.Inject
 
-class TaxYearErrorController @Inject()(val authorisedAction: AuthorisedAction,
-                                       val mcc: MessagesControllerComponents,
-                                       wrongTaxYearPage: WrongTaxYearPage,
-                                       implicit val appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
+class UnauthorisedUserErrorController @Inject()(val mcc: MessagesControllerComponents,
+                                                unauthorisedUserErrorPage: UnauthorisedUserErrorView,
+                                               implicit val appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-  def show(): Action[AnyContent] = authorisedAction.async { implicit request =>
-    Future.successful(Ok(wrongTaxYearPage()))
+  def show(): Action[AnyContent] = Action { implicit request =>
+    Unauthorized(unauthorisedUserErrorPage())
   }
 
 }

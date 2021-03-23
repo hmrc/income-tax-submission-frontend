@@ -23,7 +23,6 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.twirl.api.Html
 import utils.ViewTest
-import views.html.StartPage
 import views.html.errors.IVFailurePage
 
 

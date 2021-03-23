@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import connectors.httpparsers.IncomeSourcesHttpParser.IncomeSourcesResponse
+import connectors.httpParsers.IncomeSourcesHttpParser.{IncomeSourcesHttpReads, IncomeSourcesResponse}
 import javax.inject.Inject
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -27,8 +27,8 @@ class IncomeSourcesConnector @Inject()(val http: HttpClient,
                                        val config: AppConfig
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
-  def getIncomeSources(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] = {
-    val incomeSourcesUrl: String = config.incomeTaxSubmissionUrl + s"/nino/$nino/sources?taxYear=$taxYear&mtditid=$mtditid"
+  def getIncomeSources(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] = {
+    val incomeSourcesUrl: String = config.incomeTaxSubmissionUrl + s"/nino/$nino/sources?taxYear=$taxYear"
     http.GET[IncomeSourcesResponse](incomeSourcesUrl)
   }
 

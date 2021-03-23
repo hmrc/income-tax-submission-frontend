@@ -32,7 +32,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import views.html.authErrorPages.AgentAuthErrorPageView
 import javax.inject.Inject
-import uk.gov.hmrc.auth.core.ConfidenceLevel._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -72,11 +71,11 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
           Redirect(routes.IVUpliftController.initialiseJourney())
         } else {
           logger.error(s"[AuthorisedAction][invokeBlock] Received NoSuchElementException form auth. Exception: ${e.getMessage}")
-          Unauthorized("")
+          Redirect(controllers.routes.UnauthorisedUserErrorController.show())
         }
       case _: AuthorisationException =>
         logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
-        Unauthorized("") //TODO Redirect to unauthorised page
+        Redirect(controllers.routes.UnauthorisedUserErrorController.show())
     }
   }
 
@@ -97,7 +96,13 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
     (userIdentifier, optionalNino) match {
       case (Some(userId), Some(nino)) => if (isAgent) agentAuthentication(block, nino) else individualAuthentication(block, enrolments, userId, nino)
       case (_, None) => Future.successful(Redirect(appConfig.signInUrl))
-      case (None, _) => Future.successful(Unauthorized("No relevant identifier. Is agent: " + isAgent))
+      case (None, _) =>
+        if (isAgent) {
+          Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show()))
+        }
+        else {
+          Future.successful(Redirect(controllers.errors.routes.IndividualAuthErrorController.show()))
+        }
     }
   }
 
@@ -122,7 +127,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
                 block(User(mtditid, Some(arn), nino))
               case None =>
                 logger.info("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-                Future.successful(Forbidden(""))
+                Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show()))
             }
           } recover {
           case _: NoActiveSession =>
@@ -155,7 +160,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         block(User(mtditid, None, nino))
     } getOrElse {
       logger.info("[AuthorisedAction][IndividualAuthentication] Non-agent with an invalid MTDITID.")
-      Future.successful(Forbidden("")) //TODO send to an unauthorised page
+      Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show()))
     }
   }
 

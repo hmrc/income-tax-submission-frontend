@@ -16,7 +16,6 @@
 
 package config
 
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesError, IncomeSourcesServiceUnavailableError}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
@@ -24,7 +23,7 @@ import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
-
+import play.api.http.Status.SERVICE_UNAVAILABLE
 import scala.concurrent.Future
 
 @Singleton
@@ -41,9 +40,9 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
 
   override def internalServerErrorTemplate(implicit request: Request[_]): Html = internalServerErrorPage()
 
-  def handleError(error: IncomeSourcesError)(implicit request: Request[_]): Result = {
-    error match {
-      case IncomeSourcesServiceUnavailableError => ServiceUnavailable(serviceUnavailablePage())
+  def handleError(status: Int)(implicit request: Request[_]): Result = {
+    status match {
+      case SERVICE_UNAVAILABLE => ServiceUnavailable(serviceUnavailablePage())
       case _ => InternalServerError(internalServerErrorPage())
     }
   }

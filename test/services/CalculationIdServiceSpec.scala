@@ -16,9 +16,8 @@
 
 package services
 
-import connectors.httpparsers.CalculationIdHttpParser.CalculationIdResponse
-import connectors.{CalculationIdConnector, IncomeSourcesConnector}
-import connectors.httpparsers.IncomeSourcesHttpParser.{IncomeSourcesInvalidJsonError, IncomeSourcesResponse}
+import connectors.CalculationIdConnector
+import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
 import models.LiabilityCalculationIdModel
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
@@ -36,14 +35,15 @@ class CalculationIdServiceSpec extends UnitTest {
       val responseBody = LiabilityCalculationIdModel("calculationId")
       val expectedResult: CalculationIdResponse = Right(responseBody)
 
-      (connector.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
-        .expects("123456789",1999, "987654321", *)
+      (connector.getCalculationId(_: String, _: Int)(_: HeaderCarrier))
+        .expects("123456789",1999, emptyHeaderCarrier.withExtraHeaders("mtditid"->"987654321"))
         .returning(Future.successful(expectedResult))
 
       val result = await(service.getCalculationId("123456789", 1999, "987654321"))
 
       result shouldBe expectedResult
     }
+
   }
 
 }
