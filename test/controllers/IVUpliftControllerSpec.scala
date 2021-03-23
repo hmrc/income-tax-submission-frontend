@@ -16,15 +16,32 @@
 
 package controllers
 
+import audit.{AuditModel, IVHandoffAuditDetail}
 import config.MockAuditService
 import controllers.Assets.SEE_OTHER
+import org.scalamock.handlers.CallHandler
 import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers.stubMessagesControllerComponents
+import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.UnitTest
 
-class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with MockAuditService{
+import scala.concurrent.Future
 
-  val controller = new IVUpliftController()(mockAppConfig,stubMessagesControllerComponents,mockAuditService, scala.concurrent.ExecutionContext.Implicits.global)
+class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with MockAuditService {
+
+  private val controller = new IVUpliftController()(
+    mockAppConfig,
+    stubMessagesControllerComponents,
+    mockAuditService,
+    mockAuthService,
+    scala.concurrent.ExecutionContext.Implicits.global)
+
+  val individualHandoffReason = "individual"
+  val individualConfidenceLevel = 50
+  val organisationHandoffReason = "organisation"
+  val organisationConfidenceLevel = 100
+  val minimumConfidenceLevel = 200
 
   "IVUpliftController" should {
 
@@ -32,15 +49,37 @@ class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with Mock
 
       "initialiseJourney() is called it" should {
 
-        verifyAuditEvent
-        val response = controller.initialiseJourney()(fakeRequest)
+        lazy val individualDetail: IVHandoffAuditDetail =
+          IVHandoffAuditDetail(individualHandoffReason, individualConfidenceLevel, minimumConfidenceLevel)
+        lazy val organisationDetail: IVHandoffAuditDetail =
+          IVHandoffAuditDetail(organisationHandoffReason, organisationConfidenceLevel, minimumConfidenceLevel)
 
-        "return status code 303" in {
+        lazy val individualEvent: AuditModel[IVHandoffAuditDetail] =
+          AuditModel("LowConfidenceLevelIvHandoff","LowConfidenceLevelIvHandoff", individualDetail)
+        lazy val organisationEvent: AuditModel[IVHandoffAuditDetail] =
+          AuditModel("LowConfidenceLevelIvHandoff","LowConfidenceLevelIvHandoff", organisationDetail)
 
+        def verifyIndividualHandoffAudit: CallHandler[Future[AuditResult]] = verifyAuditEvent(individualEvent)
+        def verifyOrganisationHandoffAudit: CallHandler[Future[AuditResult]] = verifyAuditEvent(organisationEvent)
+
+        "as an individual return status code 303" in {
+          lazy val response = controller.initialiseJourney()(fakeRequest)
+
+          mockIVCredentials(AffinityGroup.Individual, individualConfidenceLevel)
+          verifyIndividualHandoffAudit
           status(response) shouldBe SEE_OTHER
           await(response).header.headers shouldBe Map("Location" ->
             "/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
+        }
 
+        "as an organisation return status code 303" in {
+          lazy val response = controller.initialiseJourney()(fakeRequest)
+
+          mockIVCredentials(AffinityGroup.Organisation, organisationConfidenceLevel)
+          verifyOrganisationHandoffAudit
+          status(response) shouldBe SEE_OTHER
+          await(response).header.headers shouldBe Map("Location" ->
+            "/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
         }
       }
     }

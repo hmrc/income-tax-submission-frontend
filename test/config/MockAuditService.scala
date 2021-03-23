@@ -30,15 +30,14 @@ trait MockAuditService extends MockFactory {
   val mockAuditService: AuditService = mock[AuditService]
 
   def verifyAuditEvent[T](event: AuditModel[T]): CallHandler[Future[AuditResult]] = {
-    (mockAuditService.auditModel(_: AuditModel[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
+    (mockAuditService.sendAudit(_: AuditModel[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
       .expects(event, *, *, *)
       .returning(Future.successful(AuditResult.Success))
   }
 
   def verifyAuditEvent[T]: CallHandler[Future[AuditResult]] = {
-    (mockAuditService.auditModel(_: AuditModel[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
+    (mockAuditService.sendAudit(_: AuditModel[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
       .expects(*, *, *, *)
       .returning(Future.successful(AuditResult.Success))
   }
-
 }

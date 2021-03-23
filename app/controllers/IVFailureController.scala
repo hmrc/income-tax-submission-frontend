@@ -18,20 +18,18 @@ package controllers
 
 import java.util.UUID
 
-import audit.{AuditModel, AuditService, IVFailureAuditDetail}
+import audit.{AuditService, IVFailureAuditDetail}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.Logger.logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
 import views.html.errors.IVFailurePage
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class IVFailureController @Inject()(implicit appConfig: AppConfig,
@@ -50,13 +48,8 @@ class IVFailureController @Inject()(implicit appConfig: AppConfig,
     }
 
     val idForAuditing: String = journeyId.getOrElse(sessionId.getOrElse(UUID.randomUUID().toString))
-    ivFailureAuditSubmission(IVFailureAuditDetail(idForAuditing))
-    Ok(view(controllers.routes.SignOutController.signOut()))
-  }
 
-  private def ivFailureAuditSubmission(details: IVFailureAuditDetail)
-                                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditModel("LowConfidenceLevelIvOutcomeFail", "LowConfidenceLevelIvOutcomeFail", details)
-    auditService.auditModel(event)
+    auditService.sendAudit(IVFailureAuditDetail(idForAuditing).toAuditModel)
+    Ok(view(controllers.routes.SignOutController.signOut()))
   }
 }

@@ -18,7 +18,11 @@ package audit
 
 import play.api.libs.json.{Json, OWrites}
 
-case class IVFailureAuditDetail(ivJourneyId: String)
+case class IVFailureAuditDetail(ivJourneyId: String){
+
+  private def name = "LowConfidenceLevelIvOutcomeFail"
+  def toAuditModel: AuditModel[IVFailureAuditDetail] = AuditModel(name, name, this)
+}
 
 object IVFailureAuditDetail {
   implicit def writes: OWrites[IVFailureAuditDetail] = Json.writes[IVFailureAuditDetail]
