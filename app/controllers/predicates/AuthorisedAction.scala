@@ -101,7 +101,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
           Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show()))
         }
         else {
-          Future.successful(Unauthorized("No relevant identifier. Is agent: " + isAgent))
+          Future.successful(Redirect(controllers.errors.routes.IndividualAuthErrorController.show()))
         }
     }
   }

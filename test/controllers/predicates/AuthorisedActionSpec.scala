@@ -237,14 +237,14 @@ class AuthorisedActionSpec extends UnitTest {
 
     }
 
-    "return a forbidden for an individual, or a redirect for an agent" when {
+    "return a SEE_OTHER" when {
 
       "the enrolments do not contain an MTDITID for a user" in {
         lazy val result = auth.checkAuthorisation(block, Enrolments(Set(
           Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
         )))(fakeRequest.withSession("ClientNino" -> "AA123456A"), emptyHeaderCarrier)
 
-        status(result) shouldBe UNAUTHORIZED
+        status(result) shouldBe SEE_OTHER
       }
 
       "the enrolments do not contain an AgentReferenceNumber for an agent" in {
