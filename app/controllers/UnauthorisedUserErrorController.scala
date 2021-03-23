@@ -23,7 +23,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.authErrorPages.UnauthorisedUserErrorView
 
 import javax.inject.Inject
-import scala.concurrent.Future
 
 class UnauthorisedUserErrorController @Inject()(val mcc: MessagesControllerComponents,
                                                 unauthorisedUserErrorPage: UnauthorisedUserErrorView,
