@@ -72,6 +72,6 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                 (implicit hc: HeaderCarrier,
                                  ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditModel(auditType, transactionName, details)
-    auditService.auditModel(event)
+    auditService.sendAudit(event)
   }
 }

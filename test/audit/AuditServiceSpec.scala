@@ -53,7 +53,7 @@ class AuditServiceSpec extends UnitTest {
           .returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
-        target.auditModel(event) shouldBe expected
+        target.sendAudit(event) shouldBe expected
       }
 
 
@@ -65,12 +65,11 @@ class AuditServiceSpec extends UnitTest {
               (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
                 eventArg.auditSource == mockedAppName
             }
-          )
-          .returns(expected)
+          ).returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
 
-        target.auditModel(event)
+        target.sendAudit(event)
       }
 
       "generates an event with the correct auditType" in new Test {
@@ -80,12 +79,11 @@ class AuditServiceSpec extends UnitTest {
               (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
                 eventArg.auditType == auditType
             }
-          )
-          .returns(expected)
+          ).returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
 
-        target.auditModel(event)
+        target.sendAudit(event)
       }
 
       "generates an event with the correct details" in new Test {
@@ -95,12 +93,11 @@ class AuditServiceSpec extends UnitTest {
               (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
                 eventArg.detail == Json.toJson(eventDetails)
             }
-          )
-          .returns(expected)
+          ).returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
 
-        target.auditModel(event)
+        target.sendAudit(event)
       }
 
       "generates an event with the correct transactionName" in new Test {
@@ -110,12 +107,11 @@ class AuditServiceSpec extends UnitTest {
               (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
                 eventArg.tags.exists(tag => tag == "transactionName" -> transactionName)
             }
-          )
-          .returns(expected)
+          ).returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
 
-        target.auditModel(event)
+        target.sendAudit(event)
       }
     }
   }

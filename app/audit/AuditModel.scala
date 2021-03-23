@@ -18,5 +18,4 @@ package audit
 
 case class AuditModel[T](auditType: String,
                          transactionName: String,
-                         detail: T
-                        )
+                         detail: T)
