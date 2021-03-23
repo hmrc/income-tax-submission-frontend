@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.errors
+package controllers
 
 import config.AppConfig
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.authErrorPages.YouNeedAgentServicesView
+import views.html.authErrorPages.UnauthorisedUserErrorView
 
 import javax.inject.Inject
-import scala.concurrent.Future
 
-class YouNeedAgentServicesController @Inject()(val mcc: MessagesControllerComponents,
-                                               youNeedAgentServicesPage: YouNeedAgentServicesView,
+class UnauthorisedUserErrorController @Inject()(val mcc: MessagesControllerComponents,
+                                                unauthorisedUserErrorPage: UnauthorisedUserErrorView,
                                                implicit val appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-  def show(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Unauthorized(youNeedAgentServicesPage()))
+  def show(): Action[AnyContent] = Action { implicit request =>
+    Unauthorized(unauthorisedUserErrorPage())
   }
+
 }

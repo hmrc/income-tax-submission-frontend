@@ -93,7 +93,7 @@ class AuthorisedActionSpec extends UnitTest {
 
     }
 
-    "return a forbidden" when {
+    "return a redirect" when {
 
       "the correct enrolment is missing" which {
         val block: User[AnyContent] => Future[Result] = user => Future.successful(Ok(user.mtditid))
@@ -102,8 +102,8 @@ class AuthorisedActionSpec extends UnitTest {
 
         lazy val result: Future[Result] = auth.individualAuthentication[AnyContent](block, enrolments, mtditid, nino)(fakeRequest)
 
-        "returns a forbidden" in {
-          status(result) shouldBe FORBIDDEN
+        "returns an Unauthorised" in {
+          status(result) shouldBe SEE_OTHER
         }
       }
 
@@ -170,6 +170,7 @@ class AuthorisedActionSpec extends UnitTest {
         status(result) shouldBe SEE_OTHER
       }
     }
+
 
     "return a redirect to the you need agent services page" when {
 
@@ -280,8 +281,8 @@ class AuthorisedActionSpec extends UnitTest {
           status(result(ConfidenceLevelError)) shouldBe SEE_OTHER
           await(result(ConfidenceLevelError)).header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
         }
-        "should return a 401 if different message" in {
-          status(result(AuthError)) shouldBe UNAUTHORIZED
+        "should return a 303 if different message" in {
+          status(result(AuthError)) shouldBe SEE_OTHER
         }
       }
     }
@@ -314,7 +315,7 @@ class AuthorisedActionSpec extends UnitTest {
       }
     }
 
-    "return an Unauthorised" when {
+    "return a redirect" when {
 
       "the authorisation service returns an AuthorisationException exception" in {
         object AuthException extends AuthorisationException("Some reason")
@@ -323,7 +324,7 @@ class AuthorisedActionSpec extends UnitTest {
           mockAuthReturnException(AuthException)
           auth.invokeBlock(fakeRequest, block)
         }
-        status(result) shouldBe UNAUTHORIZED
+        status(result) shouldBe SEE_OTHER
       }
 
       "there is no MTDITID value in session" in {

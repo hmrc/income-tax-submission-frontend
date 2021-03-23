@@ -20,5 +20,8 @@ GET        /iv-uplift-callback                             controllers.IVUpliftC
 GET        /error/we-could-not-confirm-your-details        controllers.IVFailureController.show(journeyId: Option[String] ?= None)
 GET        /error/you-need-to-sign-up                      controllers.errors.IndividualAuthErrorController.show
 
-GET        /error/wrong-tax-year                           controllers.TaxYearErrorController.show
+GET        /error/wrong-tax-year                        controllers.TaxYearErrorController.show
+
+GET        /error/not-authorised-to-use-service         controllers.UnauthorisedUserErrorController.show
+
 GET        /error/you-need-agent-services-account       controllers.errors.YouNeedAgentServicesController.show
