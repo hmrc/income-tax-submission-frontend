@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package itUtils
+package audit
 
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.Json
+import utils.UnitTest
 
-import scala.concurrent.{ExecutionContext, Future}
+class IVFailureAuditDetailSpec extends UnitTest {
 
-class MockAuthConnector(stubbedRetrievalResult: Future[_]) extends AuthConnector {
-  def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = {
-    stubbedRetrievalResult.map(_.asInstanceOf[A])
+  "writes" when {
+    "passed an audit detail model" should {
+      "produce valid json" in {
+        val json = Json.parse(
+          s"""{"ivJourneyId":"68948af0-5d8b-4de9-b070-0650d12fda74"}""".stripMargin)
+
+        val model = IVFailureAuditDetail("68948af0-5d8b-4de9-b070-0650d12fda74")
+        Json.toJson(model) shouldBe json
+      }
+    }
   }
 }
+
+

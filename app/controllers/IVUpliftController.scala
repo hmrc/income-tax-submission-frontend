@@ -16,33 +16,50 @@
 
 package controllers
 
+import audit.{AuditService, IVHandoffAuditDetail}
 import common.SessionValues
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.AuthService
+import uk.gov.hmrc.auth.core.ConfidenceLevel
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, confidenceLevel}
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                    mcc: MessagesControllerComponents,
+                                   auditService: AuditService,
+                                   implicit val authService: AuthService,
                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
-  def initialiseJourney: Action[AnyContent] = Action { implicit request =>
+  val minimumConfidenceLevel :Int = ConfidenceLevel.L200.level
 
-    implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+  def sessionConfidenceLevel(implicit headerCarrier: HeaderCarrier): Future[(String, Int)] = {
+    authService.authorised().retrieve(affinityGroup and confidenceLevel){
+      case Some(affinityGroup) ~ confidenceLevel => Future.successful(affinityGroup.toString, confidenceLevel.level)
+    }
+  }
 
-    //TODO Implement handoff audit event
-    Redirect(appConfig.ivUpliftUrl)
+  def initialiseJourney: Action[AnyContent] = Action.async { implicit request =>
+    sessionConfidenceLevel.map { response =>
+
+      val handoffReason = response._1
+      val confidenceLevel = response._2
+
+      val model = IVHandoffAuditDetail(handoffReason.toLowerCase(), confidenceLevel , minimumConfidenceLevel)
+      auditService.sendAudit(model.toAuditModel)
+      Redirect(appConfig.ivUpliftUrl)
+    }
   }
 
   def callback: Action[AnyContent] = Action { implicit request =>
-    //TODO Implement success audit event
     getSessionData[Int](SessionValues.TAX_YEAR) match {
       case Some(taxYear) => Redirect(routes.StartPageController.show(taxYear))
       case None => Redirect(routes.StartPageController.show(appConfig.defaultTaxYear))

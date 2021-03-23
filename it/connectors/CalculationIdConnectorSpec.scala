@@ -16,8 +16,6 @@
 
 package connectors
 
-
-import connectors.httpParsers.CalculationIdHttpParser._
 import itUtils.IntegrationTest
 import models.{APIErrorBodyModel, APIErrorModel, LiabilityCalculationIdModel}
 import play.api.libs.json.Json
