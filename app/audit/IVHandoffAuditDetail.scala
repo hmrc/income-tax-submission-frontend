@@ -22,10 +22,14 @@ case class IVHandoffAuditDetail(reasonForHandoff: String,
                                 currentConfidenceLevel: Int,
                                 minimumConfidenceLevelToProceed: Int) {
 
+  private def name = "LowConfidenceLevelIvHandoff"
+  def toAuditModel: AuditModel[IVHandoffAuditDetail] = AuditModel(name, name, this)
+
   val IVModel: Map[String, String] = Map(
     "reasonForHandoff" -> reasonForHandoff,
     "currentConfidenceLevel" -> s"CL$currentConfidenceLevel",
-    "minimumConfidenceLevelToProceed" -> s"CL$minimumConfidenceLevelToProceed")
+    "minimumConfidenceLevelToProceed" -> s"CL$minimumConfidenceLevelToProceed"
+  )
 }
 
 object IVHandoffAuditDetail {

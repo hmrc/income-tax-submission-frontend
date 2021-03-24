@@ -16,7 +16,7 @@
 
 package controllers
 
-import audit.{AuditModel, AuditService, IVHandoffAuditDetail}
+import audit.{AuditService, IVHandoffAuditDetail}
 import common.SessionValues
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
@@ -27,7 +27,6 @@ import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, confidenceLevel}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
 
@@ -55,23 +54,15 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
       val confidenceLevel = response._2
 
       val model = IVHandoffAuditDetail(handoffReason.toLowerCase(), confidenceLevel , minimumConfidenceLevel)
-      auditSubmission("LowConfidenceLevelIvHandoff", "LowConfidenceLevelIvHandoff", model)
+      auditService.sendAudit(model.toAuditModel)
       Redirect(appConfig.ivUpliftUrl)
     }
   }
 
   def callback: Action[AnyContent] = Action { implicit request =>
-    //TODO Implement success audit event
     getSessionData[Int](SessionValues.TAX_YEAR) match {
       case Some(taxYear) => Redirect(routes.StartPageController.show(taxYear))
       case None => Redirect(routes.StartPageController.show(appConfig.defaultTaxYear))
     }
-  }
-
-  private def auditSubmission(auditType: String, transactionName: String, details: IVHandoffAuditDetail)
-                                (implicit hc: HeaderCarrier,
-                                 ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditModel(auditType, transactionName, details)
-    auditService.sendAudit(event)
   }
 }

@@ -35,4 +35,9 @@ trait MockAuditService extends MockFactory {
       .returning(Future.successful(AuditResult.Success))
   }
 
+  def verifyAuditEvent[T]: CallHandler[Future[AuditResult]] = {
+    (mockAuditService.sendAudit(_: AuditModel[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
+      .expects(*, *, *, *)
+      .returning(Future.successful(AuditResult.Success))
+  }
 }
