@@ -65,8 +65,7 @@ class AuditServiceSpec extends UnitTest {
               (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
                 eventArg.auditSource == mockedAppName
             }
-          )
-          .returns(expected)
+          ).returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
 
@@ -80,8 +79,7 @@ class AuditServiceSpec extends UnitTest {
               (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
                 eventArg.auditType == auditType
             }
-          )
-          .returns(expected)
+          ).returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
 
@@ -95,8 +93,7 @@ class AuditServiceSpec extends UnitTest {
               (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
                 eventArg.detail == Json.toJson(eventDetails)
             }
-          )
-          .returns(expected)
+          ).returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
 
@@ -110,8 +107,7 @@ class AuditServiceSpec extends UnitTest {
               (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
                 eventArg.tags.exists(tag => tag == "transactionName" -> transactionName)
             }
-          )
-          .returns(expected)
+          ).returns(expected)
 
         val event = AuditModel(auditType, transactionName, eventDetails)
 

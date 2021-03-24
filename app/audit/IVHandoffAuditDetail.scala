@@ -30,7 +30,6 @@ case class IVHandoffAuditDetail(reasonForHandoff: String,
     "currentConfidenceLevel" -> s"CL$currentConfidenceLevel",
     "minimumConfidenceLevelToProceed" -> s"CL$minimumConfidenceLevelToProceed"
   )
-
 }
 
 object IVHandoffAuditDetail {
