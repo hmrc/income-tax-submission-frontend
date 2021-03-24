@@ -16,9 +16,10 @@
 
 package controllers
 
-import audit.{AuditService, IVHandoffAuditDetail}
+import audit.{AuditService, IVHandoffAuditDetail, IVSuccessAuditDetail}
 import common.SessionValues
 import config.AppConfig
+import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -37,6 +38,7 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                    mcc: MessagesControllerComponents,
                                    auditService: AuditService,
                                    implicit val authService: AuthService,
+                                   val authorisedAction: AuthorisedAction,
                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
   val minimumConfidenceLevel :Int = ConfidenceLevel.L200.level
@@ -59,7 +61,11 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
     }
   }
 
-  def callback: Action[AnyContent] = Action { implicit request =>
+  def callback: Action[AnyContent] = authorisedAction { implicit user =>
+
+    val model = IVSuccessAuditDetail(user.nino)
+    auditService.sendAudit(model.toAuditModel)
+
     getSessionData[Int](SessionValues.TAX_YEAR) match {
       case Some(taxYear) => Redirect(routes.StartPageController.show(taxYear))
       case None => Redirect(routes.StartPageController.show(appConfig.defaultTaxYear))
