@@ -16,11 +16,7 @@
 
 package controllers
 
-<<<<<<< HEAD
 import audit.{AuditService, IVHandoffAuditDetail, IVSuccessAuditDetail}
-=======
-import audit.{AuditService, IVHandoffAuditDetail}
->>>>>>> 6a7024e0be5beac43b31ec9ff3f56a3ca68d7ca9
 import common.SessionValues
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
