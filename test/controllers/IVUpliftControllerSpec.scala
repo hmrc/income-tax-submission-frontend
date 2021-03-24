@@ -16,7 +16,7 @@
 
 package controllers
 
-import audit.{AuditModel, IVHandoffAuditDetail}
+import audit.{AuditModel, IVHandoffAuditDetail, IVSuccessAuditDetail}
 import config.MockAuditService
 import controllers.Assets.SEE_OTHER
 import org.scalamock.handlers.CallHandler
@@ -35,6 +35,7 @@ class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with Mock
     stubMessagesControllerComponents,
     mockAuditService,
     mockAuthService,
+    authorisedAction,
     scala.concurrent.ExecutionContext.Implicits.global)
 
   val individualHandoffReason = "individual"
@@ -87,7 +88,18 @@ class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with Mock
 
       "callback() is called it" should {
 
+        def event(nino: String): AuditModel[IVSuccessAuditDetail] =
+          AuditModel("LowConfidenceLevelIvOutcomeSuccess", "LowConfidenceLevelIvOutcomeSuccess", IVSuccessAuditDetail(nino))
+
+        def verifyAudit(nino:String): CallHandler[Future[AuditResult]] = verifyAuditEvent(event(nino))
+
+        mockAuth(Some("AA12324AA"))
+        verifyAudit("AA12324AA")
+
         val response = controller.callback()(fakeRequest)
+
+        mockAuth(Some("AA12324AA"))
+        verifyAudit("AA12324AA")
         val response2 = controller.callback()(fakeRequest.withSession("TAX_YEAR" -> "2022"))
 
         "return status code 303" in {
