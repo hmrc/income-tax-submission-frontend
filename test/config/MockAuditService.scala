@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package itUtils
+package config
 
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.AuthConnector
+import audit.{AuditModel, AuditService}
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import play.api.libs.json.Writes
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MockAuthConnector(stubbedRetrievalResult: Future[_]) extends AuthConnector {
-  def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = {
-    stubbedRetrievalResult.map(_.asInstanceOf[A])
+trait MockAuditService extends MockFactory {
+
+  val mockAuditService: AuditService = mock[AuditService]
+
+  def verifyAuditEvent[T](event: AuditModel[T]): CallHandler[Future[AuditResult]] = {
+    (mockAuditService.sendAudit(_: AuditModel[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
+      .expects(event, *, *, *)
+      .returning(Future.successful(AuditResult.Success))
   }
+
 }
