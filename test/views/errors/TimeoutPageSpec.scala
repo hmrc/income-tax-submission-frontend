@@ -16,42 +16,52 @@
 
 package views.errors
 
-import controllers.routes
+import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.twirl.api.Html
+import play.api.mvc.Call
+import play.twirl.api.HtmlFormat
 import utils.ViewTest
 import views.html.errors.TimeoutPage
 
-class TimeoutPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest{
+class TimeoutPageSpec extends AnyWordSpec with Matchers with ViewTest{
+
 
   val taxYear = 2022
-  val pageTitleText = "For your security, we signed you out"
-  val pageHeadingText = "For your security, we signed you out"
-  val p1Text = "We did not save your answers."
-  val buttonText = "Sign in"
-  val buttonHref = s"/income-through-software/return/$taxYear/view"
 
   object Selectors {
-    val pageTitle = "head > title"
-    val pageHeading = "#main-content > div > div > header > h1"
-    val p1 = "#main-content > div > div > div:nth-child(2) > p:nth-child(1)"
-    val continueButton = "#continue"
+    val h1Selector = "#main-content > div > div > header > h1"
+    val p1Selector = "#main-content > div > div > div.govuk-body > p"
+    val buttonSelector = "#continue"
+    val formSelector = "#main-content > div > div > form"
   }
 
+  val title = "For your security, we signed you out"
+  val h1Expected = "For your security, we signed you out"
+  val p1Expected = "We did not save your answers."
+  val buttonExpectedText = "Sign in"
+  val buttonExpectedUrl: String = "buttonUrl"
+
+
   val timeoutPage: TimeoutPage = app.injector.instanceOf[TimeoutPage]
+  val appConfig: AppConfig = mockAppConfig
 
-  "Rendering the timeout page when there is an error" should {
+  lazy val view: HtmlFormat.Appendable = timeoutPage(Call("GET", buttonExpectedUrl))(fakeRequest, messages, mockAppConfig)
+  implicit lazy val document: Document = Jsoup.parse(view.body)
 
-    lazy val view: Html = timeoutPage(routes.StartPageController.show(2022))(fakeRequest,messages,mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
+  "ServiceUnavailableTemplate" should {
 
-    titleCheck(pageTitleText)
-    h1Check(pageHeadingText)
-    textOnPageCheck(p1Text, Selectors.p1)
-    buttonCheck(buttonText, Selectors.continueButton)
+    "render the page correct" which {
+
+      titleCheck(title)
+      h1Check(h1Expected)
+
+      textOnPageCheck(p1Expected,Selectors.p1Selector)
+      buttonCheck(buttonExpectedText, Selectors.buttonSelector)
+      formGetLinkCheck(buttonExpectedUrl, Selectors.formSelector)
+
+    }
   }
 }
