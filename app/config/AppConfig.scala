@@ -85,7 +85,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   lazy val ivFailureUrl: String = s"/income-through-software/return/error/we-could-not-confirm-your-details"
 
   lazy val ivUpliftUrl: String = {
-    s"$ivUrl/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
+    s"$ivUrl/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
   }
 
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")

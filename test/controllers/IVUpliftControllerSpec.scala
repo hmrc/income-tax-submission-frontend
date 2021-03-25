@@ -70,7 +70,7 @@ class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with Mock
           verifyIndividualHandoffAudit
           status(response) shouldBe SEE_OTHER
           await(response).header.headers shouldBe Map("Location" ->
-            "/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
+            "/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
         }
 
         "as an organisation return status code 303" in {
@@ -80,7 +80,7 @@ class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with Mock
           verifyOrganisationHandoffAudit
           status(response) shouldBe SEE_OTHER
           await(response).header.headers shouldBe Map("Location" ->
-            "/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
+            "/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
         }
       }
     }
