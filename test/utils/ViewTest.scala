@@ -72,6 +72,13 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
     }
   }
 
+  def formGetLinkCheck(text: String, selector: String)(implicit document: Document): Unit = {
+    s"have a form with an GET action of '$text'" in {
+      document.select(selector).attr("action") shouldBe text
+      document.select(selector).attr("method") shouldBe "GET"
+    }
+  }
+
   def buttonCheck(text: String, selector: String, href: Option[String] = None)(implicit document: Document): Unit = {
 
     if (href.isDefined) {
