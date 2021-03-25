@@ -18,6 +18,7 @@ package controllers
 
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.AppConfig
+import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER, UNAUTHORIZED}
@@ -34,8 +35,8 @@ class StartPageControllerTest extends IntegrationTest {
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  def controller(stubbedRetrieval: Future[_]): StartPageController = new StartPageController(
-    authAction(stubbedRetrieval),
+  def controller: StartPageController = new StartPageController(
+    app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[StartPage],
     frontendAppConfig,
     mcc
@@ -43,53 +44,53 @@ class StartPageControllerTest extends IntegrationTest {
 
   "Hitting the show endpoint" should {
 
-    s"return an OK ($OK)" when {
+    s"return an OK (200)" when {
 
       "all auth requirements are met" in {
-        val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
-          Enrolments(Set(
-            Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None),
-            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-          )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
-        )
-
-        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
+        val result = {
+          authoriseIndividual()
+          await(controller.show(taxYear)(FakeRequest()))
+        }
 
         result.header.status shouldBe OK
       }
 
     }
 
-    s"return an UNAUTHORISED ($UNAUTHORIZED)" when {
+    s"redirect to the iv journey" when {
 
-      "the confidence level is too low" in {
-        val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
-          Enrolments(Set(Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None))) and
-            Some(AffinityGroup.Individual) and ConfidenceLevel.L50
-        )
+      "the confidence level is too low" which {
+        lazy val result = {
+          unauthorisedIndividualInsufficientConfidenceLevel()
+          await(controller.show(taxYear)(FakeRequest()))
+        }
 
-        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
+        "has a status of SEE_OTHER (303)" in {
+          result.header.status shouldBe SEE_OTHER
+        }
 
-        result.header.status shouldBe SEE_OTHER
-        result.header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
+        "has the iv journey url as the redirect link" in {
+          result.header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
+        }
       }
 
     }
 
-    "returns a SEE_OTHER (303)" when {
+    "redirect to the sign in link" when {
 
-      "it contains the wrong credentials" in {
-        val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
-          Enrolments(Set(
-            Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("UTR", "1234567890")), "Activated", None),
-            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-          )) and
-          Some(AffinityGroup.Individual) and ConfidenceLevel.L200
-        )
+      "it contains the wrong credentials" which {
+        lazy val result = {
+          unauthorisedIndividualWrongCredentials()
+          await(controller.show(taxYear)(FakeRequest()))
+        }
 
-        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
+        "has a status of SEE_OTHER (303)" in {
+          result.header.status shouldBe SEE_OTHER
+        }
 
-        result.header.status shouldBe SEE_OTHER
+        "has the sign in url as the redirect link" in {
+          result.header.headers("Location") shouldBe appConfig.signInUrl
+        }
       }
 
     }

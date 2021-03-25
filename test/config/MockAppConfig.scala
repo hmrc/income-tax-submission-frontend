@@ -55,6 +55,8 @@ class MockAppConfig extends MockFactory {
     override lazy val timeoutDialogTimeout: Int = 900
 
     override lazy val taxYearErrorFeature: Boolean = true
+
+    override def viewAndChangeEnterUtrUrl: String = "/utr-entry"
   }
 
 }

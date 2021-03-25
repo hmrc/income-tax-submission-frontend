@@ -57,7 +57,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val fakeRequestWithMtditid: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
+  val fakeRequestAgent: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   val mockAppConfig: AppConfig = new MockAppConfig().config
@@ -70,6 +70,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   val authorisedAction = new AuthorisedAction(mockAppConfig, agentAuthErrorPageView)(mockAuthService, stubMessagesControllerComponents())
 
   def status(awaitable: Future[Result]): Int = await(awaitable).header.status
+  def redirectUrl(awaitable: Future[Result]): String = await(awaitable).header.headers("Location")
 
   def bodyOf(awaitable: Future[Result]): String = {
     val awaited = await(awaitable)
@@ -86,9 +87,14 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
       Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
     ) ++ ninoEnrolment)
+
     (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, *, *, *)
-      .returning(Future.successful(enrolments and Some(AffinityGroup.Individual) and ConfidenceLevel.L200))
+      .expects(*, Retrievals.affinityGroup, *, *)
+      .returning(Future.successful(Some(AffinityGroup.Individual)))
+
+    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
+      .expects(*, Retrievals.allEnrolments and Retrievals.confidenceLevel, *, *)
+      .returning(Future.successful(enrolments and ConfidenceLevel.L200))
   }
 
   //noinspection ScalaStyle
@@ -114,12 +120,13 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
       Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
     ))
-    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, Retrievals.allEnrolments and Retrievals.affinityGroup and Retrievals.confidenceLevel, *, *)
-      .returning(Future.successful(enrolments and Some(AffinityGroup.Agent) and ConfidenceLevel.L200))
 
     (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, *, *, *)
+      .expects(*, Retrievals.affinityGroup, *, *)
+      .returning(Future.successful(Some(AffinityGroup.Agent)))
+
+    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
+      .expects(*, Retrievals.allEnrolments, *, *)
       .returning(Future.successful(enrolments))
   }
 
