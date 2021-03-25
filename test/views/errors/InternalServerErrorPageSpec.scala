@@ -18,72 +18,60 @@ package views.errors
 
 import config.AppConfig
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
-import play.twirl.api.Html
+import play.twirl.api.HtmlFormat
+import utils.ViewTest
 import views.html.errors.InternalServerErrorPage
 
-class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with ViewTest {
 
-  object Selectors{
-    val pageTitle = "head > title"
-    val pageHeading = "#main-content > div > div > header > h1"
-    val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
-    val paragraph2 = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val paragraph3 = "#main-content > div > div > ul > li:nth-child(1)"
-    val paragraph4 = "#main-content > div > div > ul > li:nth-child(2)"
-    val link = "#govuk-income-tax-link"
-    val link2 = "#govuk-self-assessment-link"
+  object Selectors {
+
+    val h1Selector = "#main-content > div > div > header > h1"
+    val p1Selector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
+    val p2Selector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+    val bulletPoint1 = "#main-content > div > div > ul > li:nth-child(1)"
+    val bulletPointLinkSelector1 = "#govuk-income-tax-link"
+    val bulletPoint2 = "#main-content > div > div > ul > li:nth-child(2)"
+    val bulletPointLinkSelector2 = "#govuk-self-assessment-link"
+
   }
 
-  val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
+  val title = "Sorry, there is a problem with the service"
+  val h1Expected = "Sorry, there is a problem with the service"
+  val p1Expected = "Try again later."
+  val p2Expected = "You can also:"
+  val bulletPoint1Expected = "go to the Income Tax home page (opens in new tab) for more information"
+  val bulletPoint1Link = "https://www.gov.uk/income-tax"
+  val bulletPoint1LinkText = "Income Tax home page (opens in new tab)"
+  val bulletPoint2Expected = "use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax"
+  val bulletPoint2Link = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
+  val bulletPoint2LinkText = "Self Assessment: general enquiries (opens in new tab)"
 
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  def element(cssSelector: String)(implicit document: Document): Element = {
-    val elements = document.select(cssSelector)
+  lazy val internalServerErrorTemplate: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
+  lazy val appConfig: AppConfig = mockAppConfig
 
-    if(elements.size == 0) {
-      fail(s"No element exists with the selector '$cssSelector'")
-    }
+  lazy val view: HtmlFormat.Appendable = internalServerErrorTemplate()(fakeRequest, messages, appConfig)
+  implicit lazy val document: Document = Jsoup.parse(view.body)
 
-    document.select(cssSelector).first()
-  }
-  def elementText(selector: String)(implicit document: Document): String = {
-    element(selector).text()
-  }
+  "UnauthorisedTemplate" should {
 
-  "Rendering the error page when there is an error" should {
+    "render the page correctly" which {
 
-    lazy val view: Html = internalServerErrorPage()(fakeRequest,messages,mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
+      titleCheck(title)
+      h1Check(h1Expected)
+      textOnPageCheck(p1Expected, Selectors.p1Selector)
+      textOnPageCheck(p2Expected, Selectors.p2Selector)
 
-    "have the correct page title" in {
-      elementText(Selectors.pageTitle) shouldBe "Sorry, there is a problem with the service - Update and submit an Income Tax Return - GOV.UK"
-    }
+      textOnPageCheck(bulletPoint1Expected,Selectors.bulletPoint1)
+      linkCheck(bulletPoint1LinkText, Selectors.bulletPointLinkSelector1, bulletPoint1Link)
 
-    "have the correct page heading" in {
-      elementText(Selectors.pageHeading) shouldBe "Sorry, there is a problem with the service"
-    }
+      textOnPageCheck(bulletPoint2Expected,Selectors.bulletPoint2)
+      linkCheck(bulletPoint2LinkText, Selectors.bulletPointLinkSelector2, bulletPoint2Link)
 
-    "have the correct links" in {
-      document.select(Selectors.link).attr("href") shouldBe "https://www.gov.uk/income-tax"
-      document.select(Selectors.link2).attr("href") shouldBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
-    }
-
-    "have the correct paragraph text" in {
-      elementText(Selectors.paragraph) shouldBe "Try again later."
-      elementText(Selectors.paragraph2) shouldBe "You can also:"
-      elementText(Selectors.paragraph3) shouldBe "go to the Income Tax home page (opens in new tab) for more information"
-      elementText(Selectors.paragraph4) shouldBe "use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax"
     }
   }
 }
