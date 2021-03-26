@@ -29,7 +29,7 @@ import utils.ViewTest
 class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest{
 
   val taxYear = 2022
-  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/client"
+  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents"
   val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
   val vcBreadcrumb = "Income Tax"
   val startPageBreadcrumb = "Update and submit an Income Tax Return"
