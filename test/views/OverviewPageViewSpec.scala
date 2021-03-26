@@ -31,7 +31,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val taxYear = 2080
   val taxYearMinusOne: Int = taxYear - 1
   val taxYearPlusOne: Int = taxYear + 1
-  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/client"
+  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents"
   val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
   val vcBreadcrumb = "Income Tax"
   val startPageBreadcrumb = "Update and submit an Income Tax Return"
