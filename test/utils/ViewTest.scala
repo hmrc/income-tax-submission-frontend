@@ -30,7 +30,7 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
   implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
   lazy val welshMessages: Messages = messagesApi.preferred(Seq(Lang("cy")))
   implicit lazy val mockMessagesControllerComponents: MessagesControllerComponents = Helpers.stubMessagesControllerComponents()
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig] implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   val serviceName = "Update and submit an Income Tax Return"
   val govUkExtension = "GOV.UK"
