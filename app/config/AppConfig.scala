@@ -16,7 +16,8 @@
 
 package config
 
-import play.api.mvc.RequestHeader
+import play.api.i18n.Lang
+import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -93,4 +94,13 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
   lazy val taxYearErrorFeature: Boolean = servicesConfig.getBoolean("taxYearErrorFeatureSwitch")
 
+  def languageMap: Map[String, Lang] = Map(
+    "english" -> Lang("en"),
+    "cymraeg" -> Lang("cy")
+  )
+
+  def routeToSwitchLanguage: String => Call =
+    (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
+
+  lazy val welshToggleEnabled: Boolean = servicesConfig.getBoolean("feature-switch.welshToggleEnabled")
 }

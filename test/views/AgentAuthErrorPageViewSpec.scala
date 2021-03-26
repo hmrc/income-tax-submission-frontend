@@ -21,7 +21,7 @@ import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
 import utils.ViewTest
 
 class AgentAuthErrorPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest{
@@ -38,16 +38,32 @@ class AgentAuthErrorPageViewSpec extends AnyWordSpec with Matchers with GuiceOne
   val tryAnotherClientText = "Try another client’s details"
   val authoriseAsAnAgentLink = "https://www.gov.uk/guidance/client-authorisation-an-overview"
 
-  val view: HtmlFormat.Appendable = agentAuthErrorPageView()
-  lazy implicit val document: Document = Jsoup.parse(view.body)
+  "AgentAuthErrorPageView when called in English" should {
+    "render correctly" which {
+      lazy val view: Html = agentAuthErrorPageView()(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-  "AgentAuthErrorPageView " should {
-    "Render correctly" which {
       titleCheck(pageTitleText)
+      welshToggleCheck("English")
       h1Check(pageHeadingText)
       textOnPageCheck(s"$youCannotViewText $authoriseYouAsText $beforeYouCanTryText", p1Selector)
       linkCheck(authoriseYouAsText, authoriseAsAnAgentLinkSelector, authoriseAsAnAgentLink)
       textOnPageCheck(tryAnotherClientText, p2Selector)
     }
   }
+
+  "AgentAuthErrorPageView when called in Welsh" should {
+    "render correctly" which {
+      lazy val view: Html = agentAuthErrorPageView()(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
+      h1Check(pageHeadingText)
+      textOnPageCheck(s"$youCannotViewText $authoriseYouAsText $beforeYouCanTryText", p1Selector)
+      linkCheck(authoriseYouAsText, authoriseAsAnAgentLinkSelector, authoriseAsAnAgentLink)
+      textOnPageCheck(tryAnotherClientText, p2Selector)
+    }
+  }
+
 }

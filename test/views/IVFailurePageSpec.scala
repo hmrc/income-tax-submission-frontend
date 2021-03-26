@@ -48,18 +48,40 @@ class IVFailurePageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
   val iVFailurePage: IVFailurePage = app.injector.instanceOf[IVFailurePage]
 
-  "Rendering the start page when the user is an individual" should {
+  "Rendering the IVFailurePage in English" should {
+    "render correctly when the user is an individual" should {
 
-    lazy val view: Html = iVFailurePage(controllers.routes.SignOutController.signOut())(fakeRequest,messages,mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
+      lazy val view: Html = iVFailurePage(controllers.routes.SignOutController.signOut())(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-    titleCheck(pageTitleText)
-    h1Check(pageHeadingText)
+      titleCheck(pageTitleText)
+      welshToggleCheck("English")
+      h1Check(pageHeadingText)
 
-    textOnPageCheck(p1, Selectors.p1)
-    textOnPageCheck(li1, Selectors.bullet1)
-    textOnPageCheck(li2, Selectors.bullet2)
-    textOnPageCheck(li3, Selectors.bullet3)
-    buttonCheck(signOutText, Selectors.button)
+      textOnPageCheck(p1, Selectors.p1)
+      textOnPageCheck(li1, Selectors.bullet1)
+      textOnPageCheck(li2, Selectors.bullet2)
+      textOnPageCheck(li3, Selectors.bullet3)
+      buttonCheck(signOutText, Selectors.button)
+    }
   }
+
+  "Rendering the IVFailurePage in Welsh" should {
+    "render correctly when the user is an individual" should {
+
+      lazy val view: Html = iVFailurePage(controllers.routes.SignOutController.signOut())(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
+      h1Check(pageHeadingText)
+
+      textOnPageCheck(p1, Selectors.p1)
+      textOnPageCheck(li1, Selectors.bullet1)
+      textOnPageCheck(li2, Selectors.bullet2)
+      textOnPageCheck(li3, Selectors.bullet3)
+      buttonCheck(signOutText, Selectors.button)
+    }
+  }
+
 }

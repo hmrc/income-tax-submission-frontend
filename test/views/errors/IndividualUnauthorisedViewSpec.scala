@@ -18,12 +18,13 @@ package views.errors
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import play.twirl.api.Html
 import utils.ViewTest
 import views.html.authErrorPages.IndividualUnauthorisedView
 
 class IndividualUnauthorisedViewSpec extends ViewTest {
 
-  def view: IndividualUnauthorisedView = app.injector.instanceOf[IndividualUnauthorisedView]
+  val individualUnauthorisedView: IndividualUnauthorisedView = app.injector.instanceOf[IndividualUnauthorisedView]
 
   val validTitle: String = "You cannot view this page"
   val pageContent: String = "You need to sign up for Making Tax Digital for Income Tax before you can view this page."
@@ -33,12 +34,27 @@ class IndividualUnauthorisedViewSpec extends ViewTest {
   val paragraphSelector: String = ".govuk-body"
   val linkSelector: String = paragraphSelector + " > a"
 
-  "IndividualUnauthorisedView" should {
-
+  "The IndividualUnauthorisedView when called in English" should {
     "render the page" which {
-      implicit lazy val document: Document = Jsoup.parse(view().toString())
+      lazy val view: Html = individualUnauthorisedView()(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(validTitle)
+      welshToggleCheck("English")
+      h1Check(validTitle)
+      textOnPageCheck(pageContent, paragraphSelector)
+      linkCheck(linkContent, linkSelector, linkHref)
+    }
+
+  }
+
+  "The IndividualUnauthorisedView when called in Welsh" should {
+    "render the page" which {
+      lazy val view: Html = individualUnauthorisedView()(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(validTitle)
+      welshToggleCheck("Welsh")
       h1Check(validTitle)
       textOnPageCheck(pageContent, paragraphSelector)
       linkCheck(linkContent, linkSelector, linkHref)

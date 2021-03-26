@@ -16,52 +16,52 @@
 
 package views.errors
 
-import config.AppConfig
+import controllers.routes
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.mvc.Call
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
 import utils.ViewTest
 import views.html.errors.TimeoutPage
 
 class TimeoutPageSpec extends AnyWordSpec with Matchers with ViewTest{
 
-
   val taxYear = 2022
+  val pageTitleText = "For your security, we signed you out"
+  val pageHeadingText = "For your security, we signed you out"
+  val p1Text = "We did not save your answers."
+  val buttonText = "Sign in"
 
-  object Selectors {
-    val h1Selector = "#main-content > div > div > header > h1"
-    val p1Selector = "#main-content > div > div > div.govuk-body > p"
-    val buttonSelector = "#continue"
-    val formSelector = "#main-content > div > div > form"
-  }
-
-  val title = "For your security, we signed you out"
-  val h1Expected = "For your security, we signed you out"
-  val p1Expected = "We did not save your answers."
-  val buttonExpectedText = "Sign in"
-  val buttonExpectedUrl: String = "buttonUrl"
-
+  val p1 = "#main-content > div > div > div:nth-child(2) > p:nth-child(1)"
+  val continueButtonSelector = "#continue"
 
   val timeoutPage: TimeoutPage = app.injector.instanceOf[TimeoutPage]
-  val appConfig: AppConfig = mockAppConfig
 
-  lazy val view: HtmlFormat.Appendable = timeoutPage(Call("GET", buttonExpectedUrl))(fakeRequest, messages, mockAppConfig)
-  implicit lazy val document: Document = Jsoup.parse(view.body)
+  "The TimeoutPage when called in English" should {
+    "render correctly" should {
+      lazy val view: Html = timeoutPage(routes.StartPageController.show(taxYear))(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-  "ServiceUnavailableTemplate" should {
-
-    "render the page correct" which {
-
-      titleCheck(title)
-      h1Check(h1Expected)
-
-      textOnPageCheck(p1Expected,Selectors.p1Selector)
-      buttonCheck(buttonExpectedText, Selectors.buttonSelector)
-      formGetLinkCheck(buttonExpectedUrl, Selectors.formSelector)
-
+      titleCheck(pageTitleText)
+      welshToggleCheck("English")
+      h1Check(pageHeadingText)
+      textOnPageCheck(p1Text, p1)
+      buttonCheck(buttonText, continueButtonSelector)
     }
   }
+
+  "The TimeoutPage when called in Welsh" should {
+    "render correctly" should {
+      lazy val view: Html = timeoutPage(routes.StartPageController.show(taxYear))(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
+      h1Check(pageHeadingText)
+      textOnPageCheck(p1Text, p1)
+      buttonCheck(buttonText, continueButtonSelector)
+    }
+  }
+
 }
