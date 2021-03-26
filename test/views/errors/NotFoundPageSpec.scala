@@ -16,53 +16,62 @@
 
 package views.errors
 
-import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
 import utils.ViewTest
 import views.html.errors.NotFoundPage
 
-class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest {
+class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest{
 
-  object Selectors {
+  val link = "#govuk-income-tax-link"
+  val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
+  val paragraph2 = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+  val paragraph3 = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
 
-    val h1Selector = "#main-content > div > div > header > h1"
-    val p1Selector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
-    val p2Selector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val p3Selector = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
-    val linkSelector = "#govuk-income-tax-link"
+  val pageTitleText = "Page not found"
+  val pageHeaderText = "Page not found"
+  val ifYouTypedText = "If you typed the web address, check it is correct."
+  val ifYouUsedText = "If you used ‘copy and paste’ to enter the web address, check you copied the full address."
+  val ifTheWebsiteText: String = "If the website address is correct or you selected a link or button, " +
+    "you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
+  val linkText = "Self Assessment: general enquiries (opens in new tab)"
+
+  val linkHref = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
+
+  val notFoundPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
+
+  "The NotFoundPage when called in English" should {
+    "render correctly" should {
+
+      lazy val view: Html = notFoundPage()(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(pageTitleText)
+      welshToggleCheck("English")
+      h1Check(pageHeaderText)
+      linkCheck(linkText, link, linkHref)
+      textOnPageCheck(ifYouTypedText, paragraph)
+      textOnPageCheck(ifYouUsedText, paragraph2)
+      textOnPageCheck(ifTheWebsiteText, paragraph3)
+    }
   }
 
-  val title = "Page not found"
-  val h1Expected = "Page not found"
-  val p1Expected = "If you typed the web address, check it is correct."
-  val p2Expected = "If you used ‘copy and paste’ to enter the web address, check you copied the full address."
-  val p3Expected: String = "If the website address is correct or you selected a link or button, you can use Self Assessment: " +
-    "general enquiries (opens in new tab) to speak to someone about your income tax."
-  val p3ExpectedLink = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
-  val p3ExpectedLinkText = "Self Assessment: general enquiries (opens in new tab)"
+  "The NotFoundPage when called in Welsh" should {
+    "render correctly" should {
 
-  val notFoundTemplate: NotFoundPage = app.injector.instanceOf[NotFoundPage]
-  val appConfig: AppConfig = mockAppConfig
+      lazy val view: Html = notFoundPage()(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-  lazy val view: HtmlFormat.Appendable = notFoundTemplate()(fakeRequest, messages, mockAppConfig)
-  implicit lazy val document: Document = Jsoup.parse(view.body)
-
-  "NotFoundTemplate" should {
-
-    "render the page correctly" which {
-
-      titleCheck(title)
-      h1Check(h1Expected)
-
-      textOnPageCheck(p1Expected,Selectors.p1Selector)
-      textOnPageCheck(p2Expected,Selectors.p2Selector)
-      textOnPageCheck(p3Expected,Selectors.p3Selector)
-      linkCheck(p3ExpectedLinkText, Selectors.linkSelector, p3ExpectedLink)
-
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
+      h1Check(pageHeaderText)
+      linkCheck(linkText, link, linkHref)
+      textOnPageCheck(ifYouTypedText, paragraph)
+      textOnPageCheck(ifYouUsedText, paragraph2)
+      textOnPageCheck(ifTheWebsiteText, paragraph3)
     }
   }
 }

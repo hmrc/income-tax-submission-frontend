@@ -16,53 +16,63 @@
 
 package views.errors
 
-import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
 import utils.ViewTest
 import views.html.errors.WrongTaxYearPage
 
-class WrongTaxYearPageSpec extends AnyWordSpec with Matchers with ViewTest {
+class WrongTaxYearPageSpec extends AnyWordSpec with Matchers with ViewTest{
+
+  val link = "#govuk-income-tax-link"
+  val youCanOnlySelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
+  val checkThatYouveSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+  val ifTheWebsiteSelector = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
+
+  val pageTitleText = "Page not found"
+  val pageHeadingText = "Page not found"
+  val youCanOnlyText = "You can only enter information for the 2021 to 2022 tax year."
+  val checkThatYouveText = "Check that you’ve entered the correct web address."
+  val ifTheWebsiteText: String = "If the website address is correct or you selected a link or button, " +
+    "you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
+  val linkText = "Self Assessment: general enquiries (opens in new tab)"
+
+  val linkHref = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
+
+  val internalServerErrorPage: WrongTaxYearPage = app.injector.instanceOf[WrongTaxYearPage]
 
 
-  object Selectors {
+  "The WrongTaxYearPage when called in English" should {
+    "render correctly" should {
 
-    val h1Selector = "#main-content > div > div > header > h1"
-    val p1Selector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
-    val p2Selector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val p3Selector = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
-    val linkSelector = "#govuk-income-tax-link"
+      lazy val view: Html = internalServerErrorPage()(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(pageTitleText)
+      welshToggleCheck("English")
+      h1Check(pageHeadingText)
+      linkCheck(linkText, link, linkHref)
+      textOnPageCheck(youCanOnlyText, youCanOnlySelector)
+      textOnPageCheck(checkThatYouveText, checkThatYouveSelector)
+      textOnPageCheck(ifTheWebsiteText, ifTheWebsiteSelector)
+    }
   }
 
-  val title = "Page not found"
-  val h1Expected = "Page not found"
-  val p1Expected = "You can only enter information for the 2021 to 2022 tax year."
-  val p2Expected = "Check that you’ve entered the correct web address."
-  val p3Expected: String = "If the website address is correct or you selected a link or button, you can use Self Assessment: " +
-    "general enquiries (opens in new tab) to speak to someone about your income tax."
-  val p3ExpectedLink = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
-  val p3ExpectedLinkText = "Self Assessment: general enquiries (opens in new tab)"
+  "The WrongTaxYearPage when called in Welsh" should {
+    "render correctly" should {
 
-  val taxYearErrorTemplate: WrongTaxYearPage = app.injector.instanceOf[WrongTaxYearPage]
-  val appConfig: AppConfig = mockAppConfig
+      lazy val view: Html = internalServerErrorPage()(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-  lazy val view: HtmlFormat.Appendable = taxYearErrorTemplate()(fakeRequest, messages, mockAppConfig)
-  implicit lazy val document: Document = Jsoup.parse(view.body)
-
-  "TaxYearErrorTemplate" should {
-
-    "render the page correctly" which {
-
-      titleCheck(title)
-      h1Check(h1Expected)
-
-      textOnPageCheck(p1Expected,Selectors.p1Selector)
-      textOnPageCheck(p2Expected,Selectors.p2Selector)
-      textOnPageCheck(p3Expected,Selectors.p3Selector)
-      linkCheck(p3ExpectedLinkText, Selectors.linkSelector, p3ExpectedLink)
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
+      h1Check(pageHeadingText)
+      linkCheck(linkText, link, linkHref)
+      textOnPageCheck(youCanOnlyText, youCanOnlySelector)
+      textOnPageCheck(checkThatYouveText, checkThatYouveSelector)
+      textOnPageCheck(ifTheWebsiteText, ifTheWebsiteSelector)
     }
   }
 }
