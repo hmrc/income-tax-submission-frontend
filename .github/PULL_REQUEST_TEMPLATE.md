@@ -27,7 +27,7 @@ Add a link to the relevant story in Jira
 - [ ]  Have you run the journey tests ?
 - [ ]  Have you addressed warnings where appropriate?
 
-##### After Reviewing
+##### After PRs been Reviewed
 - [ ]  Have you checked the PR Builder passes ?
 - [ ]  Have you checked for merge conflicts ?
 - [ ]  Have you checked code coverage isn’t lower than previously ?
