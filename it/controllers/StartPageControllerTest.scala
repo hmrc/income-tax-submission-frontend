@@ -16,18 +16,12 @@
 
 package controllers
 
-import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{OK, SEE_OTHER, UNAUTHORIZED}
-import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
-import uk.gov.hmrc.auth.core.{Enrolment, _}
+import play.api.test.Helpers.{OK, SEE_OTHER}
 import views.html.StartPage
-
-import scala.concurrent.Future
 
 class StartPageControllerTest extends IntegrationTest {
 

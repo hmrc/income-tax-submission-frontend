@@ -17,21 +17,15 @@
 package controllers
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
 import play.api.libs.ws.WSClient
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{OK, SEE_OTHER, UNAUTHORIZED}
+import play.api.test.Helpers.{OK, SEE_OTHER}
 import services.{CalculationIdService, IncomeSourcesService}
-import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
-import uk.gov.hmrc.auth.core.{Enrolment, _}
 import views.html.OverviewPageView
 import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
-
-import scala.concurrent.Future
 
 class OverviewPageControllerTest extends IntegrationTest {
 
@@ -73,8 +67,6 @@ class OverviewPageControllerTest extends IntegrationTest {
     s"return an OK (200) and no prior data" when {
 
       "all auth requirements are met" in {
-//        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK, "{}")
-
         val result = {
           authoriseIndividual()
           await(controller.show(taxYear)(FakeRequest()))
