@@ -31,7 +31,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val taxYear = 2080
   val taxYearMinusOne: Int = taxYear - 1
   val taxYearPlusOne: Int = taxYear + 1
-  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/client"
+  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents"
   val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
   val vcBreadcrumb = "Income Tax"
   val startPageBreadcrumb = "Update and submit an Income Tax Return"
@@ -82,106 +82,214 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(3) > ul > span"
 
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
-
-  lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,messages,mockConfig)
-  lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,messages,mockConfig)
-  lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,messages,mockConfig)
-
+  
   lazy val incomeSourcesModel:Option[IncomeSourcesModel] = Some(IncomeSourcesModel(dividendsModel, interestsModel))
   lazy val dividendsModel:Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
   lazy val interestsModel:Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
 
-  "The Overview Page with no prior data" should {
+  "The Overview page should render correctly in English" should {
 
-    "Have the correct content for an individual" which {
+    "render correctly with no prior data" should {
 
-      lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
+      "Have the correct content for an individual" which {
 
-      linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
-      linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
-      textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,messages,mockConfig)
+        lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
 
-      titleCheck(individualHeading)
-      h1Check(individualHeading)
-      textOnPageCheck(caption, captionSelector)
-      textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-      textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-      "has a dividends section" which{
-        linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
-        textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+        titleCheck(individualHeading)
+        h1Check(individualHeading)
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+          textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+          textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+        }
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
       }
 
-      "has an interest section" which{
-        linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
-        textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+      "Have the correct content for an agent" which {
+
+        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,messages,mockConfig)
+        lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading)
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsAgentText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+          textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+          textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+        }
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
       }
-      textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-      textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
-      textOnPageCheck(submitReturnText, submitReturnSelector)
-      textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
     }
 
-    "Have the correct content for an agent" which {
+    "render correctly with prior data" should {
 
-      lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
+      "Have the correct content for an individual with prior data" which {
 
-      linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
-      linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
-      textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,messages,mockConfig)
+        lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
 
-      titleCheck(agentHeading)
-      h1Check(agentHeading)
-      textOnPageCheck(caption, captionSelector)
-      textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-      textOnPageCheck(completeSectionsAgentText, completeSectionsSelector)
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-      "has a dividends section" which{
-        linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
-        textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+        titleCheck(individualHeading)
+        h1Check(individualHeading)
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
+          textOnPageCheck(dividendsUpdatedText, dividendsUpdatedSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
+          textOnPageCheck(interestsUpdatedText, interestUpdatedSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewEstimateLinkText, viewEstimateSelector, viewEstimateLink)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
       }
-
-      "has an interest section" which{
-        linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
-        textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
-      }
-      textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-      textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
-      textOnPageCheck(submitReturnText, submitReturnSelector)
-      textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
     }
   }
 
-  "The Overview Page with prior data" should {
+  "The Overview page should render correctly in Welsh" should {
 
-    "Have the correct content for an individual with prior data" which {
+    "render correctly with no prior data" should {
 
-      lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
+      "Have the correct content for an individual" which {
 
-      linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
-      linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
-      textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
 
-      titleCheck(individualHeading)
-      h1Check(individualHeading)
-      textOnPageCheck(caption, captionSelector)
-      textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-      textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-      "has a dividends section" which{
-        linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
-        textOnPageCheck(dividendsUpdatedText, dividendsUpdatedSelector)
+        titleCheck(individualHeading)
+        h1Check(individualHeading)
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+          textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+          textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+        }
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
       }
 
-      "has an interest section" which{
-        linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
-        textOnPageCheck(interestsUpdatedText, interestUpdatedSelector)
-      }
+      "Have the correct content for an agent" which {
 
-      textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-      linkCheck(viewEstimateLinkText, viewEstimateSelector, viewEstimateLink)
-      textOnPageCheck(submitReturnText, submitReturnSelector)
-      textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading)
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsAgentText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+          textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+          textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+        }
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
+      }
+    }
+
+    "render correctly with prior data" should {
+
+      "Have the correct content for an individual with prior data" which {
+
+        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading)
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
+          textOnPageCheck(dividendsUpdatedText, dividendsUpdatedSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
+          textOnPageCheck(interestsUpdatedText, interestUpdatedSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewEstimateLinkText, viewEstimateSelector, viewEstimateLink)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+      }
     }
   }
 }

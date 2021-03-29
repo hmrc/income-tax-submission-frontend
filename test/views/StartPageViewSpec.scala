@@ -29,7 +29,7 @@ import utils.ViewTest
 class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest{
 
   val taxYear = 2022
-  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/client"
+  val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents"
   val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
   val vcBreadcrumb = "Income Tax"
   val startPageBreadcrumb = "Update and submit an Income Tax Return"
@@ -60,41 +60,89 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   }
 
   val startPageView: StartPage = app.injector.instanceOf[StartPage]
+  
+  "Rendering the start page in English" should {
 
-  "Rendering the start page when the user is an individual" should {
+    "render correctly when the user is an individual" should {
 
-    lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest,messages,mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
+      lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-    linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcBreadcrumbUrl)
-    textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
-    titleCheck(pageTitleText)
-    h1Check(pageHeadingText)
-    textOnPageCheck(caption, Selectors.caption)
-    textOnPageCheck(useThisServiceText, Selectors.p1)
-    textOnPageCheck(newServiceText, Selectors.p2)
-    textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
-    textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
-    textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
-    buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+      welshToggleCheck("English")
+      linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcBreadcrumbUrl)
+      textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
+      titleCheck(pageTitleText)
+      h1Check(pageHeadingText)
+      textOnPageCheck(caption, Selectors.caption)
+      textOnPageCheck(useThisServiceText, Selectors.p1)
+      textOnPageCheck(newServiceText, Selectors.p2)
+      textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
+      textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
+      textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
+      buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+    }
+
+    "render correctly when the user is an agent" should {
+
+      lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      welshToggleCheck("English")
+      linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+      textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
+
+      titleCheck(pageTitleText)
+      h1Check(pageHeadingText)
+      textOnPageCheck(caption, Selectors.caption)
+      textOnPageCheck(useThisServiceText, Selectors.p1)
+      textOnPageCheck(newServiceText, Selectors.p2)
+      textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
+      textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
+      textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
+      buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+    }
   }
 
-  "Rendering the start page when the user is an agent" should {
+  "Rendering the start page in Welsh" should {
 
-    lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest,messages,mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
+    "render correctly when the user is an individual" should {
 
-    linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
-    textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
+      lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-    titleCheck(pageTitleText)
-    h1Check(pageHeadingText)
-    textOnPageCheck(caption, Selectors.caption)
-    textOnPageCheck(useThisServiceText, Selectors.p1)
-    textOnPageCheck(newServiceText, Selectors.p2)
-    textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
-    textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
-    textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
-    buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+      welshToggleCheck("Welsh")
+      linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcBreadcrumbUrl)
+      textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
+      titleCheck(pageTitleText)
+      h1Check(pageHeadingText)
+      textOnPageCheck(caption, Selectors.caption)
+      textOnPageCheck(useThisServiceText, Selectors.p1)
+      textOnPageCheck(newServiceText, Selectors.p2)
+      textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
+      textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
+      textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
+      buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+    }
+
+    "render correctly when the user is an agent" should {
+
+      lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      welshToggleCheck("Welsh")
+      linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+      textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
+
+      titleCheck(pageTitleText)
+      h1Check(pageHeadingText)
+      textOnPageCheck(caption, Selectors.caption)
+      textOnPageCheck(useThisServiceText, Selectors.p1)
+      textOnPageCheck(newServiceText, Selectors.p2)
+      textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
+      textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
+      textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
+      buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+    }
   }
+
 }

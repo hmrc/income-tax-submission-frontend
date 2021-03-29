@@ -21,6 +21,7 @@ import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.mvc.Http.Request
 import utils.ViewTest
 import views.html.authErrorPages.YouNeedAgentServicesView
 
@@ -37,11 +38,20 @@ class YouNeedAgentServicesViewSpec extends AnyWordSpec with Matchers with GuiceO
   lazy val createAnAgentLink = "https://www.gov.uk/guidance/get-an-hmrc-agent-services-account"
 
   val youNeedAgentServicesView: YouNeedAgentServicesView = app.injector.instanceOf[YouNeedAgentServicesView]
-  lazy implicit val document: Document = Jsoup.parse(youNeedAgentServicesView().body)
 
   "YouNeedAgentServicesView " should {
-    "Correctly render" which {
+    "Correctly render in english" which {
+      lazy implicit val document: Document = Jsoup.parse(youNeedAgentServicesView()(fakeRequest, messages = messages, appConfig = mockAppConfig).body)
       titleCheck(pageTitleText)
+      welshToggleCheck("English")
+      h1Check(pageHeadingText)
+      textOnPageCheck(s"$youNeedText $createAnAgentText $beforeYouCanText", p1Selector)
+      linkCheck(createAnAgentText, createAnAgentLinkSelector, createAnAgentLink)
+    }
+    "Correctly render in welsh" which {
+      lazy implicit val document: Document = Jsoup.parse(youNeedAgentServicesView()(fakeRequest, messages = welshMessages, appConfig = mockAppConfig).body)
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
       h1Check(pageHeadingText)
       textOnPageCheck(s"$youNeedText $createAnAgentText $beforeYouCanText", p1Selector)
       linkCheck(createAnAgentText, createAnAgentLinkSelector, createAnAgentLink)

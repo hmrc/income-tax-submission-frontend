@@ -16,9 +16,10 @@
 
 package controllers
 
-import audit.{AuditModel, AuditService, IVHandoffAuditDetail}
+import audit.{AuditService, IVHandoffAuditDetail, IVSuccessAuditDetail}
 import common.SessionValues
 import config.AppConfig
+import controllers.predicates.AuthorisedAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -27,7 +28,6 @@ import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, confidenceLevel}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
 
@@ -38,6 +38,7 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                    mcc: MessagesControllerComponents,
                                    auditService: AuditService,
                                    implicit val authService: AuthService,
+                                   val authorisedAction: AuthorisedAction,
                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
   val minimumConfidenceLevel :Int = ConfidenceLevel.L200.level
@@ -55,23 +56,19 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
       val confidenceLevel = response._2
 
       val model = IVHandoffAuditDetail(handoffReason.toLowerCase(), confidenceLevel , minimumConfidenceLevel)
-      auditSubmission("LowConfidenceLevelIvHandoff", "LowConfidenceLevelIvHandoff", model)
+      auditService.sendAudit(model.toAuditModel)
       Redirect(appConfig.ivUpliftUrl)
     }
   }
 
-  def callback: Action[AnyContent] = Action { implicit request =>
-    //TODO Implement success audit event
+  def callback: Action[AnyContent] = authorisedAction { implicit user =>
+
+    val model = IVSuccessAuditDetail(user.nino)
+    auditService.sendAudit(model.toAuditModel)
+
     getSessionData[Int](SessionValues.TAX_YEAR) match {
       case Some(taxYear) => Redirect(routes.StartPageController.show(taxYear))
       case None => Redirect(routes.StartPageController.show(appConfig.defaultTaxYear))
     }
-  }
-
-  private def auditSubmission(auditType: String, transactionName: String, details: IVHandoffAuditDetail)
-                                (implicit hc: HeaderCarrier,
-                                 ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditModel(auditType, transactionName, details)
-    auditService.sendAudit(event)
   }
 }

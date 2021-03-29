@@ -16,74 +16,72 @@
 
 package views.errors
 
-import config.AppConfig
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
 import play.twirl.api.Html
+import utils.ViewTest
 import views.html.errors.ServiceUnavailablePage
 
-class ServiceUnavailableErrorPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class ServiceUnavailableErrorPageSpec extends AnyWordSpec with Matchers with ViewTest{
 
-  object Selectors{
-    val pageTitle = "head > title"
-    val pageHeading = "#main-content > div > div > header > h1"
-    val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
-    val paragraph2 = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val paragraph3 = "#main-content > div > div > ul > li:nth-child(1)"
-    val paragraph4 = "#main-content > div > div > ul > li:nth-child(2)"
-    val link = "#govuk-income-tax-link"
-    val link2 = "#govuk-self-assessment-link"
+  val youWillBeAbleSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
+  val youCanAlsoSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+  val goToTheSelector = "#main-content > div > div > ul > li:nth-child(1)"
+  val useSelfAssesSelector = "#main-content > div > div > ul > li:nth-child(2)"
+  val link = "#govuk-income-tax-link"
+  val link2 = "#govuk-self-assessment-link"
+
+  val pageTitleText = "Sorry, the service is unavailable"
+  val pageHeadingText = "Sorry, the service is unavailable"
+  val youWillBeAbleText = "You will be able to use the service later."
+  val youCanAlsoText = "You can also:"
+  val goToTheText = "go to the Income Tax home page (opens in new tab) for more information"
+  val useSelfAssesText = "use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax"
+  val link1Text = "Income Tax home page (opens in new tab)"
+  val link2Text = "Self Assessment: general enquiries (opens in new tab)"
+
+  val link1Href = "https://www.gov.uk/income-tax"
+  val link2Href = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
+
+  val serviceUnavailablePage: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
+
+  "The ServiceUnavailableErrorPage when called in English" should {
+
+    "render correctly" should {
+
+      lazy val view: Html = serviceUnavailablePage()(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(pageTitleText)
+      welshToggleCheck("English")
+      h1Check(pageHeadingText)
+      linkCheck(link1Text, link, link1Href)
+      linkCheck(link2Text, link2, link2Href)
+      textOnPageCheck(youWillBeAbleText, youWillBeAbleSelector)
+      textOnPageCheck(youCanAlsoText, youCanAlsoSelector)
+      textOnPageCheck(goToTheText, goToTheSelector)
+      textOnPageCheck(useSelfAssesText, useSelfAssesSelector)
+    }
   }
-  
-  val internalServerErrorPage: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
 
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  "The ServiceUnavailableErrorPage when called in Welsh" should {
 
-  def element(cssSelector: String)(implicit document: Document): Element = {
-    val elements = document.select(cssSelector)
+    "render correctly" should {
 
-    if(elements.size == 0) {
-      fail(s"No element exists with the selector '$cssSelector'")
-    }
+      lazy val view: Html = serviceUnavailablePage()(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-    document.select(cssSelector).first()
-  }
-  def elementText(selector: String)(implicit document: Document): String = {
-    element(selector).text()
-  }
-
-  "Rendering the error page when there is an error" should {
-
-    lazy val view: Html = internalServerErrorPage()(fakeRequest,messages,mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
-
-    "have the correct page title" in {
-      elementText(Selectors.pageTitle) shouldBe "Sorry, the service is unavailable - Update and submit an Income Tax Return - GOV.UK"
-    }
-
-    "have the correct page heading" in {
-      elementText(Selectors.pageHeading) shouldBe "Sorry, the service is unavailable"
-    }
-
-    "have the correct links" in {
-      document.select(Selectors.link).attr("href") shouldBe "https://www.gov.uk/income-tax"
-      document.select(Selectors.link2).attr("href") shouldBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
-    }
-
-    "have the correct paragraph text" in {
-      elementText(Selectors.paragraph) shouldBe "You will be able to use the service later."
-      elementText(Selectors.paragraph2) shouldBe "You can also:"
-      elementText(Selectors.paragraph3) shouldBe "go to the Income Tax home page (opens in new tab) for more information"
-      elementText(Selectors.paragraph4) shouldBe "use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax"
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
+      h1Check(pageHeadingText)
+      linkCheck(link1Text, link, link1Href)
+      linkCheck(link2Text, link2, link2Href)
+      textOnPageCheck(youWillBeAbleText, youWillBeAbleSelector)
+      textOnPageCheck(youCanAlsoText, youCanAlsoSelector)
+      textOnPageCheck(goToTheText, goToTheSelector)
+      textOnPageCheck(useSelfAssesText, useSelfAssesSelector)
     }
   }
 }

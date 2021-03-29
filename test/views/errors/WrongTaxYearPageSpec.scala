@@ -16,72 +16,63 @@
 
 package views.errors
 
-import config.AppConfig
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
-import org.scalatest.wordspec.AnyWordSpec
+import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
+import org.scalatest.wordspec.AnyWordSpec
 import play.twirl.api.Html
+import utils.ViewTest
 import views.html.errors.WrongTaxYearPage
 
-class WrongTaxYearPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class WrongTaxYearPageSpec extends AnyWordSpec with Matchers with ViewTest{
 
-  object Selectors {
-    val pageTitle = "head > title"
-    val pageHeading = "#main-content > div > div > header > h1"
-    val link = "#govuk-income-tax-link"
-    val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
-    val paragraph2 = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val paragraph3 = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
-  }
+  val link = "#govuk-income-tax-link"
+  val youCanOnlySelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
+  val checkThatYouveSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+  val ifTheWebsiteSelector = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
+
+  val pageTitleText = "Page not found"
+  val pageHeadingText = "Page not found"
+  val youCanOnlyText = "You can only enter information for the 2021 to 2022 tax year."
+  val checkThatYouveText = "Check that you’ve entered the correct web address."
+  val ifTheWebsiteText: String = "If the website address is correct or you selected a link or button, " +
+    "you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
+  val linkText = "Self Assessment: general enquiries (opens in new tab)"
+
+  val linkHref = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
 
   val internalServerErrorPage: WrongTaxYearPage = app.injector.instanceOf[WrongTaxYearPage]
 
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  def element(cssSelector: String)(implicit document: Document): Element = {
-    val elements = document.select(cssSelector)
+  "The WrongTaxYearPage when called in English" should {
+    "render correctly" should {
 
-    if (elements.size == 0) {
-      fail(s"No element exists with the selector '$cssSelector'")
+      lazy val view: Html = internalServerErrorPage()(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(pageTitleText)
+      welshToggleCheck("English")
+      h1Check(pageHeadingText)
+      linkCheck(linkText, link, linkHref)
+      textOnPageCheck(youCanOnlyText, youCanOnlySelector)
+      textOnPageCheck(checkThatYouveText, checkThatYouveSelector)
+      textOnPageCheck(ifTheWebsiteText, ifTheWebsiteSelector)
     }
-
-    document.select(cssSelector).first()
   }
 
-  def elementText(selector: String)(implicit document: Document): String = {
-    element(selector).text()
-  }
+  "The WrongTaxYearPage when called in Welsh" should {
+    "render correctly" should {
 
-  "Rendering the error page when there is an error" should {
+      lazy val view: Html = internalServerErrorPage()(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-    lazy val view: Html = internalServerErrorPage()(fakeRequest, messages, mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
-
-    "have the correct page title" in {
-      elementText(Selectors.pageTitle) shouldBe "Page not found - Update and submit an Income Tax Return - GOV.UK"
-    }
-
-    "have the correct page heading" in {
-      elementText(Selectors.pageHeading) shouldBe "Page not found"
-    }
-
-    "have the correct link" in {
-      document.select(Selectors.link).attr("href") shouldBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
-
-    }
-
-    "have the correct paragraph text" in {
-      elementText(Selectors.paragraph) shouldBe "You can only enter information for the 2021 to 2022 tax year."
-      elementText(Selectors.paragraph2) shouldBe "Check that you’ve entered the correct web address."
-      elementText(Selectors.paragraph3) shouldBe "If the website address is correct or you selected a link or button, you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
+      h1Check(pageHeadingText)
+      linkCheck(linkText, link, linkHref)
+      textOnPageCheck(youCanOnlyText, youCanOnlySelector)
+      textOnPageCheck(checkThatYouveText, checkThatYouveSelector)
+      textOnPageCheck(ifTheWebsiteText, ifTheWebsiteSelector)
     }
   }
 }

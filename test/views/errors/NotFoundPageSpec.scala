@@ -16,71 +16,62 @@
 
 package views.errors
 
-import config.AppConfig
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
 import play.twirl.api.Html
+import utils.ViewTest
 import views.html.errors.NotFoundPage
 
-class NotFoundPageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest{
 
-  object Selectors{
-    val pageTitle = "head > title"
-    val pageHeading = "#main-content > div > div > header > h1"
-    val link = "#govuk-income-tax-link"
-    val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
-    val paragraph2 = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val paragraph3 = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
+  val link = "#govuk-income-tax-link"
+  val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
+  val paragraph2 = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+  val paragraph3 = "#main-content > div > div > div.govuk-body > p:nth-child(3)"
+
+  val pageTitleText = "Page not found"
+  val pageHeaderText = "Page not found"
+  val ifYouTypedText = "If you typed the web address, check it is correct."
+  val ifYouUsedText = "If you used ‘copy and paste’ to enter the web address, check you copied the full address."
+  val ifTheWebsiteText: String = "If the website address is correct or you selected a link or button, " +
+    "you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
+  val linkText = "Self Assessment: general enquiries (opens in new tab)"
+
+  val linkHref = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
+
+  val notFoundPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
+
+  "The NotFoundPage when called in English" should {
+    "render correctly" should {
+
+      lazy val view: Html = notFoundPage()(fakeRequest, messages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
+
+      titleCheck(pageTitleText)
+      welshToggleCheck("English")
+      h1Check(pageHeaderText)
+      linkCheck(linkText, link, linkHref)
+      textOnPageCheck(ifYouTypedText, paragraph)
+      textOnPageCheck(ifYouUsedText, paragraph2)
+      textOnPageCheck(ifTheWebsiteText, paragraph3)
+    }
   }
 
-  val internalServerErrorPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
+  "The NotFoundPage when called in Welsh" should {
+    "render correctly" should {
 
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
+      lazy val view: Html = notFoundPage()(fakeRequest, welshMessages, mockConfig)
+      lazy implicit val document: Document = Jsoup.parse(view.body)
 
-  def element(cssSelector: String)(implicit document: Document): Element = {
-    val elements = document.select(cssSelector)
-
-    if(elements.size == 0) {
-      fail(s"No element exists with the selector '$cssSelector'")
-    }
-
-    document.select(cssSelector).first()
-  }
-  def elementText(selector: String)(implicit document: Document): String = {
-    element(selector).text()
-  }
-
-  "Rendering the error page when there is an error" should {
-
-    lazy val view: Html = internalServerErrorPage()(fakeRequest,messages,mockConfig)
-    lazy implicit val document: Document = Jsoup.parse(view.body)
-
-    "have the correct page title" in {
-      elementText(Selectors.pageTitle) shouldBe "Page not found - Update and submit an Income Tax Return - GOV.UK"
-    }
-
-    "have the correct page heading" in {
-      elementText(Selectors.pageHeading) shouldBe "Page not found"
-    }
-
-    "have the correct link" in {
-      document.select(Selectors.link).attr("href") shouldBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
-
-    }
-
-    "have the correct paragraph text" in {
-      elementText(Selectors.paragraph) shouldBe "If you typed the web address, check it is correct."
-      elementText(Selectors.paragraph2) shouldBe "If you used ‘copy and paste’ to enter the web address, check you copied the full address."
-      elementText(Selectors.paragraph3) shouldBe "If the website address is correct or you selected a link or button, you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
+      titleCheck(pageTitleText)
+      welshToggleCheck("Welsh")
+      h1Check(pageHeaderText)
+      linkCheck(linkText, link, linkHref)
+      textOnPageCheck(ifYouTypedText, paragraph)
+      textOnPageCheck(ifYouUsedText, paragraph2)
+      textOnPageCheck(ifTheWebsiteText, paragraph3)
     }
   }
 }

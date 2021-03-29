@@ -20,14 +20,15 @@ import config.AppConfig
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.MessagesControllerComponents
-import play.api.test.{FakeRequest, Helpers}
+import play.api.test.Helpers
 
 trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
 
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
+  implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
+  lazy val welshMessages: Messages = messagesApi.preferred(Seq(Lang("cy")))
   implicit lazy val mockMessagesControllerComponents: MessagesControllerComponents = Helpers.stubMessagesControllerComponents()
   implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -72,6 +73,13 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
     }
   }
 
+  def formGetLinkCheck(text: String, selector: String)(implicit document: Document): Unit = {
+    s"have a form with an GET action of '$text'" in {
+      document.select(selector).attr("action") shouldBe text
+      document.select(selector).attr("method") shouldBe "GET"
+    }
+  }
+
   def buttonCheck(text: String, selector: String, href: Option[String] = None)(implicit document: Document): Unit = {
 
     if (href.isDefined) {
@@ -108,6 +116,29 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
 
   def assertCaption(text: String, selector: String = ".govuk-caption-l")(implicit document: Document): Assertion = {
     elementText(selector) shouldBe text
+  }
+
+  def welshToggleCheck(activeLanguage: String)(implicit document: Document): Unit = {
+    val otherLanguage = if (activeLanguage == "English") "Welsh" else "English"
+    def selector = Map("English" -> 0, "Welsh" -> 1)
+    def linkLanguage = Map("English" -> "English", "Welsh" -> "Cymraeg")
+    def linkText = Map("English" -> "Change the language to English English",
+    "Welsh" -> "Newid yr iaith ir Gymraeg Cymraeg")
+
+    s"have the language toggle already set to $activeLanguage" which {
+      s"has the text '$activeLanguage" in {
+        document.select(".hmrc-language-select__list-item").get(selector(activeLanguage)).text() shouldBe linkLanguage(activeLanguage)
+      }
+    }
+    s"has a link to change the language to $otherLanguage" which {
+      s"has the text '${linkText(otherLanguage)}" in {
+        document.select(".hmrc-language-select__list-item").get(selector(otherLanguage)).text() shouldBe linkText(otherLanguage)
+      }
+      s"has a link to change the language" in {
+        document.select(".hmrc-language-select__list-item > a").attr("href") shouldBe
+          s"/income-through-software/return/language/${linkLanguage(otherLanguage).toLowerCase}"
+      }
+    }
   }
 
 }

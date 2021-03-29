@@ -32,7 +32,7 @@ class MockAppConfig extends MockFactory {
 
     override lazy val ivSuccessUrl: String = s"/income-through-software/return/iv-uplift-callback"
     override lazy val ivFailureUrl: String = s"/income-through-software/return/error/we-could-not-confirm-your-details"
-    override lazy val ivUpliftUrl: String = s"/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
+    override lazy val ivUpliftUrl: String = s"/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
 
     override def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/2021/dividends"
 
@@ -57,6 +57,8 @@ class MockAppConfig extends MockFactory {
     override lazy val taxYearErrorFeature: Boolean = true
 
     override def viewAndChangeEnterUtrUrl: String = "/utr-entry"
+
+    override lazy val welshToggleEnabled: Boolean = true
   }
 
 }

@@ -16,7 +16,8 @@
 
 package config
 
-import play.api.mvc.RequestHeader
+import play.api.i18n.Lang
+import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -44,8 +45,8 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   private lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeBaseUrl)
   def viewAndChangeCalculationUrl(taxYear: Int): String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
   def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view"
-  def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/client"
   def viewAndChangeEnterUtrUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
+  def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents"
 
   lazy private val appUrl: String = servicesConfig.getString("microservice.url")
   lazy private val contactFrontEndUrl = {
@@ -86,7 +87,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   lazy val ivFailureUrl: String = s"/income-through-software/return/error/we-could-not-confirm-your-details"
 
   lazy val ivUpliftUrl: String = {
-    s"$ivUrl/mdtp/registration?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
+    s"$ivUrl/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
   }
 
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")
@@ -94,4 +95,13 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
   lazy val taxYearErrorFeature: Boolean = servicesConfig.getBoolean("taxYearErrorFeatureSwitch")
 
+  def languageMap: Map[String, Lang] = Map(
+    "english" -> Lang("en"),
+    "cymraeg" -> Lang("cy")
+  )
+
+  def routeToSwitchLanguage: String => Call =
+    (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
+
+  lazy val welshToggleEnabled: Boolean = servicesConfig.getBoolean("feature-switch.welshToggleEnabled")
 }
