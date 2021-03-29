@@ -130,8 +130,8 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
             logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client.")
             Unauthorized(agentAuthErrorPage())
         }
-      case _ =>
-        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not session key values. Redirecting to view & change.")
+      case (mtditid, nino) =>
+        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not session key values. Redirecting to view & change. MTDITID missing:${mtditid.isEmpty}, NINO missing:${nino.isEmpty}")
         Future.successful(Redirect(appConfig.viewAndChangeEnterUtrUrl))
     }
   }
