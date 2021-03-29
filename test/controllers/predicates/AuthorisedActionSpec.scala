@@ -121,6 +121,26 @@ class AuthorisedActionSpec extends UnitTest {
         }
       }
 
+      "the individual enrolment is missing but there is a nino" which {
+        val block: User[AnyContent] => Future[Result] = user => Future.successful(Ok(user.mtditid))
+        val nino = "AA123456A"
+        val enrolments = Enrolments(Set(Enrolment("HMRC-NI", Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, nino)), "Activated")))
+
+        lazy val result: Future[Result] = {
+          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
+            .expects(*, allEnrolments and confidenceLevel, *, *)
+            .returning(Future.successful(enrolments and ConfidenceLevel.L200))
+          auth.individualAuthentication[AnyContent](block)(fakeRequest, emptyHeaderCarrier)
+        }
+
+        "returns an Unauthorised" in {
+          status(result) shouldBe SEE_OTHER
+        }
+        "returns an redirect to the correct page" in {
+          redirectUrl(result) shouldBe "/income-through-software/return/error/you-need-to-sign-up"
+        }
+      }
+
     }
 
     "return the user to IV Uplift" when {

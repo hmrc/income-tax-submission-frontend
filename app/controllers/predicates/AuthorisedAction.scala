@@ -58,10 +58,10 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
       case _ => individualAuthentication(block)(request, headerCarrier)
     } recover {
       case _: NoActiveSession =>
-        logger.info(s"[AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
+        logger.info(s"[AuthorisedAction][invokeBlock] - No active session. Redirecting to ${appConfig.signInUrl}")
         Redirect(appConfig.signInUrl)
       case _: AuthorisationException =>
-        logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
+        logger.info(s"[AuthorisedAction][invokeBlock] - User failed to authenticate")
         Redirect(controllers.routes.UnauthorisedUserErrorController.show())
     }
   }
@@ -70,24 +70,28 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
                                  (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
     authService.authorised.retrieve(allEnrolments and confidenceLevel) {
       case enrolments ~ userConfidence if userConfidence.level >= minimumConfidenceLevel =>
-        val optionalMtditid: Option[String] = enrolmentGetIdentifierValue(EnrolmentKeys.Individual, EnrolmentIdentifiers.individualId, enrolments)
+        val optionalMtdItId: Option[String] = enrolmentGetIdentifierValue(EnrolmentKeys.Individual, EnrolmentIdentifiers.individualId, enrolments)
         val optionalNino: Option[String] = enrolmentGetIdentifierValue(EnrolmentKeys.nino, EnrolmentIdentifiers.ninoId, enrolments)
 
-        (optionalMtditid, optionalNino) match {
-          case (Some(mtditid), Some(nino)) =>
+        (optionalMtdItId, optionalNino) match {
+          case (Some(mtdItId), Some(nino)) =>
             enrolments.enrolments.collectFirst {
               case Enrolment(EnrolmentKeys.Individual, enrolmentIdentifiers, _, _)
                 if enrolmentIdentifiers.exists(identifier => identifier.key == EnrolmentIdentifiers.individualId) =>
-                block(User(mtditid, None, nino))
+                block(User(mtdItId, None, nino))
             } getOrElse {
               logger.info("[AuthorisedAction][individualAuthentication] Non-agent with an invalid MTDITID.")
               Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show()))
             }
-          case (_, None) => Future.successful(Redirect(appConfig.signInUrl))
-          case (None, _) => Future.successful(Redirect(controllers.errors.routes.IndividualAuthErrorController.show()))
+          case (_, None) =>
+            logger.info(s"[AuthorisedAction][individualAuthentication] - No active session. Redirecting to ${appConfig.signInUrl}")
+            Future.successful(Redirect(appConfig.signInUrl))
+          case (None, _) =>
+            logger.info(s"[AuthorisedAction][individualAuthentication] - User has no MTD IT enrolment. Redirecting user to sign up for MTD.")
+            Future.successful(Redirect(controllers.errors.routes.IndividualAuthErrorController.show()))
         }
       case _ =>
-        logger.info("[AuthorisedAction][invokeBlock] User has confidence level below 200, routing user to IV uplift.")
+        logger.info("[AuthorisedAction][individualAuthentication] User has confidence level below 200, routing user to IV uplift.")
         Future(Redirect(routes.IVUpliftController.initialiseJourney()))
     }
   }
@@ -103,31 +107,32 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         .withDelegatedAuthRule(agentDelegatedAuthRuleKey)
 
     val optionalNino = request.session.get(SessionValues.CLIENT_NINO)
-    val optionalMtditid = request.session.get(SessionValues.CLIENT_MTDITID)
+    val optionalMtdItId = request.session.get(SessionValues.CLIENT_MTDITID)
 
-    (optionalMtditid, optionalNino) match {
-      case (Some(mtditid), Some(nino)) =>
+    (optionalMtdItId, optionalNino) match {
+      case (Some(mtdItId), Some(nino)) =>
         authService
-          .authorised(agentAuthPredicate(mtditid))
+          .authorised(agentAuthPredicate(mtdItId))
           .retrieve(allEnrolments) { enrolments =>
 
             enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
               case Some(arn) =>
-                block(User(mtditid, Some(arn), nino))
+                block(User(mtdItId, Some(arn), nino))
               case None =>
-                logger.info("[AuthorisedAction][CheckAuthorisation] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+                logger.info("[AuthorisedAction][agentAuthentication] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
                 Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show()))
             }
           } recover {
           case _: NoActiveSession =>
-            logger.info(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
-            Redirect(appConfig.signInUrl) //TODO Check this is the correct location
+            logger.info(s"[AuthorisedAction][agentAuthentication] - No active session. Redirecting to ${appConfig.signInUrl}")
+            Redirect(appConfig.signInUrl)
           case ex: AuthorisationException =>
-            logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for Client.")
+            logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client.")
             Unauthorized(agentAuthErrorPage())
         }
-      case (None, _) => Future.successful(Redirect(appConfig.viewAndChangeEnterUtrUrl))
-      case (_, None) => Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show()))
+      case _ =>
+        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not session key values. Redirecting to view & change.")
+        Future.successful(Redirect(appConfig.viewAndChangeEnterUtrUrl))
     }
   }
 
@@ -135,9 +140,11 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
                                                        checkedKey: String,
                                                        checkedIdentifier: String,
                                                        enrolments: Enrolments
-                                                     ): Option[String] = enrolments.enrolments.collectFirst {
-    case Enrolment(`checkedKey`, enrolmentIdentifiers, _, _) => enrolmentIdentifiers.collectFirst {
-      case EnrolmentIdentifier(`checkedIdentifier`, identifierValue) => identifierValue
-    }
-  }.flatten
+                                                     ): Option[String] = {
+    enrolments.enrolments.collectFirst {
+      case Enrolment(`checkedKey`, enrolmentIdentifiers, _, _) => enrolmentIdentifiers.collectFirst {
+        case EnrolmentIdentifier(`checkedIdentifier`, identifierValue) => identifierValue
+      }
+    }.flatten
+  }
 }
