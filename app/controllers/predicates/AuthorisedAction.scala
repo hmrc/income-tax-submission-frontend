@@ -131,7 +131,8 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
             Unauthorized(agentAuthErrorPage())
         }
       case (mtditid, nino) =>
-        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not session key values. Redirecting to view & change. MTDITID missing:${mtditid.isEmpty}, NINO missing:${nino.isEmpty}")
+        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not session key values. Redirecting to view & change." +
+          s"MTDITID missing:${mtditid.isEmpty}, NINO missing:${nino.isEmpty}")
         Future.successful(Redirect(appConfig.viewAndChangeEnterUtrUrl))
     }
   }
