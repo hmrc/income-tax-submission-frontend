@@ -56,6 +56,8 @@ class MockAppConfig extends MockFactory {
 
     override lazy val taxYearErrorFeature: Boolean = true
 
+    override def viewAndChangeEnterUtrUrl: String = "/utr-entry"
+
     override lazy val welshToggleEnabled: Boolean = true
   }
 

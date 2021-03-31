@@ -16,20 +16,16 @@
 
 package controllers
 
-import common.{EnrolmentIdentifiers, EnrolmentKeys}
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import config.{AppConfig, ErrorHandler}
+import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
 import play.api.libs.ws.WSClient
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{OK, SEE_OTHER, UNAUTHORIZED}
+import play.api.test.Helpers.{OK, SEE_OTHER}
 import services.{CalculationIdService, IncomeSourcesService}
-import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
-import uk.gov.hmrc.auth.core.{Enrolment, _}
 import views.html.OverviewPageView
 import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
-
-import scala.concurrent.Future
 
 class OverviewPageControllerTest extends IntegrationTest {
 
@@ -39,80 +35,69 @@ class OverviewPageControllerTest extends IntegrationTest {
 
   lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
 
-  def controller(stubbedRetrieval: Future[_]): OverviewPageController = new OverviewPageController(
+  val controller: OverviewPageController = new OverviewPageController(
     frontendAppConfig,
     mcc,
     scala.concurrent.ExecutionContext.Implicits.global,
     app.injector.instanceOf[IncomeSourcesService],
     app.injector.instanceOf[CalculationIdService],
     app.injector.instanceOf[OverviewPageView],
-    authAction(stubbedRetrieval),
+    app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[InternalServerErrorPage],
     app.injector.instanceOf[ServiceUnavailablePage],
     app.injector.instanceOf[ErrorHandler]
   )
 
+  def stubIncomeSources: StubMapping = stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,
+    """{
+      |	"dividends": {
+      |		"ukDividends": 69.99,
+      |		"otherUkDividends": 63.99
+      |	},
+      |	"interest": [{
+      |		"accountName": "BANK",
+      |		"incomeSourceId": "12345678908765432",
+      |		"taxedUkInterest": 44.66,
+      |		"untaxedUkInterest": 66.44
+      |	}]
+      |}""".stripMargin)
+
   "Hitting the show endpoint" should {
 
-    s"return an OK ($OK) and no prior data" when {
+    s"return an OK (200) and no prior data" when {
 
       "all auth requirements are met" in {
-        val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
-          Enrolments(Set(
-            Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None),
-            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-          )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
-        )
-
-        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK, "{}")
-
-        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
+        val result = {
+          authoriseIndividual()
+          await(controller.show(taxYear)(FakeRequest()))
+        }
 
         result.header.status shouldBe OK
       }
 
     }
 
-    s"return an OK ($OK) with prior data" when {
+    s"return an OK (200) with prior data" when {
 
       "all auth requirements are met" in {
-        val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
-          Enrolments(Set(
-            Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None),
-            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-          )) and Some(AffinityGroup.Individual) and ConfidenceLevel.L200
-        )
-
-        stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,
-          """{
-            |	"dividends": {
-            |		"ukDividends": 69.99,
-            |		"otherUkDividends": 63.99
-            |	},
-            |	"interest": [{
-            |		"accountName": "BANK",
-            |		"incomeSourceId": "12345678908765432",
-            |		"taxedUkInterest": 44.66,
-            |		"untaxedUkInterest": 66.44
-            |	}]
-            |}""".stripMargin)
-
-        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
+        val result = {
+          authoriseIndividual()
+          await(controller.show(taxYear)(FakeRequest()))
+        }
 
         result.header.status shouldBe OK
       }
 
     }
 
-    s"return an UNAUTHORISED ($UNAUTHORIZED)" when {
+    s"return an UNAUTHORISED (401)" when {
 
       "the confidence level is too low" in {
-        val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
-          Enrolments(Set(Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("MTDITID", "1234567890")), "Activated", None))) and
-            Some(AffinityGroup.Individual) and ConfidenceLevel.L50
-        )
-
-        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
+        val result = {
+          stubIncomeSources
+          unauthorisedIndividualInsufficientConfidenceLevel()
+          await(controller.show(taxYear)(FakeRequest()))
+        }
 
         result.header.status shouldBe SEE_OTHER
         result.header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
@@ -120,20 +105,21 @@ class OverviewPageControllerTest extends IntegrationTest {
 
     }
 
-    "returns a SEE_OTHER (303)" when {
+    "redirect to the sign in page" when {
 
-      "it contains the wrong credentials" in {
-        val retrieval: Future[Enrolments ~ Some[AffinityGroup] ~ ConfidenceLevel] = Future.successful(
-          Enrolments(Set(
-            Enrolment("HMRC-MTD-IT", Seq(EnrolmentIdentifier("UTR", "1234567890")), "Activated", None),
-            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
-          )) and
-          Some(AffinityGroup.Individual) and ConfidenceLevel.L200
-        )
+      "it contains the wrong credentials" which {
+        lazy val result = {
+          unauthorisedIndividualWrongCredentials()
+          await(controller.show(taxYear)(FakeRequest()))
+        }
 
-        val result = await(controller(retrieval).show(taxYear)(FakeRequest()))
+        "has a status of SEE_OTHER (303)" in {
+          result.header.status shouldBe SEE_OTHER
+        }
 
-        result.header.status shouldBe SEE_OTHER
+        "has the sign in page redirect link" in {
+          result.header.headers("Location") shouldBe appConfig.signInUrl
+        }
       }
 
     }
