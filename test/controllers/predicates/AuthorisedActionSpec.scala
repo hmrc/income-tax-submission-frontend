@@ -119,6 +119,10 @@ class AuthorisedActionSpec extends UnitTest {
         "returns an Unauthorised" in {
           status(result) shouldBe SEE_OTHER
         }
+
+        "has the correct redirect url" in {
+          redirectUrl(result) shouldBe mockAppConfig.signInUrl
+        }
       }
 
       "the individual enrolment is missing but there is a nino" which {
@@ -204,6 +208,42 @@ class AuthorisedActionSpec extends UnitTest {
       }
     }
 
+    "redirect to the enter UTR page on VAT V&C" when {
+
+      "there is no MTDITID in session" which {
+
+        lazy val result = {
+          auth.agentAuthentication(block)(fakeRequestAgentNoMtditid, emptyHeaderCarrier)
+        }
+
+        "has a status of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
+        }
+
+        "has the correct redirect url" in {
+          redirectUrl(result) shouldBe mockAppConfig.viewAndChangeEnterUtrUrl
+        }
+
+      }
+
+      "there is no NINO in session" which {
+
+        lazy val result = {
+          auth.agentAuthentication(block)(fakeRequestAgentNoNino, emptyHeaderCarrier)
+        }
+
+        "has a status of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
+        }
+
+        "has the correct redirect url" in {
+          redirectUrl(result) shouldBe mockAppConfig.viewAndChangeEnterUtrUrl
+        }
+
+      }
+
+    }
+
     "return an Unauthorised" when {
 
       "the authorisation service returns an AuthorisationException exception" in {
@@ -230,6 +270,7 @@ class AuthorisedActionSpec extends UnitTest {
         }
 
         status(result) shouldBe SEE_OTHER
+        redirectUrl(result) shouldBe mockAppConfig.signInUrl
       }
     }
 

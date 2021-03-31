@@ -77,6 +77,9 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     await(awaited.body.consumeData.map(_.utf8String))
   }
 
+  val fakeRequestAgentNoMtditid: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("ClientNino" -> "AA123456A")
+  val fakeRequestAgentNoNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("ClientMTDID" -> "1234567890")
+
   //noinspection ScalaStyle
   def mockAuth(nino: Option[String]) = {
     val ninoEnrolment: Seq[Enrolment] = nino.fold(Seq.empty[Enrolment])(unwrappedNino => Seq(
