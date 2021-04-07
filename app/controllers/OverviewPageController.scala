@@ -40,8 +40,6 @@ class OverviewPageController @Inject()(
                                         calculationIdService: CalculationIdService,
                                         overviewPageView: OverviewPageView,
                                         authorisedAction: AuthorisedAction,
-                                        internalServerErrorPage: InternalServerErrorPage,
-                                        serviceUnavailablePage: ServiceUnavailablePage,
                                         errorHandler: ErrorHandler) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: AppConfig = appConfig

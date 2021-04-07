@@ -22,6 +22,7 @@ import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
+import common.IncomeSources._
 
 @Singleton
 class AppConfig @Inject()(servicesConfig: ServicesConfig) {
@@ -104,4 +105,20 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
     (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
 
   lazy val welshToggleEnabled: Boolean = servicesConfig.getBoolean("feature-switch.welshToggleEnabled")
+
+  //Enabled income sources
+  lazy val dividendsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.dividendsEnabled")
+  lazy val interestEnabled: Boolean = servicesConfig.getBoolean("feature-switch.interestEnabled")
+  lazy val giftAidEnabled: Boolean = servicesConfig.getBoolean("feature-switch.giftAidEnabled")
+  lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
+
+  lazy val excludedIncomeSources: Seq[String] = {
+    Seq(
+      (DIVIDENDS, dividendsEnabled),
+      (INTEREST, interestEnabled),
+      (GIFT_AID, giftAidEnabled),
+      (EMPLOYMENT, employmentEnabled)
+    ).filter(!_._2).map(_._1)
+  }
+
 }
