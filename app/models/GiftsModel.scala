@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object SessionValues {
-  val CLIENT_MTDITID = "ClientMTDID"
-  val CLIENT_NINO = "ClientNino"
+import play.api.libs.json.{Json, OFormat}
 
-  val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
-  val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "calculationId"
-  val GIFT_AID_PRIOR_SUB = "GIFT_AID_PRIOR_SUB"
+case class GiftsModel (
+                        investmentsNonUkCharitiesCharityNames: Option[List[String]] = None,
+                        landAndBuildings: Option[BigDecimal] = None,
+                        sharesOrSecurities: Option[BigDecimal] = None,
+                        investmentsNonUkCharities: Option[BigDecimal] = None
+                      )
 
-  val TAX_YEAR = "TAX_YEAR"
+object GiftsModel {
+  implicit val format: OFormat[GiftsModel] = Json.format[GiftsModel]
 }
