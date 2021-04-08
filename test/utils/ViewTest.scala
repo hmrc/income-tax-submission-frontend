@@ -67,9 +67,16 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
     }
   }
 
-  def textOnPageCheck(text: String, selector: String)(implicit document: Document): Unit = {
-    s"have text on the screen of '$text'" in {
-      document.select(selector).text() shouldBe text
+  def textOnPageCheck(text: String, selector: String, notExist: Boolean = false)(implicit document: Document): Unit = {
+
+    if(notExist){
+      s"not have text on the screen of '$text'" in {
+        document.select(selector).text() shouldBe ""
+      }
+    } else {
+      s"have text on the screen of '$text'" in {
+        document.select(selector).text() shouldBe text
+      }
     }
   }
 

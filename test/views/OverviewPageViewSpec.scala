@@ -89,6 +89,35 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
   "The Overview page should render correctly in English" should {
 
+    "Have the correct content when sources are off" which {
+
+      lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,messages,mockAppConfig)
+      lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
+
+      welshToggleCheck("English")
+      linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+      linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+      textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+      titleCheck(individualHeading)
+      h1Check(individualHeading)
+      textOnPageCheck(caption, captionSelector)
+      textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
+      textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+
+      "not have a dividends section" which {
+        textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector, true)
+      }
+
+      "not have an interest section" which {
+        textOnPageCheck(interestsNotStartedText, interestNotStartedSelector, true)
+      }
+      textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+      textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+      textOnPageCheck(submitReturnText, submitReturnSelector)
+      textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+    }
+
     "render correctly with no prior data" should {
 
       "Have the correct content for an individual" which {

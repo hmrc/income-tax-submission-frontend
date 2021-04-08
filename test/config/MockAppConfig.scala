@@ -59,6 +59,13 @@ class MockAppConfig extends MockFactory {
     override def viewAndChangeEnterUtrUrl: String = "/utr-entry"
 
     override lazy val welshToggleEnabled: Boolean = true
+
+    override lazy val dividendsEnabled: Boolean = false
+
+    override lazy val interestEnabled: Boolean = false
+
+    override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
+
   }
 
 }

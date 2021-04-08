@@ -43,8 +43,6 @@ class OverviewPageControllerTest extends IntegrationTest {
     app.injector.instanceOf[CalculationIdService],
     app.injector.instanceOf[OverviewPageView],
     app.injector.instanceOf[AuthorisedAction],
-    app.injector.instanceOf[InternalServerErrorPage],
-    app.injector.instanceOf[ServiceUnavailablePage],
     app.injector.instanceOf[ErrorHandler]
   )
 
