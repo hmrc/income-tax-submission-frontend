@@ -52,6 +52,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
   val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-your-answers"
   val interestsNotStartedText = "Not started"
+  val underMaintenance = "Under maintenance"
   val interestsUpdatedText = "Updated"
   val viewTaxCalcText = "2. View Tax calculation to date"
   val provideUpdateIndividualText = "Provide at least one update before you can view your estimate."
@@ -105,12 +106,12 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
       textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
       textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
 
-      "not have a dividends section" which {
-        textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector, true)
+      "have a dividends section that says under maintenance" which {
+        textOnPageCheck(underMaintenance, dividendsNotStartedSelector)
       }
 
-      "not have an interest section" which {
-        textOnPageCheck(interestsNotStartedText, interestNotStartedSelector, true)
+      "have an interest section that says under maintenance" which {
+        textOnPageCheck(underMaintenance, interestNotStartedSelector)
       }
       textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
       textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
