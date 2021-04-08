@@ -17,7 +17,7 @@
 package connectors
 
 import itUtils.IntegrationTest
-import models.{APIErrorBodyModel, APIErrorModel, APIErrorsBodyModel, DividendsModel, IncomeSourcesModel, InterestModel}
+import models.{APIErrorBodyModel, APIErrorModel, APIErrorsBodyModel, DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, IncomeSourcesModel, InterestModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
 
@@ -30,12 +30,32 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
   val mtditid: String = "968501689"
   val dividendResult: Option[DividendsModel] = Some(DividendsModel(Some(500), Some(600)))
   val interestResult: Option[Seq[InterestModel]] = Some(Seq(InterestModel("account", "1234567890", Some(500), Some(500))))
+  val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
+    nonUkCharitiesCharityNames = Some(List("non uk charity name","non uk charity name 2")),
+    currentYear = Some(1234.56),
+    oneOffCurrentYear = Some(1234.56),
+    currentYearTreatedAsPreviousYear = Some(1234.56),
+    nextYearTreatedAsCurrentYear = Some(1234.56),
+    nonUkCharities = Some(1234.56),
+  ))
+
+  val giftsModel: Option[GiftsModel] = Some(GiftsModel(
+    investmentsNonUkCharitiesCharityNames = Some(List("charity 1", "charity 2")),
+    landAndBuildings = Some(10.21),
+    sharesOrSecurities = Some(10.21),
+    investmentsNonUkCharities = Some(1234.56)
+  ))
+
+  val giftAidResult: Option[GiftAidModel] = Some(GiftAidModel(
+    giftAidPaymentsModel,
+    giftsModel
+  ))
 
 
   ".IncomeSourcesConnector" should {
     "return a IncomeSourcesModel" when {
       "all optional values are present" in {
-        val expectedResult = IncomeSourcesModel(dividendResult, interestResult)
+        val expectedResult = IncomeSourcesModel(dividendResult, interestResult, giftAidResult)
 
         stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK, Json.toJson(expectedResult).toString())
 

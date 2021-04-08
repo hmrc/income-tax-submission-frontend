@@ -19,24 +19,7 @@ package models
 import play.api.libs.json.{JsObject, Json}
 import utils.UnitTest
 
-class IncomeSourcesModelSpec extends UnitTest {
-
-
-  val dividendModel: DividendsModel = DividendsModel(Some(11111), Some(11111))
-  val jsonDividendsModel: JsObject = Json.obj(
-    "ukDividends" -> 11111,
-    "otherUkDividends" -> 11111
-  )
-
-  val interestModel: Seq[InterestModel] = Seq(InterestModel("account", "1234567890", Some(500), Some(500)))
-  val jsonInterestModel: Seq[JsObject] = Seq(Json.obj(
-    "accountName" -> "account",
-    "incomeSourceId" -> "1234567890",
-    "taxedUkInterest" -> 500,
-    "untaxedUkInterest" -> 500,
-  ))
-
-
+class GiftAidModelSpec extends UnitTest {
 
   val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
     nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
@@ -59,7 +42,7 @@ class IncomeSourcesModelSpec extends UnitTest {
     giftsModel
   )
 
-  val jsonGiftAidModel: JsObject = Json.obj(
+  val validJsonModel: JsObject = Json.obj(
     "giftAidPayments" -> Json.obj(
       "nonUkCharitiesCharityNames" -> Json.arr(
         "non uk charity name",
@@ -81,22 +64,16 @@ class IncomeSourcesModelSpec extends UnitTest {
       "investmentsNonUkCharities" -> 1234.56
     ))
 
-  val model: IncomeSourcesModel = IncomeSourcesModel(Some(dividendModel), Some(interestModel), Some(giftAidModel))
-  val jsonModel: JsObject = Json.obj(
-    "dividends" -> jsonDividendsModel,
-    "interest" -> jsonInterestModel,
-    "giftAid" -> jsonGiftAidModel
-  )
-
-  "IncomeSourcesModel" should {
-
-    "parse to Json" in {
-      Json.toJson(model) shouldBe jsonModel
-    }
+  "GiftAidModel" should {
 
     "parse from Json" in {
-      jsonModel.as[IncomeSourcesModel]
+
+      validJsonModel.as[GiftAidModel]
+    }
+
+    "parse to Json" in {
+
+      Json.toJson(giftAidModel) shouldBe validJsonModel
     }
   }
-
 }
