@@ -1,7 +1,7 @@
 
 # income-tax-submission-frontend
 
-This is a placeholder README.md for a new repository
+The entry and management point for users who wish to review and make changes to their income tax return.
 
 ### License
 
