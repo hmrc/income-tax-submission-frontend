@@ -16,18 +16,26 @@
 
 package controllers
 
-import config.AppConfig
+import audit.{AuditModel, EnterUpdateAndSubmissionServiceDetail}
+import config.{AppConfig, MockAuditService}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
+import play.api.libs.json.Writes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
 import views.html.StartPage
 
-class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
+import scala.concurrent.{ExecutionContext, Future}
+
+class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceOneAppPerSuite {
 
   private val fakeGetRequest = FakeRequest("GET", "/").withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
   private val env = Environment.simple()
@@ -37,7 +45,7 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val mockFrontendAppConfig = new AppConfig(serviceConfig)
   private val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
-  private val controller = new StartPageController(authorisedAction, startPageView, mockFrontendAppConfig, stubMessagesControllerComponents())
+  private val controller = new StartPageController(authorisedAction, mockAuthService, startPageView, mockAuditService, mockFrontendAppConfig, stubMessagesControllerComponents())
 
   private val nino: Option[String] = Some("AA123456A")
   private val taxYear = 2022
@@ -88,6 +96,35 @@ class StartPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         charset(result) shouldBe Some("utf-8")
       }
     }
+  }
+
+  ".submit" should {
+
+    "redirect to the overview page" when {
+
+      "the user is an individual" which {
+        lazy val result = {
+          mockAuth(Some("AA123456A"))
+          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
+            .expects(*, *, *, *)
+            .returns(Future.successful(Some(AffinityGroup.Individual)))
+
+          verifyAuditEvent[EnterUpdateAndSubmissionServiceDetail]
+
+          controller.submit(taxYear)(fakeRequest)
+        }
+
+        "has a result of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
+        }
+
+        "has overview page as the redirect url" in {
+          redirectUrl(result) shouldBe controllers.routes.OverviewPageController.show(taxYear).url
+        }
+      }
+
+    }
+
   }
 
 }
