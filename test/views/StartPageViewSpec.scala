@@ -110,8 +110,6 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest, welshMessages, mockConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
-      println(document.body().html())
-
       welshToggleCheck("Welsh")
       linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcBreadcrumbUrl)
       textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
