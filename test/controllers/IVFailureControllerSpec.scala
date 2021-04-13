@@ -29,7 +29,7 @@ import views.html.errors.IVFailurePage
 
 import scala.concurrent.Future
 
-class IVFailureControllerSpec extends UnitTest with DefaultAwaitTimeout with MockAuditService{
+class IVFailureControllerSpec extends UnitTest with MockAuditService{
 
   private val page: IVFailurePage = app.injector.instanceOf[IVFailurePage]
   val controller = new IVFailureController()(

@@ -25,18 +25,35 @@ import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.StartPage
 import TaxYearAction.taxYearAction
+import audit.{AuditService, EnterUpdateAndSubmissionServiceDetail}
+import services.AuthService
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 @Singleton
-class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
-                                    val startPageView: StartPage,
-                                    implicit val appConfig: AppConfig,
-                                    implicit val mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+class StartPageController @Inject()(
+                                     val authorisedAction: AuthorisedAction,
+                                     authService: AuthService,
+                                     val startPageView: StartPage,
+                                     auditService: AuditService,
+                                     implicit val appConfig: AppConfig,
+                                     implicit val mcc: MessagesControllerComponents
+                                   ) extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     Future.successful(Ok(startPageView(isAgent = user.isAgent, taxYear)))
+  }
+
+  def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
+    authService.authorised.retrieve(affinityGroup) {
+      case Some(retrievedAffinityGroup) =>
+        auditService.sendAudit[EnterUpdateAndSubmissionServiceDetail](EnterUpdateAndSubmissionServiceDetail(retrievedAffinityGroup).toAuditModel)
+        Future.successful(Redirect(controllers.routes.OverviewPageController.show(taxYear)))
+    }
   }
 
 }

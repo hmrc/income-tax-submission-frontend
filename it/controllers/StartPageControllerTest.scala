@@ -16,11 +16,13 @@
 
 package controllers
 
+import audit.AuditService
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER}
+import services.AuthService
 import views.html.StartPage
 
 class StartPageControllerTest extends IntegrationTest {
@@ -31,7 +33,9 @@ class StartPageControllerTest extends IntegrationTest {
 
   def controller: StartPageController = new StartPageController(
     app.injector.instanceOf[AuthorisedAction],
+    app.injector.instanceOf[AuthService],
     app.injector.instanceOf[StartPage],
+    app.injector.instanceOf[AuditService],
     frontendAppConfig,
     mcc
   )

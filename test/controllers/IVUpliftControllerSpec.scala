@@ -28,7 +28,7 @@ import utils.UnitTest
 
 import scala.concurrent.Future
 
-class IVUpliftControllerSpec extends UnitTest with DefaultAwaitTimeout with MockAuditService {
+class IVUpliftControllerSpec extends UnitTest with MockAuditService {
 
   private val controller = new IVUpliftController()(
     mockAppConfig,

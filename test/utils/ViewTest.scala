@@ -80,6 +80,13 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
     }
   }
 
+  def formPostLinkCheck(actionUrl: String, selector: String)(implicit document: Document): Unit = {
+    s"have a form with an POST action of '$actionUrl'" in {
+      document.select(selector).attr("action") shouldBe actionUrl
+      document.select(selector).attr("method") shouldBe "POST"
+    }
+  }
+
   def buttonCheck(text: String, selector: String, href: Option[String] = None)(implicit document: Document): Unit = {
 
     if (href.isDefined) {

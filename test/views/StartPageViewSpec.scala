@@ -44,7 +44,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   val toUpdateIncomeAgentText = "To update your client’s self-employment and property income, you must use your chosen commercial software."
   val toUpdateIncomeIndividualText = "To update your self-employment and property income, you must use your chosen commercial software."
   val continueButtonText = "Continue"
-  val continueButtonHref = s"/income-through-software/return/$taxYear/view"
+  val continueButtonHref = s"/income-through-software/return/$taxYear/start"
 
   object Selectors{
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
@@ -56,11 +56,11 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     val bullet1 = "#main-content > div > div > ul > li:nth-child(1)"
     val bullet2 = "#main-content > div > div > ul > li:nth-child(2)"
     val p3 =  "#main-content > div > div > div:nth-child(4) > p"
-    val continueButton = "#continue"
+    val continueButton = "#main-content > div > div > form"
   }
 
   val startPageView: StartPage = app.injector.instanceOf[StartPage]
-  
+
   "Rendering the start page in English" should {
 
     "render correctly when the user is an individual" should {
@@ -79,7 +79,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
       textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
-      buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+      formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
     "render correctly when the user is an agent" should {
@@ -99,7 +99,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
       textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
-      buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+      formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
   }
 
@@ -121,7 +121,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
       textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
-      buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+      formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
     "render correctly when the user is an agent" should {
@@ -141,7 +141,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
       textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
-      buttonCheck(continueButtonText, Selectors.continueButton, Some(continueButtonHref))
+      formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
   }
 
