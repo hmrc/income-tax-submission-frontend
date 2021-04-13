@@ -52,6 +52,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
   val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-your-answers"
   val interestsNotStartedText = "Not started"
+  val underMaintenance = "Under maintenance"
   val interestsUpdatedText = "Updated"
   val viewTaxCalcText = "2. View Tax calculation to date"
   val provideUpdateIndividualText = "Provide at least one update before you can view your estimate."
@@ -88,6 +89,35 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   lazy val interestsModel:Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
 
   "The Overview page should render correctly in English" should {
+
+    "Have the correct content when sources are off" which {
+
+      lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,messages,mockAppConfig)
+      lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
+
+      welshToggleCheck("English")
+      linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+      linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+      textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+      titleCheck(individualHeading)
+      h1Check(individualHeading)
+      textOnPageCheck(caption, captionSelector)
+      textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
+      textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+
+      "have a dividends section that says under maintenance" which {
+        textOnPageCheck(underMaintenance, dividendsNotStartedSelector)
+      }
+
+      "have an interest section that says under maintenance" which {
+        textOnPageCheck(underMaintenance, interestNotStartedSelector)
+      }
+      textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+      textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+      textOnPageCheck(submitReturnText, submitReturnSelector)
+      textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+    }
 
     "render correctly with no prior data" should {
 

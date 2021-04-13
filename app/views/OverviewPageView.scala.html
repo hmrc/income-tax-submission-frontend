@@ -30,26 +30,43 @@
         <ol class="app-task-list__items">
             <span class="govuk-body">@caption</span>
             <li class="app-task-list__item"></li>
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a class="govuk-link" id="interest_link" href=@if(incomeSources.interest.isEmpty){ @{appConfig.personalIncomeTaxInterestUrl(taxYear)}}else{ @{appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)}}>
-                        Interest
-                    </a>
-                </span>
-                <span class="hmrc-status-tag">
-                    @if(incomeSources.interest.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
-                </span>
-            </li>
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends.isEmpty){ @{appConfig.personalIncomeTaxDividendsUrl(taxYear)}}else{ @{appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)}}>
-                        Dividends
-                    </a>
-                </span>
-                <span class="hmrc-status-tag">
-                    @if(incomeSources.dividends.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
-                </span>
-            </li>
+                <li class="app-task-list__item">
+                    <span class="app-task-list__task-name">
+                        @if(appConfig.interestEnabled){
+                            <a class="govuk-link" id="interest_link" href=@if(incomeSources.interest.isEmpty){ @{appConfig.personalIncomeTaxInterestUrl(taxYear)}}else{ @{appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)}}>
+                                @messages("common.interest")
+                            </a>
+                        } else {
+                            @messages("common.interest")
+                        }
+                    </span>
+                    <span class="hmrc-status-tag">
+                        @if(appConfig.interestEnabled){
+                            @if(incomeSources.interest.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
+                        } else {
+                            @messages("common.underMaintenance")
+                        }
+                    </span>
+                </li>
+
+                <li class="app-task-list__item">
+                    <span class="app-task-list__task-name">
+                        @if(appConfig.dividendsEnabled){
+                            <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends.isEmpty){ @{appConfig.personalIncomeTaxDividendsUrl(taxYear)}}else{ @{appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)}}>
+                                @messages("common.dividends")
+                            </a>
+                        } else {
+                            @messages("common.dividends")
+                        }
+                    </span>
+                    <span class="hmrc-status-tag">
+                        @if(appConfig.dividendsEnabled){
+                            @if(incomeSources.dividends.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
+                        } else {
+                            @messages("common.underMaintenance")
+                        }
+                    </span>
+                </li>
         </ol>
     </li>
 }

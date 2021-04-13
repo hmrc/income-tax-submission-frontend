@@ -4,7 +4,9 @@ service.text = This is your new service
 common.opensInNewWindowOrTab = (opens in new tab)
 
 common.help.getHelpWithThisPage = Get help with this page
-
+common.dividends = Dividends
+common.interest = Interest
+common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
 
 betaBar.beta = beta

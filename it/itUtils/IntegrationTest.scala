@@ -48,12 +48,38 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite
     "microservice.services.income-tax-calculation.host" -> wiremockHost,
     "microservice.services.income-tax-calculation.port" -> wiremockPort.toString,
     "microservice.services.auth.host" -> wiremockHost,
-    "microservice.services.auth.port" -> wiremockPort.toString
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.interestEnabled" -> "true",
+    "feature-switch.giftAidEnabled" -> "true",
+    "feature-switch.employmentEnabled" -> "true",
+    "metrics.enabled" -> "false"
+  )
+
+  def sourcesTurnedOffConfig: Map[String, String] = Map(
+    "auditing.enabled" -> "false",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "microservice.services.income-tax-submission.host" -> wiremockHost,
+    "microservice.services.income-tax-submission.port" -> wiremockPort.toString,
+    "microservice.services.income-tax-calculation.host" -> wiremockHost,
+    "microservice.services.income-tax-calculation.port" -> wiremockPort.toString,
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "feature-switch.dividendsEnabled" -> "false",
+    "feature-switch.interestEnabled" -> "false",
+    "feature-switch.giftAidEnabled" -> "false",
+    "feature-switch.employmentEnabled" -> "false",
+    "metrics.enabled" -> "false"
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
+    .build
+
+  lazy val appWithDifferentConfig: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(sourcesTurnedOffConfig)
     .build
 
   lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]

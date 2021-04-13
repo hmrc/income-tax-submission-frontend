@@ -24,6 +24,7 @@ import play.mvc.Http.Status._
 class IncomeSourcesConnectorSpec extends IntegrationTest {
 
   lazy val connector: IncomeSourcesConnector = app.injector.instanceOf[IncomeSourcesConnector]
+  lazy val connectorWithSourcesTurnedOff: IncomeSourcesConnector = appWithDifferentConfig.injector.instanceOf[IncomeSourcesConnector]
 
   val nino: String = "123456789"
   val taxYear: Int = 1999
@@ -51,9 +52,30 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
     giftsModel
   ))
 
-
   ".IncomeSourcesConnector" should {
     "return a IncomeSourcesModel" when {
+
+      "all sources are turned off" in {
+        val expectedResult = IncomeSourcesModel(dividendResult, interestResult)
+
+        stubGetWithHeaderCheck(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK,
+          Json.toJson(expectedResult).toString(),("excluded-income-sources","dividends,interest,gift-aid,employment"))
+
+        val result = await(connectorWithSourcesTurnedOff.getIncomeSources(nino, taxYear))
+
+        result shouldBe Right(expectedResult)
+      }
+
+      "all sources are turned on" in {
+        val expectedResult = IncomeSourcesModel(dividendResult, interestResult)
+
+        stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK, Json.toJson(expectedResult).toString())
+
+        val result = await(connector.getIncomeSources(nino, taxYear))
+
+        result shouldBe Right(expectedResult)
+      }
+
       "all optional values are present" in {
         val expectedResult = IncomeSourcesModel(dividendResult, interestResult, giftAidResult)
 

@@ -94,6 +94,16 @@ trait WireMockHelper {
       )
     )
 
+  def stubGetWithHeaderCheck(url: String, status: Integer, body: String, header:(String, String)): StubMapping =
+    stubFor(get(urlMatching(url))
+      .withHeader(header._1,equalTo(header._2))
+      .willReturn(
+        aResponse().
+          withStatus(status).
+          withBody(body)
+      )
+    )
+
   def stubPost(url: String, status: Integer, responseBody: String): StubMapping =
     stubFor(post(urlMatching(url))
       .willReturn(
