@@ -50,6 +50,6 @@ class IVFailureController @Inject()(implicit appConfig: AppConfig,
     val idForAuditing: String = journeyId.getOrElse(sessionId.getOrElse(UUID.randomUUID().toString))
 
     auditService.sendAudit(IVFailureAuditDetail(idForAuditing).toAuditModel)
-    Ok(view(controllers.routes.SignOutController.signOut()))
+    Ok(view(controllers.routes.SignOutController.signOut(isAgent = false)))
   }
 }
