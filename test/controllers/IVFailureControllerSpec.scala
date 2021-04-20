@@ -21,7 +21,6 @@ import config.MockAuditService
 import controllers.Assets.OK
 import org.scalamock.handlers.CallHandler
 import play.api.mvc.Result
-import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers.stubMessagesControllerComponents
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.UnitTest

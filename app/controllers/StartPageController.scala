@@ -18,20 +18,17 @@ package controllers
 
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, TaxYearAction}
-
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.StartPage
 import TaxYearAction.taxYearAction
-import audit.{AuditService, EnterUpdateAndSubmissionServiceDetail}
+import audit.{AuditService, EnterUpdateAndSubmissionServiceAuditDetail}
 import services.AuthService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
@@ -41,7 +38,8 @@ class StartPageController @Inject()(
                                      val startPageView: StartPage,
                                      auditService: AuditService,
                                      implicit val appConfig: AppConfig,
-                                     implicit val mcc: MessagesControllerComponents
+                                     implicit val mcc: MessagesControllerComponents,
+                                     implicit val ec: ExecutionContext
                                    ) extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
@@ -51,7 +49,9 @@ class StartPageController @Inject()(
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     authService.authorised.retrieve(affinityGroup) {
       case Some(retrievedAffinityGroup) =>
-        auditService.sendAudit[EnterUpdateAndSubmissionServiceDetail](EnterUpdateAndSubmissionServiceDetail(retrievedAffinityGroup).toAuditModel)
+        auditService.sendAudit[EnterUpdateAndSubmissionServiceAuditDetail](
+          EnterUpdateAndSubmissionServiceAuditDetail(retrievedAffinityGroup, user.nino).toAuditModel
+        )
         Future.successful(Redirect(controllers.routes.OverviewPageController.show(taxYear)))
     }
   }

@@ -37,7 +37,8 @@ class StartPageControllerTest extends IntegrationTest {
     app.injector.instanceOf[StartPage],
     app.injector.instanceOf[AuditService],
     frontendAppConfig,
-    mcc
+    mcc,
+    scala.concurrent.ExecutionContext.Implicits.global
   )
 
   "Hitting the show endpoint" should {

@@ -14,31 +14,35 @@
  * limitations under the License.
  */
 
-package models
+package audit
 
-import audit.EnterUpdateAndSubmissionServiceDetail
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.AffinityGroup
 import utils.UnitTest
 
-class EnterUpdateAndSubmissionServiceDetailSpec extends UnitTest {
+class EnterUpdateAndSubmissionServiceAuditDetailSpec extends UnitTest {
 
-  def validModel(input: AffinityGroup): EnterUpdateAndSubmissionServiceDetail = EnterUpdateAndSubmissionServiceDetail(input)
+  def validModel(affinityGroupInput: AffinityGroup, ninoInput : String): EnterUpdateAndSubmissionServiceAuditDetail = EnterUpdateAndSubmissionServiceAuditDetail(affinityGroupInput, ninoInput)
 
-  def validJson(affinityGroup: String): JsObject = Json.obj( "userType" -> affinityGroup )
+  def validJson(affinityGroup: String, nino: String): JsObject = Json.obj(
+    "userType" -> affinityGroup,
+    "nino" -> nino
+  )
 
-  "EnterUpdateAndSubmissionServiceDetail" should {
+  val ninoEntry: String = "AA111111A"
+
+  "EnterUpdateAndSubmissionServiceAuditDetail" should {
 
     "write to json when type is individual" in {
-      Json.toJson(validModel(AffinityGroup.Individual)) shouldBe validJson("individual")
+      Json.toJson(validModel(AffinityGroup.Individual, ninoEntry)) shouldBe validJson("individual", "AA111111A")
     }
 
     "write to json when type is agent" in {
-      Json.toJson(validModel(AffinityGroup.Agent)) shouldBe validJson("agent")
+      Json.toJson(validModel(AffinityGroup.Agent, ninoEntry)) shouldBe validJson("agent", "AA111111A")
     }
 
     "write to json when type is organisation" in {
-      Json.toJson(validModel(AffinityGroup.Organisation)) shouldBe validJson("organisation")
+      Json.toJson(validModel(AffinityGroup.Organisation, ninoEntry)) shouldBe validJson("organisation", "AA111111A")
     }
 
   }

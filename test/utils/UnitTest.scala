@@ -18,7 +18,6 @@ package utils
 
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, Materializer}
-import audit.AuditService
 import com.codahale.metrics.SharedMetricRegistries
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.{AppConfig, MockAppConfig}

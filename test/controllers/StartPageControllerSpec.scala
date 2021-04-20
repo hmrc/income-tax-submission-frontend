@@ -16,11 +16,10 @@
 
 package controllers
 
-import audit.{AuditModel, EnterUpdateAndSubmissionServiceDetail}
+import audit.EnterUpdateAndSubmissionServiceAuditDetail
 import config.{AppConfig, MockAuditService}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
-import play.api.libs.json.Writes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
@@ -45,7 +44,14 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
   private val mockFrontendAppConfig = new AppConfig(serviceConfig)
   private val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
-  private val controller = new StartPageController(authorisedAction, mockAuthService, startPageView, mockAuditService, mockFrontendAppConfig, stubMessagesControllerComponents())
+  private val controller = new StartPageController(authorisedAction,
+    mockAuthService,
+    startPageView,
+    mockAuditService,
+    mockFrontendAppConfig,
+    stubMessagesControllerComponents(),
+    mockExecutionContext
+  )
 
   private val nino: Option[String] = Some("AA123456A")
   private val taxYear = 2022
@@ -109,7 +115,7 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
             .expects(*, *, *, *)
             .returns(Future.successful(Some(AffinityGroup.Individual)))
 
-          verifyAuditEvent[EnterUpdateAndSubmissionServiceDetail]
+          verifyAuditEvent[EnterUpdateAndSubmissionServiceAuditDetail]
 
           controller.submit(taxYear)(fakeRequest)
         }
