@@ -21,7 +21,6 @@ import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.mvc.Http.Request
 import utils.ViewTest
 import views.html.authErrorPages.YouNeedAgentServicesView
 

@@ -20,19 +20,21 @@ import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 
-case class EnterUpdateAndSubmissionServiceDetail(affinityGroup: AffinityGroup) {
+case class EnterUpdateAndSubmissionServiceAuditDetail(affinityGroup: AffinityGroup, nino: String) {
   private val name = "EnteredUpdateAndSubmitIncomeTaxReturn"
-  def toAuditModel: AuditModel[EnterUpdateAndSubmissionServiceDetail] = AuditModel[EnterUpdateAndSubmissionServiceDetail](name, name, this)
+  def toAuditModel: AuditModel[EnterUpdateAndSubmissionServiceAuditDetail] = AuditModel[EnterUpdateAndSubmissionServiceAuditDetail](name, name, this)
 }
 
-object EnterUpdateAndSubmissionServiceDetail {
-  implicit val writes: Writes[EnterUpdateAndSubmissionServiceDetail] = Writes[EnterUpdateAndSubmissionServiceDetail] { model =>
-    Json.obj(
-      "userType" -> (model.affinityGroup match {
-        case Individual => "individual"
-        case Organisation => "organisation"
-        case Agent => "agent"
-      })
-    )
+object EnterUpdateAndSubmissionServiceAuditDetail {
+  implicit val writes: Writes[EnterUpdateAndSubmissionServiceAuditDetail] = Writes[EnterUpdateAndSubmissionServiceAuditDetail] {
+    model =>
+      Json.obj(
+        "userType" -> (model.affinityGroup match {
+          case Individual => "individual"
+          case Organisation => "organisation"
+          case Agent => "agent"
+        }),
+        "nino" -> model.nino
+      )
   }
 }

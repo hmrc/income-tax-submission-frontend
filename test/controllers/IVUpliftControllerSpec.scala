@@ -20,7 +20,6 @@ import audit.{AuditModel, IVHandoffAuditDetail, IVSuccessAuditDetail}
 import config.MockAuditService
 import controllers.Assets.SEE_OTHER
 import org.scalamock.handlers.CallHandler
-import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers.stubMessagesControllerComponents
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
