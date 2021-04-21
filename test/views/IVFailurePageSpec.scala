@@ -51,7 +51,7 @@ class IVFailurePageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   "Rendering the IVFailurePage in English" should {
     "render correctly when the user is an individual" should {
 
-      lazy val view: Html = iVFailurePage(controllers.routes.SignOutController.signOut())(fakeRequest, messages, mockConfig)
+      lazy val view: Html = iVFailurePage(controllers.routes.SignOutController.signOut(isAgent = false))(fakeRequest, messages, mockConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)
@@ -69,7 +69,7 @@ class IVFailurePageSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   "Rendering the IVFailurePage in Welsh" should {
     "render correctly when the user is an individual" should {
 
-      lazy val view: Html = iVFailurePage(controllers.routes.SignOutController.signOut())(fakeRequest, welshMessages, mockConfig)
+      lazy val view: Html = iVFailurePage(controllers.routes.SignOutController.signOut(isAgent = false))(fakeRequest, welshMessages, mockConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)

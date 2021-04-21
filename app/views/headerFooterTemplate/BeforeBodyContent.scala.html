@@ -21,7 +21,7 @@
 
 @(breadcrumbTaxYear: Option[Int] = None, isAgent: Boolean, isOverviewPage: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@betaBar()
+@betaBar(isAgent)
 
 @if(appConfig.welshToggleEnabled) {
  @hmrcLanguageSelect(LanguageSelect(

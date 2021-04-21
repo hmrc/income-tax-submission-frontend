@@ -16,13 +16,13 @@
 
 package config
 
+import common.IncomeSources._
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
-import common.IncomeSources._
 
 @Singleton
 class AppConfig @Inject()(servicesConfig: ServicesConfig) {
@@ -55,11 +55,14 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
     servicesConfig.getConfString("contact-frontend.baseUrl", contactUrl)
   }
 
-  lazy private val contactFormServiceIdentifier = "update-and-submit-income-tax-return"
+  lazy private val contactFormServiceIndividual = "update-and-submit-income-tax-return"
+  lazy private val contactFormServiceAgent = "update-and-submit-income-tax-return-agent"
+  def contactFormServiceIdentifier(implicit isAgent: Boolean): String = if(isAgent) contactFormServiceAgent else contactFormServiceIndividual
+
 
   private def requestUri(implicit request: RequestHeader): String = SafeRedirectUrl(appUrl + request.uri).encodedUrl
 
-  def betaFeedbackUrl(implicit request: RequestHeader): String = {
+  def betaFeedbackUrl(implicit request: RequestHeader, isAgent: Boolean): String = {
     s"$contactFrontEndUrl/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=$requestUri"
   }
 
@@ -68,9 +71,9 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
     servicesConfig.getConfString("feedback-frontend.relativeUrl", feedbackSurveyUrl)
   }
 
-  lazy val feedbackSurveyUrl: String = s"$feedbackFrontendUrl/feedback/$contactFormServiceIdentifier"
+  def feedbackSurveyUrl(implicit isAgent: Boolean): String = s"$feedbackFrontendUrl/feedback/$contactFormServiceIdentifier"
 
-  lazy val contactUrl = s"$contactFrontEndUrl/contact/contact-hmrc?service=$contactFormServiceIdentifier"
+  def contactUrl(implicit isAgent: Boolean): String = s"$contactFrontEndUrl/contact/contact-hmrc?service=$contactFormServiceIdentifier"
 
   private lazy val basGatewayUrl = {
     val basGatewayUrl = servicesConfig.baseUrl("bas-gateway-frontend")

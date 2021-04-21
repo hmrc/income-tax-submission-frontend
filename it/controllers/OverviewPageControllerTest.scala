@@ -25,7 +25,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER}
 import services.{CalculationIdService, IncomeSourcesService}
 import views.html.OverviewPageView
-import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
 
 class OverviewPageControllerTest extends IntegrationTest {
 
