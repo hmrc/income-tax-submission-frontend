@@ -17,40 +17,56 @@
 package controllers.predicates
 
 import common.SessionValues
+import common.SessionValues.{DIVIDENDS_CYA, DIVIDENDS_PRIOR_SUB, GIFT_AID_CYA, GIFT_AID_PRIOR_SUB, INTEREST_CYA, INTEREST_PRIOR_SUB, TAX_YEAR}
 import config.AppConfig
+import controllers.Assets.Redirect
 import models.User
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc._
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaxYearAction @Inject()(taxYear: Int)(
-  appConfig: AppConfig,
-  val messages: MessagesApi
+class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(
+  implicit val appConfig: AppConfig,
+  val messagesApi: MessagesApi
 ) extends ActionRefiner[User, User] with I18nSupport {
 
   implicit val executionContext: ExecutionContext = ExecutionContext.global
   lazy val logger: Logger = Logger.apply(this.getClass)
-  implicit val config: AppConfig = appConfig
-  implicit val messagesApi: MessagesApi = messages
 
   override def refine[A](request: User[A]): Future[Either[Result, User[A]]] = {
+    implicit val implicitUser: User[A] = request
+
     Future.successful(
-      if (taxYear == appConfig.defaultTaxYear || !appConfig.taxYearErrorFeature) {
-        Right(request)
+      if (!appConfig.taxYearErrorFeature || taxYear == appConfig.defaultTaxYear) {
+        val sameTaxYear = request.session.get(TAX_YEAR).exists(_.toInt == taxYear)
+
+        if (sameTaxYear || !missingTaxYearReset) {
+          Right(request)
+        } else {
+          logger.debug("[TaxYearAction][refine] Tax year provided is different than that in session. Redirecting to overview.")
+          Left(
+            Redirect(controllers.routes.StartPageController.show(taxYear).url)
+              .addingToSession(TAX_YEAR -> taxYear.toString)
+              .removingFromSession(
+                DIVIDENDS_CYA, INTEREST_CYA, GIFT_AID_CYA,
+                DIVIDENDS_PRIOR_SUB, INTEREST_PRIOR_SUB, GIFT_AID_PRIOR_SUB
+              )
+          )
+        }
       } else {
         logger.info(s"Invalid tax year, adding default tax year to session")
         Left(Redirect(controllers.routes.TaxYearErrorController.show())
-          .addingToSession(SessionValues.TAX_YEAR -> config.defaultTaxYear.toString)(request))
+          .addingToSession(SessionValues.TAX_YEAR -> appConfig.defaultTaxYear.toString)(request))
       }
     )
   }
 }
 
 object TaxYearAction {
-  def taxYearAction(taxYear: Int)(implicit appConfig: AppConfig, messages: MessagesApi): TaxYearAction =
-    new TaxYearAction(taxYear)(appConfig, messages)
+  def taxYearAction(taxYear: Int, missingTaxYearReset: Boolean = true)(implicit appConfig: AppConfig, messages: MessagesApi): TaxYearAction =
+    new TaxYearAction(taxYear, missingTaxYearReset)
 }

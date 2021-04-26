@@ -16,31 +16,117 @@
 
 package controllers.predicates
 
+import common.SessionValues
+import config.AppConfig
 import controllers.Assets.SEE_OTHER
 import models.User
-import play.api.mvc.{AnyContent, Result}
+import play.api.i18n.MessagesApi
 import utils.UnitTest
 
-import scala.concurrent.Future
-
 class TaxYearActionSpec extends UnitTest {
-  val validTaxYear: Int = 2021
+  val validTaxYear: Int = 2022
   val invalidTaxYear: Int = 3000
 
-  def taxYearAction(taxYear: Int): TaxYearAction = new TaxYearAction(taxYear)(mockAppConfig, mockControllerComponents.messagesApi)
-  val user: User[AnyContent] = User("",None,"")(fakeRequest)
+  implicit lazy val mockedConfig: AppConfig = mock[AppConfig]
+  implicit lazy val cc: MessagesApi = mockControllerComponents.messagesApi
+
+  def taxYearAction(taxYear: Int, reset: Boolean = true): TaxYearAction = new TaxYearAction(taxYear, reset)
 
   "TaxYearAction.refine" should {
 
-    "return Right(request)" in {
-      val result = await(taxYearAction(validTaxYear).refine(user))
-      result shouldBe Right(user)
+    "return a Right(request)" when {
+
+      "the tax year is within range of allowed years, and matches that in session if the feature switch is on" in {
+        lazy val userRequest = User("1234567890", None, "AA123456A")(
+          fakeRequest.withSession(SessionValues.TAX_YEAR -> validTaxYear.toString)
+        )
+
+        lazy val result = {
+          mockedConfig.defaultTaxYear _ expects() returning validTaxYear
+          mockedConfig.taxYearErrorFeature _ expects() returning true
+
+          await(taxYearAction(validTaxYear).refine(userRequest))
+        }
+
+        result.isRight shouldBe true
+      }
+
+      "the tax year is equal to the session value if the feature switch is off" in {
+        lazy val userRequest = User("1234567890", None, "AA123456A")(
+          fakeRequest.withSession(SessionValues.TAX_YEAR -> (validTaxYear + 1).toString)
+        )
+
+        lazy val result = {
+          mockedConfig.taxYearErrorFeature _ expects() returning false
+
+          await(taxYearAction(validTaxYear + 1).refine(userRequest))
+        }
+
+        result.isRight shouldBe true
+      }
+
+      "the tax year is different to the session value if the reset variable input is false" in {
+        lazy val userRequest = User("1234567890", None, "AA123456A")(
+          fakeRequest.withSession(SessionValues.TAX_YEAR -> (validTaxYear).toString)
+        )
+
+        lazy val result = {
+          mockedConfig.taxYearErrorFeature _ expects() returning false
+
+          await(taxYearAction(validTaxYear + 1, reset = false).refine(userRequest))
+        }
+
+        result.isRight shouldBe true
+      }
+
     }
 
-    "return Left(request)" in {
-      val result: Future[Result] = taxYearAction(invalidTaxYear).refine(user).map(_.left.get)
-      status(result) shouldBe SEE_OTHER
-      await(result).header.headers("Location") shouldBe "/income-through-software/return/error/wrong-tax-year"
+    "return a Left(result)" when {
+
+      "the tax year is different from that in session and the feature switch is off" which {
+        lazy val userRequest = User("1234567890", None, "AA123456A")(
+          fakeRequest.withSession(SessionValues.TAX_YEAR -> (validTaxYear).toString)
+        )
+
+        lazy val result = {
+          mockedConfig.taxYearErrorFeature _ expects() returning false
+
+          taxYearAction(validTaxYear + 1).refine(userRequest)
+        }
+
+        "has a status of SEE_OTHER (303)" in {
+          status(result.map(_.left.get)) shouldBe SEE_OTHER
+        }
+
+        "has the start page redirect url" in {
+          redirectUrl(result.map(_.left.get)) shouldBe controllers.routes.StartPageController.show(validTaxYear + 1).url
+        }
+
+        "has an updated tax year session value" in {
+          await(result.map(_.left.get)).session.get(SessionValues.TAX_YEAR).get shouldBe (validTaxYear + 1).toString
+        }
+      }
+
+      "the tax year is outside of the allowed limit while the feature switch is on" which {
+        lazy val userRequest = User("1234567890", None, "AA123456A")(
+          fakeRequest.withSession(SessionValues.TAX_YEAR -> (validTaxYear).toString)
+        )
+
+        lazy val result = {
+          mockedConfig.taxYearErrorFeature _ expects() returning true
+          mockedConfig.defaultTaxYear _ expects() returning invalidTaxYear twice()
+
+          taxYearAction(validTaxYear).refine(userRequest)
+        }
+
+        "has a status of SEE_OTHER (303)" in {
+          status(result.map(_.left.get)) shouldBe SEE_OTHER
+        }
+
+        "has the overview redirect url" in {
+          redirectUrl(result.map(_.left.get)) shouldBe controllers.routes.TaxYearErrorController.show().url
+        }
+      }
     }
   }
 

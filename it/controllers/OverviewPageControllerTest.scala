@@ -17,6 +17,7 @@
 package controllers
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import common.SessionValues
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
@@ -66,7 +67,7 @@ class OverviewPageControllerTest extends IntegrationTest {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYear)(FakeRequest()))
+          await(controller.show(taxYear)(FakeRequest().withSession(SessionValues.TAX_YEAR -> "2022")))
         }
 
         result.header.status shouldBe OK
@@ -79,7 +80,7 @@ class OverviewPageControllerTest extends IntegrationTest {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYear)(FakeRequest()))
+          await(controller.show(taxYear)(FakeRequest().withSession(SessionValues.TAX_YEAR -> "2022")))
         }
 
         result.header.status shouldBe OK
