@@ -47,7 +47,7 @@ class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(
         if (sameTaxYear || !missingTaxYearReset) {
           Right(request)
         } else {
-          logger.debug("[TaxYearAction][refine] Tax year provided is different than that in session. Redirecting to overview.")
+          logger.info("[TaxYearAction][refine] Tax year provided is different than that in session. Redirecting to overview.")
           Left(
             Redirect(controllers.routes.StartPageController.show(taxYear).url)
               .addingToSession(TAX_YEAR -> taxYear.toString)
