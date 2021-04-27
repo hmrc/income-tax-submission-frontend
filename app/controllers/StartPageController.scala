@@ -58,7 +58,6 @@ class StartPageController @Inject()(
   }
 
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-    println(Console.GREEN + "Continue button hit" + Console.RESET)
     authService.authorised.retrieve(affinityGroup) {
       case Some(retrievedAffinityGroup) =>
         auditService.sendAudit[EnterUpdateAndSubmissionServiceAuditDetail](
