@@ -17,6 +17,7 @@
 package controllers
 
 
+import common.SessionValues
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
@@ -44,7 +45,11 @@ import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/").withSession("ClientMTDID" -> "12234567890", "ClientNino" -> "AA123456A")
+  private val fakeGetRequest = FakeRequest("GET", "/").withSession(
+    SessionValues.CLIENT_MTDITID -> "12234567890",
+    SessionValues.CLIENT_NINO -> "AA123456A",
+    SessionValues.TAX_YEAR -> "2022"
+  )
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 

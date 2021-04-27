@@ -20,10 +20,15 @@ object SessionValues {
   val CLIENT_MTDITID = "ClientMTDID"
   val CLIENT_NINO = "ClientNino"
 
+  val DIVIDENDS_CYA = "DIVIDENDS_CYA"
+  val INTEREST_CYA = "INTEREST_CYA"
+  val GIFT_AID_CYA = "GIFT_AID_CYA"
+
   val DIVIDENDS_PRIOR_SUB = "DIVIDENDS_PRIOR_SUB"
   val INTEREST_PRIOR_SUB = "INTEREST_PRIOR_SUB"
-  val CALCULATION_ID = "calculationId"
   val GIFT_AID_PRIOR_SUB = "GIFT_AID_PRIOR_SUB"
+
+  val CALCULATION_ID = "calculationId"
 
   val TAX_YEAR = "TAX_YEAR"
 }

@@ -17,6 +17,7 @@
 package controllers
 
 import audit.EnterUpdateAndSubmissionServiceAuditDetail
+import common.SessionValues
 import config.{AppConfig, MockAuditService}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
@@ -117,7 +118,7 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
 
           verifyAuditEvent[EnterUpdateAndSubmissionServiceAuditDetail]
 
-          controller.submit(taxYear)(fakeRequest)
+          controller.submit(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> "2022"))
         }
 
         "has a result of SEE_OTHER(303)" in {

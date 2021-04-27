@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
   private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
-  lazy val defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
+  def defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
   private lazy val signInContinueBaseUrl: String = servicesConfig.getString(ConfigKeys.signInContinueBaseUrl)
   lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl).encodedUrl //TODO add redirect to overview page
   private lazy val signInOrigin = servicesConfig.getString("appName")
@@ -97,7 +97,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")
   lazy val timeoutDialogCountdown: Int = servicesConfig.getInt("timeoutDialogCountdown")
 
-  lazy val taxYearErrorFeature: Boolean = servicesConfig.getBoolean("taxYearErrorFeatureSwitch")
+  def taxYearErrorFeature: Boolean = servicesConfig.getBoolean("taxYearErrorFeatureSwitch")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
