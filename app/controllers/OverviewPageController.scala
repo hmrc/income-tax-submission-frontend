@@ -48,14 +48,19 @@ class OverviewPageController @Inject()(
       case Right(incomeSources) =>
         val result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
 
-        val sessionWithDividends = incomeSources.dividends.fold(result) { _ =>
-          result.addingToSession(DIVIDENDS_PRIOR_SUB -> Json.toJson(incomeSources.dividends).toString())
-        }
-        val sessionWithInterest = incomeSources.interest.fold(sessionWithDividends) { _ =>
-          sessionWithDividends.addingToSession(INTEREST_PRIOR_SUB -> Json.toJson(incomeSources.interest).toString())
+        val sessionValues = Seq(
+          DIVIDENDS_PRIOR_SUB -> incomeSources.dividends.map(d => Json.toJson(d)),
+          INTEREST_PRIOR_SUB -> incomeSources.interest.map(i => Json.toJson(i)),
+          GIFT_AID_PRIOR_SUB -> incomeSources.giftAid.map(g => Json.toJson(g)),
+          EMPLOYMENT_PRIOR_SUB -> incomeSources.employment.map(e => Json.toJson(e))
+        )
+
+        sessionValues.foldRight(result) { (newSessionData, runningResult) =>
+          newSessionData._2.fold(runningResult){ jsValue =>
+            runningResult.addingToSession(newSessionData._1 -> jsValue.toString())
+          }
         }
 
-        sessionWithInterest
       case Left(error) => errorHandler.handleError(error.status)
     }
   }

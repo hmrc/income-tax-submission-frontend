@@ -17,6 +17,7 @@
 package connectors
 
 import itUtils.IntegrationTest
+import models.employment.{AllEmploymentData, Benefits, EmploymentBenefits, EmploymentData, EmploymentExpenses, EmploymentSource, Expenses, Pay}
 import models.{APIErrorBodyModel, APIErrorModel, APIErrorsBodyModel, DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, IncomeSourcesModel, InterestModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
@@ -52,6 +53,108 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
     giftsModel
   ))
 
+  val employment: Option[AllEmploymentData] = Some(AllEmploymentData(
+      Seq(
+        EmploymentSource(
+          employmentId = "00000000-0000-0000-1111-000000000000",
+          employerRef = Some("666/66666"),
+          employerName = "Business",
+          payrollId = Some("1234567890"),
+          startDate = Some("2020-01-01"),
+          cessationDate = Some("2020-01-01"),
+          dateIgnored = Some("2020-01-01T10:00:38Z"),
+          submittedOn = None,
+          employmentData = Some(EmploymentData(
+            "2020-01-04T05:01:01Z",
+            employmentSequenceNumber = Some("1002"),
+            companyDirector = Some(false),
+            closeCompany = Some(true),
+            directorshipCeasedDate = Some("2020-02-12"),
+            occPen = Some(false),
+            disguisedRemuneration = Some(false),
+            Pay(
+              taxablePayToDate = 34234.15,
+              totalTaxToDate = 6782.92,
+              tipsAndOtherPayments = Some(67676),
+              payFrequency = "CALENDAR MONTHLY",
+              paymentDate = "2020-04-23",
+              taxWeekNo = Some(32),
+              taxMonthNo = Some(2)
+            )
+          )),
+          employmentBenefits = Some(
+            EmploymentBenefits(
+              "2020-01-04T05:01:01Z",
+              benefits = Some(Benefits(
+                Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),
+                Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),
+                Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100)
+              ))
+            )
+          ),
+          employmentExpenses = Some(
+            EmploymentExpenses(
+              Some("2020-01-04T05:01:01Z"),
+              totalExpenses = Some(800),
+              expenses = Some(Expenses(
+                Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100)
+              ))
+            )
+          )
+        )
+      ),Seq(
+        EmploymentSource(
+          employmentId = "00000000-0000-0000-2222-000000000000",
+          employerRef = Some("666/66666"),
+          employerName = "Business",
+          payrollId = Some("1234567890"),
+          startDate = Some("2020-01-01"),
+          cessationDate = Some("2020-01-01"),
+          dateIgnored = None,
+          submittedOn = Some("2020-01-01T10:00:38Z"),
+          employmentData = Some(
+            EmploymentData(
+              "2020-01-04T05:01:01Z",
+              employmentSequenceNumber = Some("1002"),
+              companyDirector = Some(false),
+              closeCompany = Some(true),
+              directorshipCeasedDate = Some("2020-02-12"),
+              occPen = Some(false),
+              disguisedRemuneration = Some(false),
+              Pay(
+                taxablePayToDate = 34234.15,
+                totalTaxToDate = 6782.92,
+                tipsAndOtherPayments = Some(67676),
+                payFrequency = "CALENDAR MONTHLY",
+                paymentDate = "2020-04-23",
+                taxWeekNo = Some(32),
+                taxMonthNo = Some(2)
+              )
+            )
+          ),
+          employmentBenefits = Some(
+            EmploymentBenefits(
+              "2020-01-04T05:01:01Z",
+              benefits = Some(Benefits(
+                Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),
+                Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),
+                Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100)
+              ))
+            )
+          ),
+          employmentExpenses = Some(
+            EmploymentExpenses(
+              Some("2020-01-04T05:01:01Z"),
+              totalExpenses = Some(800),
+              expenses = Some(Expenses(
+                Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100),Some(100)
+              ))
+            )
+          )
+        )
+      )
+    ))
+
   ".IncomeSourcesConnector" should {
     "return a IncomeSourcesModel" when {
 
@@ -77,7 +180,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       }
 
       "all optional values are present" in {
-        val expectedResult = IncomeSourcesModel(dividendResult, interestResult, giftAidResult)
+        val expectedResult = IncomeSourcesModel(dividendResult, interestResult, giftAidResult, employment)
 
         stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK, Json.toJson(expectedResult).toString())
 

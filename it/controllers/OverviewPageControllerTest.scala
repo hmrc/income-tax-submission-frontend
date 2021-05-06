@@ -57,7 +57,26 @@ class OverviewPageControllerTest extends IntegrationTest {
       |		"incomeSourceId": "12345678908765432",
       |		"taxedUkInterest": 44.66,
       |		"untaxedUkInterest": 66.44
-      |	}]
+      |	}],
+      | "giftAid" : {
+      |    "gifts":{
+      |       "landAndBuildings": 100
+      |    }
+      | },
+      | "employment": {
+      |   "hmrcEmploymentData": [
+      |     {
+      |       "employmentId": "1",
+      |       "employerName": "name"
+      |     }
+      |   ],
+      |   "customerEmploymentData": [
+      |     {
+      |       "employmentId": "2",
+      |       "employerName": "name"
+      |     }
+      |   ]
+      | }
       |}""".stripMargin)
 
   "Hitting the show endpoint" should {
@@ -79,6 +98,7 @@ class OverviewPageControllerTest extends IntegrationTest {
 
       "all auth requirements are met" in {
         val result = {
+          stubIncomeSources
           authoriseIndividual()
           await(controller.show(taxYear)(FakeRequest().withSession(SessionValues.TAX_YEAR -> "2022")))
         }
