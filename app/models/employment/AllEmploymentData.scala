@@ -19,7 +19,9 @@ package models.employment
 import play.api.libs.json.{Json, OFormat}
 
 case class AllEmploymentData(hmrcEmploymentData: Seq[EmploymentSource],
-                             customerEmploymentData: Seq[EmploymentSource])
+                             hmrcExpenses: Option[EmploymentExpenses],
+                             customerEmploymentData: Seq[EmploymentSource],
+                             customerExpenses: Option[EmploymentExpenses])
 
 object AllEmploymentData {
   implicit val format: OFormat[AllEmploymentData] = Json.format[AllEmploymentData]
@@ -34,8 +36,7 @@ case class EmploymentSource(employmentId: String,
                             dateIgnored: Option[String],
                             submittedOn: Option[String],
                             employmentData: Option[EmploymentData],
-                            employmentBenefits: Option[EmploymentBenefits],
-                            employmentExpenses: Option[EmploymentExpenses])
+                            employmentBenefits: Option[EmploymentBenefits])
 
 object EmploymentSource {
   implicit val format: OFormat[EmploymentSource] = Json.format[EmploymentSource]
