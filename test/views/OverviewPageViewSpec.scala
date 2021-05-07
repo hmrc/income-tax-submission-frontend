@@ -69,7 +69,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val captionSelector = "#main-content > div > div > header > p"
   val headerSelector = "#main-content > div > div > header > h1"
   val dividendsProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
-  val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > span"
+  val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > p"
   val interestLinkSelector = "#interest_link"
   val interestNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
   val interestUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
@@ -77,10 +77,10 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val dividendsNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
   val dividendsUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
   val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
-  val interestProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > span"
+  val interestProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > p"
   val viewEstimateSelector = "#calculation_link"
   val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(3) > h2"
-  val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(3) > ul > span"
+  val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(3) > ul > p"
 
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   
