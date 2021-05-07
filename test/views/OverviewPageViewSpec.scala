@@ -77,10 +77,10 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val dividendsNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
   val dividendsUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
   val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
-  val interestProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > p"
+  val interestProvideUpdatesSelector = "#main-content > div > div > ol > li.app-task-list__items > p"
   val viewEstimateSelector = "#calculation_link"
-  val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(3) > h2"
-  val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(3) > ul > p"
+  val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(4) > h2"
+  val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > p"
 
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   

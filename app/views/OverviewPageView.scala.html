@@ -76,7 +76,7 @@
         <h2 class="app-task-list__section">
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
-        <ul class="app-task-list__items">
+        <li class="app-task-list__items">
             @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined) {
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
                     @action
@@ -84,7 +84,7 @@
             } else {
                 <p class="govuk-body">@caption</p>
             }
-        </ul>
+        </li>
     </li>
 }
 
