@@ -22,21 +22,23 @@ import helpers.WireMockHelper
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Application, Environment, Mode}
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
+import play.api.{Application, Environment, Mode}
 import services.AuthService
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.authErrorPages.AgentAuthErrorPageView
 
-import scala.concurrent.{Await, Awaitable, Future}
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Awaitable, Future}
 
-trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with WireMockHelper with BeforeAndAfterAll{
+trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll{
 
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
+
+  val startUrl = s"http://localhost:$port/income-through-software/return"
 
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
