@@ -28,7 +28,7 @@
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <ol class="app-task-list__items">
-            <span class="govuk-body">@caption</span>
+            <p class="govuk-body govuk-!-margin-bottom-0">@caption</p>
             <li class="app-task-list__item"></li>
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
@@ -76,15 +76,15 @@
         <h2 class="app-task-list__section">
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
-        <ul class="app-task-list__items">
+        <li class="app-task-list__items">
             @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined) {
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
                     @action
                 </a>
             } else {
-                <span class="govuk-body">@caption</span>
+                <p class="govuk-body">@caption</p>
             }
-        </ul>
+        </li>
     </li>
 }
 
@@ -94,7 +94,7 @@
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <ul class="app-task-list__items">
-            <span class="govuk-body">@caption</span>
+            <p class="govuk-body">@caption</p>
         </ul>
     </li>
 }
