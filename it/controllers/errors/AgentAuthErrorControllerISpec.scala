@@ -18,7 +18,6 @@ package controllers.errors
 
 import itUtils.IntegrationTest
 import org.jsoup.Jsoup
-import play.api.http.Status._sbt ru
 import play.api.libs.ws.{WSClient, WSResponse}
 import org.jsoup.nodes.Document
 import utils.ViewHelpers
@@ -29,7 +28,8 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
   object ExpectedResults {
     val heading: String = "There’s a problem"
     val title = "There’s a problem"
-    val youCan = "You cannot view this client’s information. Your client needs to authorise you as their agent (opens in new tab) before you can sign in to this service."
+    val youCan = "You cannot view this client’s information. Your client needs to authorise you as their agent " +
+      "(opens in new tab) before you can sign in to this service."
     val tryAnother = "Try another client’s details"
 
   }
@@ -38,7 +38,7 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
     val tryAnother = "#main-content > div > div > p:nth-child(3)"
 
   }
-     val url = s"http://localhost:9302/income-through-software/return/error/you-need-client-authorisation"
+     val url = s"http://localhost:$port/income-through-software/return/error/you-need-client-authorisation"
 
 
   "calling GET" when {
