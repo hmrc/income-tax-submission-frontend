@@ -30,7 +30,7 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
     val title = "There’s a problem"
     val youCan = "You cannot view this client’s information. Your client needs to authorise you as their agent " +
       "(opens in new tab) before you can sign in to this service."
-    val tryAnother = "Try another client’s details"
+    val tryAnother = "Try another client’s details."
 
   }
   object Selectors {
