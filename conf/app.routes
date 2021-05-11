@@ -25,6 +25,8 @@ GET         /error/wrong-tax-year                           controllers.TaxYearE
 
 GET         /error/not-authorised-to-use-service            controllers.UnauthorisedUserErrorController.show
 
+GET         /error/you-need-client-authorisation            controllers.errors.AgentAuthErrorController.show
+
 GET         /error/you-need-agent-services-account          controllers.errors.YouNeedAgentServicesController.show
 
 GET         /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)
