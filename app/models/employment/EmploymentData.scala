@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package models.employment
 
-import models.employment.AllEmploymentData
+import models.employment.Pay
 import play.api.libs.json.{Json, OFormat}
 
-case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
-                              interest: Option[Seq[InterestModel]] = None,
-                              giftAid: Option[GiftAidModel] = None,
-                              employment: Option[AllEmploymentData] = None)
+case class EmploymentData(submittedOn: String,
+                          employmentSequenceNumber: Option[String],
+                          companyDirector: Option[Boolean],
+                          closeCompany: Option[Boolean],
+                          directorshipCeasedDate: Option[String],
+                          occPen: Option[Boolean],
+                          disguisedRemuneration: Option[Boolean],
+                          pay: Pay)
 
-object IncomeSourcesModel {
-  implicit val formats: OFormat[IncomeSourcesModel] = Json.format[IncomeSourcesModel]
+object EmploymentData {
+  implicit val formats: OFormat[EmploymentData] = Json.format[EmploymentData]
 }
-
-

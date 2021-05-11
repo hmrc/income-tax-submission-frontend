@@ -17,6 +17,7 @@
 package connectors
 
 import itUtils.IntegrationTest
+import models.employment.{AllEmploymentData, Benefits, EmploymentBenefits, EmploymentData, EmploymentExpenses, EmploymentSource, Expenses, Pay}
 import models.{APIErrorBodyModel, APIErrorModel, APIErrorsBodyModel, DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, IncomeSourcesModel, InterestModel}
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
@@ -32,7 +33,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
   val dividendResult: Option[DividendsModel] = Some(DividendsModel(Some(500), Some(600)))
   val interestResult: Option[Seq[InterestModel]] = Some(Seq(InterestModel("account", "1234567890", Some(500), Some(500))))
   val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
-    nonUkCharitiesCharityNames = Some(List("non uk charity name","non uk charity name 2")),
+    nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
     currentYear = Some(1234.56),
     oneOffCurrentYear = Some(1234.56),
     currentYearTreatedAsPreviousYear = Some(1234.56),
@@ -52,6 +53,109 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
     giftsModel
   ))
 
+  val employment: Option[AllEmploymentData] = Some(AllEmploymentData(
+    Seq(
+      EmploymentSource(
+        employmentId = "00000000-0000-0000-1111-000000000000",
+        employerRef = Some("666/66666"),
+        employerName = "Business",
+        payrollId = Some("1234567890"),
+        startDate = Some("2020-01-01"),
+        cessationDate = Some("2020-01-01"),
+        dateIgnored = Some("2020-01-01T10:00:38Z"),
+        submittedOn = None,
+        employmentData = Some(EmploymentData(
+          "2020-01-04T05:01:01Z",
+          employmentSequenceNumber = Some("1002"),
+          companyDirector = Some(false),
+          closeCompany = Some(true),
+          directorshipCeasedDate = Some("2020-02-12"),
+          occPen = Some(false),
+          disguisedRemuneration = Some(false),
+          Pay(
+            taxablePayToDate = 34234.15,
+            totalTaxToDate = 6782.92,
+            tipsAndOtherPayments = Some(67676),
+            payFrequency = "CALENDAR MONTHLY",
+            paymentDate = "2020-04-23",
+            taxWeekNo = Some(32),
+            taxMonthNo = Some(2)
+          )
+        )),
+        employmentBenefits = Some(
+          EmploymentBenefits(
+            "2020-01-04T05:01:01Z",
+            benefits = Some(Benefits(
+              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100),
+              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100),
+              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100)
+            ))
+          )
+        )
+      )
+    ),
+    hmrcExpenses = Some(
+      EmploymentExpenses(
+        Some("2020-01-04T05:01:01Z"),
+        totalExpenses = Some(800),
+        expenses = Some(Expenses(
+          Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100)
+        ))
+      )
+    ),
+    Seq(
+      EmploymentSource(
+        employmentId = "00000000-0000-0000-2222-000000000000",
+        employerRef = Some("666/66666"),
+        employerName = "Business",
+        payrollId = Some("1234567890"),
+        startDate = Some("2020-01-01"),
+        cessationDate = Some("2020-01-01"),
+        dateIgnored = None,
+        submittedOn = Some("2020-01-01T10:00:38Z"),
+        employmentData = Some(
+          EmploymentData(
+            "2020-01-04T05:01:01Z",
+            employmentSequenceNumber = Some("1002"),
+            companyDirector = Some(false),
+            closeCompany = Some(true),
+            directorshipCeasedDate = Some("2020-02-12"),
+            occPen = Some(false),
+            disguisedRemuneration = Some(false),
+            Pay(
+              taxablePayToDate = 34234.15,
+              totalTaxToDate = 6782.92,
+              tipsAndOtherPayments = Some(67676),
+              payFrequency = "CALENDAR MONTHLY",
+              paymentDate = "2020-04-23",
+              taxWeekNo = Some(32),
+              taxMonthNo = Some(2)
+            )
+          )
+        ),
+        employmentBenefits = Some(
+          EmploymentBenefits(
+            "2020-01-04T05:01:01Z",
+            benefits = Some(Benefits(
+              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100),
+              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100),
+              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100)
+            ))
+          )
+        )
+      )
+    ),
+    customerExpenses = Some(
+      EmploymentExpenses(
+        Some("2020-01-04T05:01:01Z"),
+        totalExpenses = Some(800),
+        expenses = Some(Expenses(
+          Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100)
+        ))
+      )
+    )
+  ))
+
   ".IncomeSourcesConnector" should {
     "return a IncomeSourcesModel" when {
 
@@ -59,7 +163,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
         val expectedResult = IncomeSourcesModel(dividendResult, interestResult)
 
         stubGetWithHeaderCheck(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK,
-          Json.toJson(expectedResult).toString(),("excluded-income-sources","dividends,interest,gift-aid,employment"))
+          Json.toJson(expectedResult).toString(), ("excluded-income-sources", "dividends,interest,gift-aid,employment"))
 
         val result = await(connectorWithSourcesTurnedOff.getIncomeSources(nino, taxYear))
 
@@ -77,7 +181,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       }
 
       "all optional values are present" in {
-        val expectedResult = IncomeSourcesModel(dividendResult, interestResult, giftAidResult)
+        val expectedResult = IncomeSourcesModel(dividendResult, interestResult, giftAidResult, employment)
 
         stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK, Json.toJson(expectedResult).toString())
 
@@ -105,8 +209,8 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
 
     "API Returns multiple errors" in {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorsBodyModel(Seq(
-        APIErrorBodyModel("INVALID_IDTYPE","ID is invalid"),
-        APIErrorBodyModel("INVALID_IDTYPE_2","ID 2 is invalid"))))
+        APIErrorBodyModel("INVALID_IDTYPE", "ID is invalid"),
+        APIErrorBodyModel("INVALID_IDTYPE_2", "ID 2 is invalid"))))
 
       val responseBody = Json.obj(
         "failures" -> Json.arr(
@@ -128,7 +232,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
         "dividends" -> ""
       )
 
-      val expectedResult = APIErrorModel(500,APIErrorBodyModel("PARSING_ERROR","Error parsing response from API"))
+      val expectedResult = APIErrorModel(500, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API"))
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK, invalidJson.toString())
       val result = await(connector.getIncomeSources(nino, taxYear))
@@ -136,7 +240,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       result shouldBe Left(expectedResult)
     }
     "return a SERVICE_UNAVAILABLE" in {
-      val expectedResult = APIErrorModel(503,APIErrorBodyModel("SERVICE_UNAVAILABLE","Service unavailable"))
+      val expectedResult = APIErrorModel(503, APIErrorBodyModel("SERVICE_UNAVAILABLE", "Service unavailable"))
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
       val result = await(connector.getIncomeSources(nino, taxYear))
@@ -160,15 +264,15 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       result shouldBe expectedResult
     }
     "return a INTERNAL_SERVER_ERROR" in {
-      val expectedResult = APIErrorModel(500,APIErrorBodyModel("INTERNAL_SERVER_ERROR","Internal server error"))
+      val expectedResult = APIErrorModel(500, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal server error"))
 
-      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", INTERNAL_SERVER_ERROR,expectedResult.toJson.toString())
+      stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
       val result = await(connector.getIncomeSources(nino, taxYear))
 
       result shouldBe Left(expectedResult)
     }
     "return a PARSING_ERROR when unexpected status 408" in {
-      val expectedResult = APIErrorModel(500,APIErrorBodyModel("PARSING_ERROR","Error parsing response from API"))
+      val expectedResult = APIErrorModel(500, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API"))
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", REQUEST_TIMEOUT, "")
       val result = await(connector.getIncomeSources(nino, taxYear))
