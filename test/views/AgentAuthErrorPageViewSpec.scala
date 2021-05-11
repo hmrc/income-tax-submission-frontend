@@ -35,7 +35,7 @@ class AgentAuthErrorPageViewSpec extends AnyWordSpec with Matchers with GuiceOne
   val youCannotViewText: String = "You cannot view this client’s information. Your client needs to"
   val authoriseYouAsText = "authorise you as their agent (opens in new tab)"
   val beforeYouCanTryText = "before you can sign in to this service."
-  val tryAnotherClientText = "Try another client’s details"
+  val tryAnotherClientText = "Try another client’s details."
   val authoriseAsAnAgentLink = "https://www.gov.uk/guidance/client-authorisation-an-overview"
 
   "AgentAuthErrorPageView when called in English" should {

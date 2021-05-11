@@ -244,7 +244,7 @@ class AuthorisedActionSpec extends UnitTest {
 
     }
 
-    "return an Unauthorised" when {
+    "return an SEE_OTHER" when {
 
       "the authorisation service returns an AuthorisationException exception" in {
         object AuthException extends AuthorisationException("Some reason")
@@ -254,7 +254,7 @@ class AuthorisedActionSpec extends UnitTest {
 
           auth.agentAuthentication(block)(fakeRequestAgent, emptyHeaderCarrier)
         }
-        status(result) shouldBe UNAUTHORIZED
+        status(result) shouldBe SEE_OTHER
       }
 
     }
