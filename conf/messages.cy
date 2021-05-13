@@ -56,6 +56,7 @@ overview.heading.isAgent.false = Your Income Tax Return
 
 overview.notStarted = Not started
 overview.updated = Updated
+overview.cannotUpdate = Cannot update
 
 errors.500.heading = Sorry, there is a problem with the service
 errors.500.p1 = Try again later.

@@ -71,7 +71,7 @@
             @if(appConfig.employmentReleased){
             <li class="app-task-list__item">
                         <span class="app-task-list__task-name">
-                            @if(appConfig.employmentEnabled){
+                            @if(appConfig.employmentEnabled && incomeSources.employment.isDefined){
                                 <a class="govuk-link" id="employment_link" href="./view">
                                     @messages("common.employment")
                                 </a>
@@ -81,7 +81,7 @@
                         </span>
                 <span class="hmrc-status-tag">
                             @if(appConfig.employmentEnabled){
-                                @if(incomeSources.employment.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
+                                @if(incomeSources.employment.isDefined){@messages("overview.updated")}else{@messages("overview.cannotUpdate")}
                             } else {
                                 @messages("common.underMaintenance")
                             }

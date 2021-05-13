@@ -47,6 +47,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val updatedText = "Updated"
   val notStartedText = "Not started"
   val underMaintenance = "Under maintenance"
+  val cannotUpdateText = "Cannot update"
   val dividendsLinkText = "Dividends"
   val dividendsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/dividends-from-uk-companies"
   val dividendsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/check-income-from-dividends"
@@ -75,6 +76,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
   val dividendsLinkSelector = "#dividends_link"
   val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+  val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.app-task-list__task-name"
   val employmentLinkSelector = "#employment_link"
   val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
   val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
@@ -182,8 +184,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has an employment section " which {
-          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
-          textOnPageCheck(notStartedText, employmentStatusSelector)
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
@@ -218,8 +220,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has an employment section" which {
-          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
-          textOnPageCheck(notStartedText, employmentStatusSelector)
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
@@ -300,8 +302,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has an employment section" which {
-          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
-          textOnPageCheck(notStartedText, employmentStatusSelector)
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
@@ -336,8 +338,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has an employment section" which {
-          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
-          textOnPageCheck(notStartedText, employmentStatusSelector)
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
