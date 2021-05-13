@@ -6,6 +6,7 @@ common.opensInNewWindowOrTab = (opens in new tab)
 common.help.getHelpWithThisPage = Get help with this page
 common.dividends = Dividends
 common.interest = Interest
+common.employment = Employment
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
 
@@ -55,6 +56,7 @@ overview.heading.isAgent.false = Your Income Tax Return
 
 overview.notStarted = Not started
 overview.updated = Updated
+overview.cannotUpdate = Cannot update
 
 errors.500.heading = Sorry, there is a problem with the service
 errors.500.p1 = Try again later.

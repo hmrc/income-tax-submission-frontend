@@ -113,7 +113,9 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   lazy val dividendsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.dividendsEnabled")
   lazy val interestEnabled: Boolean = servicesConfig.getBoolean("feature-switch.interestEnabled")
   lazy val giftAidEnabled: Boolean = servicesConfig.getBoolean("feature-switch.giftAidEnabled")
+  lazy val giftAidReleased: Boolean = servicesConfig.getBoolean("feature-switch.giftAidReleased")
   lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
+  lazy val employmentReleased: Boolean = servicesConfig.getBoolean("feature-switch.employmentReleased")
 
   lazy val excludedIncomeSources: Seq[String] = {
     Seq(
