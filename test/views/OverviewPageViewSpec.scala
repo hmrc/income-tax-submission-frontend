@@ -16,6 +16,7 @@
 
 package views
 
+import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
 import models.{DividendsModel, IncomeSourcesModel, InterestModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -43,17 +44,17 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val provideUpdatesText = "1. Provide updates"
   val completeSectionsIndividualText = "Complete the sections that apply to you."
   val completeSectionsAgentText = "Complete the sections that apply to your client."
+  val updatedText = "Updated"
+  val notStartedText = "Not started"
+  val underMaintenance = "Under maintenance"
   val dividendsLinkText = "Dividends"
   val dividendsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/dividends-from-uk-companies"
   val dividendsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/check-income-from-dividends"
-  val dividendsNotStartedText = "Not started"
-  val dividendsUpdatedText = "Updated"
   val interestsLinkText = "Interest"
   val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
   val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-your-answers"
-  val interestsNotStartedText = "Not started"
-  val underMaintenance = "Under maintenance"
-  val interestsUpdatedText = "Updated"
+  val employmentLinkText = "Employment"
+  val employmentLink = "./view"
   val viewTaxCalcText = "2. View Tax calculation to date"
   val provideUpdateIndividualText = "Provide at least one update before you can view your estimate."
   val provideUpdateAgentText = "Provide at least one update before you can view your client’s estimate."
@@ -71,11 +72,11 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val dividendsProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
   val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > p"
   val interestLinkSelector = "#interest_link"
-  val interestNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
-  val interestUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
+  val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
   val dividendsLinkSelector = "#dividends_link"
-  val dividendsNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
-  val dividendsUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+  val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+  val employmentLinkSelector = "#employment_link"
+  val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
   val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
   val interestProvideUpdatesSelector = "#main-content > div > div > ol > li.app-task-list__items > p"
   val viewEstimateSelector = "#calculation_link"
@@ -84,9 +85,37 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   
-  lazy val incomeSourcesModel:Option[IncomeSourcesModel] = Some(IncomeSourcesModel(dividendsModel, interestsModel))
+  lazy val incomeSourcesModel:Option[IncomeSourcesModel] = Some(IncomeSourcesModel(dividendsModel, interestsModel, employment = Some(employmentsModel)))
   lazy val dividendsModel:Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
   lazy val interestsModel:Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
+  lazy val employmentsModel: AllEmploymentData = AllEmploymentData(
+    hmrcEmploymentData = Seq(
+      EmploymentSource(
+        employmentId = "001",
+        employerName = "maggie",
+        employerRef = Some("223/AB12399"),
+        payrollId = Some("123456789999"),
+        startDate = Some("2019-04-21"),
+        cessationDate = Some("2020-03-11"),
+        dateIgnored = Some("2020-04-04T01:01:01Z"),
+        submittedOn = Some("2020-01-04T05:01:01Z"),
+        employmentData = Some(EmploymentData(
+          submittedOn = ("2020-02-12"),
+          employmentSequenceNumber = Some("123456789999"),
+          companyDirector = Some(true),
+          closeCompany = Some(false),
+          directorshipCeasedDate = Some("2020-02-12"),
+          occPen = Some(false),
+          disguisedRemuneration = Some(false),
+          pay = Pay(34234.15, 6782.92, Some(67676), "CALENDAR MONTHLY", "2020-04-23", Some(32), Some(2))
+        )),
+        None
+      )
+    ),
+    hmrcExpenses = None,
+    customerEmploymentData = Seq(),
+    customerExpenses = None
+  )
 
   "The Overview page should render correctly in English" should {
 
@@ -107,12 +136,17 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
       textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
 
       "have a dividends section that says under maintenance" which {
-        textOnPageCheck(underMaintenance, dividendsNotStartedSelector)
+        textOnPageCheck(underMaintenance, dividendsStatusSelector)
       }
 
       "have an interest section that says under maintenance" which {
-        textOnPageCheck(underMaintenance, interestNotStartedSelector)
+        textOnPageCheck(underMaintenance, interestStatusSelector)
       }
+
+      "have an employment section that says under maintenance" which {
+        textOnPageCheck(underMaintenance, employmentStatusSelector)
+      }
+
       textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
       textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
       textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -139,12 +173,17 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
-          textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+          textOnPageCheck(notStartedText, dividendsStatusSelector)
         }
 
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
-          textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+          textOnPageCheck(notStartedText, interestStatusSelector)
+        }
+
+        "has an employment section " which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(notStartedText, employmentStatusSelector)
         }
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
@@ -170,12 +209,17 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
-          textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+          textOnPageCheck(notStartedText, dividendsStatusSelector)
         }
 
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
-          textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+          textOnPageCheck(notStartedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(notStartedText, employmentStatusSelector)
         }
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
@@ -204,12 +248,17 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
-          textOnPageCheck(dividendsUpdatedText, dividendsUpdatedSelector)
+          textOnPageCheck(updatedText, dividendsStatusSelector)
         }
 
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
-          textOnPageCheck(interestsUpdatedText, interestUpdatedSelector)
+          textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(updatedText, employmentStatusSelector)
         }
 
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
@@ -242,12 +291,17 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
-          textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+          textOnPageCheck(notStartedText, dividendsStatusSelector)
         }
 
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
-          textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+          textOnPageCheck(notStartedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(notStartedText, employmentStatusSelector)
         }
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
@@ -273,12 +327,17 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
-          textOnPageCheck(dividendsNotStartedText, dividendsNotStartedSelector)
+          textOnPageCheck(notStartedText, dividendsStatusSelector)
         }
 
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
-          textOnPageCheck(interestsNotStartedText, interestNotStartedSelector)
+          textOnPageCheck(notStartedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(notStartedText, employmentStatusSelector)
         }
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
@@ -307,12 +366,17 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
-          textOnPageCheck(dividendsUpdatedText, dividendsUpdatedSelector)
+          textOnPageCheck(updatedText, dividendsStatusSelector)
         }
 
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
-          textOnPageCheck(interestsUpdatedText, interestUpdatedSelector)
+          textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(updatedText, employmentStatusSelector)
         }
 
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
