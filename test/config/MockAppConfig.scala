@@ -64,6 +64,10 @@ class MockAppConfig extends MockFactory {
 
     override lazy val interestEnabled: Boolean = false
 
+    override lazy val employmentEnabled: Boolean = false
+
+    override lazy val employmentReleased: Boolean = true
+
     override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
 
   }
