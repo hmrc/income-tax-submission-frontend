@@ -74,7 +74,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         val optionalNino: Option[String] = enrolmentGetIdentifierValue(EnrolmentKeys.nino, EnrolmentIdentifiers.ninoId, enrolments)
 
         (optionalMtdItId, optionalNino) match {
-          case (Some(mtdItId), Some(nino)) => block(User(mtdItId, None, nino))
+          case (Some(mtdItId), Some(nino)) => block(User(mtdItId, None, nino, hc.sessionId.get.value))
           case (_, None) =>
             logger.info(s"[AuthorisedAction][individualAuthentication] - No active session. Redirecting to ${appConfig.signInUrl}")
             Future.successful(Redirect(appConfig.signInUrl))
@@ -109,7 +109,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
 
             enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
               case Some(arn) =>
-                block(User(mtdItId, Some(arn), nino))
+                block(User(mtdItId, Some(arn), nino, hc.sessionId.get.value))
               case None =>
                 logger.info("[AuthorisedAction][agentAuthentication] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
                 Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show()))

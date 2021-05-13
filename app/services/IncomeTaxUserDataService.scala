@@ -16,25 +16,51 @@
 
 package services
 
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.IncomeSourcesModel
 import models.mongo.UserData
+import models.{IncomeSourcesModel, User}
+import play.api.Logging
+import play.api.i18n.MessagesApi
+import play.api.mvc.Results.InternalServerError
+import play.api.mvc.{Request, Result}
 import repositories.IncomeTaxUserDataRepository
+import views.html.errors.InternalServerErrorPage
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class IncomeTaxUserDataService @Inject()(incomeTaxUserDataRepository: IncomeTaxUserDataRepository) {
+class IncomeTaxUserDataService @Inject()(incomeTaxUserDataRepository: IncomeTaxUserDataRepository,
+                                         internalServerErrorPage: InternalServerErrorPage,
+                                         implicit private val appConfig: AppConfig,
+                                         val messagesApi: MessagesApi) extends Logging {
 
-  def updateUserData(sessionId: String,
-                     mtdItId: String,
-                     nino: String,
-                     taxYear: Int,
-                     incomeSourcesModel: Option[IncomeSourcesModel]): Future[Boolean] = {
+  def saveUserData[T](user: User[T],
+                      taxYear: Int,
+                      result: Result,
+                      incomeSourcesModel: Option[IncomeSourcesModel] = None)
+                     (implicit request: Request[_], ec: ExecutionContext): Future[Result] = {
+
+    updateUserData(user.sessionId, user.mtditid, user.nino, taxYear, incomeSourcesModel).map {
+      response =>
+        if (response) {
+          result
+        } else {
+          logger.error("[IncomeTaxUserDataService][saveUserData] Failed to save user data")
+          InternalServerError(internalServerErrorPage()(request, messagesApi.preferred(request), appConfig))
+        }
+    }
+  }
+
+  private def updateUserData(sessionId: String,
+                             mtdItId: String,
+                             nino: String,
+                             taxYear: Int,
+                             incomeSourcesModel: Option[IncomeSourcesModel] = None): Future[Boolean] = {
 
     val userData = UserData(
-      sessionId,mtdItId,nino,taxYear,
+      sessionId, mtdItId, nino, taxYear,
       dividends = incomeSourcesModel.flatMap(_.dividends),
       interest = incomeSourcesModel.flatMap(_.interest),
       giftAid = incomeSourcesModel.flatMap(_.giftAid),
