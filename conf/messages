@@ -6,6 +6,7 @@ common.opensInNewWindowOrTab = (opens in new tab)
 common.help.getHelpWithThisPage = Get help with this page
 common.dividends = Dividends
 common.interest = Interest
+common.employment = Employment
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
 

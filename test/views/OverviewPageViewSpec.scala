@@ -71,11 +71,11 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val dividendsProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
   val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > p"
   val interestLinkSelector = "#interest_link"
-  val interestNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
-  val interestUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
+  val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
   val dividendsLinkSelector = "#dividends_link"
-  val dividendsNotStartedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
-  val dividendsUpdatedSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+  val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+  val employmentLinkSelector = "#employment_link"
+  val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
   val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
   val interestProvideUpdatesSelector = "#main-content > div > div > ol > li.app-task-list__items > p"
   val viewEstimateSelector = "#calculation_link"
@@ -112,6 +112,10 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "have an interest section that says under maintenance" which {
         textOnPageCheck(underMaintenance, interestNotStartedSelector)
+      }
+
+      "have an employment section that says under maintenance" which {
+        textOnPageCheck(underMaintenance, employmentNotStartedSelector)
       }
       textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
       textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
