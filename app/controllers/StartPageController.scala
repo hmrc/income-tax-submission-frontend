@@ -53,14 +53,10 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
           .addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
       )
 
-    //      Future.successful(
-    //        Ok(startPageView(isAgent = user.isAgent, taxYear))
-    //          .addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
     //          .removingFromSession(
     //            DIVIDENDS_CYA, INTEREST_CYA, GIFT_AID_CYA, EMPLOYMENT_CYA,
     //            DIVIDENDS_PRIOR_SUB, INTEREST_PRIOR_SUB, GIFT_AID_PRIOR_SUB, EMPLOYMENT_PRIOR_SUB
     //          ) //TODO Remove when year selection is available
-    //      )
   }
 
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
