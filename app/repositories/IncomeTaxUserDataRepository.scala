@@ -19,16 +19,20 @@ package repositories
 import java.util.concurrent.TimeUnit
 
 import com.mongodb.client.model.ReturnDocument
+import com.mongodb.client.model.Updates.set
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.User
 import models.mongo.UserData
+import org.joda.time.LocalDateTime
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.Indexes.{ascending, compoundIndex}
-import org.mongodb.scala.model.{FindOneAndReplaceOptions, IndexModel, IndexOptions}
+import org.mongodb.scala.model.{FindOneAndReplaceOptions, FindOneAndUpdateOptions, IndexModel, IndexOptions}
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.Codecs.toBson
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,21 +45,31 @@ class IncomeTaxUserDataRepository @Inject()(mongo: MongoComponent, appConfig: Ap
   indexes        = IncomeTaxUserDataIndexes.indexes(appConfig)
 ){
 
+  private def filter(sessionId: String, mtdItId: String, nino: String, taxYear: Int): Bson = and(
+    equal("sessionId", toBson(sessionId)),
+    equal("mtdItId", toBson(mtdItId)),
+    equal("nino", toBson(nino)),
+    equal("taxYear", toBson(taxYear))
+  )
+
   def update(userData: UserData): Future[Boolean] = {
     collection.findOneAndReplace(
-      filter = and(
-        equal("sessionId", toBson(userData.sessionId)),
-        equal("mtdItId", toBson(userData.mtdItId)),
-        equal("nino", toBson(userData.nino)),
-        equal("taxYear", toBson(userData.taxYear))
-      ),
+      filter = filter(userData.sessionId,userData.mtdItId,userData.nino,userData.taxYear),
       replacement = userData,
-      options = FindOneAndReplaceOptions().upsert(true).returnDocument(ReturnDocument.AFTER))
-      .toFutureOption().map(_.isDefined)
+      options = FindOneAndReplaceOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
+    ).toFutureOption().map(_.isDefined)
+  }
+
+  def find[T](user: User[T], taxYear: Int): Future[Option[UserData]] = {
+    collection.findOneAndUpdate(
+      filter = filter(user.sessionId,user.mtditid,user.nino,taxYear),
+      update = set("lastUpdated", toBson(LocalDateTime.now())(MongoJodaFormats.localDateTimeWrites)),
+      options = FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
+    ).toFutureOption()
   }
 }
 
-object IncomeTaxUserDataIndexes {
+private object IncomeTaxUserDataIndexes {
 
   private val lookUpIndex: Bson = compoundIndex(
     ascending("sessionId"),
