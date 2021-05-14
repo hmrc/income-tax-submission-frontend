@@ -16,11 +16,11 @@
 
 package models.mongo
 
-import java.time.LocalDateTime
-
-import models.{DividendsModel, GiftAidModel, InterestModel}
 import models.employment.AllEmploymentData
-import play.api.libs.json.{Json, OFormat}
+import models.{DividendsModel, GiftAidModel, InterestModel}
+import org.joda.time.LocalDateTime
+import play.api.libs.json.{OFormat, OWrites, Reads, __}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
 
 case class UserData(sessionId: String,
                     mtdItId: String,
@@ -33,5 +33,38 @@ case class UserData(sessionId: String,
                     lastUpdated: LocalDateTime = LocalDateTime.now)
 
 object UserData {
-  implicit val formats: OFormat[UserData] = Json.format[UserData]
+
+  implicit lazy val formats: OFormat[UserData]  = OFormat(reads, writes)
+
+  implicit lazy val reads: Reads[UserData] = {
+
+    import play.api.libs.functional.syntax._
+    (
+      (__ \ "sessionId").read[String] and
+        (__ \ "mtdItId").read[String] and
+        (__ \ "nino").read[String] and
+        (__ \ "taxYear").read[Int] and
+        (__ \ "dividends").readNullable[DividendsModel] and
+        (__ \ "interest").readNullable[Seq[InterestModel]] and
+        (__ \ "giftAid").readNullable[GiftAidModel] and
+        (__ \ "employment").readNullable[AllEmploymentData] and
+          (__ \ "lastUpdated").read(MongoJodaFormats.localDateTimeReads)
+      ) (UserData.apply _)
+  }
+
+  implicit lazy val writes: OWrites[UserData] = {
+
+    import play.api.libs.functional.syntax._
+    (
+      (__ \ "sessionId").write[String] and
+        (__ \ "mtdItId").write[String] and
+        (__ \ "nino").write[String] and
+        (__ \ "taxYear").write[Int] and
+        (__ \ "dividends").writeNullable[DividendsModel] and
+        (__ \ "interest").writeNullable[Seq[InterestModel]] and
+        (__ \ "giftAid").writeNullable[GiftAidModel] and
+        (__ \ "employment").writeNullable[AllEmploymentData] and
+        (__ \ "lastUpdated").write(MongoJodaFormats.localDateTimeWrites)
+      ) (unlift(UserData.unapply))
+  }
 }

@@ -18,6 +18,7 @@ package repositories
 
 import java.util.concurrent.TimeUnit
 
+import com.mongodb.client.model.ReturnDocument
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.mongo.UserData
@@ -41,7 +42,6 @@ class IncomeTaxUserDataRepository @Inject()(mongo: MongoComponent, appConfig: Ap
 ){
 
   def update(userData: UserData): Future[Boolean] = {
-
     collection.findOneAndReplace(
       filter = and(
         equal("sessionId", toBson(userData.sessionId)),
@@ -50,7 +50,7 @@ class IncomeTaxUserDataRepository @Inject()(mongo: MongoComponent, appConfig: Ap
         equal("taxYear", toBson(userData.taxYear))
       ),
       replacement = userData,
-      options = FindOneAndReplaceOptions().upsert(true))
+      options = FindOneAndReplaceOptions().upsert(true).returnDocument(ReturnDocument.AFTER))
       .toFutureOption().map(_.isDefined)
   }
 }
