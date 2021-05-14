@@ -81,7 +81,7 @@ private object IncomeTaxUserDataIndexes {
   def indexes(appConfig: AppConfig): Seq[IndexModel] = {
     Seq(
       IndexModel(lookUpIndex, IndexOptions().unique(true)),
-      IndexModel(ascending("lastUpdated"), IndexOptions().expireAfter(appConfig.mongoTTL, TimeUnit.MINUTES))
+      IndexModel(ascending("lastUpdated"), IndexOptions().expireAfter(appConfig.mongoTTL, TimeUnit.SECONDS))
     )
   }
 
