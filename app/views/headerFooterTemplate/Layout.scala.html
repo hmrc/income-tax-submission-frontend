@@ -54,7 +54,8 @@
     </div>
 }
 
-@scripts = {
+@footerBlock = {
+    @hmrcStandardFooter()
 
     <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
     <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
@@ -66,7 +67,7 @@
     pageTitle = Some(pageTitle + " - " + messages("service.name") + " - " + messages("common.govUk")),
     headBlock = Some(head(headBlock, timeout)),
     headerBlock = Some(headerBlock),
-    scriptsBlock = Some(scripts),
+    scriptsBlock = None,
     beforeContentBlock = Some(beforeBodyContent(taxYear, isAgent, isOverviewPage)),
-    footerBlock = Some(hmrcStandardFooter())
+    footerBlock = Some(footerBlock)
 )(content)
