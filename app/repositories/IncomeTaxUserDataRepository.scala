@@ -24,7 +24,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.User
 import models.mongo.UserData
-import org.joda.time.LocalDateTime
+import org.joda.time.{DateTime, DateTimeZone, LocalDateTime}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.Indexes.{ascending, compoundIndex}
@@ -63,7 +63,7 @@ class IncomeTaxUserDataRepositoryImpl @Inject()(mongo: MongoComponent, appConfig
   def find[T](user: User[T], taxYear: Int): Future[Option[UserData]] = {
     collection.findOneAndUpdate(
       filter = filter(user.sessionId,user.mtditid,user.nino,taxYear),
-      update = set("lastUpdated", toBson(LocalDateTime.now())(MongoJodaFormats.localDateTimeWrites)),
+      update = set("lastUpdated", toBson(DateTime.now(DateTimeZone.UTC))(MongoJodaFormats.dateTimeWrites)),
       options = FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
     ).toFutureOption()
   }
