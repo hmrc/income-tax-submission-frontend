@@ -62,12 +62,10 @@ class OverviewPageController @Inject()(
           }
         }
 
-        incomeTaxUserDataService.saveUserData(
-          user,
-          taxYear,
-          resultWithSessionData,
-          Some(incomeSources)
-        )
+        incomeTaxUserDataService.saveUserData(user, taxYear, Some(incomeSources)).map {
+          case Right(_) => resultWithSessionData
+          case Left(result) => result
+        }
 
       case Left(error) => Future(errorHandler.handleError(error.status))
     }

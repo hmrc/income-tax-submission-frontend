@@ -21,27 +21,6 @@ import utils.UnitTest
 
 class GiftAidModelSpec extends UnitTest {
 
-  val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
-    nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
-    currentYear = Some(1234.56),
-    oneOffCurrentYear = Some(1234.56),
-    currentYearTreatedAsPreviousYear = Some(1234.56),
-    nextYearTreatedAsCurrentYear = Some(1234.56),
-    nonUkCharities = Some(1234.56),
-  ))
-
-  val giftsModel: Option[GiftsModel] = Some(GiftsModel(
-    investmentsNonUkCharitiesCharityNames = Some(List("charity 1", "charity 2")),
-    landAndBuildings = Some(10.21),
-    sharesOrSecurities = Some(10.21),
-    investmentsNonUkCharities = Some(1234.56)
-  ))
-
-  val giftAidModel: GiftAidModel = GiftAidModel(
-    giftAidPaymentsModel,
-    giftsModel
-  )
-
   val validJsonModel: JsObject = Json.obj(
     "giftAidPayments" -> Json.obj(
       "nonUkCharitiesCharityNames" -> Json.arr(

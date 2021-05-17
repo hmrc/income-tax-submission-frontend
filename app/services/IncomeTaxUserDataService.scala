@@ -38,17 +38,16 @@ class IncomeTaxUserDataService @Inject()(incomeTaxUserDataRepository: IncomeTaxU
 
   def saveUserData[T](user: User[T],
                       taxYear: Int,
-                      result: Result,
                       incomeSourcesModel: Option[IncomeSourcesModel] = None)
-                     (implicit request: Request[_], ec: ExecutionContext): Future[Result] = {
+                     (implicit request: Request[_], ec: ExecutionContext): Future[Either[Result, Boolean]] = {
 
     updateUserData(user.sessionId, user.mtditid, user.nino, taxYear, incomeSourcesModel).map {
       response =>
         if (response) {
-          result
+          Right(true)
         } else {
           logger.error("[IncomeTaxUserDataService][saveUserData] Failed to save user data")
-          InternalServerError(internalServerErrorPage()(request, messagesApi.preferred(request), appConfig))
+          Left(InternalServerError(internalServerErrorPage()(request, messagesApi.preferred(request), appConfig)))
         }
     }
   }

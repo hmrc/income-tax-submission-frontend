@@ -37,13 +37,13 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeTaxUserDataRepository @Inject()(mongo: MongoComponent, appConfig: AppConfig)(implicit ec: ExecutionContext
+class IncomeTaxUserDataRepositoryImpl @Inject()(mongo: MongoComponent, appConfig: AppConfig)(implicit ec: ExecutionContext
 ) extends PlayMongoRepository[UserData](
   mongoComponent = mongo,
   collectionName = "userData",
   domainFormat   = UserData.formats,
   indexes        = IncomeTaxUserDataIndexes.indexes(appConfig)
-){
+) with IncomeTaxUserDataRepository {
 
   private def filter(sessionId: String, mtdItId: String, nino: String, taxYear: Int): Bson = and(
     equal("sessionId", toBson(sessionId)),
@@ -67,6 +67,12 @@ class IncomeTaxUserDataRepository @Inject()(mongo: MongoComponent, appConfig: Ap
       options = FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
     ).toFutureOption()
   }
+}
+
+trait IncomeTaxUserDataRepository {
+
+  def find[T](user: User[T], taxYear: Int): Future[Option[UserData]]
+  def update(userData: UserData): Future[Boolean]
 }
 
 private object IncomeTaxUserDataIndexes {

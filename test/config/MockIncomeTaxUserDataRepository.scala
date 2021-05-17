@@ -16,14 +16,21 @@
 
 package config
 
-import com.google.inject.AbstractModule
-import repositories.{IncomeTaxUserDataRepository, IncomeTaxUserDataRepositoryImpl}
+import models.mongo.UserData
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import repositories.IncomeTaxUserDataRepository
 
-class Modules extends AbstractModule {
+import scala.concurrent.Future
 
-  override def configure(): Unit = {
-    bind(classOf[AppConfig]).asEagerSingleton()
-    bind(classOf[IncomeTaxUserDataRepository]).to(classOf[IncomeTaxUserDataRepositoryImpl]).asEagerSingleton()
+trait MockIncomeTaxUserDataRepository extends MockFactory {
+
+  val mockRepository: IncomeTaxUserDataRepository = mock[IncomeTaxUserDataRepository]
+
+  def mockUpdate(response: Boolean = true): CallHandler1[UserData, Future[Boolean]] = {
+    (mockRepository.update(_: UserData))
+      .expects(*)
+      .returns(Future.successful(response))
+      .anyNumberOfTimes()
   }
-
 }

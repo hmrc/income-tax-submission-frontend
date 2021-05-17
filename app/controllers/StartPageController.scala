@@ -19,8 +19,8 @@ package controllers
 import audit.{AuditService, EnterUpdateAndSubmissionServiceAuditDetail}
 import common.SessionValues
 import config.AppConfig
+import controllers.predicates.AuthorisedAction
 import controllers.predicates.TaxYearAction.taxYearAction
-import controllers.predicates.{AuthorisedAction, TaxYearAction}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -46,12 +46,11 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)).async {
     implicit user =>
 
-      incomeTaxUserDataService.saveUserData(
-        user,
-        taxYear,
-        Ok(startPageView(isAgent = user.isAgent, taxYear))
+      incomeTaxUserDataService.saveUserData(user, taxYear).map {
+        case Right(_) => Ok(startPageView(isAgent = user.isAgent, taxYear))
           .addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
-      )
+        case Left(result) => result
+      }
 
     //          .removingFromSession(
     //            DIVIDENDS_CYA, INTEREST_CYA, GIFT_AID_CYA, EMPLOYMENT_CYA,
