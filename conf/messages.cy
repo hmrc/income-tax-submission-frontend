@@ -37,15 +37,15 @@ overview.task1.heading = Provide updates
 overview.agent.task1.caption = Complete the sections that apply to your client.
 overview.individual.task1.caption = Complete the sections that apply to you.
 
-overview.agent.task2.heading = View Tax calculation to date
+overview.task2.heading = View Tax calculation to date
 overview.agent.task2.caption.noUpdate = Provide at least one update before you can view your client’s estimate.
 overview.agent.task2.caption.update = View estimation
 overview.agent.task3.heading = Submit return
 overview.agent.task3.caption = You will be able to submit your client’s return from 6 April {0} after providing your client’s updates.
 
-overview.individual.task2.heading = View Tax calculation to date
+overview.task2.heading = View Tax calculation to date
 overview.individual.task2.caption.noUpdate = Provide at least one update before you can view your estimate.
-overview.individual.task2.caption.update = View estimation
+overview.task2.caption.update = View estimation
 overview.individual.task3.heading = Submit return
 overview.individual.task3.caption = You will be able to submit your return from 6 April {0} after providing your updates.
 
@@ -91,7 +91,7 @@ error.agent.paragraph2 = authorise you as their agent (opens in new tab)
 error.agent.paragraph3 = before you can sign in to this service.
 error.agent.paragraph4 = Try another client’s details.
 
-youNeedAgentServices.title = You cannot view this page
+youNeedServices.title = You cannot view this page
 youNeedAgentServices.heading = You cannot view this page
 youNeedAgentServices.p1 = You need to
 youNeedAgentServices.p2 = create an agent services account
@@ -107,7 +107,6 @@ ivFailurePage.li1 = you took too long to enter information and the service has t
 ivFailurePage.li2 = you have failed to answer enough questions correctly
 ivFailurePage.li3 = we could not match your details to our system
 
-error.individual-unauthorised.title = You cannot view this page
 error.individual-unauthorised.1 = You need to
 error.individual-unauthorised.2 = sign up for Making Tax Digital for Income Tax
 error.individual-unauthorised.3 = before you can view this page.

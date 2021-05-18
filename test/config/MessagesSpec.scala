@@ -34,17 +34,31 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
     "global.error.InternalServerError500.heading",
     "global.error.InternalServerError500.message"
   )
-
+  val defaults = allLanguages("default")
+  val welsh = allLanguages("cy")
   "the messages file must have welsh translations" should {
     "check all keys in the default file other than those in the exclusion list has a corresponding translation" in {
-      val defaults = allLanguages("default")
-      val welsh = allLanguages("cy")
 
       defaults.keys.foreach(
         key =>
           if (!exclusionKeys.contains(key))
             {welsh.keys should contain(key)}
       )
+    }
+  }
+
+  "the default file" should {
+    "have no duplicate messages(values)" in {
+
+      val msgKeys = defaults.keys
+        .filter( keys => !exclusionKeys.contains(keys))
+        .toSet
+      val msgVals = defaults.filterKeys(msgKeys)
+        .values
+        .toList
+
+      println(msgVals.diff(msgVals.distinct))
+
     }
   }
 }

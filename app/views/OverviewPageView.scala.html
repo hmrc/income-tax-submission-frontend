@@ -121,15 +121,15 @@
 }
 
 @overview = {
-            @heading(messages(s"overview.heading.isAgent.$isAgent"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
+            @heading(messages(s"overview.title.isAgent.$isAgent"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
             <ol class="app-task-list">
                 @if(isAgent) {
                     @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                    @taskWithActionOrCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                    @taskWithActionOrCaption(messages("overview.task2.heading"), messages("overview.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
                     @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
                 } else {
                     @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                @taskWithActionOrCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                @taskWithActionOrCaption(messages("overview.task2.heading"), messages("overview.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
                     @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
                 }
             </ol>
