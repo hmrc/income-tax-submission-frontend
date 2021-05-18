@@ -28,7 +28,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits}
 import uk.gov.hmrc.mongo.play.json.Codecs.toBson
 
-class IncomeTaxUserDataRepositoryISpec extends IntegrationTest with FutureAwaits with DefaultAwaitTimeout with BeforeAndAfterEach {
+class IncomeTaxUserDataRepositoryISpec extends IntegrationTest with FutureAwaits with DefaultAwaitTimeout {
 
   val repo: IncomeTaxUserDataRepositoryImpl = app.injector.instanceOf[IncomeTaxUserDataRepositoryImpl]
 
@@ -110,7 +110,7 @@ class IncomeTaxUserDataRepositoryISpec extends IntegrationTest with FutureAwaits
         case e: Exception => Left(e)
       }
       result.isLeft mustBe true
-      result.left.get.getMessage must include("E11000 duplicate key error collection: income-tax-submission-frontend.userData index: sessionId_1_mtdItId_1_nino_1_taxYear_1 dup key:")
+      result.left.get.getMessage must include("E11000 duplicate key error collection: income-tax-submission-frontend.userData index: UserDataLookupIndex dup key:")
     }
   }
 }
