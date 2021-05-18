@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package models.employment;
+package models.employment
 
-import models.employment.Benefits
 import play.api.libs.json.{Json, OFormat}
 
 case class EmploymentBenefits(submittedOn: String,

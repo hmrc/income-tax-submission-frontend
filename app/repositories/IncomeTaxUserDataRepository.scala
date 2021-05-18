@@ -24,7 +24,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.User
 import models.mongo.UserData
-import org.joda.time.{DateTime, DateTimeZone, LocalDateTime}
+import org.joda.time.{DateTime, DateTimeZone}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.Indexes.{ascending, compoundIndex}

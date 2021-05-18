@@ -16,7 +16,6 @@
 
 package models.employment
 
-import models.employment.Expenses
 import play.api.libs.json.{Json, OFormat}
 
 case class EmploymentExpenses(submittedOn: Option[String],
