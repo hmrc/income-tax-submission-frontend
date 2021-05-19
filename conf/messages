@@ -33,10 +33,8 @@ overview.task1.heading = Provide updates
 overview.agent.task1.caption = Complete the sections that apply to your client.
 overview.individual.task1.caption = Complete the sections that apply to you.
 
-overview.task2.heading = View Tax calculation to date
 overview.agent.task2.caption.noUpdate = Provide at least one update before you can view your client’s estimate.
 overview.task2.caption.update = View estimation
-overview.task3.heading = Submit return
 overview.agent.task3.caption = You will be able to submit your client’s return from 6 April {0} after providing your client’s updates.
 
 overview.task2.heading = View Tax calculation to date
