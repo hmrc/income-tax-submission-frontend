@@ -32,7 +32,11 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
     "global.error.pageNotFound404.message",
     "global.error.InternalServerError500.title",
     "global.error.InternalServerError500.heading",
-    "global.error.InternalServerError500.message"
+    "global.error.InternalServerError500.message",
+    "betaBar.banner.message.1",
+    "betaBar.banner.message.2",
+    "betaBar.banner.message.3"
+
   )
   val defaults = allLanguages("default")
   val welsh = allLanguages("cy")
@@ -49,16 +53,13 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
 
   "the default file" should {
     "have no duplicate messages(values)" in {
+      checkMessagesAreUnique(defaults, exclusionKeys)
+    }
+  }
 
-      val msgKeys = defaults.keys
-        .filter( keys => !exclusionKeys.contains(keys))
-        .toSet
-      val msgVals = defaults.filterKeys(msgKeys)
-        .values
-        .toList
-
-      println(msgVals.diff(msgVals.distinct))
-
+  "the welsh file" should {
+    "have no duplicate messages(values)" in {
+      checkMessagesAreUnique(welsh, exclusionKeys)
     }
   }
 }

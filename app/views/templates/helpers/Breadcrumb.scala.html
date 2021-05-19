@@ -27,12 +27,12 @@
             href = Some(vcAgent)
         )),
         Some(BreadcrumbsItem(
-            content = Text(messages("breadcrumb.updateSubmitIncomeTaxReturn")),
+            content = Text(messages("service.name")),
             href = if(isOverviewPage) Some(controllers.routes.StartPageController.show(breadcrumbTaxYear).url) else None
         )),
         if(isOverviewPage){
             Some(BreadcrumbsItem(
-                content = Text(messages("breadcrumb.yourIncomeTaxReturn"))
+                content = Text(messages("common.yourIncomeTaxReturn.individual"))
             ))
         } else {
             None
