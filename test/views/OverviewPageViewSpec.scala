@@ -16,16 +16,15 @@
 
 package views
 
-import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
-import models.{DividendsModel, IncomeSourcesModel, InterestModel}
+import models.IncomeSourcesModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.twirl.api.Html
-import views.html.OverviewPageView
 import utils.ViewTest
+import views.html.OverviewPageView
 
 class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest {
 

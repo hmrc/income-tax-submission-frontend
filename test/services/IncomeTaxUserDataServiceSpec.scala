@@ -18,7 +18,6 @@ package services
 
 import config.MockIncomeTaxUserDataRepository
 import models.{IncomeSourcesModel, User}
-import models.mongo.UserData
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results.InternalServerError
 import utils.UnitTest

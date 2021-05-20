@@ -22,15 +22,14 @@ import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
 import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
-import models.{DividendsModel, IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel, User}
-import org.eclipse.jetty.http.HttpParser.ResponseHandler
-import org.scalamock.handlers.{CallHandler2, CallHandler4, CallHandler5, CallHandler6}
+import models._
+import org.scalamock.handlers.{CallHandler2, CallHandler4, CallHandler5}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.{HttpEntity, Status}
+import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import play.api.mvc.{Request, ResponseHeader, Result}
+import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}

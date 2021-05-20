@@ -22,7 +22,6 @@ import models.mongo.UserData
 import org.joda.time.DateTime
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.result.InsertOneResult
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits}
