@@ -63,6 +63,7 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
 
   val defaults = allLanguages("default")
   val welsh = allLanguages("cy")
+
   "the messages file must have welsh translations" should {
     "check all keys in the default file other than those in the exclusion list has a corresponding translation" in {
 
@@ -82,10 +83,11 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
         line.split("=").head
       }
 
-      val filteredKeys = defaults.keys
-        .filter( keys => !exclusionKeys.contains(keys))
+      val listOfMessages = keys.toList.filter(str => str.trim.nonEmpty)
+      val uniqueListOfMessages = listOfMessages.distinct
 
-      keys.toList.filter(str => str.trim.nonEmpty).length shouldBe filteredKeys.size + betaMessagesInBothHMRCLibraryAndMessages
+      listOfMessages.diff(uniqueListOfMessages) shouldBe List.empty
+
       bufferedSource.close
     }
   }
