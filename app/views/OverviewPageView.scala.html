@@ -121,20 +121,20 @@
 }
 
 @overview = {
-            @heading(messages(s"overview.heading.isAgent.$isAgent"), messages("overview.caption", (taxYear - 1).toString, taxYear.toString))
+            @heading(messages(s"common.yourIncomeTaxReturn.${if(isAgent) "agent" else "individual"}"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
             <ol class="app-task-list">
                 @if(isAgent) {
                     @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                    @taskWithActionOrCaption(messages("overview.agent.task2.heading"), messages("overview.agent.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                    @taskWithCaption(messages("overview.agent.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
+                    @taskWithActionOrCaption(messages("overview.task2.heading"), messages("overview.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                    @taskWithCaption(messages("overview.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
                 } else {
                     @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                @taskWithActionOrCaption(messages("overview.individual.task2.heading"), messages("overview.individual.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                    @taskWithCaption(messages("overview.individual.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
+                @taskWithActionOrCaption(messages("overview.task2.heading"), messages("overview.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                    @taskWithCaption(messages("overview.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
                 }
             </ol>
 }
-@layout(pageTitle = messages(s"overview.title.isAgent.$isAgent"), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(overview)
+@layout(pageTitle = messages(s"common.yourIncomeTaxReturn.${if(isAgent) "agent" else "individual"}"), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(overview)
 
 @{
 // $COVERAGE-OFF$

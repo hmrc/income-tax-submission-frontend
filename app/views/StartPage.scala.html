@@ -23,7 +23,7 @@
 @(isAgent: Boolean, taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainHTML = {
-        @heading(messages("startPage.heading"), messages("startPage.taxYear", (taxYear -1).toString, taxYear.toString))
+        @heading(messages("service.name"), messages("common.caption", (taxYear -1).toString, taxYear.toString))
 
         <div class="govuk-body">
             <p>@messages("startPage1")</p>
@@ -49,7 +49,7 @@
     }
 
 }
-@layout(pageTitle = messages("startPage.title"), taxYear = Some(taxYear), isAgent = isAgent)(mainHTML)
+@layout(pageTitle = messages("service.name"), taxYear = Some(taxYear), isAgent = isAgent)(mainHTML)
 
 @{
 // $COVERAGE-OFF$
