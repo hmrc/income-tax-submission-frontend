@@ -20,9 +20,12 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
 import utils.ViewTest
 
+import scala.io.Source
+
 class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
 
   lazy val allLanguages: Map[String, Map[String, String]] = app.injector.instanceOf[MessagesApi].messages
+
   val exclusionKeys = Set(
     "global.error.badRequest400.title",
     "global.error.badRequest400.heading",
@@ -35,9 +38,29 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
     "global.error.InternalServerError500.message",
     "betaBar.banner.message.1",
     "betaBar.banner.message.2",
-    "betaBar.banner.message.3"
-
+    "betaBar.banner.message.3",
+    "footer.welshHelp.text",
+    "footer.accessibility.text",
+    "footer.contact.url",
+    "footer.welshHelp.url",
+    "footer.govukHelp.url",
+    "footer.privacy.url",
+    "footer.termsConditions.url",
+    "footer.govukHelp.text",
+    "phase.banner.before",
+    "phase.banner.after",
+    "footer.cookies.text",
+    "footer.privacy.text",
+    "footer.termsConditions.text",
+    "phase.banner.link",
+    "footer.contact.text",
+    "header.govuk.url",
+    "footer.cookies.url"
   )
+
+  val betaMessagesInBothHMRCLibraryAndMessages = 3
+
+
   val defaults = allLanguages("default")
   val welsh = allLanguages("cy")
   "the messages file must have welsh translations" should {
@@ -45,20 +68,36 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
 
       defaults.keys.foreach(
         key =>
-          if (!exclusionKeys.contains(key))
-            {welsh.keys should contain(key)}
+          if (!exclusionKeys.contains(key)) {
+            welsh.keys should contain(key)
+          }
       )
     }
   }
 
+  "the files" should {
+    "have no duplicate keys" in {
+      val bufferedSource = Source.fromFile("conf/messages")
+      val keys = for (line <- bufferedSource.getLines()) yield {
+        line.split("=").head
+      }
+
+      val filteredKeys = defaults.keys
+        .filter( keys => !exclusionKeys.contains(keys))
+
+      keys.toList.filter(str => str.trim.nonEmpty).length shouldBe filteredKeys.size + betaMessagesInBothHMRCLibraryAndMessages
+      bufferedSource.close
+    }
+  }
+
   "the default file" should {
-    "have no duplicate messages(values)" in {
+    "have no duplicate messages(values) if all keys are unique" in {
       checkMessagesAreUnique(defaults, exclusionKeys)
     }
   }
 
   "the welsh file" should {
-    "have no duplicate messages(values)" in {
+    "have no duplicate messages(values) if all keys are unique" in {
       checkMessagesAreUnique(welsh, exclusionKeys)
     }
   }
