@@ -18,12 +18,12 @@ package views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import views.html.StartPage
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.twirl.api.Html
 import utils.ViewTest
+import views.html.StartPage
 
 
 class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with ViewTest{

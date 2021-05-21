@@ -17,8 +17,8 @@
 package connectors
 
 import itUtils.IntegrationTest
-import models.employment.{AllEmploymentData, Benefits, EmploymentBenefits, EmploymentData, EmploymentExpenses, EmploymentSource, Expenses, Pay}
-import models.{APIErrorBodyModel, APIErrorModel, APIErrorsBodyModel, DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, IncomeSourcesModel, InterestModel}
+import models.employment._
+import models._
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
 
@@ -32,21 +32,6 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
   val mtditid: String = "968501689"
   val dividendResult: Option[DividendsModel] = Some(DividendsModel(Some(500), Some(600)))
   val interestResult: Option[Seq[InterestModel]] = Some(Seq(InterestModel("account", "1234567890", Some(500), Some(500))))
-  val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
-    nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
-    currentYear = Some(1234.56),
-    oneOffCurrentYear = Some(1234.56),
-    currentYearTreatedAsPreviousYear = Some(1234.56),
-    nextYearTreatedAsCurrentYear = Some(1234.56),
-    nonUkCharities = Some(1234.56),
-  ))
-
-  val giftsModel: Option[GiftsModel] = Some(GiftsModel(
-    investmentsNonUkCharitiesCharityNames = Some(List("charity 1", "charity 2")),
-    landAndBuildings = Some(10.21),
-    sharesOrSecurities = Some(10.21),
-    investmentsNonUkCharities = Some(1234.56)
-  ))
 
   val giftAidResult: Option[GiftAidModel] = Some(GiftAidModel(
     giftAidPaymentsModel,

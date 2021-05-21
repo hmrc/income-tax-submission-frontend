@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package filters
 
-import com.google.inject.AbstractModule
-import repositories.{IncomeTaxUserDataRepository, IncomeTaxUserDataRepositoryImpl}
+import com.google.inject.Inject
+import play.api.http.DefaultHttpFilters
+import uk.gov.hmrc.play.bootstrap.frontend.filters.FrontendFilters
 
-class Modules extends AbstractModule {
-
-  override def configure(): Unit = {
-    bind(classOf[AppConfig]).asEagerSingleton()
-    bind(classOf[IncomeTaxUserDataRepository]).to(classOf[IncomeTaxUserDataRepositoryImpl]).asEagerSingleton()
-  }
-
-}
+class Filters @Inject()(sessionIdFilter: SessionIdFilter,
+                        frontendFilters: FrontendFilters)
+  extends DefaultHttpFilters(frontendFilters.filters :+ sessionIdFilter: _*)

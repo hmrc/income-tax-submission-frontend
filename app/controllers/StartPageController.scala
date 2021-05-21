@@ -16,44 +16,41 @@
 
 package controllers
 
+import audit.{AuditService, EnterUpdateAndSubmissionServiceAuditDetail}
+import common.SessionValues
 import config.AppConfig
-import controllers.predicates.{AuthorisedAction, TaxYearAction}
+import controllers.predicates.AuthorisedAction
+import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.{AuthService, IncomeTaxUserDataService}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.StartPage
-import TaxYearAction.taxYearAction
-import audit.{AuditService, EnterUpdateAndSubmissionServiceAuditDetail}
-import common.SessionValues
-import common.SessionValues.{DIVIDENDS_CYA, DIVIDENDS_PRIOR_SUB, EMPLOYMENT_CYA, EMPLOYMENT_PRIOR_SUB,
-  GIFT_AID_CYA, GIFT_AID_PRIOR_SUB, INTEREST_CYA, INTEREST_PRIOR_SUB}
-import services.AuthService
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class StartPageController @Inject()(
-                                     val authorisedAction: AuthorisedAction,
-                                     authService: AuthService,
-                                     val startPageView: StartPage,
-                                     auditService: AuditService,
-                                     implicit val appConfig: AppConfig,
-                                     implicit val mcc: MessagesControllerComponents,
-                                     implicit val ec: ExecutionContext
+class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
+                                    authService: AuthService,
+                                    val startPageView: StartPage,
+                                    auditService: AuditService,
+                                    incomeTaxUserDataService: IncomeTaxUserDataService,
+                                    implicit val appConfig: AppConfig,
+                                    implicit val mcc: MessagesControllerComponents,
+                                    implicit val ec: ExecutionContext
                                    ) extends FrontendController(mcc) with I18nSupport {
 
-  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)).async { implicit user =>
-    Future.successful(
-      Ok(startPageView(isAgent = user.isAgent, taxYear))
-        .addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
-        .removingFromSession(
-          DIVIDENDS_CYA, INTEREST_CYA, GIFT_AID_CYA, EMPLOYMENT_CYA,
-          DIVIDENDS_PRIOR_SUB, INTEREST_PRIOR_SUB, GIFT_AID_PRIOR_SUB, EMPLOYMENT_PRIOR_SUB
-        ) //TODO Remove when year selection is available
-    )
+  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)).async {
+    implicit user =>
+
+      incomeTaxUserDataService.saveUserData(user, taxYear).map {
+        case Right(_) => Ok(startPageView(isAgent = user.isAgent, taxYear))
+          .addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
+        case Left(result) => result
+      }
   }
 
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>

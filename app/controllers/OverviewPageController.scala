@@ -24,11 +24,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc._
-import services.{CalculationIdService, IncomeSourcesService}
+import services.{CalculationIdService, IncomeSourcesService, IncomeTaxUserDataService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverviewPageController @Inject()(
@@ -39,29 +39,35 @@ class OverviewPageController @Inject()(
                                         calculationIdService: CalculationIdService,
                                         overviewPageView: OverviewPageView,
                                         authorisedAction: AuthorisedAction,
+                                        incomeTaxUserDataService: IncomeTaxUserDataService,
                                         errorHandler: ErrorHandler) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: AppConfig = appConfig
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-    incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
+    incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
       case Right(incomeSources) =>
+
         val result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
 
         val sessionValues = Seq(
           DIVIDENDS_PRIOR_SUB -> incomeSources.dividends.map(d => Json.toJson(d)),
           INTEREST_PRIOR_SUB -> incomeSources.interest.map(i => Json.toJson(i)),
-          GIFT_AID_PRIOR_SUB -> incomeSources.giftAid.map(g => Json.toJson(g)),
-          EMPLOYMENT_PRIOR_SUB -> incomeSources.employment.map(e => Json.toJson(e))
+          GIFT_AID_PRIOR_SUB -> incomeSources.giftAid.map(g => Json.toJson(g))
         )
 
-        sessionValues.foldRight(result) { (newSessionData, runningResult) =>
+        val resultWithSessionData = sessionValues.foldRight(result) { (newSessionData, runningResult) =>
           newSessionData._2.fold(runningResult){ jsValue =>
             runningResult.addingToSession(newSessionData._1 -> jsValue.toString())
           }
         }
 
-      case Left(error) => errorHandler.handleError(error.status)
+        incomeTaxUserDataService.saveUserData(user, taxYear, Some(incomeSources)).map {
+          case Right(_) => resultWithSessionData
+          case Left(result) => result
+        }
+
+      case Left(error) => Future(errorHandler.handleError(error.status))
     }
   }
 
