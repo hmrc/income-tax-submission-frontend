@@ -22,7 +22,7 @@ import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER}
-import services.{AuthService, IncomeTaxUserDataService}
+import services.AuthService
 import views.html.StartPage
 
 class StartPageControllerTest extends IntegrationTest {
@@ -36,7 +36,6 @@ class StartPageControllerTest extends IntegrationTest {
     app.injector.instanceOf[AuthService],
     app.injector.instanceOf[StartPage],
     app.injector.instanceOf[AuditService],
-    app.injector.instanceOf[IncomeTaxUserDataService],
     frontendAppConfig,
     mcc,
     scala.concurrent.ExecutionContext.Implicits.global

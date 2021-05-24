@@ -19,15 +19,11 @@ package controllers
 import audit.EnterUpdateAndSubmissionServiceAuditDetail
 import common.SessionValues
 import config.{AppConfig, MockAuditService}
-import models.{IncomeSourcesModel, User}
-import org.scalamock.handlers.CallHandler5
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
-import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import services.IncomeTaxUserDataService
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
@@ -49,19 +45,10 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
   private val mockFrontendAppConfig = new AppConfig(serviceConfig)
   private val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
-  private val mockIncomeTaxUserDataService = mock[IncomeTaxUserDataService]
-
-  def mockSaveData: CallHandler5[User[_], Int, Option[IncomeSourcesModel], Request[_], ExecutionContext, Future[Either[Result, Boolean]]] ={
-    (mockIncomeTaxUserDataService.saveUserData(_: User[_], _: Int, _: Option[IncomeSourcesModel])(_: Request[_], _: ExecutionContext))
-      .expects(*, *, *, *, *)
-      .returning(Future.successful(Right(true)))
-  }
-
   private val controller = new StartPageController(authorisedAction,
     mockAuthService,
     startPageView,
     mockAuditService,
-    mockIncomeTaxUserDataService,
     mockFrontendAppConfig,
     stubMessagesControllerComponents(),
     mockExecutionContext
@@ -78,7 +65,6 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
 
         val result = {
           mockAuth(nino)
-          mockSaveData
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -87,7 +73,6 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
       "return HTML" in {
         val result = {
           mockAuth(nino)
-          mockSaveData
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
@@ -104,7 +89,6 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
 
         val result = {
           mockAuthAsAgent()
-          mockSaveData
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -113,7 +97,6 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
       "return HTML" in {
         val result = {
           mockAuthAsAgent()
-          mockSaveData
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")

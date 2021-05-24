@@ -24,11 +24,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc._
-import services.{CalculationIdService, IncomeSourcesService, IncomeTaxUserDataService}
+import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class OverviewPageController @Inject()(
@@ -39,13 +39,12 @@ class OverviewPageController @Inject()(
                                         calculationIdService: CalculationIdService,
                                         overviewPageView: OverviewPageView,
                                         authorisedAction: AuthorisedAction,
-                                        incomeTaxUserDataService: IncomeTaxUserDataService,
                                         errorHandler: ErrorHandler) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: AppConfig = appConfig
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-    incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
+    incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
       case Right(incomeSources) =>
 
         val result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
@@ -62,12 +61,9 @@ class OverviewPageController @Inject()(
           }
         }
 
-        incomeTaxUserDataService.saveUserData(user, taxYear, Some(incomeSources)).map {
-          case Right(_) => resultWithSessionData
-          case Left(result) => result
-        }
+        resultWithSessionData
 
-      case Left(error) => Future(errorHandler.handleError(error.status))
+      case Left(error) => errorHandler.handleError(error.status)
     }
   }
 
@@ -77,8 +73,6 @@ class OverviewPageController @Inject()(
         Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
       case Left(error) => errorHandler.handleError(error.status)
     }
-
   }
-
 
 }

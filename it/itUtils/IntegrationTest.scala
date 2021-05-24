@@ -107,11 +107,11 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneServerPerSu
     ConfidenceLevel.L500
   )
 
-  def authService(stubbedRetrieval: Future[_]) = new AuthService(
+  def authService(stubbedRetrieval: Future[_]): AuthService = new AuthService(
     new MockAuthConnector(stubbedRetrieval)
   )
 
-  def authAction(stubbedRetrieval: Future[_]) = new AuthorisedAction(
+  def authAction(stubbedRetrieval: Future[_]): AuthorisedAction = new AuthorisedAction(
     appConfig,
     agentAuthErrorPage
   )(
