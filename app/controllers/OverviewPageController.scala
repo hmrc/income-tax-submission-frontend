@@ -28,7 +28,7 @@ import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverviewPageController @Inject()(

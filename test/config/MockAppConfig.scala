@@ -70,5 +70,4 @@ class MockAppConfig extends MockFactory {
 
     override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
   }
-
 }

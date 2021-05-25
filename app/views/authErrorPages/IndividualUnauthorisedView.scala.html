@@ -20,10 +20,10 @@
 @this(layout: Layout, heading: Heading)
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(messages("error.individual-unauthorised.title")) {
-    @heading(messages("error.individual-unauthorised.title"), "")
+@layout(messages("youNeedServices.title")) {
+    @heading(messages("youNeedServices.title"), "")
     <p class="govuk-body">
-     @messages("error.individual-unauthorised.1") <a class="govuk-link" href="https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax">@messages("error.individual-unauthorised.2")</a> @messages("error.individual-unauthorised.3")
+     @messages("youNeedTo.p1") <a class="govuk-link" href="https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax">@messages("error.individual-unauthorised.2")</a> @messages("error-unauthorised.p3")
     </p>
 }
 

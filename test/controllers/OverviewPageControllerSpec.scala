@@ -147,6 +147,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesValid()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -156,6 +157,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesValid()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
@@ -166,6 +168,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesValid()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
@@ -176,6 +179,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesDividends()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
@@ -186,6 +190,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesInterest()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe None
@@ -200,6 +205,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesNone()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -222,6 +228,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesNone()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
@@ -251,6 +258,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesValid()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -260,6 +268,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesValid()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
@@ -273,6 +282,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesNone()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -282,6 +292,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesNone()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")

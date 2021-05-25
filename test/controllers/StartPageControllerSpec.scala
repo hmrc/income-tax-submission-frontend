@@ -89,6 +89,7 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
 
         val result = {
           mockAuthAsAgent()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -97,6 +98,7 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
       "return HTML" in {
         val result = {
           mockAuthAsAgent()
+          
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")

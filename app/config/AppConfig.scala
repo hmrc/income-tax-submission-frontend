@@ -23,6 +23,8 @@ import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.{Inject, Singleton}
 
+import scala.concurrent.duration.Duration
+
 @Singleton
 class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
