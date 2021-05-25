@@ -24,7 +24,7 @@ import itUtils.IntegrationTest
 import play.api.libs.ws.WSClient
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER}
-import services.{CalculationIdService, IncomeSourcesService, IncomeTaxUserDataService}
+import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
@@ -44,7 +44,6 @@ class OverviewPageControllerTest extends IntegrationTest {
     app.injector.instanceOf[CalculationIdService],
     app.injector.instanceOf[OverviewPageView],
     app.injector.instanceOf[AuthorisedAction],
-    app.injector.instanceOf[IncomeTaxUserDataService],
     app.injector.instanceOf[ErrorHandler]
   )
 

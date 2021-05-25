@@ -51,6 +51,7 @@ class SessionIdFilter(override val mat: Materializer,
       }
 
       val headers = Headers(
+        "sessionId" -> sessionId,
         HMRCHeaderNames.xSessionId -> sessionId,
         HeaderNames.COOKIE -> cookies
       )

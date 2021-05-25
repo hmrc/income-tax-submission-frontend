@@ -24,7 +24,7 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{AuthService, IncomeTaxUserDataService}
+import services.AuthService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.StartPage
@@ -37,20 +37,14 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
                                     authService: AuthService,
                                     val startPageView: StartPage,
                                     auditService: AuditService,
-                                    incomeTaxUserDataService: IncomeTaxUserDataService,
                                     implicit val appConfig: AppConfig,
                                     implicit val mcc: MessagesControllerComponents,
                                     implicit val ec: ExecutionContext
                                    ) extends FrontendController(mcc) with I18nSupport {
 
-  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)).async {
+  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
     implicit user =>
-
-      incomeTaxUserDataService.saveUserData(user, taxYear).map {
-        case Right(_) => Ok(startPageView(isAgent = user.isAgent, taxYear))
-          .addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
-        case Left(result) => result
-      }
+      Ok(startPageView(isAgent = user.isAgent, taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
   }
 
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
