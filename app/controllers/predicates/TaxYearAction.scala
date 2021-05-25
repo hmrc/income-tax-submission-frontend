@@ -17,8 +17,7 @@
 package controllers.predicates
 
 import common.SessionValues
-import common.SessionValues.{DIVIDENDS_CYA, DIVIDENDS_PRIOR_SUB, EMPLOYMENT_CYA,
-  EMPLOYMENT_PRIOR_SUB, GIFT_AID_CYA, GIFT_AID_PRIOR_SUB, INTEREST_CYA, INTEREST_PRIOR_SUB, TAX_YEAR}
+import common.SessionValues.{DIVIDENDS_CYA, DIVIDENDS_PRIOR_SUB, GIFT_AID_CYA, GIFT_AID_PRIOR_SUB, INTEREST_CYA, INTEREST_PRIOR_SUB, TAX_YEAR}
 import config.AppConfig
 import controllers.Assets.Redirect
 import models.User
@@ -52,8 +51,8 @@ class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(
             Redirect(controllers.routes.StartPageController.show(taxYear).url)
               .addingToSession(TAX_YEAR -> taxYear.toString)
               .removingFromSession(
-                DIVIDENDS_CYA, INTEREST_CYA, GIFT_AID_CYA, EMPLOYMENT_CYA,
-                DIVIDENDS_PRIOR_SUB, INTEREST_PRIOR_SUB, GIFT_AID_PRIOR_SUB, EMPLOYMENT_PRIOR_SUB
+                DIVIDENDS_CYA, INTEREST_CYA, GIFT_AID_CYA,
+                DIVIDENDS_PRIOR_SUB, INTEREST_PRIOR_SUB, GIFT_AID_PRIOR_SUB
               )
           )
         }
