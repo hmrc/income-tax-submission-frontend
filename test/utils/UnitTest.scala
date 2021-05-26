@@ -39,6 +39,7 @@ import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.authErrorPages.AgentAuthErrorPageView
 
@@ -57,9 +58,14 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
 
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
-  implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val fakeRequestAgent: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
-  implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
+  val sessionId = "sessionId-1618a1e8-4979-41d8-a32e-5ffbe69fac81"
+
+  implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
+  val fallBackSessionIdFakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("sessionId" -> sessionId)
+  val fakeRequestAgent: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+    .withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A").withHeaders("X-Session-ID" -> sessionId)
+  implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+  val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   val mockAppConfig: AppConfig = new MockAppConfig().config
   implicit val mockControllerComponents: ControllerComponents = Helpers.stubControllerComponents()
@@ -78,8 +84,8 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     await(awaited.body.consumeData.map(_.utf8String))
   }
 
-  val fakeRequestAgentNoMtditid: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("ClientNino" -> "AA123456A")
-  val fakeRequestAgentNoNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("ClientMTDID" -> "1234567890")
+  val fakeRequestAgentNoMtditid: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession("ClientNino" -> "AA123456A")
+  val fakeRequestAgentNoNino: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession("ClientMTDID" -> "1234567890")
 
   //noinspection ScalaStyle
   def mockAuth(nino: Option[String]) = {
@@ -144,7 +150,6 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   val error500: APIErrorModel = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("INTERNAL_SERVER_ERROR","Internal server error"))
   val error503: APIErrorModel = APIErrorModel(SERVICE_UNAVAILABLE,APIErrorBodyModel("SERVICE_UNAVAILABLE","Service unavailable"))
 
-  val sessionId = "sessionId-1618a1e8-4979-41d8-a32e-5ffbe69fac81"
 
   lazy val dividendsModel:Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
   lazy val interestsModel:Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))

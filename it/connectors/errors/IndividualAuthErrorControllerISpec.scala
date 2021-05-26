@@ -20,7 +20,6 @@ import config.AppConfig
 import controllers.errors.IndividualAuthErrorController
 import itUtils.IntegrationTest
 import play.api.mvc.{MessagesControllerComponents, Result}
-import play.api.test.FakeRequest
 import play.api.test.Helpers.UNAUTHORIZED
 import views.html.authErrorPages.IndividualUnauthorisedView
 
@@ -36,7 +35,7 @@ class IndividualAuthErrorControllerISpec extends IntegrationTest {
   ".show" should {
 
     "return an Unauthorized status" in {
-      val result: Result = await(controller.show()(FakeRequest()))
+      val result: Result = await(controller.show()(fakeRequest))
       result.header.status shouldBe UNAUTHORIZED
     }
 

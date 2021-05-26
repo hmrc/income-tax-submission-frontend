@@ -20,7 +20,6 @@ import audit.AuditService
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER}
 import services.AuthService
 import views.html.StartPage
@@ -48,7 +47,7 @@ class StartPageControllerTest extends IntegrationTest {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYear)(FakeRequest()))
+          await(controller.show(taxYear)(fakeRequest))
         }
 
         result.header.status shouldBe OK
@@ -61,7 +60,7 @@ class StartPageControllerTest extends IntegrationTest {
       "the confidence level is too low" which {
         lazy val result = {
           unauthorisedIndividualInsufficientConfidenceLevel()
-          await(controller.show(taxYear)(FakeRequest()))
+          await(controller.show(taxYear)(fakeRequest))
         }
 
         "has a status of SEE_OTHER (303)" in {
@@ -80,7 +79,7 @@ class StartPageControllerTest extends IntegrationTest {
       "it contains the wrong credentials" which {
         lazy val result = {
           unauthorisedIndividualWrongCredentials()
-          await(controller.show(taxYear)(FakeRequest()))
+          await(controller.show(taxYear)(fakeRequest))
         }
 
         "has a status of SEE_OTHER (303)" in {

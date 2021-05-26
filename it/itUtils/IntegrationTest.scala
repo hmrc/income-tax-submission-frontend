@@ -27,6 +27,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
+import play.api.test.FakeRequest
 import play.api.{Application, Environment, Mode}
 import services.AuthService
 import uk.gov.hmrc.auth.core.ConfidenceLevel
@@ -97,6 +98,9 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneServerPerSu
     stopWiremock()
     super.afterAll()
   }
+
+  val sessionId: String = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
+  val fakeRequest = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
 
   lazy val agentAuthErrorPage: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
   lazy val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]

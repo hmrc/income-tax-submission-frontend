@@ -68,6 +68,17 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
     }
   }
 
+  def sessionId(implicit request: Request[_], hc: HeaderCarrier): Option[String] = {
+    lazy val key = "sessionId"
+    if (hc.sessionId.isDefined) {
+      hc.sessionId.map(_.value)
+    } else if (request.headers.get(key).isDefined) {
+      request.headers.get(key)
+    } else {
+      None
+    }
+  }
+
   def individualAuthentication[A](block: User[A] => Future[Result])
                                  (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
     authService.authorised.retrieve(allEnrolments and confidenceLevel) {
@@ -76,7 +87,15 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
         val optionalNino: Option[String] = enrolmentGetIdentifierValue(EnrolmentKeys.nino, EnrolmentIdentifiers.ninoId, enrolments)
 
         (optionalMtdItId, optionalNino) match {
-          case (Some(mtdItId), Some(nino)) => block(User(mtdItId, None, nino, hc.sessionId.getOrElse(SessionId(randomUUID.toString)).value))
+          case (Some(mtdItId), Some(nino)) =>
+
+            sessionId.fold {
+              logger.info(s"[AuthorisedAction][individualAuthentication] - No session id in request")
+              Future.successful(Redirect(appConfig.signInUrl))
+            } { sessionId =>
+              block(User(mtdItId, None, nino, sessionId))
+            }
+
           case (_, None) =>
             logger.info(s"[AuthorisedAction][individualAuthentication] - No active session. Redirecting to ${appConfig.signInUrl}")
             Future.successful(Redirect(appConfig.signInUrl))
@@ -111,7 +130,14 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
 
             enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
               case Some(arn) =>
-                block(User(mtdItId, Some(arn), nino, hc.sessionId.getOrElse(SessionId.apply(randomUUID.toString)).value))
+
+                sessionId.fold {
+                  logger.info(s"[AuthorisedAction][agentAuthentication] - No session id in request")
+                  Future(Redirect(appConfig.signInUrl))
+                } { sessionId =>
+                  block(User(mtdItId, Some(arn), nino, sessionId))
+                }
+
               case None =>
                 logger.info("[AuthorisedAction][agentAuthentication] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
                 Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show()))

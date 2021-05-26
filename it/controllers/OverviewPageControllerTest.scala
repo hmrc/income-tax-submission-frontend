@@ -22,7 +22,6 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
 import itUtils.IntegrationTest
 import play.api.libs.ws.WSClient
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{OK, SEE_OTHER}
 import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.http.SessionKeys
@@ -87,7 +86,7 @@ class OverviewPageControllerTest extends IntegrationTest {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYear)(FakeRequest().withSession(SessionValues.TAX_YEAR -> "2022")))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> "2022")))
         }
 
         result.header.status shouldBe OK
@@ -99,7 +98,7 @@ class OverviewPageControllerTest extends IntegrationTest {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYear)(FakeRequest().withSession(SessionValues.TAX_YEAR -> "2022", SessionKeys.sessionId -> "sessionId-0101010101")))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> "2022", SessionKeys.sessionId -> "sessionId-0101010101")))
         }
 
         result.header.status shouldBe OK
@@ -113,7 +112,7 @@ class OverviewPageControllerTest extends IntegrationTest {
         val result = {
           stubIncomeSources
           authoriseIndividual()
-          await(controller.show(taxYear)(FakeRequest().withSession(SessionValues.TAX_YEAR -> "2022")))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> "2022")))
         }
 
         result.header.status shouldBe OK
@@ -127,7 +126,7 @@ class OverviewPageControllerTest extends IntegrationTest {
         val result = {
           stubIncomeSources
           unauthorisedIndividualInsufficientConfidenceLevel()
-          await(controller.show(taxYear)(FakeRequest()))
+          await(controller.show(taxYear)(fakeRequest))
         }
 
         result.header.status shouldBe SEE_OTHER
@@ -141,7 +140,7 @@ class OverviewPageControllerTest extends IntegrationTest {
       "it contains the wrong credentials" which {
         lazy val result = {
           unauthorisedIndividualWrongCredentials()
-          await(controller.show(taxYear)(FakeRequest()))
+          await(controller.show(taxYear)(fakeRequest))
         }
 
         "has a status of SEE_OTHER (303)" in {

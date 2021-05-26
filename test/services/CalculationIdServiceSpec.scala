@@ -36,7 +36,7 @@ class CalculationIdServiceSpec extends UnitTest {
       val expectedResult: CalculationIdResponse = Right(responseBody)
 
       (connector.getCalculationId(_: String, _: Int)(_: HeaderCarrier))
-        .expects("123456789",1999, emptyHeaderCarrier.withExtraHeaders("mtditid"->"987654321"))
+        .expects("123456789",1999, headerCarrierWithSession.withExtraHeaders("mtditid"->"987654321"))
         .returning(Future.successful(expectedResult))
 
       val result = await(service.getCalculationId("123456789", 1999, "987654321"))
