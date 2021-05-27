@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.{HeaderNames, SessionKeys}
 
 class SessionIdFilterSpec extends IntegrationTest with OptionValues  with OneAppPerSuiteWithComponents {
 
-  val sessionId = "28836767-a008-46be-ac18-695ab140e705"
+  override val sessionId = "28836767-a008-46be-ac18-695ab140e705"
 
   class Filters @Inject()(sessionId: SessionIdFilter) extends DefaultHttpFilters(sessionId)
 

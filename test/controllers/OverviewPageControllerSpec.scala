@@ -49,7 +49,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
     SessionValues.CLIENT_MTDITID -> "12234567890",
     SessionValues.CLIENT_NINO -> "AA123456A",
     SessionValues.TAX_YEAR -> "2022"
-  )
+  ).withHeaders("X-Session-ID" -> sessionId)
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 

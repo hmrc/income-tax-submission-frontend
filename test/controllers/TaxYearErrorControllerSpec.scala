@@ -29,7 +29,9 @@ import views.html.errors.WrongTaxYearPage
 
 class TaxYearErrorControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
-  private val fakeGetRequest = FakeRequest("GET", "/").withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
+  private val fakeGetRequest = FakeRequest("GET", "/")
+    .withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A")
+    .withHeaders("X-Session-ID" -> sessionId)
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 

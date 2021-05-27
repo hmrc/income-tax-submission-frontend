@@ -34,7 +34,7 @@ class IncomeSourcesServiceSpec extends UnitTest {
       val expectedResult: IncomeSourcesResponse = Left(error500)
 
       (connector.getIncomeSources(_: String, _: Int)(_: HeaderCarrier))
-        .expects("123456789",1999, emptyHeaderCarrier.withExtraHeaders("mtditid"->"987654321"))
+        .expects("123456789",1999, headerCarrierWithSession.withExtraHeaders("mtditid"->"987654321"))
         .returning(Future.successful(expectedResult))
 
       val result = await(service.getIncomeSources("123456789", 1999, "987654321"))
