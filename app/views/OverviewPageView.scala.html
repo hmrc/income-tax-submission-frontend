@@ -73,7 +73,7 @@
             <li class="app-task-list__item">
                         <span class="app-task-list__task-name">
                             @if(appConfig.giftAidEnabled){
-                            <a class="govuk-link" id="giftAid-link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else { @{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
+                            <a class="govuk-link" id="giftAid-link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else {@{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
                                 @messages("common.donationsToCharity")
                             </a>
                             } else {
@@ -120,7 +120,7 @@
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <li class="app-task-list__items">
-            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined) {
+            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined || incomeSources.giftAid.isDefined) {
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
                     @action
                 </a>
