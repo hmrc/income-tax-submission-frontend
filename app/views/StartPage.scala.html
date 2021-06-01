@@ -33,9 +33,15 @@
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages(s"startPage.interestBullet.agent.$isAgent")</li>
             <li>@messages("startPage.dividendsBullet")</li>
+            @if(appConfig.giftAidEnabled){
+            <li>@messages("startPage.charityBullet")</li>
+            }
         </ul>
 
         <div class="govuk-body">
+            @if(appConfig.employmentReleased){
+            <p>@messages("startPage.employment")</p>
+            }
             <p>@messages(s"startPage3.agent.$isAgent")</p>
         </div>
 

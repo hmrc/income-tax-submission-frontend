@@ -68,6 +68,28 @@
                     </span>
                 </li>
 
+            @if(appConfig.giftAidReleased){
+
+            <li class="app-task-list__item">
+                        <span class="app-task-list__task-name">
+                            @if(appConfig.giftAidEnabled){
+                            <a class="govuk-link" id="giftAid-link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else { @{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
+                                @messages("common.donationsToCharity")
+                            </a>
+                            } else {
+                                @messages("common.donationsToCharity")
+                            }
+                        </span>
+                        <span class="hmrc-status-tag">
+                            @if(appConfig.giftAidEnabled){
+                                @if(incomeSources.giftAid.isDefined){@messages("overview.updated")} else {@messages("overview.notStarted")}
+                            } else {
+                            @messages("common.underMaintenance")
+                            }
+                        </span>
+            </li>
+            }
+
             @if(appConfig.employmentReleased){
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
