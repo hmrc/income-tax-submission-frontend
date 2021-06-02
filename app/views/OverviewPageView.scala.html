@@ -73,7 +73,7 @@
             <li class="app-task-list__item">
                         <span class="app-task-list__task-name">
                             @if(appConfig.giftAidEnabled){
-                            <a class="govuk-link" id="giftAid-link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else {@{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
+                            <a class="govuk-link" id="giftAid_link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else {@{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
                                 @messages("common.donationsToCharity")
                             </a>
                             } else {

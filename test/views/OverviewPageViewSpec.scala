@@ -55,6 +55,9 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-your-answers"
   val employmentLinkText = "Employment"
   val employmentLink = "http://localhost:9317/income-through-software/return/employment-income/2080/employment-summary"
+  val giftAidLinkText = "Donations to charity"
+  val giftAidLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/charity/charity-donation-using-gift-aid"
+  val giftAidLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/charity/check-donations-to-charity"
   val viewTaxCalcText = "2. View Tax calculation to date"
   val provideUpdateIndividualText = "Provide at least one update before you can view your estimate."
   val provideUpdateAgentText = "Provide at least one update before you can view your client’s estimate."
@@ -76,8 +79,10 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val dividendsLinkSelector = "#dividends_link"
   val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
   val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.app-task-list__task-name"
+  val giftAidLinkSelector = "#giftAid_link"
+  val giftAidStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
   val employmentLinkSelector = "#employment_link"
-  val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
+  val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
   val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
   val interestProvideUpdatesSelector = "#main-content > div > div > ol > li.app-task-list__items > p"
   val viewEstimateSelector = "#calculation_link"
@@ -86,7 +91,12 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   
-  lazy val incomeSourcesModel:Option[IncomeSourcesModel] = Some(IncomeSourcesModel(dividendsModel, interestsModel, employment = Some(employmentsModel)))
+  lazy val incomeSourcesModel:Option[IncomeSourcesModel] = Some(IncomeSourcesModel(
+    dividends = dividendsModel,
+    interest = interestsModel,
+    giftAid = Some(giftAidModel),
+    employment = Some(employmentsModel))
+  )
 
   "The Overview page should render correctly in English" should {
 
@@ -112,6 +122,10 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "have an interest section that says under maintenance" which {
         textOnPageCheck(underMaintenance, interestStatusSelector)
+      }
+
+      "have a donations to charity section that says under maintenance" which {
+        textOnPageCheck(underMaintenance, giftAidStatusSelector)
       }
 
       "have an employment section that says under maintenance" which {
@@ -152,10 +166,16 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
           textOnPageCheck(notStartedText, interestStatusSelector)
         }
 
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLink)
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
         "has an employment section " which {
           textOnPageCheck(employmentLinkText, employmentSelector)
           textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
+
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -188,10 +208,16 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
           textOnPageCheck(notStartedText, interestStatusSelector)
         }
 
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLink)
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
         "has an employment section" which {
           textOnPageCheck(employmentLinkText, employmentSelector)
           textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
+
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -225,6 +251,11 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
           textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLinkWithPriorData)
+          textOnPageCheck(updatedText, giftAidStatusSelector)
         }
 
         "has an employment section" which {
@@ -270,10 +301,16 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
           textOnPageCheck(notStartedText, interestStatusSelector)
         }
 
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLink)
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
         "has an employment section" which {
           textOnPageCheck(employmentLinkText, employmentSelector)
           textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
+
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -306,10 +343,16 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
           textOnPageCheck(notStartedText, interestStatusSelector)
         }
 
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLink)
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
         "has an employment section" which {
           textOnPageCheck(employmentLinkText, employmentSelector)
           textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
+
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -343,6 +386,11 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
           textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLinkWithPriorData)
+          textOnPageCheck(updatedText, giftAidStatusSelector)
         }
 
         "has an employment section" which {
