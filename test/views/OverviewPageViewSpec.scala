@@ -78,7 +78,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
   val dividendsLinkSelector = "#dividends_link"
   val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
-  val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.app-task-list__task-name"
+  val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.app-task-list__task-name"
   val giftAidLinkSelector = "#giftAid_link"
   val giftAidStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
   val employmentLinkSelector = "#employment_link"
@@ -90,7 +90,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > p"
 
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
-  
+
   lazy val incomeSourcesModel:Option[IncomeSourcesModel] = Some(IncomeSourcesModel(
     dividends = dividendsModel,
     interest = interestsModel,
