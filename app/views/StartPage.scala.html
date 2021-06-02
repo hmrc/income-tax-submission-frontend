@@ -34,13 +34,13 @@
             <li>@messages(s"startPage.interestBullet.agent.$isAgent")</li>
             <li>@messages("startPage.dividendsBullet")</li>
             @if(appConfig.giftAidEnabled){
-            <li>@messages("startPage.charityBullet")</li>
+            <li>@messages(s"startPage.charityBullet.agent.$isAgent")</li>
             }
         </ul>
 
         <div class="govuk-body">
             @if(appConfig.employmentEnabled){
-            <p>@messages("startPage.employment")</p>
+            <p>@messages(s"startPage.employment.agent.$isAgent")</p>
             }
             <p>@messages(s"startPage3.agent.$isAgent")</p>
         </div>
