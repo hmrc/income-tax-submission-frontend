@@ -23,7 +23,7 @@ import models.{DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, I
 import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.wordspec.{AnyWordSpecLike}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
@@ -37,7 +37,7 @@ import views.html.authErrorPages.AgentAuthErrorPageView
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable, Future}
 
-trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll{
+trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll{
 
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
@@ -107,7 +107,6 @@ trait IntegrationTest extends AnyWordSpec with Matchers with GuiceOneServerPerSu
 
   val defaultAcceptedConfidenceLevels = Seq(
     ConfidenceLevel.L200,
-    ConfidenceLevel.L300,
     ConfidenceLevel.L500
   )
 

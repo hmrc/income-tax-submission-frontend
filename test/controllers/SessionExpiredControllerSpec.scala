@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.Assets.{NO_CONTENT, OK}
+import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.test.Helpers.{charset, contentType, stubMessagesControllerComponents}
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import utils.UnitTest
