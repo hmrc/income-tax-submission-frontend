@@ -54,7 +54,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
   val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-your-answers"
   val employmentLinkText = "Employment"
-  val employmentLink = "./view"
+  val employmentLink = "http://localhost:9317/income-through-software/return/employment-income/2080/employment-summary"
   val viewTaxCalcText = "2. View Tax calculation to date"
   val provideUpdateIndividualText = "Provide at least one update before you can view your estimate."
   val provideUpdateAgentText = "Provide at least one update before you can view your client’s estimate."
