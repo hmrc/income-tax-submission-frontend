@@ -33,14 +33,14 @@
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages(s"startPage.interestBullet.agent.$isAgent")</li>
             <li>@messages("startPage.dividendsBullet")</li>
-            @if(appConfig.giftAidEnabled){
+            @if(appConfig.giftAidReleased){
             <li>@messages(s"startPage.charityBullet.agent.$isAgent")</li>
             }
         </ul>
 
         <div class="govuk-body">
-            @if(appConfig.employmentEnabled){
-            <p>@messages(s"startPage.employment.agent.$isAgent")</p>
+            @if(appConfig.employmentReleased){
+            <p>@messages(s"startPage.employment.agent.$isAgent", taxYear.toString)</p>
             }
             <p>@messages(s"startPage3.agent.$isAgent")</p>
         </div>
