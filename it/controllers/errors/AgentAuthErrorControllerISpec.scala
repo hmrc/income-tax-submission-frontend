@@ -20,7 +20,7 @@ import itUtils.IntegrationTest
 import org.jsoup.Jsoup
 import play.api.libs.ws.{WSClient, WSResponse}
 import org.jsoup.nodes.Document
-import utils.ViewHelpers
+import itUtils.ViewHelpers
 
 class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
 

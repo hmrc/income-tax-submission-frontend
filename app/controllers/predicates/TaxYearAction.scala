@@ -19,13 +19,13 @@ package controllers.predicates
 import common.SessionValues
 import common.SessionValues.{DIVIDENDS_CYA, DIVIDENDS_PRIOR_SUB, GIFT_AID_CYA, GIFT_AID_PRIOR_SUB, INTEREST_CYA, INTEREST_PRIOR_SUB, TAX_YEAR}
 import config.AppConfig
-import controllers.Assets.Redirect
 import models.User
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(

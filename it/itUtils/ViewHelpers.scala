@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package utils
+package itUtils
 
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.wordspec.{AnyWordSpec, AnyWordSpecLike}
 
-trait ViewHelpers { self: AnyWordSpec with Matchers =>
+trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
 
   val serviceName = "Update and submit an Income Tax Return"
   val govUkExtension = "GOV.UK"

@@ -18,8 +18,8 @@ package controllers
 
 import audit.{AuditModel, IVHandoffAuditDetail, IVSuccessAuditDetail}
 import config.MockAuditService
-import controllers.Assets.SEE_OTHER
 import org.scalamock.handlers.CallHandler
+import play.api.http.Status.SEE_OTHER
 import play.api.test.Helpers.stubMessagesControllerComponents
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -40,7 +40,7 @@ class IVUpliftControllerSpec extends UnitTest with MockAuditService {
   val individualHandoffReason = "individual"
   val individualConfidenceLevel = 50
   val organisationHandoffReason = "organisation"
-  val organisationConfidenceLevel = 100
+  val organisationConfidenceLevel = 200
   val minimumConfidenceLevel = 200
 
   "IVUpliftController" should {

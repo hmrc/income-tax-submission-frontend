@@ -17,15 +17,15 @@
 package controllers
 
 import java.util.UUID
-
 import audit.{AuditService, IVFailureAuditDetail}
 import config.AppConfig
+import play.api.Logging
+
 import javax.inject.{Inject, Singleton}
-import play.api.Logger.logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.SessionDataHelper
 import views.html.errors.IVFailurePage
 
@@ -36,11 +36,11 @@ class IVFailureController @Inject()(implicit appConfig: AppConfig,
                                     mcc: MessagesControllerComponents,
                                     view: IVFailurePage,
                                     auditService: AuditService,
-                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
+                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper with Logging{
 
   def show(journeyId: Option[String]): Action[AnyContent] = Action { implicit request =>
 
-    lazy val sessionId: Option[String] = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session)).sessionId.map(_.value)
+    lazy val sessionId: Option[String] = HeaderCarrierConverter.fromRequestAndSession(request, request.session).sessionId.map(_.value)
 
     if(journeyId.isEmpty){
       logger.warn(s"[IVFailureController][show] JourneyId from IV journey is empty. Defaulting journeyId for audit purposes." +
