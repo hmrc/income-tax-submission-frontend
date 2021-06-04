@@ -19,18 +19,17 @@ package utils
 import config.AppConfig
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.Helpers
 
-trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
+trait ViewTest extends UnitTest {
 
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
   lazy val welshMessages: Messages = messagesApi.preferred(Seq(Lang("cy")))
   implicit lazy val mockMessagesControllerComponents: MessagesControllerComponents = Helpers.stubMessagesControllerComponents()
-  implicit lazy val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   val serviceName = "Update and submit an Income Tax Return"
   val govUkExtension = "GOV.UK"
@@ -88,23 +87,18 @@ trait ViewTest extends UnitTest with GuiceOneAppPerSuite {
   }
 
   def buttonCheck(text: String, selector: String, href: Option[String] = None)(implicit document: Document): Unit = {
+    s"have a $text button" which {
+      s"has the text '$text'" in {
+        document.select(selector).text() shouldBe text
+      }
 
-    if (href.isDefined) {
-      s"have a $text button" which {
-        s"has the text '$text'" in {
-          document.select(selector).text() shouldBe text
-        }
+      s"has a class of govuk-button" in {
+        document.select(selector).attr("class") should include ("govuk-button")
+      }
+
+      if (href.isDefined) {
         s"has a href to '${href.get}'" in {
           document.select(selector).attr("href") shouldBe href.get
-        }
-        "has a role of button" in {
-          document.select(selector).attr("role") shouldBe "button"
-        }
-      }
-    } else {
-      s"have a $text button" which {
-        s"has the text '$text'" in {
-          document.select(selector).text() shouldBe text
         }
       }
     }

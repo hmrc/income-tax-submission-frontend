@@ -40,7 +40,7 @@ class TimeoutPageSpec extends AnyWordSpec with Matchers with ViewTest{
 
   "The TimeoutPage when called in English" should {
     "render correctly" should {
-      lazy val view: Html = timeoutPage(routes.StartPageController.show(taxYear))(fakeRequest, messages, mockConfig)
+      lazy val view: Html = timeoutPage(routes.StartPageController.show(taxYear))(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)
@@ -53,7 +53,7 @@ class TimeoutPageSpec extends AnyWordSpec with Matchers with ViewTest{
 
   "The TimeoutPage when called in Welsh" should {
     "render correctly" should {
-      lazy val view: Html = timeoutPage(routes.StartPageController.show(taxYear))(fakeRequest, welshMessages, mockConfig)
+      lazy val view: Html = timeoutPage(routes.StartPageController.show(taxYear))(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)

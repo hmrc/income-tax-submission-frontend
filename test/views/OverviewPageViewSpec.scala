@@ -128,7 +128,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an individual" which {
 
-        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,messages,mockConfig)
+        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,messages,appConfig)
         lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
 
         welshToggleCheck("English")
@@ -164,7 +164,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an agent" which {
 
-        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,messages,mockConfig)
+        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,messages,appConfig)
         lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
 
         welshToggleCheck("English")
@@ -203,7 +203,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an individual with prior data" which {
 
-        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,messages,mockConfig)
+        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,messages,appConfig)
         lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
 
         welshToggleCheck("English")
@@ -246,7 +246,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an individual" which {
 
-        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,welshMessages,appConfig)
         lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
 
         welshToggleCheck("Welsh")
@@ -282,7 +282,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an agent" which {
 
-        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,welshMessages,appConfig)
         lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
 
         welshToggleCheck("Welsh")
@@ -321,7 +321,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an individual with prior data" which {
 
-        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,welshMessages,appConfig)
         lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
 
         welshToggleCheck("Welsh")
