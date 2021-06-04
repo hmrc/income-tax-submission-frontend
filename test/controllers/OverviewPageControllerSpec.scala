@@ -27,7 +27,6 @@ import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
@@ -162,39 +161,6 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
-      }
-
-      "Set the session value for All prior sub" in {
-        val result = {
-          mockAuth(nino)
-          mockGetIncomeSourcesValid()
-          
-          controller.show(taxYear)(fakeGetRequest)
-        }
-        session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
-        session(result).get(INTEREST_PRIOR_SUB) shouldBe Some(Json.toJson(Seq(InterestModel("", "", None, Some(500.00)))).toString())
-      }
-
-      "Set the session value for dividends prior sub" in {
-        val result = {
-          mockAuth(nino)
-          mockGetIncomeSourcesDividends()
-          
-          controller.show(taxYear)(fakeGetRequest)
-        }
-        session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe Some(Json.toJson((DividendsModel(None,None))).toString())
-        session(result).get(INTEREST_PRIOR_SUB) shouldBe None
-      }
-
-      "Set the session value for interests prior sub" in {
-        val result = {
-          mockAuth(nino)
-          mockGetIncomeSourcesInterest()
-          
-          controller.show(taxYear)(fakeGetRequest)
-        }
-        session(result).get(DIVIDENDS_PRIOR_SUB) shouldBe None
-        session(result).get(INTEREST_PRIOR_SUB) shouldBe Some(Json.toJson(Seq(InterestModel("", "", None, Some(500.00)))).toString())
       }
     }
 
