@@ -56,8 +56,6 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val employmentLinkText = "Employment"
   val employmentLink = "http://localhost:9317/income-through-software/return/employment-income/2080/employment-summary"
   val giftAidLinkText = "Donations to charity"
-  val giftAidLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/charity/charity-donation-using-gift-aid"
-  val giftAidLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/charity/check-donations-to-charity"
   val viewTaxCalcText = "2. View Tax calculation to date"
   val provideUpdateIndividualText = "Provide at least one update before you can view your estimate."
   val provideUpdateAgentText = "Provide at least one update before you can view your client’s estimate."
@@ -167,7 +165,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has a donations to charity section" which {
-          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLink)
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidUrl(taxYear))
           textOnPageCheck(notStartedText, giftAidStatusSelector)
         }
 
@@ -209,7 +207,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has a donations to charity section" which {
-          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLink)
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidUrl(taxYear))
           textOnPageCheck(notStartedText, giftAidStatusSelector)
         }
 
@@ -254,7 +252,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has a donations to charity section" which {
-          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLinkWithPriorData)
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
           textOnPageCheck(updatedText, giftAidStatusSelector)
         }
 
@@ -302,7 +300,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has a donations to charity section" which {
-          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLink)
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidUrl(taxYear))
           textOnPageCheck(notStartedText, giftAidStatusSelector)
         }
 
@@ -344,7 +342,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has a donations to charity section" which {
-          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLink)
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidUrl(taxYear))
           textOnPageCheck(notStartedText, giftAidStatusSelector)
         }
 
@@ -389,7 +387,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         }
 
         "has a donations to charity section" which {
-          linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidLinkWithPriorData)
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
           textOnPageCheck(updatedText, giftAidStatusSelector)
         }
 

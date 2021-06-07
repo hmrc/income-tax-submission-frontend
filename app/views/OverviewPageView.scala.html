@@ -116,13 +116,12 @@
 
 @taskWithActionOrCaption(heading: String, action: String, caption: String, index: Int, incomeSources: IncomeSourcesModel) = {
 
-    @if(appConfig.giftAidReleased){
     <li>
         <h2 class="app-task-list__section">
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <li class="app-task-list__items">
-            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined || incomeSources.giftAid.isDefined) {
+            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined || (incomeSources.giftAid.isDefined && appConfig.giftAidReleased)) {
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
                     @action
                 </a>
@@ -132,18 +131,8 @@
         </li>
     </li>
 
-    } else {
-        @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined) {
-            <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
-                @action
-            </a>
-        } else {
-            <p class="govuk-body">@caption</p>
-        }
-        </li>
-    </li>
-    }
 }
+
 
 @taskWithCaption(heading: String, caption: String, index: Int) = {
     <li>
