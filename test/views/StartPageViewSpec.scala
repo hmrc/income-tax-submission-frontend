@@ -41,6 +41,10 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
   val bullet1InterestPaidAgentText = "interest paid to your client in the UK"
   val bullet1InterestPaidIndividualText = "interest paid to you in the UK"
   val bullet2DividendsFromUKText = "dividends from UK companies, trusts and open-ended investment companies"
+  val bullet3DonationsToCharityIndividual = "your donations to charity"
+  val bullet3DonationsToCharityAgent = "your client’s donations to charity"
+  val viewEmploymentInformationIndividual = "You can view your employment information but cannot use this service to update it until 6 April 2022."
+  val viewEmploymentInformationAgent = "You can view your client’s employment information but cannot use this service to update it until 6 April 2022."
   val toUpdateIncomeAgentText = "To update your client’s self-employment and property income, you must use your chosen commercial software."
   val toUpdateIncomeIndividualText = "To update your self-employment and property income, you must use your chosen commercial software."
   val continueButtonText = "Continue"
@@ -55,7 +59,9 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
     val p2 = "#main-content > div > div > div:nth-child(2) > p:nth-child(2)"
     val bullet1 = "#main-content > div > div > ul > li:nth-child(1)"
     val bullet2 = "#main-content > div > div > ul > li:nth-child(2)"
-    val p3 =  "#main-content > div > div > div:nth-child(4) > p"
+    val bullet3 = "#main-content > div > div > ul > li:nth-child(3)"
+    val p3 = "#main-content > div > div > div:nth-child(4) > p:nth-child(1)"
+    val p4 =  "#main-content > div > div > div:nth-child(4) > p:nth-child(2)"
     val continueButton = "#main-content > div > div > form"
   }
 
@@ -78,7 +84,9 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       textOnPageCheck(newServiceText, Selectors.p2)
       textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
-      textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
+      textOnPageCheck(bullet3DonationsToCharityIndividual, Selectors.bullet3)
+      textOnPageCheck(viewEmploymentInformationIndividual, Selectors.p3)
+      textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
@@ -98,7 +106,9 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       textOnPageCheck(newServiceText, Selectors.p2)
       textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
-      textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
+      textOnPageCheck(bullet3DonationsToCharityAgent, Selectors.bullet3)
+      textOnPageCheck(viewEmploymentInformationAgent, Selectors.p3)
+      textOnPageCheck(toUpdateIncomeAgentText, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
   }
@@ -120,7 +130,9 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       textOnPageCheck(newServiceText, Selectors.p2)
       textOnPageCheck(bullet1InterestPaidIndividualText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
-      textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p3)
+      textOnPageCheck(bullet3DonationsToCharityIndividual, Selectors.bullet3)
+      textOnPageCheck(viewEmploymentInformationIndividual, Selectors.p3)
+      textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
@@ -140,7 +152,9 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
       textOnPageCheck(newServiceText, Selectors.p2)
       textOnPageCheck(bullet1InterestPaidAgentText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
-      textOnPageCheck(toUpdateIncomeAgentText, Selectors.p3)
+      textOnPageCheck(bullet3DonationsToCharityAgent, Selectors.bullet3)
+      textOnPageCheck(viewEmploymentInformationAgent, Selectors.p3)
+      textOnPageCheck(toUpdateIncomeAgentText, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
   }

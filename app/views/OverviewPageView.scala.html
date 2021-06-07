@@ -68,6 +68,28 @@
                     </span>
                 </li>
 
+            @if(appConfig.giftAidReleased){
+
+            <li class="app-task-list__item">
+                        <span class="app-task-list__task-name">
+                            @if(appConfig.giftAidEnabled){
+                            <a class="govuk-link" id="giftAid_link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else {@{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
+                                @messages("common.donationsToCharity")
+                            </a>
+                            } else {
+                                @messages("common.donationsToCharity")
+                            }
+                        </span>
+                        <span class="hmrc-status-tag">
+                            @if(appConfig.giftAidEnabled){
+                                @if(incomeSources.giftAid.isDefined){@messages("overview.updated")} else {@messages("overview.notStarted")}
+                            } else {
+                            @messages("common.underMaintenance")
+                            }
+                        </span>
+            </li>
+            }
+
             @if(appConfig.employmentReleased){
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
@@ -93,12 +115,13 @@
 }
 
 @taskWithActionOrCaption(heading: String, action: String, caption: String, index: Int, incomeSources: IncomeSourcesModel) = {
+
     <li>
         <h2 class="app-task-list__section">
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <li class="app-task-list__items">
-            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined) {
+            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined || (incomeSources.giftAid.isDefined && appConfig.giftAidReleased)) {
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
                     @action
                 </a>
@@ -107,7 +130,9 @@
             }
         </li>
     </li>
+
 }
+
 
 @taskWithCaption(heading: String, caption: String, index: Int) = {
     <li>
