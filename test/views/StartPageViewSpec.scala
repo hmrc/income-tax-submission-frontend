@@ -65,7 +65,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     "render correctly when the user is an individual" should {
 
-      lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest, messages, mockConfig)
+      lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       welshToggleCheck("English")
@@ -84,7 +84,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     "render correctly when the user is an agent" should {
 
-      lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest, messages, mockConfig)
+      lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       welshToggleCheck("English")
@@ -107,7 +107,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     "render correctly when the user is an individual" should {
 
-      lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest, welshMessages, mockConfig)
+      lazy val view: Html = startPageView(isAgent = false, taxYear)(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       welshToggleCheck("Welsh")
@@ -126,7 +126,7 @@ class StartPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSui
 
     "render correctly when the user is an agent" should {
 
-      lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest, welshMessages, mockConfig)
+      lazy val view: Html = startPageView(isAgent = true, taxYear)(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       welshToggleCheck("Welsh")

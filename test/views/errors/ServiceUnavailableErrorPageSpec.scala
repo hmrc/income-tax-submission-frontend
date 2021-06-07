@@ -51,7 +51,7 @@ class ServiceUnavailableErrorPageSpec extends AnyWordSpec with Matchers with Vie
 
     "render correctly" should {
 
-      lazy val view: Html = serviceUnavailablePage()(fakeRequest, messages, mockConfig)
+      lazy val view: Html = serviceUnavailablePage()(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)
@@ -70,7 +70,7 @@ class ServiceUnavailableErrorPageSpec extends AnyWordSpec with Matchers with Vie
 
     "render correctly" should {
 
-      lazy val view: Html = serviceUnavailablePage()(fakeRequest, welshMessages, mockConfig)
+      lazy val view: Html = serviceUnavailablePage()(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)

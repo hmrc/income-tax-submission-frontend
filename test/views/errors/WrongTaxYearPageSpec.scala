@@ -47,7 +47,7 @@ class WrongTaxYearPageSpec extends AnyWordSpec with Matchers with ViewTest{
   "The WrongTaxYearPage when called in English" should {
     "render correctly" should {
 
-      lazy val view: Html = internalServerErrorPage()(fakeRequest, messages, mockConfig)
+      lazy val view: Html = internalServerErrorPage()(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)
@@ -63,7 +63,7 @@ class WrongTaxYearPageSpec extends AnyWordSpec with Matchers with ViewTest{
   "The WrongTaxYearPage when called in Welsh" should {
     "render correctly" should {
 
-      lazy val view: Html = internalServerErrorPage()(fakeRequest, welshMessages, mockConfig)
+      lazy val view: Html = internalServerErrorPage()(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)

@@ -16,11 +16,10 @@
 
 package controllers.errors
 
-import itUtils.IntegrationTest
+import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
-import play.api.libs.ws.{WSClient, WSResponse}
 import org.jsoup.nodes.Document
-import itUtils.ViewHelpers
+import play.api.libs.ws.{WSClient, WSResponse}
 
 class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
 
@@ -30,13 +29,13 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
     val title = "There’s a problem"
     val youCan = "You cannot view this client’s information. Your client needs to authorise you as their agent " +
       "(opens in new tab) before you can sign in to this service."
-    val tryAnother = "Try another client’s details."
+    val tryAnother = "Try another client’s details"
+    val tryAnotherExpectedHref = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/client-utr"
 
   }
   object Selectors {
     val youCan = "#main-content > div > div > p:nth-child(2)"
-    val tryAnother = "#main-content > div > div > p:nth-child(3)"
-
+    val tryAnother = "#main-content > div > div > a"
   }
      val url = s"http://localhost:$port/income-through-software/return/error/you-need-client-authorisation"
 
@@ -52,7 +51,7 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
         titleCheck(ExpectedResults.title)
         h1Check(ExpectedResults.heading,"xl")
         textOnPageCheck(ExpectedResults.youCan, Selectors.youCan)
-        textOnPageCheck(ExpectedResults.tryAnother, Selectors.tryAnother)
+        buttonCheck(ExpectedResults.tryAnother, Selectors.tryAnother, Some(ExpectedResults.tryAnotherExpectedHref))
       }
     }
   }

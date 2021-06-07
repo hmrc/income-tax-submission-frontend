@@ -36,7 +36,7 @@ class IndividualUnauthorisedViewSpec extends ViewTest {
 
   "The IndividualUnauthorisedView when called in English" should {
     "render the page" which {
-      lazy val view: Html = individualUnauthorisedView()(fakeRequest, messages, mockConfig)
+      lazy val view: Html = individualUnauthorisedView()(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(validTitle)
@@ -50,7 +50,7 @@ class IndividualUnauthorisedViewSpec extends ViewTest {
 
   "The IndividualUnauthorisedView when called in Welsh" should {
     "render the page" which {
-      lazy val view: Html = individualUnauthorisedView()(fakeRequest, welshMessages, mockConfig)
+      lazy val view: Html = individualUnauthorisedView()(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(validTitle)
