@@ -18,7 +18,7 @@ package itUtils
 
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.{AnyWordSpec, AnyWordSpecLike}
+import org.scalatest.wordspec.AnyWordSpecLike
 
 trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
 
