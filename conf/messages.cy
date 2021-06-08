@@ -34,9 +34,9 @@ startPage3.agent.true = To update your client’s self-employment and property i
 startPage3.agent.false = To update your self-employment and property income, you must use your chosen commercial software.
 startPage.continue = Continue
 
-overview.task1.heading = Provide updates
-overview.agent.task1.caption = Complete the sections that apply to your client.
-overview.individual.task1.caption = Complete the sections that apply to you.
+overview.individual.task1.heading = Update your Income Tax Return
+overview.agent.task1.heading = Update your client’s Income Tax Return
+overview.task1.caption = Fill in the sections you need to update.
 
 overview.agent.task2.caption.noUpdate = Update your client’s Income Tax Return to view their tax estimate.
 overview.task3.heading = Submit return

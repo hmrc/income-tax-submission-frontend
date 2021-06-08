@@ -40,9 +40,9 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val caption = s"6 April $taxYearMinusOne to 5 April $taxYear"
   val individualHeading = "Your Income Tax Return"
   val agentHeading = "Your client’s Income Tax Return"
-  val provideUpdatesText = "1. Provide updates"
-  val completeSectionsIndividualText = "Complete the sections that apply to you."
-  val completeSectionsAgentText = "Complete the sections that apply to your client."
+  val updateIncomeTaxReturnTextIndividual = "1. Update your Income Tax Return"
+  val updateIncomeTaxReturnTextAgent = "1. Update your client’s Income Tax Return"
+  val completeSectionsText = "Fill in the sections you need to update."
   val updatedText = "Updated"
   val notStartedText = "Not started"
   val underMaintenance = "Under maintenance"
@@ -111,8 +111,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
       titleCheck(individualHeading)
       h1Check(individualHeading)
       textOnPageCheck(caption, captionSelector)
-      textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-      textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+      textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+      textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
       "have a dividends section that says under maintenance" which {
         textOnPageCheck(underMaintenance, dividendsStatusSelector)
@@ -151,8 +151,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(individualHeading)
         h1Check(individualHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
@@ -193,8 +193,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(agentHeading)
         h1Check(agentHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsAgentText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
@@ -238,8 +238,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(individualHeading)
         h1Check(individualHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
@@ -286,8 +286,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(individualHeading)
         h1Check(individualHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
@@ -328,8 +328,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(agentHeading)
         h1Check(agentHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsAgentText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
@@ -373,8 +373,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(individualHeading)
         h1Check(individualHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
