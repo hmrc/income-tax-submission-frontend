@@ -18,7 +18,6 @@ package filters
 
 import com.google.inject.Inject
 import itUtils.IntegrationTest
-import org.scalatest.OptionValues
 import org.scalatestplus.play.components.OneAppPerSuiteWithComponents
 import play.api.http.DefaultHttpFilters
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -28,7 +27,7 @@ import play.api.test.Helpers._
 import play.api.{Application, BuiltInComponents, BuiltInComponentsFromContext, NoHttpFiltersComponents}
 import uk.gov.hmrc.http.{HeaderNames, SessionKeys}
 
-class SessionIdFilterSpec extends IntegrationTest with OptionValues  with OneAppPerSuiteWithComponents {
+class SessionIdFilterSpec extends IntegrationTest with OneAppPerSuiteWithComponents {
 
   override val sessionId = "28836767-a008-46be-ac18-695ab140e705"
 

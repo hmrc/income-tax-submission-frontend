@@ -16,32 +16,38 @@
 
 package itUtils
 
+import common.SessionValues
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
-import helpers.WireMockHelper
-import models.{DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, InterestModel}
+import helpers.{PlaySessionCookieBaker, WireMockHelper}
+import models._
 import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
-import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.{AnyWordSpecLike}
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import play.api.http.{HeaderNames, Writeable}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.MessagesControllerComponents
-import play.api.test.FakeRequest
+import play.api.libs.ws.WSClient
+import play.api.mvc.{MessagesControllerComponents, Request, Result}
+import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
 import services.AuthService
 import uk.gov.hmrc.auth.core.ConfidenceLevel
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import views.html.authErrorPages.AgentAuthErrorPageView
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable, Future}
 
-trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll{
+trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll
+  with BeforeAndAfterEach with DefaultAwaitTimeout with OptionValues {
 
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   val startUrl = s"http://localhost:$port/income-through-software/return"
+
+  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
 
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
@@ -82,12 +88,16 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     .configure(config)
     .build
 
-  lazy val appWithDifferentConfig: Application = new GuiceApplicationBuilder()
+  lazy val appWithSourcesTurnedOff: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(sourcesTurnedOffConfig)
     .build
 
   lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+
+  override protected def beforeEach(): Unit = {
+    resetWiremock()
+  }
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -109,6 +119,13 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     ConfidenceLevel.L200,
     ConfidenceLevel.L500
   )
+
+  def route[T](app: Application, request: Request[T], isWelsh: Boolean = false)(implicit w: Writeable[T]): Option[Future[Result]] = {
+    val newHeaders = request.headers.add((HeaderNames.ACCEPT_LANGUAGE, if(isWelsh) "cy" else "en"))
+    val requestWithHeaders = request.withHeaders(newHeaders)
+
+    Helpers.route(app, requestWithHeaders)
+  }
 
   def authService(stubbedRetrieval: Future[_]): AuthService = new AuthService(
     new MockAuthConnector(stubbedRetrieval)
@@ -172,4 +189,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     giftAidPaymentsModel,
     giftsModel
   )
+
+  def playSessionCookies(taxYear: Int): String = PlaySessionCookieBaker.bakeSessionCookie(Map(
+    SessionValues.TAX_YEAR -> taxYear.toString,
+    SessionKeys.sessionId -> sessionId,
+    SessionValues.CLIENT_NINO -> "AA123456A",
+    SessionValues.CLIENT_MTDITID -> "1234567890"
+  ))
 }
