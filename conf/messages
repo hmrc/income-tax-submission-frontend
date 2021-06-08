@@ -38,14 +38,14 @@ overview.task1.heading = Provide updates
 overview.agent.task1.caption = Complete the sections that apply to your client.
 overview.individual.task1.caption = Complete the sections that apply to you.
 
-overview.agent.task2.caption.noUpdate = Provide at least one update before you can view your client’s estimate.
+overview.agent.task2.caption.noUpdate = Update your client’s Income Tax Return to view their tax estimate.
 overview.task3.heading = Submit return
-overview.agent.task3.caption = You will be able to submit your client’s return from 6 April {0} after providing your client’s updates.
+overview.agent.task3.caption = Update your client’s Income Tax Return and submit it to us after 5 April {0}.
 
 overview.task2.heading = View Tax calculation to date
-overview.individual.task2.caption.noUpdate = Provide at least one update before you can view your estimate.
+overview.individual.task2.caption.noUpdate = Update your Income Tax Return to view your tax estimate.
 overview.task2.caption.update = View estimation
-overview.individual.task3.caption = You will be able to submit your return from 6 April {0} after providing your updates.
+overview.individual.task3.caption = Update your Income Tax Return and submit it to us after 5 April {0}.
 
 overview.notStarted = Not started
 overview.updated = Updated
