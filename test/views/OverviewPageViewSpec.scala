@@ -52,7 +52,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val dividendsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/check-income-from-dividends"
   val interestsLinkText = "Interest"
   val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
-  val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-your-answers"
+  val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-interest"
   val employmentLinkText = "Employment"
   val employmentLink = "http://localhost:9317/income-through-software/return/employment-income/2080/employment-summary"
   val giftAidLinkText = "Donations to charity"
