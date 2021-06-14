@@ -20,20 +20,90 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
-import itUtils.IntegrationTest
-import play.api.libs.ws.WSClient
-import play.api.test.Helpers.{OK, SEE_OTHER}
+import itUtils.{IntegrationTest, ViewHelpers}
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import play.api.http.HeaderNames
+import play.api.mvc.Result
+import play.api.test.Helpers.{OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.{FakeRequest, Helpers}
 import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
-class OverviewPageControllerTest extends IntegrationTest {
+import scala.concurrent.Future
 
-  private val taxYear = 2022
+class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
+
+  object ExpectedResults {
+    val taxYear = 2022
+    val taxYearMinusOne: Int = taxYear - 1
+    val taxYearPlusOne: Int = taxYear + 1
+    val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+    val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
+    val vcBreadcrumb = "Income Tax"
+    val startPageBreadcrumb = "Update and submit an Income Tax Return"
+    val startPageBreadcrumbUrl = s"/income-through-software/return/$taxYear/start"
+    val overviewBreadcrumb = "Your Income Tax Return"
+    val caption = s"6 April $taxYearMinusOne to 5 April $taxYear"
+    val individualHeading = "Your Income Tax Return"
+    val agentHeading = "Your client’s Income Tax Return"
+    val updateIncomeTaxReturnTextIndividual = "1. Update your Income Tax Return"
+    val updateIncomeTaxReturnTextAgent = "1. Update your client’s Income Tax Return"
+    val completeSectionsText = "Fill in the sections you need to update."
+    val updatedText = "Updated"
+    val notStartedText = "Not started"
+    val underMaintenance = "Under maintenance"
+    val cannotUpdateText = "Cannot update"
+    val dividendsLinkText = "Dividends"
+    val dividendsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/dividends-from-uk-companies"
+    val dividendsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/check-income-from-dividends"
+    val interestsLinkText = "Interest"
+    val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
+    val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-interest"
+    val employmentLinkText = "Employment"
+    val employmentLink = s"http://localhost:9317/income-through-software/return/employment-income/$taxYear/employment-summary"
+    val giftAidLinkText = "Donations to charity"
+    val viewTaxCalcText = "2. View Tax calculation to date"
+    val provideUpdateIndividualText = "Update your Income Tax Return to view your tax estimate."
+    val provideUpdateAgentText = "Update your client’s Income Tax Return to view their tax estimate."
+    val viewEstimateLinkText = "View estimation"
+    val viewEstimateLink = s"/income-through-software/return/$taxYear/calculate"
+    val submitReturnText = "3. Submit return"
+    val youWillBeAbleIndividualText = s"Update your Income Tax Return and submit it to us after 5 April $taxYearPlusOne."
+    val youWillBeAbleAgentText = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYearPlusOne."
+  }
+
+  object Selectors {
+    val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
+    val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
+    val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3)"
+    val captionSelector = "#main-content > div > div > header > p"
+    val headerSelector = "#main-content > div > div > header > h1"
+    val dividendsProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
+    val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > p"
+    val interestLinkSelector = "#interest_link"
+    val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
+    val dividendsLinkSelector = "#dividends_link"
+    val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+    val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.app-task-list__task-name"
+    val giftAidLinkSelector = "#giftAid_link"
+    val giftAidStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
+    val employmentLinkSelector = "#employment_link"
+    val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
+    val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
+    val interestProvideUpdatesSelector = "#main-content > div > div > ol > li.app-task-list__items > p"
+    val viewEstimateSelector = "#calculation_link"
+    val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(4) > h2"
+    val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > p"
+  }
+
+  import ExpectedResults._
+  import Selectors._
+
+  private val urlPath = s"/income-through-software/return/$taxYear/view"
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
-  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
 
   val controller: OverviewPageController = new OverviewPageController(
     frontendAppConfig,
@@ -78,6 +148,626 @@ class OverviewPageControllerTest extends IntegrationTest {
       |   ]
       | }
       |}""".stripMargin)
+
+  "The Overview page should render correctly in English" when {
+
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+
+    "request is sent by an INDIVIDUAL" should {
+      "render correctly when sources are off" which {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(appWithSourcesTurnedOff, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "have a dividends section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, dividendsStatusSelector)
+        }
+
+        "have an interest section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, interestStatusSelector)
+        }
+
+        "have an employment section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          textOnPageCheck(underMaintenance, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+      }
+
+      "render correctly with no prior data" should {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+          textOnPageCheck(notStartedText, dividendsStatusSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+          textOnPageCheck(notStartedText, interestStatusSelector)
+        }
+
+        "has an employment section " which {
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          textOnPageCheck(cannotUpdateText, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYear))
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+      }
+
+      "render correctly with prior data" should {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          stubIncomeSources
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
+          textOnPageCheck(updatedText, dividendsStatusSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
+          textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(updatedText, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
+          textOnPageCheck(updatedText, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewEstimateLinkText, viewEstimateSelector, viewEstimateLink)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+      }
+    }
+
+    "request is sent by an AGENT" should {
+
+      "Have the correct content when sources are off" which {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          route(appWithSourcesTurnedOff, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "have a dividends section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, dividendsStatusSelector)
+        }
+
+        "have an interest section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, interestStatusSelector)
+        }
+
+        "have an employment section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          textOnPageCheck(underMaintenance, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
+      }
+
+      "render correctly with no prior data" should {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+          textOnPageCheck(notStartedText, dividendsStatusSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+          textOnPageCheck(notStartedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          textOnPageCheck(cannotUpdateText, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYear))
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
+      }
+
+      "render correctly with prior data" should {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          stubIncomeSources
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
+          textOnPageCheck(updatedText, dividendsStatusSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
+          textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(updatedText, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
+          textOnPageCheck(updatedText, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewEstimateLinkText, viewEstimateSelector, viewEstimateLink)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
+      }
+    }
+  }
+
+  "The Overview page should render correctly in Welsh" when {
+
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+
+    "request is sent by an INDIVIDUAL" should {
+      "render correctly when sources are off" which {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(appWithSourcesTurnedOff, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "have a dividends section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, dividendsStatusSelector)
+        }
+
+        "have an interest section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, interestStatusSelector)
+        }
+
+        "have an employment section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          textOnPageCheck(underMaintenance, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+      }
+
+      "render correctly with no prior data" should {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+          textOnPageCheck(notStartedText, dividendsStatusSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+          textOnPageCheck(notStartedText, interestStatusSelector)
+        }
+
+        "has an employment section " which {
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          textOnPageCheck(cannotUpdateText, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYear))
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+      }
+
+      "render correctly with prior data" should {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          stubIncomeSources
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
+          textOnPageCheck(updatedText, dividendsStatusSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
+          textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(updatedText, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
+          textOnPageCheck(updatedText, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewEstimateLinkText, viewEstimateSelector, viewEstimateLink)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleIndividualText, youWillBeAbleSelector)
+      }
+    }
+
+    "request is sent by an AGENT" should {
+
+      "Have the correct content when sources are off" which {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          route(appWithSourcesTurnedOff, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "have a dividends section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, dividendsStatusSelector)
+        }
+
+        "have an interest section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, interestStatusSelector)
+        }
+
+        "have an employment section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          textOnPageCheck(underMaintenance, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
+      }
+
+      "render correctly with no prior data" should {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
+          textOnPageCheck(notStartedText, dividendsStatusSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLink)
+          textOnPageCheck(notStartedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          textOnPageCheck(cannotUpdateText, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYear))
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
+      }
+
+      "render correctly with prior data" should {
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          stubIncomeSources
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(caption, captionSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
+          textOnPageCheck(updatedText, dividendsStatusSelector)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
+          textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLink)
+          textOnPageCheck(updatedText, employmentStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
+          textOnPageCheck(updatedText, giftAidStatusSelector)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewEstimateLinkText, viewEstimateSelector, viewEstimateLink)
+        textOnPageCheck(submitReturnText, submitReturnSelector)
+        textOnPageCheck(youWillBeAbleAgentText, youWillBeAbleSelector)
+      }
+    }
+  }
 
   "Hitting the show endpoint" should {
 

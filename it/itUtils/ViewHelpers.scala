@@ -25,6 +25,9 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
   val serviceName = "Update and submit an Income Tax Return"
   val govUkExtension = "GOV.UK"
 
+  val ExpectedResults: Object
+  val Selectors: Object
+
   def elementText(selector: String)(implicit document: () => Document): String = {
     document().select(selector).text()
   }
@@ -149,7 +152,7 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
       }
     }
   }
-
+  
   def welshToggleCheck(activeLanguage: String)(implicit document: () => Document): Unit = {
     val otherLanguage = if (activeLanguage == "English") "Welsh" else "English"
 
@@ -171,7 +174,7 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
       }
       s"has a link to change the language" in {
         document().select(".hmrc-language-select__list-item > a").attr("href") shouldBe
-          s"/income-through-software/return/personal-income/language/${linkLanguage(otherLanguage).toLowerCase}"
+          s"/income-through-software/return/language/${linkLanguage(otherLanguage).toLowerCase}"
       }
     }
   }
