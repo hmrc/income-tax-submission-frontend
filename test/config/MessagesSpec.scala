@@ -63,8 +63,8 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
   val betaMessagesInBothHMRCLibraryAndMessages = 3
 
 
-  val defaults = allLanguages("default")
-  val welsh = allLanguages("cy")
+  val defaults: Map[String, String] = allLanguages("en")
+  val welsh: Map[String, String] = allLanguages("cy")
 
   "the messages file must have welsh translations" should {
     "check all keys in the default file other than those in the exclusion list has a corresponding translation" in {
