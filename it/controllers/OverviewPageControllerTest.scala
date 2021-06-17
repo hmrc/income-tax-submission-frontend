@@ -81,7 +81,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val captionSelector = "#main-content > div > div > header > p"
     val headerSelector = "#main-content > div > div > header > h1"
     val dividendsProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
-    val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > p"
+    val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li.govuk-body"
     val interestLinkSelector = "#interest_link"
     val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
     val dividendsLinkSelector = "#dividends_link"
@@ -95,7 +95,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val interestProvideUpdatesSelector = "#main-content > div > div > ol > li.app-task-list__items > p"
     val viewEstimateSelector = "#calculation_link"
     val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(4) > h2"
-    val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > p"
+    val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > li"
   }
 
   import ExpectedResults._
