@@ -73,6 +73,16 @@ class CalculationIdConnectorSpec extends IntegrationTest {
 
         result shouldBe Left(expectedResult)
       }
+    "return a UNPROCESSABLE_ENTITY/422" in {
+      val expectedResult = APIErrorModel(UNPROCESSABLE_ENTITY,APIErrorBodyModel(
+        "UNPROCESSABLE_ENTITY","The remote endpoint has indicated that crystallisation can not occur until after the end of tax year."))
+
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation", UNPROCESSABLE_ENTITY, expectedResult.toJson.toString())
+
+        val result = await(connector.getCalculationId(nino, taxYear))
+
+        result shouldBe Left(expectedResult)
+      }
     "return a PARSING_ERROR when unexpected response code" in {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("PARSING_ERROR","Error parsing response from API"))
 

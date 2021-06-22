@@ -40,9 +40,9 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val caption = s"6 April $taxYearMinusOne to 5 April $taxYear"
   val individualHeading = "Your Income Tax Return"
   val agentHeading = "Your client’s Income Tax Return"
-  val provideUpdatesText = "1. Provide updates"
-  val completeSectionsIndividualText = "Complete the sections that apply to you."
-  val completeSectionsAgentText = "Complete the sections that apply to your client."
+  val updateIncomeTaxReturnTextIndividual = "1. Update your Income Tax Return"
+  val updateIncomeTaxReturnTextAgent = "1. Update your client’s Income Tax Return"
+  val completeSectionsText = "Fill in the sections you need to update."
   val updatedText = "Updated"
   val notStartedText = "Not started"
   val underMaintenance = "Under maintenance"
@@ -52,17 +52,18 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val dividendsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/check-income-from-dividends"
   val interestsLinkText = "Interest"
   val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
-  val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-your-answers"
+  val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-interest"
   val employmentLinkText = "Employment"
   val employmentLink = "http://localhost:9317/income-through-software/return/employment-income/2080/employment-summary"
+  val giftAidLinkText = "Donations to charity"
   val viewTaxCalcText = "2. View Tax calculation to date"
-  val provideUpdateIndividualText = "Provide at least one update before you can view your estimate."
-  val provideUpdateAgentText = "Provide at least one update before you can view your client’s estimate."
+  val provideUpdateIndividualText = "Update your Income Tax Return to view your tax estimate."
+  val provideUpdateAgentText = "Update your client’s Income Tax Return to view their tax estimate."
   val viewEstimateLinkText = "View estimation"
   val viewEstimateLink = s"/income-through-software/return/$taxYear/calculate"
   val submitReturnText = "3. Submit return"
-  val youWillBeAbleIndividualText = s"You will be able to submit your return from 6 April $taxYearPlusOne after providing your updates."
-  val youWillBeAbleAgentText = s"You will be able to submit your client’s return from 6 April $taxYearPlusOne after providing your client’s updates."
+  val youWillBeAbleIndividualText = s"Update your Income Tax Return and submit it to us after 5 April $taxYearPlusOne."
+  val youWillBeAbleAgentText = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYearPlusOne."
 
   val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
   val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
@@ -70,23 +71,30 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
   val captionSelector = "#main-content > div > div > header > p"
   val headerSelector = "#main-content > div > div > header > h1"
   val dividendsProvideUpdatesSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
-  val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > p"
+  val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li.govuk-body"
   val interestLinkSelector = "#interest_link"
   val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
   val dividendsLinkSelector = "#dividends_link"
   val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
-  val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.app-task-list__task-name"
+  val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.app-task-list__task-name"
+  val giftAidLinkSelector = "#giftAid_link"
+  val giftAidStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
   val employmentLinkSelector = "#employment_link"
-  val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
+  val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
   val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
   val interestProvideUpdatesSelector = "#main-content > div > div > ol > li.app-task-list__items > p"
   val viewEstimateSelector = "#calculation_link"
   val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(4) > h2"
-  val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > p"
+  val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > li"
 
   val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
-  
-  lazy val incomeSourcesModel:Option[IncomeSourcesModel] = Some(IncomeSourcesModel(dividendsModel, interestsModel, employment = Some(employmentsModel)))
+
+  lazy val incomeSourcesModel:Option[IncomeSourcesModel] = Some(IncomeSourcesModel(
+    dividends = dividendsModel,
+    interest = interestsModel,
+    giftAid = Some(giftAidModel),
+    employment = Some(employmentsModel))
+  )
 
   "The Overview page should render correctly in English" should {
 
@@ -103,8 +111,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
       titleCheck(individualHeading)
       h1Check(individualHeading)
       textOnPageCheck(caption, captionSelector)
-      textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-      textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+      textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+      textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
       "have a dividends section that says under maintenance" which {
         textOnPageCheck(underMaintenance, dividendsStatusSelector)
@@ -112,6 +120,10 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "have an interest section that says under maintenance" which {
         textOnPageCheck(underMaintenance, interestStatusSelector)
+      }
+
+      "have a donations to charity section that says under maintenance" which {
+        textOnPageCheck(underMaintenance, giftAidStatusSelector)
       }
 
       "have an employment section that says under maintenance" which {
@@ -128,7 +140,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an individual" which {
 
-        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,messages,mockConfig)
+        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,messages,appConfig)
         lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
 
         welshToggleCheck("English")
@@ -139,8 +151,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(individualHeading)
         h1Check(individualHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
@@ -152,10 +164,16 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
           textOnPageCheck(notStartedText, interestStatusSelector)
         }
 
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidUrl(taxYear))
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
         "has an employment section " which {
           textOnPageCheck(employmentLinkText, employmentSelector)
           textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
+
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -164,7 +182,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an agent" which {
 
-        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,messages,mockConfig)
+        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,messages,appConfig)
         lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
 
         welshToggleCheck("English")
@@ -175,8 +193,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(agentHeading)
         h1Check(agentHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsAgentText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
@@ -188,10 +206,16 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
           textOnPageCheck(notStartedText, interestStatusSelector)
         }
 
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidUrl(taxYear))
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
         "has an employment section" which {
           textOnPageCheck(employmentLinkText, employmentSelector)
           textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
+
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -203,7 +227,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an individual with prior data" which {
 
-        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,messages,mockConfig)
+        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,messages,appConfig)
         lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
 
         welshToggleCheck("English")
@@ -214,8 +238,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(individualHeading)
         h1Check(individualHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
@@ -225,6 +249,11 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
           textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
+          textOnPageCheck(updatedText, giftAidStatusSelector)
         }
 
         "has an employment section" which {
@@ -246,7 +275,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an individual" which {
 
-        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy val individualWithNoPriorDataView: Html = overviewPageView(isAgent = false, None, taxYear)(fakeRequest,welshMessages,appConfig)
         lazy implicit val individualWithNoPriorData: Document = Jsoup.parse(individualWithNoPriorDataView.body)
 
         welshToggleCheck("Welsh")
@@ -257,8 +286,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(individualHeading)
         h1Check(individualHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
@@ -270,10 +299,16 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
           textOnPageCheck(notStartedText, interestStatusSelector)
         }
 
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidUrl(taxYear))
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
         "has an employment section" which {
           textOnPageCheck(employmentLinkText, employmentSelector)
           textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
+
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -282,7 +317,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an agent" which {
 
-        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy val agentWithNoPriorDataView: Html = overviewPageView(isAgent = true, None, taxYear)(fakeRequest,welshMessages,appConfig)
         lazy implicit val agentWithNoPriorData: Document = Jsoup.parse(agentWithNoPriorDataView.body)
 
         welshToggleCheck("Welsh")
@@ -293,8 +328,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(agentHeading)
         h1Check(agentHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsAgentText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink)
@@ -306,10 +341,16 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
           textOnPageCheck(notStartedText, interestStatusSelector)
         }
 
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidUrl(taxYear))
+          textOnPageCheck(notStartedText, giftAidStatusSelector)
+        }
+
         "has an employment section" which {
           textOnPageCheck(employmentLinkText, employmentSelector)
           textOnPageCheck(cannotUpdateText, employmentStatusSelector)
         }
+
         textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnText, submitReturnSelector)
@@ -321,7 +362,7 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
 
       "Have the correct content for an individual with prior data" which {
 
-        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,welshMessages,mockConfig)
+        lazy val individualWithPriorDataView: Html = overviewPageView(isAgent = false, incomeSourcesModel, taxYear)(fakeRequest,welshMessages,appConfig)
         lazy implicit val individualWithPriorData: Document = Jsoup.parse(individualWithPriorDataView.body)
 
         welshToggleCheck("Welsh")
@@ -332,8 +373,8 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         titleCheck(individualHeading)
         h1Check(individualHeading)
         textOnPageCheck(caption, captionSelector)
-        textOnPageCheck(provideUpdatesText, dividendsProvideUpdatesSelector)
-        textOnPageCheck(completeSectionsIndividualText, completeSectionsSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
         "has a dividends section" which {
           linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData)
@@ -343,6 +384,11 @@ class OverviewPageViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPer
         "has an interest section" which {
           linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData)
           textOnPageCheck(updatedText, interestStatusSelector)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, mockAppConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
+          textOnPageCheck(updatedText, giftAidStatusSelector)
         }
 
         "has an employment section" which {

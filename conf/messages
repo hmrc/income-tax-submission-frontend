@@ -6,6 +6,7 @@ common.opensInNewWindowOrTab = (opens in new tab)
 common.help.getHelpWithThisPage = Get help with this page
 common.dividends = Dividends
 common.interest = Interest
+common.donationsToCharity = Donations to charity
 common.employment = Employment
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
@@ -22,25 +23,29 @@ common.yourIncomeTaxReturn.agent = Your client’s Income Tax Return
 common.caption = 6 April {0} to 5 April {1}
 startPage1 = Use this service to update and submit an Income Tax Return.
 startPage2 = This is a new service. At the moment you can only update information about:
-startPage.interestBullet.agent.true = interest paid to your client in the UK
-startPage.interestBullet.agent.false = interest paid to you in the UK
+startPage.interestBullet.agent = interest paid to your client in the UK
+startPage.interestBullet.individual = interest paid to you in the UK
 startPage.dividendsBullet = dividends from UK companies, trusts and open-ended investment companies
+startPage.charityBullet.agent = your client’s donations to charity
+startPage.charityBullet.individual = your donations to charity
+startPage.employment.agent = You can view your client’s employment information but cannot use this service to update it until 6 April {0}.
+startPage.employment.individual = You can view your employment information but cannot use this service to update it until 6 April {0}.
 startPage3.agent.true = To update your client’s self-employment and property income, you must use your chosen commercial software.
 startPage3.agent.false = To update your self-employment and property income, you must use your chosen commercial software.
 startPage.continue = Continue
 
-overview.task1.heading = Provide updates
-overview.agent.task1.caption = Complete the sections that apply to your client.
-overview.individual.task1.caption = Complete the sections that apply to you.
+overview.individual.task1.heading = Update your Income Tax Return
+overview.agent.task1.heading = Update your client’s Income Tax Return
+overview.task1.caption = Fill in the sections you need to update.
 
-overview.agent.task2.caption.noUpdate = Provide at least one update before you can view your client’s estimate.
+overview.agent.task2.caption.noUpdate = Update your client’s Income Tax Return to view their tax estimate.
 overview.task3.heading = Submit return
-overview.agent.task3.caption = You will be able to submit your client’s return from 6 April {0} after providing your client’s updates.
+overview.agent.task3.caption = Update your client’s Income Tax Return and submit it to us after 5 April {0}.
 
 overview.task2.heading = View Tax calculation to date
-overview.individual.task2.caption.noUpdate = Provide at least one update before you can view your estimate.
+overview.individual.task2.caption.noUpdate = Update your Income Tax Return to view your tax estimate.
 overview.task2.caption.update = View estimation
-overview.individual.task3.caption = You will be able to submit your return from 6 April {0} after providing your updates.
+overview.individual.task3.caption = Update your Income Tax Return and submit it to us after 5 April {0}.
 
 overview.notStarted = Not started
 overview.updated = Updated
@@ -69,7 +74,7 @@ error.agent.title = There’s a problem
 error.agent.paragraph1 = You cannot view this client’s information. Your client needs to
 error.agent.paragraph2 = authorise you as their agent (opens in new tab)
 error.agent.paragraph3 = before you can sign in to this service.
-error.agent.paragraph4 = Try another client’s details.
+error.agent.paragraph4 = Try another client’s details
 
 youNeedServices.title = You cannot view this page
 youNeedTo.p1 = You need to

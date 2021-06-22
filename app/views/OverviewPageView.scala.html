@@ -28,7 +28,7 @@
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <ol class="app-task-list__items">
-            <p class="govuk-body govuk-!-margin-bottom-0">@caption</p>
+            <li class="govuk-body govuk-!-margin-bottom-0">@caption</li>
             <li class="app-task-list__item"></li>
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
@@ -68,6 +68,28 @@
                     </span>
                 </li>
 
+            @if(appConfig.giftAidReleased){
+
+            <li class="app-task-list__item">
+                        <span class="app-task-list__task-name">
+                            @if(appConfig.giftAidEnabled){
+                            <a class="govuk-link" id="giftAid_link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else {@{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
+                                @messages("common.donationsToCharity")
+                            </a>
+                            } else {
+                                @messages("common.donationsToCharity")
+                            }
+                        </span>
+                        <span class="hmrc-status-tag">
+                            @if(appConfig.giftAidEnabled){
+                                @if(incomeSources.giftAid.isDefined){@messages("overview.updated")} else {@messages("overview.notStarted")}
+                            } else {
+                            @messages("common.underMaintenance")
+                            }
+                        </span>
+            </li>
+            }
+
             @if(appConfig.employmentReleased){
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
@@ -93,12 +115,13 @@
 }
 
 @taskWithActionOrCaption(heading: String, action: String, caption: String, index: Int, incomeSources: IncomeSourcesModel) = {
+
     <li>
         <h2 class="app-task-list__section">
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <li class="app-task-list__items">
-            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined) {
+            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined || (incomeSources.giftAid.isDefined && appConfig.giftAidReleased)) {
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
                     @action
                 </a>
@@ -107,7 +130,9 @@
             }
         </li>
     </li>
+
 }
+
 
 @taskWithCaption(heading: String, caption: String, index: Int) = {
     <li>
@@ -115,7 +140,7 @@
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <ul class="app-task-list__items">
-            <p class="govuk-body">@caption</p>
+            <li class="govuk-body">@caption</li>
         </ul>
     </li>
 }
@@ -124,11 +149,11 @@
             @heading(messages(s"common.yourIncomeTaxReturn.${if(isAgent) "agent" else "individual"}"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
             <ol class="app-task-list">
                 @if(isAgent) {
-                    @taskWithActionList(messages("overview.task1.heading"), messages("overview.agent.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                    @taskWithActionList(messages("overview.agent.task1.heading"), messages("overview.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
                     @taskWithActionOrCaption(messages("overview.task2.heading"), messages("overview.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
                     @taskWithCaption(messages("overview.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
                 } else {
-                    @taskWithActionList(messages("overview.task1.heading"), messages("overview.individual.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
+                    @taskWithActionList(messages("overview.individual.task1.heading"), messages("overview.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
                 @taskWithActionOrCaption(messages("overview.task2.heading"), messages("overview.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
                     @taskWithCaption(messages("overview.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
                 }

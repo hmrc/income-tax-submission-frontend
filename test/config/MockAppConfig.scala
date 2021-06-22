@@ -38,6 +38,10 @@ class MockAppConfig extends MockFactory {
 
     override def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/2021/interest"
 
+    lazy val personalIncomeTaxLocalBaseUrl: String = s"http://localhost:9308/income-through-software/return/personal-income"
+    override def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxLocalBaseUrl/$taxYear/charity/charity-donation-using-gift-aid"
+    override def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxLocalBaseUrl/$taxYear/charity/check-donations-to-charity"
+
     override def viewAndChangeCalculationUrl(taxYear: Int): String = s"/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
 
     override lazy val defaultTaxYear: Int = 2021
@@ -67,6 +71,10 @@ class MockAppConfig extends MockFactory {
     override lazy val employmentEnabled: Boolean = false
 
     override lazy val employmentReleased: Boolean = true
+
+    override lazy val giftAidEnabled: Boolean = false
+
+    override lazy val giftAidReleased: Boolean = true
 
     override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
   }

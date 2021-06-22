@@ -18,11 +18,11 @@ package models.employment
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Pay(taxablePayToDate: BigDecimal,
-               totalTaxToDate: BigDecimal,
+case class Pay(taxablePayToDate: Option[BigDecimal],
+               totalTaxToDate: Option[BigDecimal],
                tipsAndOtherPayments: Option[BigDecimal],
-               payFrequency: String,
-               paymentDate: String,
+               payFrequency: Option[String],
+               paymentDate: Option[String],
                taxWeekNo: Option[Int],
                taxMonthNo: Option[Int])
 

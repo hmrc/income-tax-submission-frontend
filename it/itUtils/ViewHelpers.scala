@@ -25,6 +25,9 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
   val serviceName = "Update and submit an Income Tax Return"
   val govUkExtension = "GOV.UK"
 
+  val ExpectedResults: Object
+  val Selectors: Object
+
   def elementText(selector: String)(implicit document: () => Document): String = {
     document().select(selector).text()
   }
@@ -77,13 +80,20 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
     }
   }
 
-  def buttonCheck(text: String, selector: String = ".govuk-button")(implicit document: () => Document): Unit = {
+  def buttonCheck(text: String, selector: String = ".govuk-button", href: Option[String] = None)(implicit document: () => Document): Unit = {
     s"have a $text button" which {
       s"has the text '$text'" in {
         document().select(selector).text() shouldBe text
       }
+
       s"has a class of govuk-button" in {
         document().select(selector).attr("class") should include ("govuk-button")
+      }
+
+      if (href.isDefined) {
+        s"has a href to '${href.get}'" in {
+          document().select(selector).attr("href") shouldBe href.get
+        }
       }
     }
   }
@@ -142,7 +152,7 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
       }
     }
   }
-
+  
   def welshToggleCheck(activeLanguage: String)(implicit document: () => Document): Unit = {
     val otherLanguage = if (activeLanguage == "English") "Welsh" else "English"
 
@@ -164,7 +174,7 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers =>
       }
       s"has a link to change the language" in {
         document().select(".hmrc-language-select__list-item > a").attr("href") shouldBe
-          s"/income-through-software/return/personal-income/language/${linkLanguage(otherLanguage).toLowerCase}"
+          s"/income-through-software/return/language/${linkLanguage(otherLanguage).toLowerCase}"
       }
     }
   }

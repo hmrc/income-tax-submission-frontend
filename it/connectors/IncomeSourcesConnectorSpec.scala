@@ -25,7 +25,7 @@ import play.mvc.Http.Status._
 class IncomeSourcesConnectorSpec extends IntegrationTest {
 
   lazy val connector: IncomeSourcesConnector = app.injector.instanceOf[IncomeSourcesConnector]
-  lazy val connectorWithSourcesTurnedOff: IncomeSourcesConnector = appWithDifferentConfig.injector.instanceOf[IncomeSourcesConnector]
+  lazy val connectorWithSourcesTurnedOff: IncomeSourcesConnector = appWithSourcesTurnedOff.injector.instanceOf[IncomeSourcesConnector]
 
   val nino: String = "123456789"
   val taxYear: Int = 1999
@@ -57,15 +57,15 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
           directorshipCeasedDate = Some("2020-02-12"),
           occPen = Some(false),
           disguisedRemuneration = Some(false),
-          Pay(
-            taxablePayToDate = 34234.15,
-            totalTaxToDate = 6782.92,
+          pay = Some(Pay(
+            taxablePayToDate = Some(34234.15),
+            totalTaxToDate = Some(6782.92),
             tipsAndOtherPayments = Some(67676),
-            payFrequency = "CALENDAR MONTHLY",
-            paymentDate = "2020-04-23",
+            payFrequency = Some("CALENDAR MONTHLY"),
+            paymentDate = Some("2020-04-23"),
             taxWeekNo = Some(32),
             taxMonthNo = Some(2)
-          )
+          ))
         )),
         employmentBenefits = Some(
           EmploymentBenefits(
@@ -107,15 +107,15 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
             directorshipCeasedDate = Some("2020-02-12"),
             occPen = Some(false),
             disguisedRemuneration = Some(false),
-            Pay(
-              taxablePayToDate = 34234.15,
-              totalTaxToDate = 6782.92,
+            pay = Some(Pay(
+              taxablePayToDate = Some(34234.15),
+              totalTaxToDate = Some(6782.92),
               tipsAndOtherPayments = Some(67676),
-              payFrequency = "CALENDAR MONTHLY",
-              paymentDate = "2020-04-23",
+              payFrequency = Some("CALENDAR MONTHLY"),
+              paymentDate = Some("2020-04-23"),
               taxWeekNo = Some(32),
               taxMonthNo = Some(2)
-            )
+            ))
           )
         ),
         employmentBenefits = Some(

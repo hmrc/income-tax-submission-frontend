@@ -16,46 +16,78 @@
 
 package controllers.errors
 
-import itUtils.IntegrationTest
+import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
-import play.api.libs.ws.{WSClient, WSResponse}
 import org.jsoup.nodes.Document
-import itUtils.ViewHelpers
+import play.api.http.HeaderNames
+import play.api.http.Status.UNAUTHORIZED
+import play.api.libs.ws.WSResponse
 
 class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
 
-  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
   object ExpectedResults {
     val heading: String = "There’s a problem"
     val title = "There’s a problem"
     val youCan = "You cannot view this client’s information. Your client needs to authorise you as their agent " +
       "(opens in new tab) before you can sign in to this service."
-    val tryAnother = "Try another client’s details."
-
+    val tryAnother = "Try another client’s details"
+    val tryAnotherExpectedHref = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/client-utr"
+    val authoriseAsAnAgentLink = "https://www.gov.uk/guidance/client-authorisation-an-overview"
+    val authoriseYouAsText = "authorise you as their agent (opens in new tab)"
   }
+  
   object Selectors {
     val youCan = "#main-content > div > div > p:nth-child(2)"
-    val tryAnother = "#main-content > div > div > p:nth-child(3)"
-
+    val tryAnother = "#main-content > div > div > a"
+    val authoriseAsAnAgentLinkSelector = "#client_auth_link"
   }
-     val url = s"http://localhost:$port/income-through-software/return/error/you-need-client-authorisation"
 
+  val url = s"http://localhost:$port/income-through-software/return/error/you-need-client-authorisation"
 
-  "calling GET" when {
-    "an individual" should {
+  "an agent calling GET" when {
+    "language is set to ENGLISH" should {
       "return a page" which {
         lazy val result: WSResponse = {
           authoriseIndividual()
           await(wsClient.url(url).get())
         }
+
         implicit def document: () => Document = () => Jsoup.parse(result.body)
+
+        "returns status of UNAUTHORIZED(401)" in {
+          result.status shouldBe UNAUTHORIZED
+        }
+
+        welshToggleCheck("English")
         titleCheck(ExpectedResults.title)
         h1Check(ExpectedResults.heading,"xl")
         textOnPageCheck(ExpectedResults.youCan, Selectors.youCan)
-        textOnPageCheck(ExpectedResults.tryAnother, Selectors.tryAnother)
+        linkCheck(ExpectedResults.authoriseYouAsText, Selectors.authoriseAsAnAgentLinkSelector, ExpectedResults.authoriseAsAnAgentLink)
+        buttonCheck(ExpectedResults.tryAnother, Selectors.tryAnother, Some(ExpectedResults.tryAnotherExpectedHref))
+      }
+    }
+
+    "language is set to WELSH" should {
+      "return a page" which {
+        lazy val result: WSResponse = {
+          authoriseIndividual()
+          await(wsClient.url(url).withHttpHeaders(HeaderNames.ACCEPT_LANGUAGE -> "cy").get())
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(result.body)
+
+        "returns status of UNAUTHORIZED(401)" in {
+          result.status shouldBe UNAUTHORIZED
+        }
+
+        welshToggleCheck("Welsh")
+        titleCheck(ExpectedResults.title)
+        h1Check(ExpectedResults.heading,"xl")
+        textOnPageCheck(ExpectedResults.youCan, Selectors.youCan)
+        linkCheck(ExpectedResults.authoriseYouAsText, Selectors.authoriseAsAnAgentLinkSelector, ExpectedResults.authoriseAsAnAgentLink)
+        buttonCheck(ExpectedResults.tryAnother, Selectors.tryAnother, Some(ExpectedResults.tryAnotherExpectedHref))
       }
     }
   }
 
 }
-

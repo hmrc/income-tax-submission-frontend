@@ -46,7 +46,7 @@ class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest{
   "The NotFoundPage when called in English" should {
     "render correctly" should {
 
-      lazy val view: Html = notFoundPage()(fakeRequest, messages, mockConfig)
+      lazy val view: Html = notFoundPage()(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)
@@ -62,7 +62,7 @@ class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest{
   "The NotFoundPage when called in Welsh" should {
     "render correctly" should {
 
-      lazy val view: Html = notFoundPage()(fakeRequest, welshMessages, mockConfig)
+      lazy val view: Html = notFoundPage()(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
       titleCheck(pageTitleText)
