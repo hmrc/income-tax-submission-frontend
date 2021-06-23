@@ -22,7 +22,6 @@ import controllers.predicates.AuthorisedAction
 import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
 import play.api.mvc._
 import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -46,23 +45,7 @@ class OverviewPageController @Inject()(
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
       case Right(incomeSources) =>
-
-        val result = Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
-
-        val sessionValues = Seq(
-          DIVIDENDS_PRIOR_SUB -> incomeSources.dividends.map(d => Json.toJson(d)),
-          INTEREST_PRIOR_SUB -> incomeSources.interest.map(i => Json.toJson(i)),
-          GIFT_AID_PRIOR_SUB -> incomeSources.giftAid.map(g => Json.toJson(g))
-        )
-
-        val resultWithSessionData = sessionValues.foldRight(result) { (newSessionData, runningResult) =>
-          newSessionData._2.fold(runningResult){ jsValue =>
-            runningResult.addingToSession(newSessionData._1 -> jsValue.toString())
-          }
-        }
-
-        resultWithSessionData
-
+        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
       case Left(error) => errorHandler.handleError(error.status)
     }
   }

@@ -17,7 +17,7 @@
 package controllers.predicates
 
 import common.SessionValues
-import common.SessionValues.{DIVIDENDS_CYA, DIVIDENDS_PRIOR_SUB, GIFT_AID_CYA, GIFT_AID_PRIOR_SUB, INTEREST_CYA, INTEREST_PRIOR_SUB, TAX_YEAR}
+import common.SessionValues.TAX_YEAR
 import config.AppConfig
 import models.User
 import play.api.Logger
@@ -50,10 +50,6 @@ class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(
           Left(
             Redirect(controllers.routes.StartPageController.show(taxYear).url)
               .addingToSession(TAX_YEAR -> taxYear.toString)
-              .removingFromSession(
-                DIVIDENDS_CYA, INTEREST_CYA, GIFT_AID_CYA,
-                DIVIDENDS_PRIOR_SUB, INTEREST_PRIOR_SUB, GIFT_AID_PRIOR_SUB
-              )
           )
         }
       } else {
