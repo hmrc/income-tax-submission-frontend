@@ -26,22 +26,21 @@ class AppConfigSpec extends UnitTest {
   private val appUrl = "http://localhost:9302"
   private val appConfig = new AppConfig(mockServicesConfig)
 
-  (mockServicesConfig.baseUrl(_: String)).expects("bas-gateway-frontend").returns("http://bas-gateway-frontend:9553")
-  (mockServicesConfig.getConfString(_: String, _: String))
-    .expects("bas-gateway-frontend.relativeUrl", *)
-    .returns("http://bas-gateway-frontend:9553")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.sign-in.url").returns("http://localhost:9949/auth-login-stub/gg-sign-in")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.sign-in.continueUrl").returns("http://localhost:9152")
 
-  (mockServicesConfig.baseUrl(_: String)).expects("feedback-frontend").returns("http://feedback-frontend:9514")
-  (mockServicesConfig.getConfString(_: String, _: String))
-    .expects("feedback-frontend.relativeUrl", *)
-    .returns("http://feedback-frontend:9514")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.income-tax-submission.url").returns("http://income-tax-submission:9250")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.personal-income-tax-submission-frontend.url").returns("http://personal:9308")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.bas-gateway-frontend.url").returns("http://bas-gateway-frontend:9553")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.feedback-frontend.url").returns("http://feedback-frontend:9514")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.contact-frontend.url").returns("http://contact-frontend:9250")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.income-tax-employment-frontend.url").returns("http://employment-frontend:9250")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.view-and-change.url").returns("http://localhost:9081")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.identity-verification-frontend.url").returns("http://identity")
+  (mockServicesConfig.getString(_: String)).expects("microservice.services.income-tax-calculation.url").returns("http://calculation")
 
-  (mockServicesConfig.baseUrl(_: String)).expects("contact-frontend").returns("http://contact-frontend:9250")
-
-  (mockServicesConfig.getConfString(_: String, _: String))
-    .expects("contact-frontend.baseUrl", *)
-    .returns("http://contact-frontend:9250")
   (mockServicesConfig.getString _).expects("microservice.url").returns(appUrl)
+  (mockServicesConfig.getString _).expects("appName").returns("income-tax-submission-frontend")
 
   "AppConfig" should {
 
@@ -55,6 +54,8 @@ class AppConfigSpec extends UnitTest {
       val expectedFeedbackSurveyUrl = s"http://feedback-frontend:9514/feedback/$expectedServiceIdentifier"
       val expectedContactUrl = s"http://contact-frontend:9250/contact/contact-hmrc?service=$expectedServiceIdentifier"
       val expectedSignOutUrl = s"http://bas-gateway-frontend:9553/bas-gateway/sign-out-without-state"
+      val expectedSignInUrl = "http://localhost:9949/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A9152&origin=income-tax-submission-frontend"
+      val expectedSignInContinueUrl = "http%3A%2F%2Flocalhost%3A9152"
 
       implicit val isAgent: Boolean = false
 
@@ -65,6 +66,16 @@ class AppConfigSpec extends UnitTest {
       appConfig.contactUrl shouldBe expectedContactUrl
 
       appConfig.signOutUrl shouldBe expectedSignOutUrl
+
+      appConfig.signInUrl shouldBe expectedSignInUrl
+      appConfig.signInContinueUrl shouldBe expectedSignInContinueUrl
+
+      appConfig.incomeTaxSubmissionBaseUrl shouldBe "http://income-tax-submission:9250"
+      appConfig.viewAndChangeEnterUtrUrl shouldBe "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/client-utr"
+      appConfig.personalIncomeTaxSubmissionBaseUrl shouldBe "http://personal:9308"
+      appConfig.ivUpliftUrl shouldBe "http://identity/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details"
+      appConfig.employmentIncomeTaxSubmissionUrl shouldBe "http://employment-frontend:9250/income-through-software/return/employment-income"
+      appConfig.calculationBaseUrl shouldBe "http://calculation"
     }
 
     "return the correct feedback url when the user is an agent" in {

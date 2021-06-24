@@ -17,10 +17,18 @@
 package config
 
 object ConfigKeys {
-  val signInUrl = "signIn.url"
-  val signInContinueBaseUrl = "signIn.continueBaseUrl"
-  val personalIncomeBaseUrl = "personalIncome.url"
-  val employmentIncomeBaseUrl = "employmentIncome.url"
-  val viewAndChangeBaseUrl = "view-and-change.baseUrl"
+  val incomeTaxSubmissionUrl = "microservice.services.income-tax-submission.url"
+  val incomeTaxCalculationUrl = "microservice.services.income-tax-calculation.url"
+
+  val contactFrontendUrl = "microservice.services.contact-frontend.url"
+  val incomeTaxEmploymentFrontendUrl = "microservice.services.income-tax-employment-frontend.url"
+  val personalIncomeTaxFrontendUrl = "microservice.services.personal-income-tax-submission-frontend.url"
+  val basGatewayFrontendUrl = "microservice.services.bas-gateway-frontend.url"
+  val feedbackFrontendUrl = "microservice.services.feedback-frontend.url"
+  val identityVerificationFrontendUrl = "microservice.services.identity-verification-frontend.url"
+  val viewAndChangeUrl = "microservice.services.view-and-change.url"
+  val signInUrl = "microservice.services.sign-in.url"
+  val signInContinueUrl = "microservice.services.sign-in.continueUrl"
+
   val defaultTaxYear = "defaultTaxYear"
 }
