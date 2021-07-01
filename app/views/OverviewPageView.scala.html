@@ -33,7 +33,7 @@
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
                         @if(appConfig.interestEnabled){
-                            <a class="govuk-link" id="interest_link" href=@if(incomeSources.interest.isEmpty){ @{appConfig.personalIncomeTaxInterestUrl(taxYear)}}else{ @{appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)}}>
+                            <a class="govuk-link" id="interest_link" href=@if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))){ @{appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)}}else{@{appConfig.personalIncomeTaxInterestUrl(taxYear)}}>
                                 @messages("common.interest")
                             </a>
                         } else {
@@ -42,7 +42,11 @@
                     </span>
                     <span class="hmrc-status-tag">
                         @if(appConfig.interestEnabled){
-                            @if(incomeSources.interest.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
+                            @if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))){
+                                @messages("overview.updated")
+                            }else{
+                                @messages("overview.notStarted")
+                            }
                         } else {
                             @messages("common.underMaintenance")
                         }

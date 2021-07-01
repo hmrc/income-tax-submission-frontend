@@ -23,7 +23,10 @@ case class InterestModel(
                           incomeSourceId: String,
                           taxedUkInterest: Option[BigDecimal],
                           untaxedUkInterest: Option[BigDecimal]
-                        )
+                        ) {
+
+  val hasAmounts: Boolean = taxedUkInterest.isDefined || untaxedUkInterest.isDefined
+}
 
 object InterestModel {
   implicit val formats: OFormat[InterestModel] = Json.format[InterestModel]

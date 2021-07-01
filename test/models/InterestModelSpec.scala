@@ -38,6 +38,32 @@ class InterestModelSpec  extends UnitTest {
     "parse from Json" in {
       jsonModel.as[DividendsModel]
     }
+
+    "hasAmounts" should {
+
+      "return true" when {
+        "untaxedAmount is Some and taxedAmount is None" in {
+          val model: InterestModel = InterestModel("account", "1234567890", None, Some(500))
+
+          model.hasAmounts shouldBe true
+        }
+
+        "untaxedAmount is None and taxedAmount is Some" in {
+          val model: InterestModel = InterestModel("account", "1234567890", Some(500), None)
+
+          model.hasAmounts shouldBe true
+        }
+      }
+
+      "return false" when {
+        "untaxedAmount is None and taxedAmount is None" in {
+          val model: InterestModel = InterestModel("account", "1234567890", None, None)
+
+          model.hasAmounts shouldBe false
+        }
+      }
+
+    }
   }
 
 }
