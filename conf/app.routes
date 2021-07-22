@@ -30,3 +30,5 @@ GET         /error/you-need-client-authorisation            controllers.errors.A
 GET         /error/you-need-agent-services-account          controllers.errors.YouNeedAgentServicesController.show
 
 GET         /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)
+
+GET         /:taxYear/address-changed                       controllers.AddressHasChangedPageController.show(taxYear: Int)
