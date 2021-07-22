@@ -13,6 +13,7 @@ common.govUk = GOV.UK
 common.signout.button = Sign out
 common.returnToIncomeTaxAccount.button = Back to Income Tax account
 common.back = Back
+common.return.button = Back to Income Tax Return
 
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
@@ -105,3 +106,9 @@ error.returnTaxYearExists.title = We already have an Income Tax Return for that 
 error.returnTaxYearExists.p1 = We have an Income Tax Return for the 2020 to 2021 tax year.
 error.returnTaxYearExists.p2.individual = You can go to your Income Tax account to see your Income Tax Returns.
 error.returnTaxYearExists.p2.agent = You can go to your client’s Income Tax account to see their Income Tax Returns.
+error.address-has-changed.title.individual = Your address has changed
+error.address-has-changed.title.agent = Your client’s address has changed
+error.address-has-changed.paragraph1.individual = Your address has changed to a country with a different rate of tax.
+error.address-has-changed.paragraph1.agent = Your client’s address has changed to a country with a different rate of tax.
+error.address-has-changed.paragraph2.individual = You must submit your Income Tax Return again to get a new tax calculation.
+error.address-has-changed.paragraph2.agent = You must submit your client’s Income Tax Return again to get a new tax calculation.

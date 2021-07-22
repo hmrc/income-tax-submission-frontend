@@ -32,3 +32,5 @@ GET         /error/you-need-agent-services-account          controllers.errors.Y
 GET         /:taxYear/already-have-income-tax-return        controllers.errors.ReturnTaxYearExistsController.show(taxYear: Int)
 
 GET         /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)
+
+GET         /:taxYear/address-changed                       controllers.AddressHasChangedPageController.show(taxYear: Int)
