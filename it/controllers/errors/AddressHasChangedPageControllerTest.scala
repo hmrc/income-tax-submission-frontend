@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.errors
 
-import audit.AuditService
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.mvc.Result
-import play.api.test.Helpers.{OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
-import services.AuthService
 import views.html.errors.AddressHasChangedPage
 
 import scala.concurrent.Future
@@ -35,62 +32,37 @@ class AddressHasChangedPageControllerTest extends IntegrationTest with ViewHelpe
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  def controller: AddressHasChangedPageController = new AddressHasChangedPageController(
-    app.injector.instanceOf[AuthorisedAction],
-    app.injector.instanceOf[AuthService],
-    app.injector.instanceOf[AddressHasChangedPage],
-    app.injector.instanceOf[AuditService],
-    frontendAppConfig,
-    mcc,
-    scala.concurrent.ExecutionContext.Implicits.global
-  )
-
   val taxYear = 2022
   val taxYearMinusOne: Int = taxYear - 1
   val taxYearPlusOne: Int = taxYear + 1
-
-  object ExpectedResultsEnglish {
-    val titleIndividual = "Your address has changed"
-    val titleAgent = "Your client’s address has changed"
-    val headingIndividual = "Your address has changed"
-    val headingAgent = "Your client’s address has changed"
-    val addressHasChangedTextIndividual = "Your address has changed to a country with a different rate of tax."
-    val addressHasChangedTextAgent = "Your client’s address has changed to a country with a different rate of tax."
-    val submitYourReturnIndividual = "You must submit your Income Tax Return again to get a new tax calculation."
-    val submitYourReturnAgent = "You must submit your client’s Income Tax Return again to get a new tax calculation."
-    val incomeTaxReturnButtonText = "Back to Income Tax Return"
-    val incomeTaxReturnButtonHref = s"/income-through-software/return/$taxYear/start"
-  }
-
-  object ExpectedResultsWelsh {
-    val titleIndividual = "Your address has changed"
-    val titleAgent = "Your client’s address has changed"
-    val headingIndividual = "Your address has changed"
-    val headingAgent = "Your client’s address has changed"
-    val addressHasChangedTextIndividual = "Your address has changed to a country with a different rate of tax."
-    val addressHasChangedTextAgent = "Your client’s address has changed to a country with a different rate of tax."
-    val submitYourReturnIndividual = "You must submit your Income Tax Return again to get a new tax calculation."
-    val submitYourReturnAgent = "You must submit your client’s Income Tax Return again to get a new tax calculation."
-    val incomeTaxReturnButtonText = "Back to Income Tax Return"
-    val incomeTaxReturnButtonHref = s"/income-through-software/return/$taxYear/start"
-  }
-
 
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
     val addressHasChangedSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val submitYourReturnSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val incomeTaxReturnButtonSelector = "#main-content > div > div > form > button"
+    val incomeTaxReturnButtonSelector = "#main-content > div > div > form"
     val addressHasChangedPageView: AddressHasChangedPage = app.injector.instanceOf[AddressHasChangedPage]
   }
 
+  object ExpectedResults {
+    val titleIndividual = "Your address has changed"
+    val titleAgent = "Your client’s address has changed"
+    val headingIndividual = "Your address has changed"
+    val headingAgent = "Your client’s address has changed"
+    val addressHasChangedTextIndividual = "Your address has changed to a country with a different rate of tax."
+    val addressHasChangedTextAgent = "Your client’s address has changed to a country with a different rate of tax."
+    val submitYourReturnIndividual = "You must submit your Income Tax Return again to get a new tax calculation."
+    val submitYourReturnAgent = "You must submit your client’s Income Tax Return again to get a new tax calculation."
+    val incomeTaxReturnButtonText = "Back to Income Tax Return"
+    val incomeTaxReturnButtonHref = s"/income-through-software/return/$taxYear/start"
+  }
+
   import Selectors._
+  import ExpectedResults._
 
   private val urlPath = s"/income-through-software/return/$taxYear/address-changed"
 
   "Rendering the address change error page in English" should {
-
-    import ExpectedResultsEnglish._
 
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
 
@@ -142,8 +114,6 @@ class AddressHasChangedPageControllerTest extends IntegrationTest with ViewHelpe
   }
 
   "Rendering the address change error page in Welsh" should {
-
-    import ExpectedResultsWelsh._
 
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
