@@ -17,19 +17,31 @@
 @import views.html.headerFooterTemplate.Layout
 @import views.html.templates.helpers.Heading
 @import utils.ViewUtils._
+@import views.html.templates.helpers.Button
 
-@this(layout: Layout, heading: Heading)
+@this(layout: Layout, heading: Heading, button: Button)
 
-@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int, isInYear:Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int, isInYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
-@taskWithActionList(heading: String, caption: String, index: Int, incomeSources: IncomeSourcesModel) = {
+@taskWithActionList(heading: String, caption: String, index: Int, incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <li>
         <h2 class="app-task-list__section">
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <ol class="app-task-list__items">
-            <li class="govuk-body govuk-!-margin-bottom-0">@caption</li>
+            <li class="govuk-body">@caption</li>
+
+            @if(!isInYear){
+            <div class="govuk-warning-text govuk-body govuk-!-margin-bottom-0" style="right:1.875em">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        @warningEOY
+                    </strong>
+            </div>
+            }
+
             <li class="app-task-list__item"></li>
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
@@ -119,12 +131,14 @@
     </li>
 }
 
-@taskWithActionOrCaption(heading: String, action: String, caption: String, index: Int, incomeSources: IncomeSourcesModel) = {
+@taskWithActionOrCaption(heading: String, action: String, caption: String, index: Int, incomeSources: IncomeSourcesModel, actionEOY: String) = {
 
     <li>
         <h2 class="app-task-list__section">
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
+
+        @if(isInYear){
         <li class="app-task-list__items">
             @if(isAnIncomeSourceDefined(incomeSources)) {
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
@@ -134,33 +148,67 @@
                 <p class="govuk-body">@caption</p>
             }
         </li>
-    </li>
+        } else {
 
+        <li class="app-task-list__items">
+        @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined || (incomeSources.giftAid.isDefined && appConfig.giftAidReleased)) {
+            <p class="govuk-body">@messages(s"overview.task2.crystallisation.caption.${if(isAgent) "agent" else "individual"}")</p>
+                <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
+                @actionEOY
+                </a>
+
+                } else {
+                    <p class="govuk-body">@caption</p>
+                }
+        </li>
+    }
 }
 
 
-@taskWithCaption(heading: String, caption: String, index: Int) = {
-    <li>
-        <h2 class="app-task-list__section">
-            <span class="app-task-list__section-number">@index.</span> @heading
-        </h2>
-        <ul class="app-task-list__items">
-            <li class="govuk-body">@caption</li>
-        </ul>
-    </li>
+@taskWithCaption(heading: String, caption: String, index: Int, captionEOY: String, headingEOY: String) = {
+
+        @if(isInYear) {
+        <li>
+            <h2 class="app-task-list__section">
+                <span class="app-task-list__section-number">@index.</span> @heading
+            </h2>
+                <ul class="app-task-list__items">
+                    <li class="govuk-body">@caption</li>
+                </ul>
+        </li>
+        } else {
+        <li>
+            <h2 class="app-task-list__section">
+                <span class="app-task-list__section-number">@index.</span> @headingEOY
+            </h2>
+                <ul class="app-task-list__items">
+                    <li class="govuk-body">@captionEOY</li>
+                    @button()
+                </ul>
+        </li>
+        }
+
 }
 
 @overview = {
             @heading(messages(s"common.yourIncomeTaxReturn.${if(isAgent) "agent" else "individual"}"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
+                @if(!isInYear) {
+                    <p class="govuk-body">@(messages(s"overview.crystallisation.paragraph.1.${if(isAgent) "agent" else "individual"}"))</p>
+                        <ul class="govuk-list govuk-list--bullet govuk-!-padding-bottom-5">
+                            <li>@(messages(s"overview.crystallisation.bullet.1"))</li>
+                            <li>@(messages(s"overview.crystallisation.bullet.2"))</li>
+                        </ul>
+                    }
+
             <ol class="app-task-list">
                 @if(isAgent) {
-                    @taskWithActionList(messages("overview.agent.task1.heading"), messages("overview.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                    @taskWithActionOrCaption(messages("overview.task2.heading"), messages("overview.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                    @taskWithCaption(messages("overview.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3)
+                    @taskWithActionList(messages("overview.agent.task1.heading"), messages("overview.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))
+                    @taskWithActionOrCaption(messages("overview.viewTaxCalculation"), messages("overview.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.viewTaxCalculation"))
+                    @taskWithCaption(messages("overview.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3, messages("overview.task3.crystallisation.paragraph.agent"), messages(s"overview.task3.crystallisation.heading.agent"))
                 } else {
-                    @taskWithActionList(messages("overview.individual.task1.heading"), messages("overview.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                @taskWithActionOrCaption(messages("overview.task2.heading"), messages("overview.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)))
-                    @taskWithCaption(messages("overview.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3)
+                    @taskWithActionList(messages("overview.individual.task1.heading"), messages("overview.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.individual"))
+                    @taskWithActionOrCaption(messages("overview.viewTaxCalculation"), messages("overview.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.viewTaxCalculation"))
+                    @taskWithCaption(messages("overview.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3, messages("overview.task3.crystallisation.paragraph.individual"), messages(s"overview.task3.crystallisation.heading.individual"))
                 }
             </ol>
 }

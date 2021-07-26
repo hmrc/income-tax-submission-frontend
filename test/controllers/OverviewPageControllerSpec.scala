@@ -19,11 +19,12 @@ package controllers
 
 import common.SessionValues
 import common.SessionValues._
-import config.{AppConfig, ErrorHandler}
+import config.{AppConfig, ErrorHandler, MockAppConfig}
 import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
 import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
+import controllers.predicates.InYearAction
 import models._
-import org.scalamock.handlers.{CallHandler2, CallHandler4}
+import org.scalamock.handlers.{CallHandler1, CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -40,6 +41,7 @@ import utils.UnitTest
 import views.html.OverviewPageView
 import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
 
+import java.time.{LocalDateTime, ZoneId}
 import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
@@ -49,6 +51,13 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
     SessionValues.CLIENT_NINO -> "AA123456A",
     SessionValues.TAX_YEAR -> "2022"
   ).withHeaders("X-Session-ID" -> sessionId)
+
+  private val fakeGetRequestEndOfYear = FakeRequest("GET", "/").withSession(
+    SessionValues.CLIENT_MTDITID -> "12234567890",
+    SessionValues.CLIENT_NINO -> "AA123456A",
+    SessionValues.TAX_YEAR -> "2021"
+  ).withHeaders("X-Session-ID" -> sessionId)
+
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
@@ -62,9 +71,11 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
   private val mockErrorHandler = mock[ErrorHandler]
   private val mockCalculationIdService = mock[CalculationIdService]
+  private val inYearAction = new InYearAction()(frontendAppConfig)
 
   private val nino = Some("AA123456A")
   private val taxYear = 2022
+  private val taxYearEndOfYear = taxYear - 1
 
   def mockGetIncomeSourcesValid(): CallHandler4[String, Int, String, HeaderCarrier, Future[IncomeSourcesResponse]] = {
     val validIncomeSource: IncomeSourcesResponse = Right(IncomeSourcesModel(
@@ -137,9 +148,15 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
     overviewPageView, authorisedAction, mockErrorHandler
   )
 
+  private val controllerEndOfYear = new OverviewPageController(
+    mockAppConfigTaxYearFeatureOff, stubMessagesControllerComponents(),mockExecutionContext, mockIncomeSourcesService, mockCalculationIdService,
+    inYearAction, overviewPageView, authorisedAction, mockErrorHandler
+  )
+
+
   "calling the individual action" when {
 
-    "the user is an individual with existing income sources" should {
+    "the user is in year and with existing income sources" should {
 
       "GET '/' for an individual and return 200" in {
 
@@ -164,7 +181,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       }
     }
 
-    "the user is an individual without existing income sources" should {
+    "the user is in year and without existing income sources" should {
 
       "GET '/' for an individual and return 200" in {
 
@@ -196,6 +213,57 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
           mockGetIncomeSourcesNone()
           
           controller.show(taxYear)(fakeGetRequest)
+        }
+        contentType(result) shouldBe Some("text/html")
+        charset(result) shouldBe Some("utf-8")
+      }
+    }
+
+    "the user is at the end of year" should {
+
+      "GET '/' for an individual and redirect to the postCrystallisation Overview" in {
+
+        val result = {
+          mockAuth(nino)
+          controllerEndOfYear.show(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+        status(result) shouldBe SEE_OTHER
+        redirectUrl(result) shouldBe controllers.routes.OverviewPageController.showCrystallisation(taxYearEndOfYear).url
+      }
+
+      "GET '/' for an individual at and return 200" in {
+
+        val result = {
+          mockAuth(nino)
+          mockGetIncomeSourcesValid()
+
+          controllerEndOfYear.showCrystallisation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+
+        status(result) shouldBe Status.OK
+      }
+
+      "GET '/' for an individual and return 500 if connector returns 500" in {
+
+        val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
+
+        val result = {
+          mockAuth(nino)
+          mockGetIncomeSourcesError()
+          mockHandleError(InternalServerError(internalServerErrorPage()))
+          controllerEndOfYear.showCrystallisation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+
+        status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+      }
+
+      "return HTML" in {
+
+        val result = {
+          mockAuth(nino)
+          mockGetIncomeSourcesValid()
+
+          controllerEndOfYear.showCrystallisation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
         contentType(result) shouldBe Some("text/html")
         charset(result) shouldBe Some("utf-8")
@@ -269,7 +337,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   "Calling the .getCalculation method" when {
 
-    "The user is an individual" should {
+    "The user is an individual and in year" should {
 
       "GET '/' for an individual and return a redirect with calculationId in session" in {
 
@@ -306,6 +374,35 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       }
 
+    }
+
+    "the user is an individual and at the end of year" should {
+
+      "GET '/' for an individual and return a redirect with calculationId in session" in {
+
+        val result = {
+          mockAuth(nino)
+          mockGetCalculationId()
+
+          controllerEndOfYear.getCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+
+        status(result) shouldBe Status.SEE_OTHER
+        session(result).get(CALCULATION_ID) shouldBe Some("calculationId")
+      }
+
+      "return a serviceUnavailableErrorPage" in {
+
+        val result = {
+          mockAuth(nino)
+          mockGetCalculationIdServiceUnavailableError()
+          mockHandleError(ServiceUnavailable(serviceUnavailablePageView()))
+
+          controllerEndOfYear.getCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+
+        }
+        status(result) shouldBe Status.SERVICE_UNAVAILABLE
+      }
 
     }
 
@@ -345,6 +442,35 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       }
 
+    }
+
+    "the user is an agent at the end of year" should {
+
+      "GET '/' for agent and return a redirect with calculationId in session" in {
+
+        val result = {
+          mockAuthAsAgent()
+          mockGetCalculationId()
+
+          controllerEndOfYear.getCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+
+        status(result) shouldBe Status.SEE_OTHER
+        session(result).get(CALCULATION_ID) shouldBe Some("calculationId")
+      }
+
+      "return a serviceUnavailableErrorPage" in {
+
+        val result = {
+          mockAuthAsAgent()
+          mockGetCalculationIdServiceUnavailableError()
+          mockHandleError(ServiceUnavailable(serviceUnavailablePageView()))
+
+          controllerEndOfYear.getCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+
+        }
+        status(result) shouldBe Status.SERVICE_UNAVAILABLE
+      }
     }
   }
 }

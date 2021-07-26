@@ -48,10 +48,24 @@ overview.agent.task2.caption.noUpdate = Update your client’s Income Tax Return
 overview.task3.heading = Submit return
 overview.agent.task3.caption = Update your client’s Income Tax Return and submit it to us after 5 April {0}.
 
-overview.task2.heading = View Tax calculation to date
+
 overview.individual.task2.caption.noUpdate = Update your Income Tax Return to view your tax estimate.
 overview.task2.caption.update = View estimation
 overview.individual.task3.caption = Update your Income Tax Return and submit it to us after 5 April {0}.
+
+overview.crystallisation.paragraph.1.individual = If we have information about your income and deductions, we’ll enter it for you. We get this information from:
+overview.crystallisation.paragraph.1.agent = If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from:
+overview.crystallisation.bullet.1 = our records
+overview.crystallisation.bullet.2 = your software package
+overview.crystallisation.warning.individual = Use your software package to update parts of your Income Tax Return that are not on this list.
+overview.crystallisation.warning.agent = Use your software package to update parts of your client’s Income Tax Return that are not on this list.
+overview.task3.crystallisation.paragraph.individual = If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. You can check your calculation and then submit your Income Tax Return.
+overview.task3.crystallisation.paragraph.agent = If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation. Check the calculation and submit the Income Tax Return.
+overview.task2.crystallisation.caption.individual = This is your Income Tax calculation to date. You will get a final tax calculation when you submit your Income Tax Return.
+overview.task2.crystallisation.caption.agent = This is your client’s Income Tax calculation to date. You will get a final tax calculation when you submit your client’s Income Tax Return.
+overview.task3.crystallisation.heading.individual = Submit your Income Tax Return
+overview.task3.crystallisation.heading.agent = Submit your client’s Income Tax Return
+overview.viewTaxCalculation = View Tax calculation to date
 
 overview.notStarted = Not started
 overview.updated = Updated

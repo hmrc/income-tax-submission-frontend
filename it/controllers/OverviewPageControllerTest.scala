@@ -19,7 +19,7 @@ package controllers
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
 import config.{AppConfig, ErrorHandler}
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import itUtils.{IntegrationTest, ViewHelpers}
 import models.{IncomeSourcesModel, InterestModel}
 import org.jsoup.Jsoup
@@ -33,14 +33,17 @@ import play.api.test.{FakeRequest, Helpers}
 import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
+import play.api.libs.ws.WSResponse
 
 import scala.concurrent.Future
 
 class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
 
   val taxYear = 2022
+  val taxYearEndOfYear = taxYear - 1
   val taxYearMinusOne: Int = taxYear - 1
   val taxYearPlusOne: Int = taxYear + 1
+  val taxYearEndOfYearMinusOne: Int = taxYearEndOfYear - 1
 
   object Links {
     def startPageBreadcrumbUrl(taxYear: Int = taxYear): String = s"/income-through-software/return/$taxYear/start"
@@ -84,6 +87,13 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
+  object ExpectedResults {
+    val taxYearInYear = 2022
+    val taxYearEndOfYear = taxYearInYear - 1
+    val taxYearMinusOne: Int = taxYearInYear - 1
+    val taxYearEndOfYearMinusOne: Int = taxYearEndOfYear - 1
+    val taxYearPlusOne: Int = taxYearInYear + 1
+    val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
     val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
     val headingExpected = "Your Income Tax Return"
     val updateIncomeTaxReturnText = "1. Update your Income Tax Return"
@@ -156,7 +166,15 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
   object CommonExpectedCY extends CommonExpectedResults {
     val vcBreadcrumb = "Income Tax"
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
+    val startPageBreadcrumbUrl = s"/income-through-software/return/$taxYear/start"
+    val startPageBreadcrumbUrlEndOfYear = s"/income-through-software/return/$taxYearEndOfYear/start"
     val overviewBreadcrumb = "Your Income Tax Return"
+    val caption = s"6 April $taxYearMinusOne to 5 April $taxYear"
+    val captionEndOfYear = s"6 April $taxYearEndOfYearMinusOne to 5 April $taxYearEndOfYear"
+    val individualHeading = "Your Income Tax Return"
+    val agentHeading = "Your client’s Income Tax Return"
+    val updateIncomeTaxReturnTextIndividual = "1. Update your Income Tax Return"
+    val updateIncomeTaxReturnTextAgent = "1. Update your client’s Income Tax Return"
 
     def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 April $taxYearMinusOne to 5 April $taxYear"
 
@@ -166,12 +184,37 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val underMaintenance = "Under maintenance"
     val cannotUpdateText = "Cannot update"
     val dividendsLinkText = "Dividends"
+    val dividendsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/dividends-from-uk-companies"
+    val dividendsLinkEndOfYear = s"http://localhost:9308/income-through-software/return/personal-income/$taxYearEndOfYear/dividends/dividends-from-uk-companies"
+    val dividendsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/check-income-from-dividends"
+    val dividendsLinkWithPriorDataEndOfYear = s"http://localhost:9308/income-through-software/return/personal-income/$taxYearEndOfYear/dividends/check-income-from-dividends"
     val interestsLinkText = "Interest"
+    val interestsLink = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
+    val interestsLinkEndOfYear = s"http://localhost:9308/income-through-software/return/personal-income/$taxYearEndOfYear/interest/untaxed-uk-interest"
+    val interestsLinkWithPriorData = s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-interest"
+    val interestsLinkWithPriorDataEndOfYear = s"http://localhost:9308/income-through-software/return/personal-income/$taxYearEndOfYear/interest/check-interest"
     val employmentLinkText = "Employment"
+    val employmentLink = s"http://localhost:9317/income-through-software/return/employment-income/$taxYear/employment-summary"
+    val employmentLinkEndOfYear = s"http://localhost:9317/income-through-software/return/employment-income/$taxYearEndOfYear/employment-summary"
     val giftAidLinkText = "Donations to charity"
     val viewTaxCalcText = "2. View Tax calculation to date"
     val viewEstimateLinkText = "View estimation"
+    val viewTaxCalculationTextEndOfYear = "View Tax calculation to date"
+    val viewEstimateLink = s"/income-through-software/return/$taxYear/calculate"
+    val viewTaxCalculationLinkEndOfYear = s"/income-through-software/return/$taxYearEndOfYear/calculate"
     val submitReturnText = "3. Submit return"
+    val submitReturnTextEndOfYearIndividual = "3. Submit your Income Tax Return"
+    val submitReturnTextEndOfYearAgent = "3. Submit your client’s Income Tax Return"
+    val submitReturnIndividualText = "If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. You can check your calculation and then submit your Income Tax Return."
+    val submitReturnAgentText = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation. Check the calculation and submit the Income Tax Return."
+    val youWillBeAbleIndividualText = s"Update your Income Tax Return and submit it to us after 5 April $taxYearPlusOne."
+    val youWillBeAbleAgentText = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYearPlusOne."
+    val endOfYearParagraph1TextIndividual = s"If we have information about your income and deductions, we’ll enter it for you. We get this information from:"
+    val endOfYearParagraph1TextAgent = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from:"
+    val endOfYearBulletPoint1Text = "our records"
+    val endOfYearBulletPoint2Text = "your software package"
+    val endOfYearWarningTextIndividual = "Warning Use your software package to update parts of your Income Tax Return that are not on this list."
+    val endOfYearWarningTextAgent = "Warning Use your software package to update parts of your client’s Income Tax Return that are not on this list."
   }
 
   object Selectors {
@@ -196,9 +239,20 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val viewEstimateSelector = "#calculation_link"
     val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(4) > h2"
     val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > li"
+    val endOfYearParagraph1Selector = "#main-content > div > div > p"
+    val endOfYearBulletPoint1Selector = "#main-content > div > div > ul > li:nth-child(1)"
+    val endOfYearBulletPoint2Selector = "#main-content > div > div > ul > li:nth-child(2)"
+    val endOfYearWarningTextSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > div > strong"
+    val interestStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+    val dividendsStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
+    val giftAidStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
+    val employmentStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
   }
 
-  private val urlPath = s"/income-through-software/return/$taxYear/view"
+  import Selectors._
+
+  private val urlPathInYear = s"/income-through-software/return/$taxYear/view"
+  private val urlPathEndOfYear = s"/income-through-software/return/$taxYearEndOfYear/income-tax-return-overview"
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -240,7 +294,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
 
         "render an overview page with all sections showing status tag 'under maintenance' when feature switch is false" when {
-          val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+          val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
@@ -287,7 +341,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         "render overview page with 'Not Started' status tags when there is no prior data and the employment section with" +
           "the status tag 'cannot update' user in the current taxYear" when {
 
-          val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+          val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
@@ -396,7 +450,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
 
-          val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+          val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
@@ -452,7 +506,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
 
             val incomeSources = incomeSourcesModel.copy(interest = None)
 
-            val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
             lazy val result: Future[Result] = {
               authoriseAgentOrIndividual(user.isAgent)
@@ -507,7 +561,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         "interest income source is defined and the untaxed and taxed accounts do not have amounts" which {
           val incomeSources = incomeSourcesModel.copy(interest = Some(Seq(InterestModel("TestName", "TestSource", None, None))))
 
-          val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+          val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
@@ -565,7 +619,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
           "interest income source is defined and the untaxed and taxed accounts have amounts" which {
             val incomeSources = incomeSourcesModel.copy(interest = interestsModelWithAmounts)
 
-            val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
             lazy val result: Future[Result] = {
               authoriseAgentOrIndividual(user.isAgent)
@@ -621,6 +675,228 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
   }
 
 
+  "When end of year the overview page should render correctly in Welsh" when {
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEndOfYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+
+    "request is sent by an INDIVIDUAL" should {
+      "render correctly when sources are off" which {
+        val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(appWithSourcesTurnedOffEndOfYear, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrlEndOfYear)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(captionEndOfYear, captionSelector)
+        textOnPageCheck(endOfYearParagraph1TextIndividual, endOfYearParagraph1Selector)
+        textOnPageCheck(endOfYearBulletPoint1Text, endOfYearBulletPoint1Selector)
+        textOnPageCheck(endOfYearBulletPoint2Text, endOfYearBulletPoint2Selector)
+        textOnPageCheck(endOfYearWarningTextIndividual, endOfYearWarningTextSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "have a dividends section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, dividendsStatusSelectorEndOfYear)
+        }
+
+        "have an interest section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, interestStatusSelectorEndOfYear)
+        }
+
+        "have an employment section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, employmentStatusSelectorEndOfYear)
+        }
+
+        "has a donations to charity section" which {
+          textOnPageCheck(underMaintenance, giftAidStatusSelectorEndOfYear)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnTextEndOfYearIndividual, submitReturnSelector)
+        textOnPageCheck(submitReturnIndividualText, youWillBeAbleSelector)
+      }
+
+      "render correctly with prior data" should {
+        val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          stubIncomeSourcesEndOfYear
+          route(appWithSourcesTurnedOnEndOfYear, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrlEndOfYear)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(captionEndOfYear, captionSelector)
+        textOnPageCheck(endOfYearParagraph1TextIndividual, endOfYearParagraph1Selector)
+        textOnPageCheck(endOfYearBulletPoint1Text, endOfYearBulletPoint1Selector)
+        textOnPageCheck(endOfYearBulletPoint2Text, endOfYearBulletPoint2Selector)
+        textOnPageCheck(endOfYearWarningTextIndividual, endOfYearWarningTextSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorDataEndOfYear)
+          textOnPageCheck(updatedText, dividendsStatusSelectorEndOfYear)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorDataEndOfYear)
+          textOnPageCheck(updatedText, interestStatusSelectorEndOfYear)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLinkEndOfYear)
+          textOnPageCheck(updatedText, employmentStatusSelectorEndOfYear)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYearEndOfYear))
+          textOnPageCheck(updatedText, giftAidStatusSelectorEndOfYear)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewTaxCalculationTextEndOfYear, viewEstimateSelector, viewTaxCalculationLinkEndOfYear)
+        textOnPageCheck(submitReturnTextEndOfYearIndividual, submitReturnSelector)
+        textOnPageCheck(submitReturnIndividualText, youWillBeAbleSelector)
+      }
+    }
+
+    "request is sent by an AGENT" should {
+      "render correctly when sources are off" which {
+        val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          route(appWithSourcesTurnedOffEndOfYear, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrlEndOfYear)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(captionEndOfYear, captionSelector)
+        textOnPageCheck(endOfYearParagraph1TextAgent, endOfYearParagraph1Selector)
+        textOnPageCheck(endOfYearBulletPoint1Text, endOfYearBulletPoint1Selector)
+        textOnPageCheck(endOfYearBulletPoint2Text, endOfYearBulletPoint2Selector)
+        textOnPageCheck(endOfYearWarningTextAgent, endOfYearWarningTextSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "have a dividends section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, dividendsStatusSelectorEndOfYear)
+        }
+
+        "have an interest section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, interestStatusSelectorEndOfYear)
+        }
+
+        "have an employment section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, employmentStatusSelectorEndOfYear)
+        }
+
+        "has a donations to charity section" which {
+          textOnPageCheck(underMaintenance, giftAidStatusSelectorEndOfYear)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnTextEndOfYearAgent, submitReturnSelector)
+        textOnPageCheck(submitReturnAgentText, youWillBeAbleSelector)
+      }
+
+      "render correctly with prior data" should {
+        val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          stubIncomeSourcesEndOfYear
+          route(appWithSourcesTurnedOnEndOfYear, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("Welsh")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrlEndOfYear)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(captionEndOfYear, captionSelector)
+        textOnPageCheck(endOfYearParagraph1TextAgent, endOfYearParagraph1Selector)
+        textOnPageCheck(endOfYearBulletPoint1Text, endOfYearBulletPoint1Selector)
+        textOnPageCheck(endOfYearBulletPoint2Text, endOfYearBulletPoint2Selector)
+        textOnPageCheck(endOfYearWarningTextAgent, endOfYearWarningTextSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorDataEndOfYear)
+          textOnPageCheck(updatedText, dividendsStatusSelectorEndOfYear)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorDataEndOfYear)
+          textOnPageCheck(updatedText, interestStatusSelectorEndOfYear)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLinkEndOfYear)
+          textOnPageCheck(updatedText, employmentStatusSelectorEndOfYear)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYearEndOfYear))
+          textOnPageCheck(updatedText, giftAidStatusSelectorEndOfYear)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewTaxCalculationTextEndOfYear, viewEstimateSelector, viewTaxCalculationLinkEndOfYear)
+        textOnPageCheck(submitReturnTextEndOfYearAgent, submitReturnSelector)
+        textOnPageCheck(submitReturnAgentText, youWillBeAbleSelector)
+      }
+    }
+  }
+
   "Hitting the show endpoint" should {
 
     s"return an OK (200) and no prior data" when {
@@ -634,6 +910,23 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         result.header.status shouldBe OK
       }
 
+    }
+
+    "return a SEE_OTHER (303) when end of year" when {
+
+      "all auth requirements are met" in {
+
+        val result = {
+          authoriseIndividual()
+          sourcesTurnedOffConfigEndOfYear
+          await(controller.show(taxYearEndOfYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> "2021", SessionKeys.sessionId -> "sessionId-0101010101")))
+        }
+
+        result.header.status shouldBe SEE_OTHER
+
+
+
+      }
     }
     s"return an OK (200) and no prior data and a session id" when {
 

@@ -44,6 +44,13 @@ class MockAppConfig extends MockFactory {
 
     override def viewAndChangeCalculationUrl(taxYear: Int): String = s"/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
 
+    override def viewAndChangeFinalCalculationUrl(taxYear: Int): String = {
+      s"/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview-and-declaration/calculate"
+    }
+    override def viewAndChangeFinalCalculationUrlAgent(taxYear: Int): String = {
+      s"/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview-and-declaration/calculate"
+    }
+
     override lazy val defaultTaxYear: Int = 2021
 
     override def feedbackSurveyUrl(implicit isAgent: Boolean): String = "/feedbackUrl"
@@ -78,4 +85,8 @@ class MockAppConfig extends MockFactory {
 
     override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
   }
+}
+
+class MockAppConfigTaxYearFeatureOff extends MockAppConfig {
+  lazy val taxYearErrorFeature: Boolean = false
 }

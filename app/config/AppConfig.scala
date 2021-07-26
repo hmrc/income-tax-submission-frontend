@@ -62,6 +62,13 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   def viewAndChangeTaxYearsUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-years"
   def viewAndChangeTaxYearsAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/tax-years"
 
+  def viewAndChangeFinalCalculationUrl(taxYear: Int): String = {
+    s"$vcBaseUrl/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview-and-declaration/calculate"
+  }
+  def viewAndChangeFinalCalculationUrlAgent(taxYear: Int): String = {
+    s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview-and-declaration/calculate"
+  }
+
   lazy private val appUrl: String = servicesConfig.getString("microservice.url")
   lazy val incomeTaxSubmissionFrontendUrl: String = s"$appUrl/income-through-software/return"
   def overviewUrl(taxYear: Int): String = s"$incomeTaxSubmissionFrontendUrl/$taxYear/view"

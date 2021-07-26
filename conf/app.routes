@@ -11,7 +11,7 @@ GET         /:taxYear/start                                 controllers.StartPag
 POST        /:taxYear/start                                 controllers.StartPageController.submit(taxYear: Int)
 
 GET         /:taxYear/view                                  controllers.OverviewPageController.show(taxYear: Int)
-
+GET         /:taxYear/income-tax-return-overview            controllers.OverviewPageController.showCrystallisation(taxYear: Int)
 GET         /:taxYear/calculate                             controllers.OverviewPageController.getCalculation(taxYear: Int)
 
 GET         /:taxYear/income-tax-return-received            controllers.TaxReturnReceivedController.show(taxYear: Int)

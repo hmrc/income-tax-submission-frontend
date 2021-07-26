@@ -119,6 +119,36 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
 
 
+  def sourcesTurnedOffConfigEndOfYear: Map[String, String] = Map(
+    "auditing.enabled" -> "false",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "feature-switch.dividendsEnabled" -> "false",
+    "feature-switch.interestEnabled" -> "false",
+    "feature-switch.giftAidEnabled" -> "false",
+    "feature-switch.employmentEnabled" -> "false",
+    "metrics.enabled" -> "false",
+    "taxYearErrorFeatureSwitch" -> "false"
+  )
+
+  def sourcesTurnedOnConfigEndOfYear: Map[String, String] = Map(
+    "auditing.enabled" -> "false",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.interestEnabled" -> "true",
+    "feature-switch.giftAidEnabled" -> "true",
+    "feature-switch.employmentEnabled" -> "true",
+    "metrics.enabled" -> "false",
+    "taxYearErrorFeatureSwitch" -> "false"
+  )
+
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
@@ -127,6 +157,16 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   lazy val appWithSourcesTurnedOff: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(sourcesTurnedOffConfig)
+    .build
+
+  lazy val appWithSourcesTurnedOffEndOfYear: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(sourcesTurnedOffConfigEndOfYear)
+    .build
+
+  lazy val appWithSourcesTurnedOnEndOfYear: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(sourcesTurnedOnConfigEndOfYear)
     .build
 
   lazy val appWithTaxYearErrorOff: Application = new GuiceApplicationBuilder()

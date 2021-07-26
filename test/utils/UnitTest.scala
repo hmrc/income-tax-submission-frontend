@@ -19,7 +19,7 @@ package utils
 import akka.actor.ActorSystem
 import com.codahale.metrics.SharedMetricRegistries
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
-import config.{AppConfig, MockAppConfig}
+import config.{AppConfig, MockAppConfig, MockAppConfigTaxYearFeatureOff}
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
 import models.{APIErrorBodyModel, APIErrorModel, DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, InterestModel}
@@ -67,6 +67,8 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
+  val mockAppConfig: AppConfig = new MockAppConfig().config
+  val mockAppConfigTaxYearFeatureOff: AppConfig = new MockAppConfigTaxYearFeatureOff().config
   implicit val mockControllerComponents: ControllerComponents = Helpers.stubControllerComponents()
   implicit val mockExecutionContext: ExecutionContext = ExecutionContext.Implicits.global
   implicit val mockAuthConnector: AuthConnector = mock[AuthConnector]

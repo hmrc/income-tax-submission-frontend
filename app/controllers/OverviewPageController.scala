@@ -28,7 +28,7 @@ import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverviewPageController @Inject()(
@@ -44,20 +44,49 @@ class OverviewPageController @Inject()(
 
   implicit val config: AppConfig = appConfig
 
+
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-    val isInYear = inYearAction.inYear(taxYear)
+
+    val isInYear: Boolean = inYearAction.inYear(taxYear)
+
+    if (isInYear) {
+      incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
+        case Right(incomeSources) =>
+          Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear, isInYear))
+        case Left(error) => errorHandler.handleError(error.status)
+      }
+    } else {
+      Future.successful(Redirect(controllers.routes.OverviewPageController.showCrystallisation(taxYear)))
+    }
+  }
+
+  def showCrystallisation(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
+
     incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
       case Right(incomeSources) =>
-        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear, isInYear))
+        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear, isInYear = false))
       case Left(error) => errorHandler.handleError(error.status)
     }
   }
 
   def getCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
-    calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
-      case Right(calculationId) =>
-        Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-      case Left(error) => errorHandler.handleError(error.status)
+
+    if (inYearAction.inYear(taxYear)) {
+      calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
+        case Right(calculationId) =>
+          Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+        case Left(error) => errorHandler.handleError(error.status)
+      }
+    } else {
+      calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
+        case Right(calculationId) =>
+          if (user.isAgent) {
+            Redirect(appConfig.viewAndChangeFinalCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+          } else {
+            Redirect(appConfig.viewAndChangeFinalCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+          }
+        case Left(error) => errorHandler.handleError(error.status)
+      }
     }
   }
 
