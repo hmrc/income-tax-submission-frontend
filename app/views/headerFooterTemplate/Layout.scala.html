@@ -31,8 +31,10 @@
 @(pageTitle: String,
         headBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
+        backLink: Boolean = true,
         isAgent: Boolean = false,
         isOverviewPage: Boolean = false,
+        showBreadcrumbs: Boolean = false,
         taxYear: Option[Int] =  None,
         showSignOut: Boolean = true,
         timeout: Boolean = true
@@ -68,6 +70,6 @@
     headBlock = Some(head(headBlock, timeout)),
     headerBlock = Some(headerBlock),
     scriptsBlock = None,
-    beforeContentBlock = Some(beforeBodyContent(taxYear, isAgent, isOverviewPage)),
+    beforeContentBlock = Some(beforeBodyContent(backLink, taxYear, isAgent, isOverviewPage, showBreadcrumbs)),
     footerBlock = Some(footerBlock)
 )(content)
