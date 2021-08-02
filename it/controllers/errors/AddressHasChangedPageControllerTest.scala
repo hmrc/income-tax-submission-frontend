@@ -40,7 +40,7 @@ class AddressHasChangedPageControllerTest extends IntegrationTest with ViewHelpe
     val headingSelector = "#main-content > div > div > header > h1"
     val addressHasChangedSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val submitYourReturnSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val incomeTaxReturnButtonSelector = "#main-content > div > div > form"
+    val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"
     val addressHasChangedPageView: AddressHasChangedPage = app.injector.instanceOf[AddressHasChangedPage]
   }
 
@@ -54,7 +54,7 @@ class AddressHasChangedPageControllerTest extends IntegrationTest with ViewHelpe
     val submitYourReturnIndividual = "You must submit your Income Tax Return again to get a new tax calculation."
     val submitYourReturnAgent = "You must submit your client’s Income Tax Return again to get a new tax calculation."
     val incomeTaxReturnButtonText = "Back to Income Tax Return"
-    val incomeTaxReturnButtonHref = s"/income-through-software/return/$taxYear/start"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
   }
 
   import Selectors._
@@ -86,7 +86,7 @@ class AddressHasChangedPageControllerTest extends IntegrationTest with ViewHelpe
       textOnPageCheck(addressHasChangedTextIndividual, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnIndividual, submitYourReturnSelector)
       textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      formPostLinkCheck(incomeTaxReturnButtonHref, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -109,7 +109,7 @@ class AddressHasChangedPageControllerTest extends IntegrationTest with ViewHelpe
       textOnPageCheck(addressHasChangedTextAgent, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnAgent, submitYourReturnSelector)
       textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      formPostLinkCheck(incomeTaxReturnButtonHref, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
 
@@ -137,7 +137,7 @@ class AddressHasChangedPageControllerTest extends IntegrationTest with ViewHelpe
       textOnPageCheck(addressHasChangedTextIndividual, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnIndividual, submitYourReturnSelector)
       textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      formPostLinkCheck(incomeTaxReturnButtonHref, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -160,7 +160,7 @@ class AddressHasChangedPageControllerTest extends IntegrationTest with ViewHelpe
       textOnPageCheck(addressHasChangedTextAgent, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnAgent, submitYourReturnSelector)
       textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      formPostLinkCheck(incomeTaxReturnButtonHref, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
 

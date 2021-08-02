@@ -32,15 +32,16 @@
         </div>
 
         @govUkButton(Button(
-            attributes = Map(),
+            attributes = Map("id" -> "returnToOverviewPageBtn"),
             preventDoubleClick = true,
             content = Text(messages("common.return.button")),
-            classes = "govuk-button"
+            classes = "govuk-button",
+            href = Some(appConfig.overviewUrl(taxYear))
         ))
 
 }
 
-@layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}")), backLink = true, taxYear = Some(taxYear), isAgent = isAgent, showSignOut = false, showBreadcrumbs = false)(mainHTML)
+@layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}"), backLink = true, taxYear = Some(taxYear), isAgent = isAgent, showSignOut = false, showBreadcrumbs = false)(mainHTML)
 
 @{
 // $COVERAGE-OFF$
