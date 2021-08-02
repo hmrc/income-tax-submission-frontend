@@ -16,12 +16,13 @@
 
 @import views.html.headerFooterTemplate.Layout
 @import views.html.templates.helpers.Heading
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(layout: Layout, heading: Heading, formWithCSRF: FormWithCSRF, govUkButton: GovukButton)
 
 @(isAgent: Boolean, taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}")) {
+@mainHTML = {
 
 @heading(messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}"))
 
@@ -30,16 +31,16 @@
             <p>@messages(s"error.address-has-changed.paragraph2.${if(isAgent) "agent" else "individual"}")</p>
         </div>
 
-    @formWithCSRF(action = controllers.routes.StartPageController.submit(taxYear)) {
         @govUkButton(Button(
             attributes = Map(),
             preventDoubleClick = true,
             content = Text(messages("common.return.button")),
             classes = "govuk-button"
         ))
-    }
 
 }
+
+@layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}")), backLink = true, taxYear = Some(taxYear), isAgent = isAgent, showSignOut = false, showBreadcrumbs = false)(mainHTML)
 
 @{
 // $COVERAGE-OFF$
