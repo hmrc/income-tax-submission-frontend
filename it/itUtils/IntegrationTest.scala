@@ -18,7 +18,7 @@ package itUtils
 
 import common.SessionValues
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
 import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
@@ -43,11 +43,14 @@ import scala.concurrent.{Await, Awaitable, Future}
 trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll
   with BeforeAndAfterEach with DefaultAwaitTimeout with OptionValues {
 
+  implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  val inYearAction = new InYearAction
+
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   val startUrl = s"http://localhost:$port/income-through-software/return"
 
-  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
+  implicit def wsClient: WSClient = app.injector.instanceOf[WSClient]
 
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
@@ -89,7 +92,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     .configure(sourcesTurnedOffConfig)
     .build
 
-  lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+
 
   override protected def beforeEach(): Unit = {
     resetWiremock()
