@@ -107,7 +107,7 @@
                     </span>
                     <span class="hmrc-status-tag">
                         @if(appConfig.employmentEnabled){
-                            @if(incomeSources.employment.isDefined || !isInYear){@messages("overview.updated")}else{@messages("overview.cannotUpdate")}
+                            @if(incomeSources.employment.isDefined){@messages("overview.updated")}else if (!isInYear) {@messages("overview.notStarted")} else{@messages("overview.cannotUpdate")}
                         } else {
                             @messages("common.underMaintenance")
                         }

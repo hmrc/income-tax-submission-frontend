@@ -335,7 +335,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         }
 
         "render overview page with 'Started' status tags when there is prior data and the employment section  is clickable with" +
-          "the status tag 'Updated' when user is in a previous year" when {
+          "the status tag 'Not Started' when user is in a previous year" when {
           val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
           val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/view"
           val taxYearMinusTwo = taxYearMinusOne-1
@@ -376,7 +376,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
 
           "has an employment section " which {
             linkCheck(employmentLinkText, employmentLinkSelector, newEmploymentLink(taxYearMinusOne))
-            textOnPageCheck(updatedText, employmentStatusSelector)
+            textOnPageCheck(notStartedText, employmentStatusSelector)
           }
 
           "has a donations to charity section" which {
