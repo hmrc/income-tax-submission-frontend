@@ -16,20 +16,13 @@
 
 @import views.html.headerFooterTemplate.Layout
 @import views.html.templates.helpers.Heading
-<<<<<<< HEAD
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-=======
->>>>>>> 82aaba69737838ca493c68a3920e55bdcd1d5e99
 
 @this(layout: Layout, heading: Heading, formWithCSRF: FormWithCSRF, govUkButton: GovukButton)
 
 @(isAgent: Boolean, taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-<<<<<<< HEAD
 @mainHTML = {
-=======
-@layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}")) {
->>>>>>> 82aaba69737838ca493c68a3920e55bdcd1d5e99
 
 @heading(messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}"))
 
@@ -38,7 +31,6 @@
             <p>@messages(s"error.address-has-changed.paragraph2.${if(isAgent) "agent" else "individual"}")</p>
         </div>
 
-<<<<<<< HEAD
         @govUkButton(Button(
             attributes = Map("id" -> "returnToOverviewPageBtn"),
             preventDoubleClick = true,
@@ -51,19 +43,6 @@
 
 @layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}"), backLink = true, taxYear = Some(taxYear), isAgent = isAgent, showSignOut = false, showBreadcrumbs = false)(mainHTML)
 
-=======
-    @formWithCSRF(action = controllers.routes.StartPageController.submit(taxYear)) {
-        @govUkButton(Button(
-            attributes = Map(),
-            preventDoubleClick = true,
-            content = Text(messages("common.return.button")),
-            classes = "govuk-button"
-        ))
-    }
-
-}
-
->>>>>>> 82aaba69737838ca493c68a3920e55bdcd1d5e99
 @{
 // $COVERAGE-OFF$
 }
