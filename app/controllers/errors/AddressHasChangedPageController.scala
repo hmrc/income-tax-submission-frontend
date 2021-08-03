@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.errors
 
 import common.SessionValues
 import config.AppConfig

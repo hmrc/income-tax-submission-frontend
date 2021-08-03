@@ -35,4 +35,4 @@ GET         /error/you-need-agent-services-account          controllers.errors.Y
 
 GET         /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /:taxYear/address-changed                       controllers.AddressHasChangedPageController.show(taxYear: Int)
+GET         /:taxYear/address-changed                       controllers.errors.AddressHasChangedPageController.show(taxYear: Int)
