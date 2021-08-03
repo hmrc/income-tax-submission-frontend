@@ -82,6 +82,24 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "metrics.enabled" -> "false"
   )
 
+  def taxYearFeatureSwitchOffConfig: Map[String, String] = Map(
+    "auditing.enabled" -> "false",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "taxYearErrorFeatureSwitch" -> "false",
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.interestEnabled" -> "true",
+    "feature-switch.giftAidEnabled" -> "true",
+    "feature-switch.employmentEnabled" -> "true",
+    "metrics.enabled" -> "false"
+  )
+
+
+
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
@@ -90,6 +108,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   lazy val appWithSourcesTurnedOff: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(sourcesTurnedOffConfig)
+    .build
+
+  lazy val appWithTaxYearErrorOff: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(taxYearFeatureSwitchOffConfig)
     .build
 
 

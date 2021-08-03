@@ -198,9 +198,6 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > li"
   }
 
-  private val welshHeader = Seq(HeaderNames.ACCEPT_LANGUAGE -> "cy")
-  private val defaultHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
-
   private val urlPath = s"/income-through-software/return/$taxYear/view"
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
@@ -247,14 +244,14 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
       val specific = user.specificExpectedResults.get
 
       s"language is ${welshTest(user.isWelsh)} and request is from an ${agentTest(user.isAgent)}" should {
-        val headers = if (user.isWelsh) welshHeader ++ defaultHeaders else defaultHeaders
+        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
 
         "render an overview page with all sections showing status tag 'under maintenance' when feature switch is false" when {
           val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
-            route(appWithSourcesTurnedOff, request).get
+            route(appWithSourcesTurnedOff, request, user.isWelsh).get
           }
 
 
@@ -302,7 +299,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel.copy(None, None, None, None))
-            route(app, request).get
+            route(app, request, user.isWelsh).get
           }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -350,8 +347,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
 
         "render overview page with 'Started' status tags when there is prior data and the employment section  is clickable with" +
           "the status tag 'Not Started' when user is in a previous year" when {
-          val previousYearDefaultHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
-          val previousYearHeaders = if (user.isWelsh) welshHeader ++ previousYearDefaultHeaders else previousYearDefaultHeaders
+          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
           val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/view"
           val taxYearMinusTwo = taxYearMinusOne - 1
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
@@ -359,7 +355,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel)
-            route(app, request).get
+            route(appWithTaxYearErrorOff, request, user.isWelsh).get
           }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -412,7 +408,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel.copy(interest = None))
-            route(app, request).get
+            route(app, request, user.isWelsh).get
           }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -468,7 +464,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
             lazy val result: Future[Result] = {
               authoriseAgentOrIndividual(user.isAgent)
               stubIncomeSources(incomeSources)
-              route(app, request).get
+              route(app, request, user.isWelsh).get
             }
 
             implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -523,7 +519,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSources)
-            route(app, request).get
+            route(app, request, user.isWelsh).get
           }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -581,7 +577,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
             lazy val result: Future[Result] = {
               authoriseAgentOrIndividual(user.isAgent)
               stubIncomeSources(incomeSources)
-              route(app, request).get
+              route(app, request, user.isWelsh).get
             }
 
             implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
