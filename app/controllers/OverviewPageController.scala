@@ -18,8 +18,9 @@ package controllers
 
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import controllers.predicates.TaxYearAction.taxYearAction
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -34,6 +35,7 @@ class OverviewPageController @Inject()(
                                         appConfig: AppConfig,
                                         implicit val mcc: MessagesControllerComponents,
                                         implicit val ec: ExecutionContext,
+                                        inYearAction: InYearAction,
                                         incomeSourcesService: IncomeSourcesService,
                                         calculationIdService: CalculationIdService,
                                         overviewPageView: OverviewPageView,
@@ -43,9 +45,10 @@ class OverviewPageController @Inject()(
   implicit val config: AppConfig = appConfig
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
+    val isInYear = inYearAction.inYear(taxYear)
     incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
       case Right(incomeSources) =>
-        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear))
+        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear, isInYear))
       case Left(error) => errorHandler.handleError(error.status)
     }
   }

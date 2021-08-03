@@ -133,7 +133,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   }
 
   private val controller = new OverviewPageController(
-    frontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, mockIncomeSourcesService, mockCalculationIdService,
+    frontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, inYearAction, mockIncomeSourcesService, mockCalculationIdService,
     overviewPageView, authorisedAction, mockErrorHandler
   )
 

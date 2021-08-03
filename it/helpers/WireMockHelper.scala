@@ -177,6 +177,5 @@ trait WireMockHelper {
     ))
   }
 
-  def authoriseAgentOrIndividual(isAgent:Boolean, nino:Boolean = true): StubMapping = if(isAgent) authoriseAgent() else authoriseIndividual(nino)
 
 }

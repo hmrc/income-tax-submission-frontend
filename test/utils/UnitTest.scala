@@ -20,7 +20,7 @@ import akka.actor.ActorSystem
 import com.codahale.metrics.SharedMetricRegistries
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.{AppConfig, MockAppConfig}
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
 import models.{APIErrorBodyModel, APIErrorModel, DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, InterestModel}
 import org.scalamock.scalatest.MockFactory
@@ -50,6 +50,9 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     super.beforeEach()
     SharedMetricRegistries.clear()
   }
+  implicit val mockAppConfig: AppConfig = new MockAppConfig().config
+  val inYearAction = new InYearAction
+
 
   implicit val actorSystem: ActorSystem = ActorSystem()
 
@@ -64,7 +67,6 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
-  val mockAppConfig: AppConfig = new MockAppConfig().config
   implicit val mockControllerComponents: ControllerComponents = Helpers.stubControllerComponents()
   implicit val mockExecutionContext: ExecutionContext = ExecutionContext.Implicits.global
   implicit val mockAuthConnector: AuthConnector = mock[AuthConnector]
