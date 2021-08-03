@@ -141,6 +141,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     ConfidenceLevel.L200,
     ConfidenceLevel.L500
   )
+  def redirectUrl(awaitable: Future[Result]): String = await(awaitable).header.headers("Location")
 
   def route[T](app: Application, request: Request[T], isWelsh: Boolean = false)(implicit w: Writeable[T]): Option[Future[Result]] = {
     val newHeaders = request.headers.add((HeaderNames.ACCEPT_LANGUAGE, if(isWelsh) "cy" else "en"))

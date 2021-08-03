@@ -31,7 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
-import views.html.StartPage
+import views.html.StartPageView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,7 +45,7 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
 
   private val serviceConfig = new ServicesConfig(configuration)
   private val mockFrontendAppConfig = new AppConfig(serviceConfig)
-  private val startPageView: StartPage = app.injector.instanceOf[StartPage]
+  private val startPageView: StartPageView = app.injector.instanceOf[StartPageView]
 
   private val controller = new StartPageController(authorisedAction,
     mockAuthService,
