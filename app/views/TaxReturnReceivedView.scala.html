@@ -1,0 +1,121 @@
+@*
+* Copyright 2021 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
+@import views.html.headerFooterTemplate.Layout
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import utils.ViewUtils.bigDecimalCurrency
+
+@this(layout: Layout, govukPanel: GovukPanel, govukSummaryList : GovukSummaryList)
+
+@(summaryData: TaxReturnReceivedModel, isAgent: Boolean, taxYear: Int, timeStamp: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@mainHTML = {
+    @govukPanel(Panel(
+        title = Text(messages(s"taxReturnReceived.panel.heading.${if(isAgent) "agent" else "individual"}")),
+        content = Text(messages(
+            "taxReturnReceived.panel.subheading", (taxYear -1).toString, taxYear.toString
+        ))
+    ))
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(
+                    classes = "govuk-!-width-three-quarters",
+                    content = Text(messages("taxReturnReceived.summaryrow.1"))
+                ),
+                value = Value(
+                    classes = "govuk-!-width-one-quarter",
+                    content = HtmlContent(summaryData.name)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    classes = "govuk-!-width-three-quarters",
+                    content = Text(messages("taxReturnReceived.summaryrow.2"))
+                ),
+                value = Value(
+                    classes = "govuk-!-width-one-quarter",
+                    content = HtmlContent(summaryData.saUTR)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    classes = "govuk-!-width-three-quarters",
+                    content = Text(messages("taxReturnReceived.summaryrow.3"))
+                ),
+                value = Value(
+                    classes = "govuk-!-width-one-quarter",
+                    content = HtmlContent(timeStamp)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    classes = "govuk-!-width-three-quarters",
+                    content = Text(messages("taxReturnReceived.summaryrow.4"))
+                ),
+                value = Value(
+                    classes = "govuk-!-width-one-quarter",
+                    content = HtmlContent(bigDecimalCurrency(summaryData.incomeTaxAndNationalInsuranceContributions.toString))
+                )
+            )
+        )
+    ))
+
+    <h2 class="govuk-heading-m">@messages("taxReturnReceived.nextSteps.subheading")</h2>
+
+    <div class="govuk-body">
+        <p>@messages("taxReturnReceived.nextSteps.p1")
+            <a class="govuk-link" id="amount_owed_link" href=@if(isAgent){@appConfig.viewAndChangePaymentsOwedAgentUrl}else{@appConfig.viewAndChangePaymentsOwedUrl}>
+                @messages(s"taxReturnReceived.nextSteps.p2.${if(isAgent) "agent" else "individual"}")
+            </a>
+        </p>
+    </div>
+
+    <div class="govuk-body">
+        <p>@messages("common.nextSteps")</p>
+    </div>
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>
+            <a class="govuk-link" id="find_next_update_link" href=@if(isAgent){@appConfig.viewAndChangeNextUpdatesAgentUrl}else{@appConfig.viewAndChangeNextUpdatesUrl}>
+                @messages(s"taxReturnReceived.nextSteps.bullet1.${if(isAgent) "agent" else "individual"}")
+            </a>
+        </li>
+        <li>
+            <a class="govuk-link" id="view_final_calc_link" href=@if(isAgent){@appConfig.viewAndChangeTaxYearsAgentUrl}else{@appConfig.viewAndChangeTaxYearsUrl}>
+                @messages(s"taxReturnReceived.nextSteps.bullet2.${if(isAgent) "agent" else "individual"}")
+            </a>
+        </li>
+    </ul>
+
+    <div class="govuk-body">
+        <p>@messages(s"taxReturnReceived.nextSteps.p4.${if(isAgent) "agent" else "individual"}")</p>
+    </div>
+
+    <div class="govuk-body">
+        <p>
+            <a class="govuk-link" id="print_link">
+                @messages("taxReturnReceived.print")
+            </a>
+        </p>
+    </div>
+}
+@layout(pageTitle = messages(s"taxReturnReceived.title.${if(isAgent) "agent" else "individual"}"), taxYear = Some(taxYear), isAgent = isAgent, showBreadcrumbs = false)(mainHTML)
+
+@{
+// $COVERAGE-OFF$
+}

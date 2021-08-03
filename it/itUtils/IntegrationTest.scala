@@ -18,7 +18,7 @@ package itUtils
 
 import common.SessionValues
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
 import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
@@ -43,11 +43,14 @@ import scala.concurrent.{Await, Awaitable, Future}
 trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll
   with BeforeAndAfterEach with DefaultAwaitTimeout with OptionValues {
 
+  implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  val inYearAction = new InYearAction
+
   implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   val startUrl = s"http://localhost:$port/income-through-software/return"
 
-  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
+  implicit def wsClient: WSClient = app.injector.instanceOf[WSClient]
 
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
@@ -79,6 +82,24 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "metrics.enabled" -> "false"
   )
 
+  def taxYearFeatureSwitchOffConfig: Map[String, String] = Map(
+    "auditing.enabled" -> "false",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "taxYearErrorFeatureSwitch" -> "false",
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.interestEnabled" -> "true",
+    "feature-switch.giftAidEnabled" -> "true",
+    "feature-switch.employmentEnabled" -> "true",
+    "metrics.enabled" -> "false"
+  )
+
+
+
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
@@ -89,7 +110,12 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     .configure(sourcesTurnedOffConfig)
     .build
 
-  lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  lazy val appWithTaxYearErrorOff: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(taxYearFeatureSwitchOffConfig)
+    .build
+
+
 
   override protected def beforeEach(): Unit = {
     resetWiremock()
@@ -115,6 +141,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     ConfidenceLevel.L200,
     ConfidenceLevel.L500
   )
+  def redirectUrl(awaitable: Future[Result]): String = await(awaitable).header.headers("Location")
 
   def route[T](app: Application, request: Request[T], isWelsh: Boolean = false)(implicit w: Writeable[T]): Option[Future[Result]] = {
     val newHeaders = request.headers.add((HeaderNames.ACCEPT_LANGUAGE, if(isWelsh) "cy" else "en"))

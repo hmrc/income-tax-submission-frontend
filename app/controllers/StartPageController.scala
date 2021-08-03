@@ -27,7 +27,7 @@ import play.api.mvc._
 import services.AuthService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.StartPage
+import views.html.StartPageView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
                                     authService: AuthService,
-                                    val startPageView: StartPage,
+                                    val startPageView: StartPageView,
                                     auditService: AuditService,
                                     implicit val appConfig: AppConfig,
                                     implicit val mcc: MessagesControllerComponents,
