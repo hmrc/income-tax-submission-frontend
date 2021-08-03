@@ -27,7 +27,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers.{OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import services.AuthService
-import views.html.StartPage
+import views.html.StartPageView
 
 import scala.concurrent.Future
 
@@ -38,7 +38,7 @@ class StartPageControllerTest extends IntegrationTest with ViewHelpers {
   def controller: StartPageController = new StartPageController(
     app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[AuthService],
-    app.injector.instanceOf[StartPage],
+    app.injector.instanceOf[StartPageView],
     app.injector.instanceOf[AuditService],
     frontendAppConfig,
     mcc,

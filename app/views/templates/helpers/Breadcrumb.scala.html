@@ -16,26 +16,28 @@
 
 @this(govukBreadcrumbs : GovukBreadcrumbs)
 
-@(breadcrumbTaxYear: Int, isAgent: Boolean, isOverviewPage: Boolean)(implicit messages: Messages, appConfig: AppConfig)
+@(breadcrumbTaxYear: Int, isAgent: Boolean, isOverviewPage: Boolean, showBreadcrumbs: Boolean)(implicit messages: Messages, appConfig: AppConfig)
 
 @vcAgent = @{ if(isAgent) appConfig.viewAndChangeViewUrlAgent else appConfig.viewAndChangeViewUrl }
 
-@govukBreadcrumbs(Breadcrumbs(
-    items = Seq(
-        Some(BreadcrumbsItem(
-            content = Text(messages("breadcrumb.incomeTaxAccount")),
-            href = Some(vcAgent)
-        )),
-        Some(BreadcrumbsItem(
-            content = Text(messages("service.name")),
-            href = if(isOverviewPage) Some(controllers.routes.StartPageController.show(breadcrumbTaxYear).url) else None
-        )),
-        if(isOverviewPage){
+@if(showBreadcrumbs){
+    @govukBreadcrumbs(Breadcrumbs(
+        items = Seq(
             Some(BreadcrumbsItem(
-                content = Text(messages("common.yourIncomeTaxReturn.individual"))
-            ))
-        } else {
-            None
-        }
-    ).flatten
-))
+                content = Text(messages("breadcrumb.incomeTaxAccount")),
+                href = Some(vcAgent)
+            )),
+            Some(BreadcrumbsItem(
+                content = Text(messages("service.name")),
+                href = if(isOverviewPage) Some(controllers.routes.StartPageController.show(breadcrumbTaxYear).url) else None
+            )),
+            if(isOverviewPage){
+                Some(BreadcrumbsItem(
+                    content = Text(messages("common.yourIncomeTaxReturn.individual"))
+                ))
+            } else {
+                None
+            }
+        ).flatten
+    ))
+}

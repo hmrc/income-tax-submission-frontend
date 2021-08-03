@@ -42,19 +42,25 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-income-from-dividends"
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-interest"
   def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
+  def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
+  def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
 
   lazy val employmentIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxEmploymentFrontendUrl)
   lazy val employmentIncomeTaxSubmissionUrl: String =s"$employmentIncomeTaxSubmissionBaseUrl/income-through-software/return/employment-income"
   def employmentFEUrl(taxYear: Int): String = s"$employmentIncomeTaxSubmissionUrl/$taxYear/employment-summary"
   def addEmploymentUrl(taxYear: Int): String = s"$employmentIncomeTaxSubmissionUrl/$taxYear/add-employment"
 
-  def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
-  def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
-  private lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeUrl)
+  lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeUrl)
   def viewAndChangeCalculationUrl(taxYear: Int): String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
   def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view"
   def viewAndChangeEnterUtrUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
   def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+  def viewAndChangePaymentsOwedUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/payments-owed"
+  def viewAndChangePaymentsOwedAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/payments-owed"
+  def viewAndChangeNextUpdatesUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/obligations"
+  def viewAndChangeNextUpdatesAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/obligations"
+  def viewAndChangeTaxYearsUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-years"
+  def viewAndChangeTaxYearsAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/tax-years"
 
   lazy private val appUrl: String = servicesConfig.getString("microservice.url")
   lazy private val contactFrontEndUrl = servicesConfig.getString(ConfigKeys.contactFrontendUrl)

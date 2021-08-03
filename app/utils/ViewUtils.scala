@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package common
+package utils
 
-object SessionValues {
-  val CLIENT_MTDITID = "ClientMTDID"
-  val CLIENT_NINO = "ClientNino"
+import scala.util.Try
 
-  val CALCULATION_ID = "calculationId"
+object ViewUtils {
 
-  val TAX_YEAR = "TAX_YEAR"
+  def bigDecimalCurrency(value: String, currencySymbol: String = "£"): String = {
+    Try(BigDecimal(value))
+      .map(amount => currencySymbol + f"$amount%1.2f".replace(".00", ""))
+      .getOrElse("")
+  }
 
-  val SUMMARY_DATA = "summaryData"
 }
