@@ -69,6 +69,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val headingExpected = "Your Income Tax Return"
     val updateIncomeTaxReturnText = "1. Update your Income Tax Return"
     val provideUpdate = "Update your Income Tax Return to view your tax estimate."
+
     def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your Income Tax Return and submit it to us after 5 April $taxYear."
   }
 
@@ -77,7 +78,8 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val headingExpected = "Your client’s Income Tax Return"
     val updateIncomeTaxReturnText = "1. Update your client’s Income Tax Return"
     val provideUpdate = "Update your client’s Income Tax Return to view their tax estimate."
-    def youWillBeAble(taxYear: Int = taxYearPlusOne):String = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYear."
+
+    def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYear."
 
   }
 
@@ -86,7 +88,8 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val headingExpected = "Your Income Tax Return"
     val updateIncomeTaxReturnText = "1. Update your Income Tax Return"
     val provideUpdate = "Update your Income Tax Return to view your tax estimate."
-    def youWillBeAble(taxYear: Int = taxYearPlusOne):String = s"Update your Income Tax Return and submit it to us after 5 April $taxYear."
+
+    def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your Income Tax Return and submit it to us after 5 April $taxYear."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -94,7 +97,8 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val headingExpected = "Your client’s Income Tax Return"
     val updateIncomeTaxReturnText = "1. Update your client’s Income Tax Return"
     val provideUpdate = "Update your client’s Income Tax Return to view their tax estimate."
-    def youWillBeAble(taxYear: Int = taxYearPlusOne):String = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYear."
+
+    def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYear."
 
   }
 
@@ -103,14 +107,17 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val headingExpected: String
     val updateIncomeTaxReturnText: String
     val provideUpdate: String
-    def youWillBeAble(taxYear:Int): String
+
+    def youWillBeAble(taxYear: Int): String
   }
 
   trait CommonExpectedResults {
     val vcBreadcrumb: String
     val startPageBreadcrumb: String
     val overviewBreadcrumb: String
-    def caption(taxYearMinusOne:Int, taxYear:Int):String
+
+    def caption(taxYearMinusOne: Int, taxYear: Int): String
+
     val completeSectionsText: String
     val updatedText: String
     val notStartedText: String
@@ -129,7 +136,9 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val vcBreadcrumb = "Income Tax"
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
     val overviewBreadcrumb = "Your Income Tax Return"
-    def caption(taxYearMinusOne:Int, taxYear:Int):String = s"6 April $taxYearMinusOne to 5 April $taxYear"
+
+    def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 April $taxYearMinusOne to 5 April $taxYear"
+
     val completeSectionsText = "Fill in the sections you need to update."
     val updatedText = "Updated"
     val notStartedText = "Not started"
@@ -148,7 +157,9 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val vcBreadcrumb = "Income Tax"
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
     val overviewBreadcrumb = "Your Income Tax Return"
-    def caption(taxYearMinusOne:Int, taxYear:Int):String = s"6 April $taxYearMinusOne to 5 April $taxYear"
+
+    def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 April $taxYearMinusOne to 5 April $taxYear"
+
     val completeSectionsText = "Fill in the sections you need to update."
     val updatedText = "Updated"
     val notStartedText = "Not started"
@@ -186,6 +197,9 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(4) > h2"
     val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > li"
   }
+
+  private val welshHeader = Seq(HeaderNames.ACCEPT_LANGUAGE -> "cy")
+  private val defaultHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
 
   private val urlPath = s"/income-through-software/return/$taxYear/view"
 
@@ -233,7 +247,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
       val specific = user.specificExpectedResults.get
 
       s"language is ${welshTest(user.isWelsh)} and request is from an ${agentTest(user.isAgent)}" should {
-        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+        val headers = if (user.isWelsh) welshHeader ++ defaultHeaders else defaultHeaders
 
         "render an overview page with all sections showing status tag 'under maintenance' when feature switch is false" when {
           val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
@@ -250,14 +264,14 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
             status(result) shouldBe OK
           }
 
-          welshToggleCheck("English")
+          welshToggleCheck(welshTest(user.isWelsh))
           linkCheck(vcBreadcrumb, vcBreadcrumbSelector, specific.vcBreadcrumbUrl)
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearMinusOne,taxYear), captionSelector)
+          textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, dividendsProvideUpdatesSelector)
           textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
@@ -297,14 +311,14 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
             status(result) shouldBe OK
           }
 
-          welshToggleCheck("English")
+          welshToggleCheck(welshTest(user.isWelsh))
           linkCheck(vcBreadcrumb, vcBreadcrumbSelector, specific.vcBreadcrumbUrl)
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearMinusOne,taxYear), captionSelector)
+          textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, dividendsProvideUpdatesSelector)
           textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
@@ -336,9 +350,10 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
 
         "render overview page with 'Started' status tags when there is prior data and the employment section  is clickable with" +
           "the status tag 'Not Started' when user is in a previous year" when {
-          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
+          val previousYearDefaultHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
+          val previousYearHeaders = if (user.isWelsh) welshHeader ++ previousYearDefaultHeaders else previousYearDefaultHeaders
           val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/view"
-          val taxYearMinusTwo = taxYearMinusOne-1
+          val taxYearMinusTwo = taxYearMinusOne - 1
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
 
           lazy val result: Future[Result] = {
@@ -353,14 +368,14 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
             status(result) shouldBe OK
           }
 
-          welshToggleCheck("English")
+          welshToggleCheck(welshTest(user.isWelsh))
           linkCheck(vcBreadcrumb, vcBreadcrumbSelector, specific.vcBreadcrumbUrl)
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYearMinusOne))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearMinusTwo,taxYearMinusOne), captionSelector)
+          textOnPageCheck(caption(taxYearMinusTwo, taxYearMinusOne), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, dividendsProvideUpdatesSelector)
           textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
@@ -406,14 +421,14 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
             status(result) shouldBe OK
           }
 
-          welshToggleCheck("English")
+          welshToggleCheck(welshTest(user.isWelsh))
           linkCheck(vcBreadcrumb, vcBreadcrumbSelector, specific.vcBreadcrumbUrl)
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearMinusOne,taxYear), captionSelector)
+          textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, dividendsProvideUpdatesSelector)
           textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
@@ -462,14 +477,14 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
               status(result) shouldBe OK
             }
 
-            welshToggleCheck("English")
+            welshToggleCheck(welshTest(user.isWelsh))
             linkCheck(vcBreadcrumb, vcBreadcrumbSelector, specific.vcBreadcrumbUrl)
             linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
             titleCheck(specific.headingExpected)
             h1Check(specific.headingExpected, "xl")
-            textOnPageCheck(caption(taxYearMinusOne,taxYear), captionSelector)
+            textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
             textOnPageCheck(specific.updateIncomeTaxReturnText, dividendsProvideUpdatesSelector)
             textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
@@ -517,14 +532,14 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
             status(result) shouldBe OK
           }
 
-          welshToggleCheck("English")
+          welshToggleCheck(welshTest(user.isWelsh))
           linkCheck(vcBreadcrumb, vcBreadcrumbSelector, specific.vcBreadcrumbUrl)
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearMinusOne,taxYear), captionSelector)
+          textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, dividendsProvideUpdatesSelector)
           textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
@@ -575,14 +590,14 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
               status(result) shouldBe OK
             }
 
-            welshToggleCheck("English")
+            welshToggleCheck(welshTest(user.isWelsh))
             linkCheck(vcBreadcrumb, vcBreadcrumbSelector, specific.vcBreadcrumbUrl)
             linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
             titleCheck(specific.headingExpected)
             h1Check(specific.headingExpected, "xl")
-            textOnPageCheck(caption(taxYearMinusOne,taxYear), captionSelector)
+            textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
             textOnPageCheck(specific.updateIncomeTaxReturnText, dividendsProvideUpdatesSelector)
             textOnPageCheck(completeSectionsText, completeSectionsSelector)
 
