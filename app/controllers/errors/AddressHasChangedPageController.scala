@@ -39,7 +39,7 @@ class AddressHasChangedPageController @Inject()(val authorisedAction: Authorised
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
     implicit user =>
-      Ok(addressHasChangedPageView(isAgent = user.isAgent, taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
+      Ok(addressHasChangedPageView(isAgent = user.isAgent, taxYear))
   }
 
 }

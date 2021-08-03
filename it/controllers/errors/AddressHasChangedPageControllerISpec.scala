@@ -33,8 +33,6 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   val taxYear = 2022
-  val taxYearMinusOne: Int = taxYear - 1
-  val taxYearPlusOne: Int = taxYear + 1
 
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
