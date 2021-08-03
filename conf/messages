@@ -12,6 +12,9 @@ common.donationsToCharity = Donations to charity
 common.employment = Employment
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
+common.signout.button = Sign out
+common.returnToIncomeTaxAccount.button = Back to Income Tax account
+common.back = Back
 
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
@@ -114,10 +117,13 @@ ivFailurePage.li3 = we could not match your details to our system
 error.individual-unauthorised.2 = sign up for Making Tax Digital for Income Tax
 error-unauthorised.p3 = before you can view this page.
 
-signout.button = Sign out
-
 error.tax-year.paragraph1 = You can only enter information for the 2021 to 2022 tax year.
 error.tax-year.paragraph2 = Check that you’ve entered the correct web address.
 
 error.unauthorised.title = You are not authorised to use this service
 error.unauthorised.paragraph1 = You can:
+
+error.returnTaxYearExists.heading = We already have an Income Tax Return for that tax year
+error.returnTaxYearExists.p1 = We have an Income Tax Return for the {0} to {1} tax year.
+error.returnTaxYearExists.p2.individual = You can go to your Income Tax account to see your Income Tax Returns.
+error.returnTaxYearExists.p2.agent = You can go to your client’s Income Tax account to see their Income Tax Returns.
