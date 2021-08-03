@@ -29,7 +29,8 @@
             )),
             Some(BreadcrumbsItem(
                 content = Text(messages("service.name")),
-                href = if(isOverviewPage) Some(controllers.routes.StartPageController.show(breadcrumbTaxYear).url) else None
+                href = if(isOverviewPage)
+            Some(controllers.routes.StartPageController.show(breadcrumbTaxYear).url) else None
             )),
             if(isOverviewPage){
                 Some(BreadcrumbsItem(
@@ -41,3 +42,4 @@
         ).flatten
     ))
 }
+
