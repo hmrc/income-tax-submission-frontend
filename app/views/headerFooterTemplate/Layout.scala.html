@@ -33,6 +33,7 @@
         scriptsBlock: Option[Html] = None,
         isAgent: Boolean = false,
         isOverviewPage: Boolean = false,
+        showBreadcrumbs: Boolean = true,
         taxYear: Option[Int] =  None,
         showSignOut: Boolean = true,
         timeout: Boolean = true
@@ -68,6 +69,6 @@
     headBlock = Some(head(headBlock, timeout)),
     headerBlock = Some(headerBlock),
     scriptsBlock = None,
-    beforeContentBlock = Some(beforeBodyContent(taxYear, isAgent, isOverviewPage)),
+    beforeContentBlock = Some(beforeBodyContent(taxYear, isAgent, isOverviewPage, showBreadcrumbs)),
     footerBlock = Some(footerBlock)
 )(content)

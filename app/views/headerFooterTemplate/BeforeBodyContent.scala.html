@@ -19,7 +19,7 @@
 
 @this(betaBar: BetaBar, breadcrumb: Breadcrumb, hmrcLanguageSelect : HmrcLanguageSelect)
 
-@(breadcrumbTaxYear: Option[Int] = None, isAgent: Boolean, isOverviewPage: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(breadcrumbTaxYear: Option[Int] = None, isAgent: Boolean, isOverviewPage: Boolean, showBreadcrumbs: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @betaBar(isAgent)
 
@@ -31,4 +31,4 @@
   ))
 }
 
-@if(breadcrumbTaxYear.isDefined){ @breadcrumb(breadcrumbTaxYear.get, isAgent, isOverviewPage)}
+@if(breadcrumbTaxYear.isDefined){ @breadcrumb(breadcrumbTaxYear.get, isAgent, isOverviewPage, showBreadcrumbs)}

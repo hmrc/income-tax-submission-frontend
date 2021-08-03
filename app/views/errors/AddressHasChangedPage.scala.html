@@ -27,7 +27,7 @@
 
 }
 
-@layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}"), taxYear = Some(taxYear), isAgent = isAgent, showSignOut = false)(mainHTML)
+@layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}"), taxYear = Some(taxYear), isAgent = isAgent, showSignOut = false, showBreadcrumbs = false)(mainHTML)
 
 @{
     // $COVERAGE-OFF$
