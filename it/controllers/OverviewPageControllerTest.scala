@@ -215,13 +215,6 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
   )
 
 
-  val incomeSourcesModel: IncomeSourcesModel = IncomeSourcesModel(
-    dividends = dividendsModel,
-    interest = interestsModel,
-    giftAid = Some(giftAidModel),
-    employment = Some(employmentsModel)
-  )
-
   def stubIncomeSources(incomeSources: IncomeSourcesModel): StubMapping = {
     stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK, Json.toJson(incomeSources).toString())
   }
