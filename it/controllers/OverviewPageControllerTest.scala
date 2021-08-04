@@ -19,7 +19,7 @@ package controllers
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
 import config.{AppConfig, ErrorHandler}
-import controllers.predicates.{AuthorisedAction, InYearAction}
+import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, ViewHelpers}
 import models.{IncomeSourcesModel, InterestModel}
 import org.jsoup.Jsoup
@@ -33,7 +33,6 @@ import play.api.test.{FakeRequest, Helpers}
 import services.{CalculationIdService, IncomeSourcesService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
-import play.api.libs.ws.WSResponse
 
 import scala.concurrent.Future
 
@@ -87,19 +86,20 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
-  object ExpectedResults {
-    val taxYearInYear = 2022
-    val taxYearEndOfYear = taxYearInYear - 1
-    val taxYearMinusOne: Int = taxYearInYear - 1
-    val taxYearEndOfYearMinusOne: Int = taxYearEndOfYear - 1
-    val taxYearPlusOne: Int = taxYearInYear + 1
-    val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
-    val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
-    val headingExpected = "Your Income Tax Return"
-    val updateIncomeTaxReturnText = "1. Update your Income Tax Return"
-    val provideUpdate = "Update your Income Tax Return to view your tax estimate."
 
-    def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your Income Tax Return and submit it to us after 5 April $taxYear."
+      val taxYearInYear = 2022
+      val taxYearEndOfYear = taxYearInYear - 1
+      val taxYearMinusOne: Int = taxYearInYear - 1
+      val taxYearEndOfYearMinusOne: Int = taxYearEndOfYear - 1
+      val taxYearPlusOne: Int = taxYearInYear + 1
+      val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+      val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
+      val headingExpected = "Your Income Tax Return"
+      val updateIncomeTaxReturnText = "1. Update your Income Tax Return"
+      val provideUpdate = "Update your Income Tax Return to view your tax estimate."
+
+      def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your Income Tax Return and submit it to us after 5 April $taxYear."
+
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -168,6 +168,8 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
     val startPageBreadcrumbUrl = s"/income-through-software/return/$taxYear/start"
     val startPageBreadcrumbUrlEndOfYear = s"/income-through-software/return/$taxYearEndOfYear/start"
+    val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
+    val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
     val overviewBreadcrumb = "Your Income Tax Return"
     val caption = s"6 April $taxYearMinusOne to 5 April $taxYear"
     val captionEndOfYear = s"6 April $taxYearEndOfYearMinusOne to 5 April $taxYearEndOfYear"
@@ -205,6 +207,8 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val submitReturnText = "3. Submit return"
     val submitReturnTextEndOfYearIndividual = "3. Submit your Income Tax Return"
     val submitReturnTextEndOfYearAgent = "3. Submit your client’s Income Tax Return"
+    val provideUpdateIndividualText = "Update your Income Tax Return to view your tax estimate."
+    val provideUpdateAgentText = "Update your client’s Income Tax Return to view their tax estimate."
     val submitReturnIndividualText = "If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. You can check your calculation and then submit your Income Tax Return."
     val submitReturnAgentText = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation. Check the calculation and submit the Income Tax Return."
     val youWillBeAbleIndividualText = s"Update your Income Tax Return and submit it to us after 5 April $taxYearPlusOne."
@@ -249,6 +253,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val employmentStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
   }
 
+  import CommonExpectedCY._
   import Selectors._
 
   private val urlPathInYear = s"/income-through-software/return/$taxYear/view"
@@ -395,7 +400,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         "render overview page with 'Started' status tags when there is prior data and the employment section  is clickable with" +
           "the status tag 'Not Started' when user is in a previous year" when {
           val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
-          val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/view"
+          val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/income-tax-return-overview"
           val taxYearMinusTwo = taxYearMinusOne - 1
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
 
@@ -429,7 +434,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
 
           "has an interest section" which {
             linkCheck(interestsLinkText, interestLinkSelector, interestsLink(taxYearMinusOne))
-            textOnPageCheck(notStartedText, interestStatusSelector)
+            textOnPageCheck(notStartedText, interestStatusSelectorEndOfYear)
           }
 
           "has an employment section " which {
@@ -444,8 +449,6 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
 
           textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
           textOnPageCheck(specific.provideUpdate, interestProvideUpdatesSelector)
-          textOnPageCheck(submitReturnText, submitReturnSelector)
-          textOnPageCheck(specific.youWillBeAble(taxYear), youWillBeAbleSelector)
         }
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
@@ -992,6 +995,39 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
   }
 
   def stubIncomeSources: StubMapping = stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,
+    """{
+      |	"dividends": {
+      |		"ukDividends": 69.99,
+      |		"otherUkDividends": 63.99
+      |	},
+      |	"interest": [{
+      |		"accountName": "BANK",
+      |		"incomeSourceId": "12345678908765432",
+      |		"taxedUkInterest": 44.66,
+      |		"untaxedUkInterest": 66.44
+      |	}],
+      | "giftAid" : {
+      |    "gifts":{
+      |       "landAndBuildings": 100
+      |    }
+      | },
+      | "employment": {
+      |   "hmrcEmploymentData": [
+      |     {
+      |       "employmentId": "1",
+      |       "employerName": "name"
+      |     }
+      |   ],
+      |   "customerEmploymentData": [
+      |     {
+      |       "employmentId": "2",
+      |       "employerName": "name"
+      |     }
+      |   ]
+      | }
+      |}""".stripMargin)
+
+  def stubIncomeSourcesEndOfYear: StubMapping = stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2021", OK,
     """{
       |	"dividends": {
       |		"ukDividends": 69.99,
