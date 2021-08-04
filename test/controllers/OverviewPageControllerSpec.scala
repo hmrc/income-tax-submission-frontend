@@ -19,12 +19,12 @@ package controllers
 
 import common.SessionValues
 import common.SessionValues._
-import config.{AppConfig, ErrorHandler, MockAppConfig}
+import config.{AppConfig, ErrorHandler}
 import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
 import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
 import controllers.predicates.InYearAction
 import models._
-import org.scalamock.handlers.{CallHandler1, CallHandler2, CallHandler4}
+import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -41,7 +41,6 @@ import utils.UnitTest
 import views.html.OverviewPageView
 import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
 
-import java.time.{LocalDateTime, ZoneId}
 import scala.concurrent.Future
 
 class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
@@ -71,7 +70,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
   private val mockErrorHandler = mock[ErrorHandler]
   private val mockCalculationIdService = mock[CalculationIdService]
-  private val inYearAction = new InYearAction()(frontendAppConfig)
+
 
   private val nino = Some("AA123456A")
   private val taxYear = 2022
@@ -149,8 +148,8 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   )
 
   private val controllerEndOfYear = new OverviewPageController(
-    mockAppConfigTaxYearFeatureOff, stubMessagesControllerComponents(),mockExecutionContext, mockIncomeSourcesService, mockCalculationIdService,
-    inYearAction, overviewPageView, authorisedAction, mockErrorHandler
+    mockAppConfigTaxYearFeatureOff, stubMessagesControllerComponents(),mockExecutionContext, inYearAction, mockIncomeSourcesService, mockCalculationIdService,
+    overviewPageView, authorisedAction, mockErrorHandler
   )
 
 
