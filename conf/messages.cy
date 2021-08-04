@@ -135,3 +135,7 @@ error.returnTaxYearExists.heading = We already have an Income Tax Return for tha
 error.returnTaxYearExists.p1 = We have an Income Tax Return for the {0} to {1} tax year.
 error.returnTaxYearExists.p2.individual = You can go to your Income Tax account to see your Income Tax Returns.
 error.returnTaxYearExists.p2.agent = You can go to your client’s Income Tax account to see their Income Tax Returns.
+
+error.no-updates-provided.heading = No updates provided
+error.no-updates-provided.p1.individual = You need to provide at least one update before you can submit your Income Tax Return.
+error.no-updates-provided.p1.agent = You need to provide at least one update before you can submit your Income Tax Return.
