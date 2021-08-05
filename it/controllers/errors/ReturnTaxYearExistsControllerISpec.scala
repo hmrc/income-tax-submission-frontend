@@ -17,7 +17,6 @@
 package controllers.errors
 
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -25,20 +24,12 @@ import play.api.http.{HeaderNames, Status}
 import play.api.mvc.Result
 import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers.{status, writeableOf_AnyContentAsEmpty}
-import views.html.errors.ReturnTaxYearExistsView
 
 import scala.concurrent.Future
 
 class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelpers with Status {
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
-  def controller: ReturnTaxYearExistsController = new ReturnTaxYearExistsController(
-    app.injector.instanceOf[AuthorisedAction],
-    mcc,
-    app.injector.instanceOf[ReturnTaxYearExistsView],
-    frontendAppConfig
-  )
 
   lazy val taxYear: Int = 2022
   lazy val lastTaxYear: Int = 2021
