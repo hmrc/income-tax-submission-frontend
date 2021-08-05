@@ -36,7 +36,6 @@ class NoUpdatesProvidedPageController @Inject()(val authorisedAction: Authorised
                                                 implicit val ec: ExecutionContext
                                                ) extends FrontendController(mcc) with I18nSupport {
 
-
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
     implicit user =>
       Ok(noUpdatesProvidedPageView(isAgent = user.isAgent, taxYear))

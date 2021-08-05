@@ -113,7 +113,7 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
     }
   }
 
-  "Rendering the address change error page in Welsh" should {
+  "Rendering the no updates provided error page in Welsh" should {
     import ExpectedResultsWelsh._
 
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
