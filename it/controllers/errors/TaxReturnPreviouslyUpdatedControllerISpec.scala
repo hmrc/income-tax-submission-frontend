@@ -27,7 +27,7 @@ import play.api.test.{FakeRequest, Helpers}
 
 import scala.concurrent.Future
 
-class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelpers {
+class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with ViewHelpers {
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -35,42 +35,37 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
 
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
-    val addressHasChangedSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
-    val submitYourReturnSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
+    val p1TextSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"
   }
 
   object ExpectedResults {
-    val titleIndividual = "Your address has changed"
-    val titleAgent = "Your client’s address has changed"
-    val headingIndividual = "Your address has changed"
-    val headingAgent = "Your client’s address has changed"
-    val addressHasChangedTextIndividual = "Your address has changed to a country with a different rate of tax."
-    val addressHasChangedTextAgent = "Your client’s address has changed to a country with a different rate of tax."
-    val submitYourReturnIndividual = "You must submit your Income Tax Return again to get a new tax calculation."
-    val submitYourReturnAgent = "You must submit your client’s Income Tax Return again to get a new tax calculation."
+    val titleIndividual = "Your Income Tax Return has been updated"
+    val titleAgent = "Your client’s Income Tax Return has been updated"
+    val headingIndividual = "Your Income Tax Return has been updated"
+    val headingAgent = "Your client’s Income Tax Return has been updated"
+    val addressHasChangedTextIndividual = "You must submit your Income Tax Return again."
+    val addressHasChangedTextAgent = "You must submit your client’s Income Tax Return again."
     val incomeTaxReturnButtonText = "Back to Income Tax Return"
     val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
   }
 
   object ExpectedResultsWelsh {
-    val titleIndividualWelsh = "Your address has changed"
-    val titleAgentWelsh = "Your client’s address has changed"
-    val headingIndividualWelsh = "Your address has changed"
-    val headingAgentWelsh = "Your client’s address has changed"
-    val addressHasChangedTextIndividualWelsh = "Your address has changed to a country with a different rate of tax."
-    val addressHasChangedTextAgentWelsh = "Your client’s address has changed to a country with a different rate of tax."
-    val submitYourReturnIndividualWelsh = "You must submit your Income Tax Return again to get a new tax calculation."
-    val submitYourReturnAgentWelsh = "You must submit your client’s Income Tax Return again to get a new tax calculation."
+    val titleIndividualWelsh = "Your Income Tax Return has been updated"
+    val titleAgentWelsh = "Your client’s Income Tax Return has been updated"
+    val headingIndividualWelsh = "Your Income Tax Return has been updated"
+    val headingAgentWelsh = "Your client’s Income Tax Return has been updated"
+    val addressHasChangedTextIndividualWelsh = "You must submit your Income Tax Return again."
+    val addressHasChangedTextAgentWelsh = "You must submit your client’s Income Tax Return again."
     val incomeTaxReturnButtonTextWelsh = "Back to Income Tax Return"
   }
 
-  import Selectors._
   import ExpectedResults._
+  import Selectors._
 
-  private val urlPath = s"/income-through-software/return/$taxYear/address-changed"
+  private val urlPath = s"/income-through-software/return/$taxYear/income-tax-return-updated"
 
-  "Rendering the address change error page in English" should {
+  "Rendering the tax return previously updated page in English" should {
 
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
 
@@ -91,8 +86,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       welshToggleCheck("English")
       titleCheck(titleIndividual)
       h1Check(headingIndividual, "xl")
-      textOnPageCheck(addressHasChangedTextIndividual, addressHasChangedSelector)
-      textOnPageCheck(submitYourReturnIndividual, submitYourReturnSelector)
+      textOnPageCheck(addressHasChangedTextIndividual, p1TextSelector)
       textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
       buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
@@ -114,14 +108,13 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       welshToggleCheck("English")
       titleCheck(titleAgent)
       h1Check(headingAgent, "xl")
-      textOnPageCheck(addressHasChangedTextAgent, addressHasChangedSelector)
-      textOnPageCheck(submitYourReturnAgent, submitYourReturnSelector)
+      textOnPageCheck(addressHasChangedTextAgent, p1TextSelector)
       textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
       buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
 
-  "Rendering the address change error page in Welsh" should {
+  "Rendering the tax return previously updated page in Welsh" should {
     import ExpectedResultsWelsh._
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
@@ -142,8 +135,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       welshToggleCheck("Welsh")
       titleCheck(titleIndividualWelsh)
       h1Check(headingIndividualWelsh, "xl")
-      textOnPageCheck(addressHasChangedTextIndividualWelsh, addressHasChangedSelector)
-      textOnPageCheck(submitYourReturnIndividualWelsh, submitYourReturnSelector)
+      textOnPageCheck(addressHasChangedTextIndividualWelsh, p1TextSelector)
       textOnPageCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector)
       buttonCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
@@ -165,8 +157,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       welshToggleCheck("Welsh")
       titleCheck(titleAgentWelsh)
       h1Check(headingAgentWelsh, "xl")
-      textOnPageCheck(addressHasChangedTextAgentWelsh, addressHasChangedSelector)
-      textOnPageCheck(submitYourReturnAgentWelsh, submitYourReturnSelector)
+      textOnPageCheck(addressHasChangedTextAgentWelsh, p1TextSelector)
       textOnPageCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector)
       buttonCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
