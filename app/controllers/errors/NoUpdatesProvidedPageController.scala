@@ -18,6 +18,7 @@ package controllers.errors
 
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
+import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -36,9 +37,9 @@ class NoUpdatesProvidedPageController @Inject()(val authorisedAction: Authorised
                                                ) extends FrontendController(mcc) with I18nSupport {
 
 
-  def show(): Action[AnyContent] = (authorisedAction) {
+  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
     implicit user =>
-      Ok(noUpdatesProvidedPageView(isAgent = user.isAgent))
+      Ok(noUpdatesProvidedPageView(isAgent = user.isAgent, taxYear))
   }
 
 }

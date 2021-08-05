@@ -6,11 +6,11 @@
 
 @this(layout: Layout, heading: Heading, formWithCSRF: FormWithCSRF, govUkButton: GovukButton)
 
-@(isAgent: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(isAgent: Boolean, taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainHTML = {
 
-@heading(messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}"))
+@heading(messages("error.no-updates-provided.heading"))
 
     <div class="govuk-body">
         <p>@messages(s"error.no-updates-provided.p1.${if(isAgent) "agent" else "individual"}")</p>
@@ -26,7 +26,7 @@
 
 }
 
-@layout(pageTitle = messages(s"error.address-has-changed.title.${if(isAgent) "agent" else "individual"}"), taxYear = Some(taxYear), isAgent = isAgent, showSignOut = false, showBreadcrumbs = false)(mainHTML)
+@layout(pageTitle = messages("error.no-updates-provided.heading"), taxYear = Some(taxYear), isAgent = isAgent, showSignOut = false, showBreadcrumbs = false)(mainHTML)
 
 @{
     // $COVERAGE-OFF$

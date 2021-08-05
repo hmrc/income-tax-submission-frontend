@@ -138,4 +138,4 @@ error.returnTaxYearExists.p2.agent = You can go to your client’s Income Tax ac
 
 error.no-updates-provided.heading = No updates provided
 error.no-updates-provided.p1.individual = You need to provide at least one update before you can submit your Income Tax Return.
-error.no-updates-provided.p1.agent = You need to provide at least one update before you can submit your Income Tax Return.
+error.no-updates-provided.p1.agent = You need to provide at least one update before you can submit your client’s Income Tax Return.

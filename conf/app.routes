@@ -39,4 +39,4 @@ GET         /language/:lang                                 controllers.Language
 
 GET         /:taxYear/address-changed                       controllers.errors.AddressHasChangedPageController.show(taxYear: Int)
 
-GET         /no-updates-provided                            controllers.errors.NoUpdatesProvidedPageController.show
+GET         /:taxYear/no-updates-provided                   controllers.errors.NoUpdatesProvidedPageController.show(taxYear: Int)
