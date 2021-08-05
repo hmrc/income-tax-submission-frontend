@@ -40,3 +40,5 @@ GET         /:taxYear/income-tax-return-updated             controllers.errors.T
 GET         /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
 GET         /:taxYear/address-changed                       controllers.errors.AddressHasChangedPageController.show(taxYear: Int)
+
+GET         /:taxYear/no-updates-provided                   controllers.errors.NoUpdatesProvidedPageController.show(taxYear: Int)

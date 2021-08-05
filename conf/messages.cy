@@ -140,3 +140,7 @@ error.taxReturnPreviouslyUpdated.heading.individual = Your Income Tax Return has
 error.taxReturnPreviouslyUpdated.heading.agent = Your client’s Income Tax Return has been updated
 error.taxReturnPreviouslyUpdated.paragraph1.individual = You must submit your Income Tax Return again.
 error.taxReturnPreviouslyUpdated.paragraph1.agent = You must submit your client’s Income Tax Return again.
+
+error.no-updates-provided.heading = No updates provided
+error.no-updates-provided.p1.individual = You need to provide at least one update before you can submit your Income Tax Return.
+error.no-updates-provided.p1.agent = You need to provide at least one update before you can submit your client’s Income Tax Return.
