@@ -124,9 +124,13 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
   "Rendering the address change error page in Welsh" should {
     import ExpectedResultsWelsh._
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 8cd904d... SASS-1069 added taxYear to url + tests
+=======
+
+>>>>>>> 24b1fdf46419cb069eadfd5c4e3fa399f84f3cea
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
