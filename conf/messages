@@ -144,3 +144,11 @@ error.taxReturnPreviouslyUpdated.heading.individual = Your Income Tax Return has
 error.taxReturnPreviouslyUpdated.heading.agent = Your client’s Income Tax Return has been updated
 error.taxReturnPreviouslyUpdated.paragraph1.individual = You must submit your Income Tax Return again.
 error.taxReturnPreviouslyUpdated.paragraph1.agent = You must submit your client’s Income Tax Return again.
+
+error.otherTryingToSubmit.heading.individual = Your agent is trying to submit this Income Tax Return
+error.otherTryingToSubmit.heading.agent = Someone else is trying to submit this Income Tax Return
+error.otherTryingToSubmit.p1.agent = This could be:
+error.otherTryingToSubmit.bullet1.agent = your client
+error.otherTryingToSubmit.bullet2.agent = a work colleague
+error.otherTryingToSubmit.p2.individual = You must go back to your Income Tax Return and submit it again.
+error.otherTryingToSubmit.p2.agent = You must go back to your client’s Income Tax Return and submit it again.
