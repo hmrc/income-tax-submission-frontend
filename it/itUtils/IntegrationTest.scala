@@ -98,6 +98,25 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "metrics.enabled" -> "false"
   )
 
+  def unreleasedIncomeSourcesConfig: Map[String, String] = Map(
+    "auditing.enabled" -> "false",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "taxYearErrorFeatureSwitch" -> "false",
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.interestEnabled" -> "true",
+    "feature-switch.giftAidEnabled" -> "true",
+    "feature-switch.giftAidReleased" -> "false",
+    "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.employmentReleased" -> "false",
+
+    "metrics.enabled" -> "false"
+  )
+
 
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -113,6 +132,12 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   lazy val appWithTaxYearErrorOff: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(taxYearFeatureSwitchOffConfig)
+    .build
+
+
+  lazy val unreleasedIncomeSources: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(unreleasedIncomeSourcesConfig)
     .build
 
 
@@ -160,6 +185,13 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   )(
     authService(stubbedRetrieval),
     mcc
+  )
+
+  lazy val incomeSourcesModel:IncomeSourcesModel = IncomeSourcesModel(
+    dividends = dividendsModel,
+    interest = interestsModel,
+    giftAid = Some(giftAidModel),
+    employment = Some(employmentsModel)
   )
 
   lazy val dividendsModel:Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))

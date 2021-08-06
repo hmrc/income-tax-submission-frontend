@@ -16,6 +16,7 @@
 
 @import views.html.headerFooterTemplate.Layout
 @import views.html.templates.helpers.Heading
+@import utils.ViewUtils._
 
 @this(layout: Layout, heading: Heading)
 
@@ -125,7 +126,7 @@
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
         <li class="app-task-list__items">
-            @if(incomeSources.interest.isDefined || incomeSources.dividends.isDefined || (incomeSources.giftAid.isDefined && appConfig.giftAidReleased)) {
+            @if(isAnIncomeSourceDefined(incomeSources)) {
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
                     @action
                 </a>

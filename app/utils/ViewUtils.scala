@@ -17,6 +17,10 @@
 package utils
 
 import scala.util.Try
+import config.AppConfig
+
+import models.IncomeSourcesModel
+
 
 object ViewUtils {
 
@@ -26,4 +30,8 @@ object ViewUtils {
       .getOrElse("")
   }
 
+  def isAnIncomeSourceDefined(incomeSources: IncomeSourcesModel)(implicit appConfig: AppConfig): Boolean = {
+    incomeSources.interest.isDefined || incomeSources.dividends.isDefined ||
+      (incomeSources.giftAid.isDefined && appConfig.giftAidReleased) || (incomeSources.employment.isDefined && appConfig.employmentReleased)
+  }
 }
