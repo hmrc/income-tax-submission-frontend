@@ -22,4 +22,3 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-28"  % "0.52.0"                % "test, it"
   )
 }
-
