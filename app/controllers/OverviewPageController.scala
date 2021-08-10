@@ -71,16 +71,18 @@ class OverviewPageController @Inject()(
 
   def getCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
 
-    if (inYearAction.inYear(taxYear)) {
-      calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
-        case Right(calculationId) =>
-          Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-        case Left(error) => errorHandler.handleError(error.status)
+    calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
+      case Right(calculationId) =>
+        Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+      case Left(error) => errorHandler.handleError(error.status)
       }
-    } else {
+    }
+
+  def finalCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+
       calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
         case Right(calculationId) =>
-          if (user.isAgent) {
+          if(user.isAgent) {
             Redirect(appConfig.viewAndChangeFinalCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
           } else {
             Redirect(appConfig.viewAndChangeFinalCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
@@ -88,6 +90,4 @@ class OverviewPageController @Inject()(
         case Left(error) => errorHandler.handleError(error.status)
       }
     }
-  }
-
 }

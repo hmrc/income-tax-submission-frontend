@@ -219,6 +219,8 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val endOfYearBulletPoint2Text = "your software package"
     val endOfYearWarningTextIndividual = "Warning Use your software package to update parts of your Income Tax Return that are not on this list."
     val endOfYearWarningTextAgent = "Warning Use your software package to update parts of your client’s Income Tax Return that are not on this list."
+    val endOfYearContinueButton = "Continue"
+    val endOfYearContinueLink = s"/income-through-software/return/$taxYearEndOfYear/final-calculation"
   }
 
   object Selectors {
@@ -251,6 +253,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     val dividendsStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
     val giftAidStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
     val employmentStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
+    val endOfYearContinueButtonSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > form"
   }
 
   import CommonExpectedCY._
@@ -397,7 +400,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.youWillBeAble(taxYearPlusOne), youWillBeAbleSelector)
         }
 
-        "render overview page with 'Started' status tags when there is prior data and the employment section  is clickable with" +
+        "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +
           "the status tag 'Not Started' when user is in a previous year" when {
           val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
           val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/income-tax-return-overview"
@@ -504,7 +507,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.youWillBeAble(taxYearPlusOne), youWillBeAbleSelector)
         }
 
-        "render overview page with correct status tags when there is prior data and user not in the current taxYear" should {
+        "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
           "have the status as 'Not Started' for interest when interest income source is None" when {
 
             val incomeSources = incomeSourcesModel.copy(interest = None)
@@ -677,6 +680,232 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
     }
   }
 
+  "When end of year the overview page should render correctly in English" when {
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEndOfYear), "Csrf-Token" -> "nocheck")
+
+    "request is sent by an INDIVIDUAL" should {
+      "render correctly when sources are off" which {
+        val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(appWithSourcesTurnedOffEndOfYear, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrlEndOfYear)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(captionEndOfYear, captionSelector)
+        textOnPageCheck(endOfYearParagraph1TextIndividual, endOfYearParagraph1Selector)
+        textOnPageCheck(endOfYearBulletPoint1Text, endOfYearBulletPoint1Selector)
+        textOnPageCheck(endOfYearBulletPoint2Text, endOfYearBulletPoint2Selector)
+        textOnPageCheck(endOfYearWarningTextIndividual, endOfYearWarningTextSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "have a dividends section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, dividendsStatusSelectorEndOfYear)
+        }
+
+        "have an interest section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, interestStatusSelectorEndOfYear)
+        }
+
+        "have an employment section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, employmentStatusSelectorEndOfYear)
+        }
+
+        "has a donations to charity section" which {
+          textOnPageCheck(underMaintenance, giftAidStatusSelectorEndOfYear)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnTextEndOfYearIndividual, submitReturnSelector)
+        textOnPageCheck(submitReturnIndividualText, youWillBeAbleSelector)
+        formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+      }
+
+      "render correctly with prior data" should {
+        val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          stubIncomeSourcesEndOfYear
+          route(appWithSourcesTurnedOnEndOfYear, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrlEndOfYear)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(individualHeading)
+        h1Check(individualHeading, "xl")
+        textOnPageCheck(captionEndOfYear, captionSelector)
+        textOnPageCheck(endOfYearParagraph1TextIndividual, endOfYearParagraph1Selector)
+        textOnPageCheck(endOfYearBulletPoint1Text, endOfYearBulletPoint1Selector)
+        textOnPageCheck(endOfYearBulletPoint2Text, endOfYearBulletPoint2Selector)
+        textOnPageCheck(endOfYearWarningTextIndividual, endOfYearWarningTextSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextIndividual, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorDataEndOfYear)
+          textOnPageCheck(updatedText, dividendsStatusSelectorEndOfYear)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorDataEndOfYear)
+          textOnPageCheck(updatedText, interestStatusSelectorEndOfYear)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLinkEndOfYear)
+          textOnPageCheck(updatedText, employmentStatusSelectorEndOfYear)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYearEndOfYear))
+          textOnPageCheck(updatedText, giftAidStatusSelectorEndOfYear)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewTaxCalculationTextEndOfYear, viewEstimateSelector, viewTaxCalculationLinkEndOfYear)
+        textOnPageCheck(submitReturnTextEndOfYearIndividual, submitReturnSelector)
+        textOnPageCheck(submitReturnIndividualText, youWillBeAbleSelector)
+        formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+
+      }
+    }
+
+    "request is sent by an AGENT" should {
+      "render correctly when sources are off" which {
+        val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          route(appWithSourcesTurnedOffEndOfYear, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrlEndOfYear)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(captionEndOfYear, captionSelector)
+        textOnPageCheck(endOfYearParagraph1TextAgent, endOfYearParagraph1Selector)
+        textOnPageCheck(endOfYearBulletPoint1Text, endOfYearBulletPoint1Selector)
+        textOnPageCheck(endOfYearBulletPoint2Text, endOfYearBulletPoint2Selector)
+        textOnPageCheck(endOfYearWarningTextAgent, endOfYearWarningTextSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "have a dividends section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, dividendsStatusSelectorEndOfYear)
+        }
+
+        "have an interest section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, interestStatusSelectorEndOfYear)
+        }
+
+        "have an employment section that says under maintenance" which {
+          textOnPageCheck(underMaintenance, employmentStatusSelectorEndOfYear)
+        }
+
+        "has a donations to charity section" which {
+          textOnPageCheck(underMaintenance, giftAidStatusSelectorEndOfYear)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
+        textOnPageCheck(submitReturnTextEndOfYearAgent, submitReturnSelector)
+        textOnPageCheck(submitReturnAgentText, youWillBeAbleSelector)
+        formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+      }
+
+      "render correctly with prior data" should {
+        val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseAgent()
+          stubIncomeSourcesEndOfYear
+          route(appWithSourcesTurnedOnEndOfYear, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        welshToggleCheck("English")
+        linkCheck(vcBreadcrumb, vcBreadcrumbSelector, vcAgentBreadcrumbUrl)
+        linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrlEndOfYear)
+        textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+        titleCheck(agentHeading)
+        h1Check(agentHeading, "xl")
+        textOnPageCheck(captionEndOfYear, captionSelector)
+        textOnPageCheck(endOfYearParagraph1TextAgent, endOfYearParagraph1Selector)
+        textOnPageCheck(endOfYearBulletPoint1Text, endOfYearBulletPoint1Selector)
+        textOnPageCheck(endOfYearBulletPoint2Text, endOfYearBulletPoint2Selector)
+        textOnPageCheck(endOfYearWarningTextAgent, endOfYearWarningTextSelector)
+        textOnPageCheck(updateIncomeTaxReturnTextAgent, dividendsProvideUpdatesSelector)
+        textOnPageCheck(completeSectionsText, completeSectionsSelector)
+
+        "has a dividends section" which {
+          linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorDataEndOfYear)
+          textOnPageCheck(updatedText, dividendsStatusSelectorEndOfYear)
+        }
+
+        "has an interest section" which {
+          linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorDataEndOfYear)
+          textOnPageCheck(updatedText, interestStatusSelectorEndOfYear)
+        }
+
+        "has an employment section" which {
+          linkCheck(employmentLinkText, employmentLinkSelector, employmentLinkEndOfYear)
+          textOnPageCheck(updatedText, employmentStatusSelectorEndOfYear)
+        }
+
+        "has a donations to charity section" which {
+          linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYearEndOfYear))
+          textOnPageCheck(updatedText, giftAidStatusSelectorEndOfYear)
+        }
+
+        textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
+        linkCheck(viewTaxCalculationTextEndOfYear, viewEstimateSelector, viewTaxCalculationLinkEndOfYear)
+        textOnPageCheck(submitReturnTextEndOfYearAgent, submitReturnSelector)
+        textOnPageCheck(submitReturnAgentText, youWillBeAbleSelector)
+        formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+      }
+    }
+  }
 
   "When end of year the overview page should render correctly in Welsh" when {
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEndOfYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
@@ -731,6 +960,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         textOnPageCheck(provideUpdateIndividualText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnTextEndOfYearIndividual, submitReturnSelector)
         textOnPageCheck(submitReturnIndividualText, youWillBeAbleSelector)
+        formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
       }
 
       "render correctly with prior data" should {
@@ -787,6 +1017,8 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         linkCheck(viewTaxCalculationTextEndOfYear, viewEstimateSelector, viewTaxCalculationLinkEndOfYear)
         textOnPageCheck(submitReturnTextEndOfYearIndividual, submitReturnSelector)
         textOnPageCheck(submitReturnIndividualText, youWillBeAbleSelector)
+        formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+
       }
     }
 
@@ -840,6 +1072,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         textOnPageCheck(provideUpdateAgentText, interestProvideUpdatesSelector)
         textOnPageCheck(submitReturnTextEndOfYearAgent, submitReturnSelector)
         textOnPageCheck(submitReturnAgentText, youWillBeAbleSelector)
+        formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
       }
 
       "render correctly with prior data" should {
@@ -896,6 +1129,7 @@ class OverviewPageControllerTest extends IntegrationTest with ViewHelpers {
         linkCheck(viewTaxCalculationTextEndOfYear, viewEstimateSelector, viewTaxCalculationLinkEndOfYear)
         textOnPageCheck(submitReturnTextEndOfYearAgent, submitReturnSelector)
         textOnPageCheck(submitReturnAgentText, youWillBeAbleSelector)
+        formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
       }
     }
   }
