@@ -129,7 +129,7 @@
     </li>
 }
 
-@taskWithActionOrCaption(heading: String, caption: String, index: Int, incomeSources: IncomeSourcesModel, actionEOY: String) = {
+@taskWithActionOrCaption(heading: String, caption: String, index: Int, incomeSources: IncomeSourcesModel, action: String) = {
 
     <li>
         <h2 class="app-task-list__section">
@@ -140,7 +140,7 @@
         @if(isAnIncomeSourceDefined(incomeSources)) {
             <p class="govuk-body">@messages(s"overview.task2.crystallisation.caption.${if(isAgent) "agent" else "individual"}")</p>
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
-                @actionEOY
+                    @action
                 </a>
 
                 } else {
