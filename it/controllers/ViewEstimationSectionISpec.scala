@@ -50,29 +50,29 @@ class ViewEstimationSectionISpec extends IntegrationTest with ViewHelpers  {
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    val viewEstimationHeading = "2. View Tax calculation to date"
-    val viewEstimationLink = "View estimation"
+    val viewEstimationHeading = "2. View tax calculation to date"
+    val viewEstimationLink = "View tax calculation to date"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    val viewEstimationHeading = "2. View Tax calculation to date"
-    val viewEstimationLink = "View estimation"
+    val viewEstimationHeading = "2. View tax calculation to date"
+    val viewEstimationLink = "View tax calculation to date"
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
-    val viewEstimationParagraph = "Update your Income Tax Return to view your tax estimate."
+    val viewEstimationParagraph = "Provide at least one update before you can view your tax calculation to date."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
-    val viewEstimationParagraph = "Update your client’s Income Tax Return to view their tax estimate."
+    val viewEstimationParagraph = "Provide at least one update before you can view your client’s tax calculation to date."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
-    val viewEstimationParagraph = "Update your Income Tax Return to view your tax estimate."
+    val viewEstimationParagraph = "Provide at least one update before you can view your tax calculation to date."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
-    val viewEstimationParagraph = "Update your client’s Income Tax Return to view their tax estimate."
+    val viewEstimationParagraph = "Provide at least one update before you can view your client’s tax calculation to date."
   }
 
   private val urlPath = s"/income-through-software/return/$taxYear/view"

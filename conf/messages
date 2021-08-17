@@ -9,7 +9,7 @@ common.help.getHelpWithThisPage = Get help with this page
 common.dividends = Dividends
 common.interest = Interest
 common.donationsToCharity = Donations to charity
-common.employment = Employment
+common.employment = PAYE Employment
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
 common.return.button = Back to Income Tax Return
@@ -44,13 +44,12 @@ overview.individual.task1.heading = Update your Income Tax Return
 overview.agent.task1.heading = Update your client’s Income Tax Return
 overview.task1.caption = Fill in the sections you need to update.
 
-overview.agent.task2.caption.noUpdate = Update your client’s Income Tax Return to view their tax estimate.
+overview.agent.task2.caption.noUpdate = Provide at least one update before you can view your client’s tax calculation to date.
 overview.task3.heading = Submit return
 overview.agent.task3.caption = Update your client’s Income Tax Return and submit it to us after 5 April {0}.
 
 
-overview.individual.task2.caption.noUpdate = Update your Income Tax Return to view your tax estimate.
-overview.task2.caption.update = View estimation
+overview.individual.task2.caption.noUpdate = Provide at least one update before you can view your tax calculation to date.
 overview.individual.task3.caption = Update your Income Tax Return and submit it to us after 5 April {0}.
 
 overview.crystallisation.paragraph.1.individual = If we have information about your income and deductions, we’ll enter it for you. We get this information from:
@@ -65,7 +64,7 @@ overview.task2.crystallisation.caption.individual = This is your Income Tax calc
 overview.task2.crystallisation.caption.agent = This is your client’s Income Tax calculation to date. You will get a final tax calculation when you submit your client’s Income Tax Return.
 overview.task3.crystallisation.heading.individual = Submit your Income Tax Return
 overview.task3.crystallisation.heading.agent = Submit your client’s Income Tax Return
-overview.viewTaxCalculation = View Tax calculation to date
+overview.viewTaxCalculation = View tax calculation to date
 
 overview.notStarted = Not started
 overview.updated = Updated

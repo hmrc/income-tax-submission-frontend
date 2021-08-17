@@ -32,7 +32,6 @@
         <ol class="app-task-list__items">
             <li class="govuk-body">@caption</li>
 
-            @if(!isInYear){
             <div class="govuk-warning-text govuk-body govuk-!-margin-bottom-0" style="right:1.875em">
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                     <strong class="govuk-warning-text__text">
@@ -40,7 +39,6 @@
                         @warningEOY
                     </strong>
             </div>
-            }
 
             <li class="app-task-list__item"></li>
                 <li class="app-task-list__item">
@@ -131,37 +129,24 @@
     </li>
 }
 
-@taskWithActionOrCaption(heading: String, action: String, caption: String, index: Int, incomeSources: IncomeSourcesModel, actionEOY: String) = {
+@taskWithActionOrCaption(heading: String, caption: String, index: Int, incomeSources: IncomeSourcesModel, action: String) = {
 
     <li>
         <h2 class="app-task-list__section">
             <span class="app-task-list__section-number">@index.</span> @heading
         </h2>
 
-        @if(isInYear){
-        <li class="app-task-list__items">
-            @if(isAnIncomeSourceDefined(incomeSources)) {
-                <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
-                    @action
-                </a>
-            } else {
-                <p class="govuk-body">@caption</p>
-            }
-        </li>
-        } else {
-
         <li class="app-task-list__items">
         @if(isAnIncomeSourceDefined(incomeSources)) {
             <p class="govuk-body">@messages(s"overview.task2.crystallisation.caption.${if(isAgent) "agent" else "individual"}")</p>
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
-                @actionEOY
+                    @action
                 </a>
 
                 } else {
                     <p class="govuk-body">@caption</p>
                 }
         </li>
-    }
 }
 
 
@@ -194,22 +179,20 @@
 
 @overview = {
             @heading(messages(s"common.yourIncomeTaxReturn.${if(isAgent) "agent" else "individual"}"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
-                @if(!isInYear) {
-                    <p class="govuk-body">@(messages(s"overview.crystallisation.paragraph.1.${if(isAgent) "agent" else "individual"}"))</p>
-                        <ul class="govuk-list govuk-list--bullet govuk-!-padding-bottom-5">
-                            <li>@(messages(s"overview.crystallisation.bullet.1"))</li>
-                            <li>@(messages(s"overview.crystallisation.bullet.2"))</li>
-                        </ul>
-                    }
+            <p class="govuk-body">@(messages(s"overview.crystallisation.paragraph.1.${if(isAgent) "agent" else "individual"}"))</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-padding-bottom-5">
+                <li>@(messages(s"overview.crystallisation.bullet.1"))</li>
+                <li>@(messages(s"overview.crystallisation.bullet.2"))</li>
+            </ul>
 
             <ol class="app-task-list">
                 @if(isAgent) {
                     @taskWithActionList(messages("overview.agent.task1.heading"), messages("overview.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))
-                    @taskWithActionOrCaption(messages("overview.viewTaxCalculation"), messages("overview.task2.caption.update"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.viewTaxCalculation"))
+                    @taskWithActionOrCaption(messages("overview.viewTaxCalculation"), messages("overview.agent.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.viewTaxCalculation"))
                     @taskWithCaption(messages("overview.task3.heading"), messages("overview.agent.task3.caption", (taxYear + 1).toString), 3, messages("overview.task3.crystallisation.paragraph.agent"), messages(s"overview.task3.crystallisation.heading.agent"))
                 } else {
                     @taskWithActionList(messages("overview.individual.task1.heading"), messages("overview.task1.caption"), 1, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.individual"))
-                    @taskWithActionOrCaption(messages("overview.viewTaxCalculation"), messages("overview.task2.caption.update"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.viewTaxCalculation"))
+                    @taskWithActionOrCaption(messages("overview.viewTaxCalculation"), messages("overview.individual.task2.caption.noUpdate"), 2, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.viewTaxCalculation"))
                     @taskWithCaption(messages("overview.task3.heading"), messages("overview.individual.task3.caption", (taxYear + 1).toString), 3, messages("overview.task3.crystallisation.paragraph.individual"), messages(s"overview.task3.crystallisation.heading.individual"))
                 }
             </ol>
