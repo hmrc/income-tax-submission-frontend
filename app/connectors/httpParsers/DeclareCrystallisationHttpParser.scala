@@ -16,32 +16,29 @@
 
 package connectors.httpParsers
 
-import models.{APIErrorModel, LiabilityCalculationIdModel}
+import models.APIErrorModel
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.PagerDutyHelper.PagerDutyKeys.{FOURXX_RESPONSE_FROM_API, _}
 import utils.PagerDutyHelper.pagerDutyLog
 
-object CalculationIdHttpParser extends APIParser {
-  type CalculationIdResponse = Either[APIErrorModel, LiabilityCalculationIdModel]
+object DeclareCrystallisationHttpParser extends APIParser {
+  type DeclareCrystallisationResponse = Either[APIErrorModel, Unit]
 
-  override val parserName: String = "CalculationIdHttpParser"
+  override val parserName: String = "DeclareCrystallisationHttpParser"
   override val service: String = "income-tax-calculation"
 
-  implicit object CalculationIdHttpReads extends HttpReads[CalculationIdResponse] {
-    override def read(method: String, url: String, response: HttpResponse): CalculationIdResponse = {
+  implicit object DeclareCrystallisationHttpReads extends HttpReads[DeclareCrystallisationResponse] {
+    override def read(method: String, url: String, response: HttpResponse): DeclareCrystallisationResponse = {
       response.status match {
-        case OK => response.json.validate[LiabilityCalculationIdModel].fold[CalculationIdResponse](
-          jsonErrors => badSuccessJsonFromAPI,
-          parsedModel => Right(parsedModel)
-        )
+        case NO_CONTENT => Right()
         case INTERNAL_SERVER_ERROR =>
           pagerDutyLog(INTERNAL_SERVER_ERROR_FROM_API, logMessage(response))
           handleAPIError(response)
         case SERVICE_UNAVAILABLE =>
           pagerDutyLog(SERVICE_UNAVAILABLE_FROM_API, logMessage(response))
           handleAPIError(response)
-        case BAD_REQUEST | NOT_FOUND | CONFLICT | UNPROCESSABLE_ENTITY | FORBIDDEN =>
+        case BAD_REQUEST | NOT_FOUND | CONFLICT =>
           pagerDutyLog(FOURXX_RESPONSE_FROM_API, logMessage(response))
           handleAPIError(response)
         case _ =>
