@@ -83,6 +83,16 @@ class CalculationIdConnectorSpec extends IntegrationTest {
 
         result shouldBe Left(expectedResult)
       }
+    "return a FORBIDDEN" in {
+      val expectedResult = APIErrorModel(FORBIDDEN,APIErrorBodyModel(
+        "FORBIDDEN","The remote endpoint has indicated that no income submissions exist."))
+
+        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation", FORBIDDEN, expectedResult.toJson.toString())
+
+        val result = await(connector.getCalculationId(nino, taxYear))
+
+        result shouldBe Left(expectedResult)
+      }
     "return a PARSING_ERROR when unexpected response code" in {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("PARSING_ERROR","Error parsing response from API"))
 
