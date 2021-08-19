@@ -82,7 +82,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val provideUpdate: String = "Provide at least one update before you can view your tax calculation to date."
     val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from:"
     val warning = "Warning Use your software package to update parts of your Income Tax Return that are not on this list."
-    val incomeCalcToDate = "This is your Income Tax calculation to date. You will get a final tax calculation when you submit your Income Tax Return."
+    val incomeCalcToDate = "This is your Income Tax calculation so far. It is not a projection for the tax year or your final tax calculation."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -95,8 +95,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val provideUpdate: String = "Provide at least one update before you can view your client’s tax calculation to date."
     val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from:"
     val warning = "Warning Use your software package to update parts of your client’s Income Tax Return that are not on this list."
-    val incomeCalcToDate: String = "This is your client’s Income Tax calculation to date. You will get a final tax calculation when " +
-      "you submit your client’s Income Tax Return."
+    val incomeCalcToDate = "This is your client’s Income Tax calculation so far. It is not a projection for the tax year or your client’s final tax calculation."
+
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -109,7 +109,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val provideUpdate: String = "Provide at least one update before you can view your tax calculation to date."
     val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from:"
     val warning = "Warning Use your software package to update parts of your Income Tax Return that are not on this list."
-    val incomeCalcToDate = "This is your Income Tax calculation to date. You will get a final tax calculation when you submit your Income Tax Return."
+    val incomeCalcToDate = "This is your Income Tax calculation so far. It is not a projection for the tax year or your final tax calculation."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -122,8 +122,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val provideUpdate: String = "Provide at least one update before you can view your client’s tax calculation to date."
     val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from:"
     val warning = "Warning Use your software package to update parts of your client’s Income Tax Return that are not on this list."
-    val incomeCalcToDate: String = "This is your client’s Income Tax calculation to date. You will get a final tax calculation when " +
-      "you submit your client’s Income Tax Return."
+    val incomeCalcToDate = "This is your client’s Income Tax calculation so far. It is not a projection for the tax year or your client’s final tax calculation."
+
   }
 
   trait SpecificExpectedResults {
