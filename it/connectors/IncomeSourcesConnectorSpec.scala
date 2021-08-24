@@ -60,7 +60,6 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
           pay = Some(Pay(
             taxablePayToDate = Some(34234.15),
             totalTaxToDate = Some(6782.92),
-            tipsAndOtherPayments = Some(67676),
             payFrequency = Some("CALENDAR MONTHLY"),
             paymentDate = Some("2020-04-23"),
             taxWeekNo = Some(32),
@@ -110,7 +109,6 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
             pay = Some(Pay(
               taxablePayToDate = Some(34234.15),
               totalTaxToDate = Some(6782.92),
-              tipsAndOtherPayments = Some(67676),
               payFrequency = Some("CALENDAR MONTHLY"),
               paymentDate = Some("2020-04-23"),
               taxWeekNo = Some(32),
