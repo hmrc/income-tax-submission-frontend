@@ -17,7 +17,8 @@
 package controllers.errors
 
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,15 +26,19 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.errors.ReturnTaxYearExistsView
 import controllers.predicates.TaxYearAction.taxYearAction
 
+import scala.concurrent.Future
+
 @Singleton
 class ReturnTaxYearExistsController @Inject()(val authorisedAction: AuthorisedAction,
                                                val mcc: MessagesControllerComponents,
                                               val returnTaxYearExistsView: ReturnTaxYearExistsView,
+                                              implicit val inYearAction: InYearAction,
                                               implicit val appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
-    implicit user =>
-      Ok(returnTaxYearExistsView(isAgent = user.isAgent, taxYear))
+  def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+    inYearAction.notInYear(taxYear) {
+      Future.successful(Ok(returnTaxYearExistsView(isAgent = user.isAgent, taxYear)))
+    }
   }
 }
 

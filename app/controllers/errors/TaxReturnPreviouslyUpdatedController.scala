@@ -17,15 +17,16 @@
 package controllers.errors
 
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import controllers.predicates.TaxYearAction.taxYearAction
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.errors.TaxReturnPreviouslyUpdatedView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
@@ -33,12 +34,14 @@ class TaxReturnPreviouslyUpdatedController @Inject()(val authorisedAction: Autho
                                                      val taxReturnPreviouslyUpdatedView: TaxReturnPreviouslyUpdatedView,
                                                      implicit val appConfig: AppConfig,
                                                      implicit val mcc: MessagesControllerComponents,
-                                                     implicit val ec: ExecutionContext
+                                                     implicit val ec: ExecutionContext,
+                                                     implicit val inYearAction: InYearAction,
                                                ) extends FrontendController(mcc) with I18nSupport {
 
-  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
-    implicit user =>
-      Ok(taxReturnPreviouslyUpdatedView(isAgent = user.isAgent, taxYear))
+  def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+    inYearAction.notInYear(taxYear) {
+      Future.successful(Ok(taxReturnPreviouslyUpdatedView(isAgent = user.isAgent, taxYear)))
+    }
   }
 
 }

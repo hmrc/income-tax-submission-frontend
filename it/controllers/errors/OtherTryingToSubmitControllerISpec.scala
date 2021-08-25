@@ -21,6 +21,7 @@ import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
+import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
@@ -31,7 +32,7 @@ class OtherTryingToSubmitControllerISpec extends IntegrationTest with ViewHelper
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  val taxYear = 2022
+  val taxYear = 2021
 
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
@@ -73,14 +74,14 @@ class OtherTryingToSubmitControllerISpec extends IntegrationTest with ViewHelper
   import ExpectedResults._
   import Selectors._
 
-  private val urlPath = s"/income-through-software/return/$taxYear/someone-else-submitting-income-tax-return"
+  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/someone-else-submitting-income-tax-return"
 
   "Rendering the Some else is trying to submit page in English" should {
 
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
-      val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
@@ -102,7 +103,7 @@ class OtherTryingToSubmitControllerISpec extends IntegrationTest with ViewHelper
     }
 
     "render correctly when the user is an agent" should {
-      val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseAgent()
@@ -126,13 +127,31 @@ class OtherTryingToSubmitControllerISpec extends IntegrationTest with ViewHelper
       buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
+  "Attempting to Render the Other trying to Submit error page in year" should {
+
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
+
+    "fail to render and return a redirect that" should {
+      val request = FakeRequest("GET", urlPath(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
+
+      lazy val result: Future[Result] = {
+        authoriseIndividual()
+        route(app, request).get
+      }
+
+      "returns status of SEE_OTHER(303) and the overview page" in {
+        status(result) shouldBe SEE_OTHER
+        redirectUrl(result) shouldBe appConfig.overviewUrl(frontendAppConfig.defaultTaxYear)
+      }
+    }
+  }
 
   "Rendering the tax return previously updated page in Welsh" should {
     import ExpectedResultsWelsh._
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
-      val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
@@ -154,7 +173,7 @@ class OtherTryingToSubmitControllerISpec extends IntegrationTest with ViewHelper
     }
 
     "render correctly when the user is an agent" should {
-      val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseAgent()

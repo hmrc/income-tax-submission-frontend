@@ -18,15 +18,16 @@ package controllers.errors
 
 import common.SessionValues
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import controllers.predicates.TaxYearAction.taxYearAction
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.errors.AddressHasChangedPage
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
@@ -34,12 +35,14 @@ class AddressHasChangedPageController @Inject()(val authorisedAction: Authorised
                                                 val addressHasChangedPageView: AddressHasChangedPage,
                                                 implicit val appConfig: AppConfig,
                                                 implicit val mcc: MessagesControllerComponents,
+                                                implicit val inYearAction: InYearAction,
                                                 implicit val ec: ExecutionContext
                                                ) extends FrontendController(mcc) with I18nSupport {
 
-  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
-    implicit user =>
-      Ok(addressHasChangedPageView(isAgent = user.isAgent, taxYear))
+  def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+    inYearAction.notInYear(taxYear) {
+      Future.successful(Ok(addressHasChangedPageView(isAgent = user.isAgent, taxYear)))
+    }
   }
 
 }
