@@ -35,7 +35,7 @@ class TaxReturnPreviouslyUpdatedController @Inject()(val authorisedAction: Autho
                                                      implicit val appConfig: AppConfig,
                                                      implicit val mcc: MessagesControllerComponents,
                                                      implicit val ec: ExecutionContext,
-                                                     implicit val inYearAction: InYearAction,
+                                                     implicit val inYearAction: InYearAction
                                                ) extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
