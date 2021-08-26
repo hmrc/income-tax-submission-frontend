@@ -125,7 +125,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
 
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
 
-    "render correctly when the user is an individual" should {
+    "fail to render and return a redirect that" should {
       val request = FakeRequest("GET", urlPath(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
