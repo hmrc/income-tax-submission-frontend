@@ -31,8 +31,8 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  lazy val taxYear: Int = 2022
-  lazy val lastTaxYear: Int = 2021
+  lazy val taxYear: Int = 2021
+  lazy val lastTaxYear: Int = 2020
 
   object ExpectedResults {
     lazy val expectedTitleText: String = "We already have an Income Tax Return for that tax year"
@@ -68,7 +68,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   import ExpectedResults._
   import Selectors._
 
-  val pageUrl = s"/income-through-software/return/$taxYear/already-have-income-tax-return"
+  private def pageUrl(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/already-have-income-tax-return"
 
   "when the language is set to ENGLISH, the page" should {
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
@@ -77,7 +77,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
 
       "return the page" which {
 
-        val request = FakeRequest("GET", pageUrl).withHeaders(headers: _*)
+        val request = FakeRequest("GET", pageUrl()).withHeaders(headers: _*)
 
         lazy val result: Future[Result] = {
           authoriseIndividual()
@@ -103,7 +103,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
     "as an agent user, with a previously submitted return to that tax year, the page" should {
 
 
-      val request = FakeRequest("GET", pageUrl).withHeaders(headers: _*)
+      val request = FakeRequest("GET", pageUrl()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseAgent()
@@ -119,6 +119,24 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
       buttonCheck(expectedSignOutButtonText, signOutButtonSelector, Some(expectedSignOutButtonLinkAgent))
     }
   }
+  "Attempting to Render the Other trying to Submit error page in year" should {
+
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
+
+    "fail to render and return a redirect that" should {
+      val request = FakeRequest("GET", pageUrl(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
+
+      lazy val result: Future[Result] = {
+        authoriseIndividual()
+        route(app, request).get
+      }
+
+      "returns status of SEE_OTHER(303) and the overview page" in {
+        status(result) shouldBe SEE_OTHER
+        redirectUrl(result) shouldBe appConfig.overviewUrl(frontendAppConfig.defaultTaxYear)
+      }
+    }
+  }
 
 
   "when the language is set to WELSH" should {
@@ -129,7 +147,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
     "as an individual user, with a previously submitted return to that tax year, the page" should {
       "return the page" which {
 
-        val request = FakeRequest("GET", pageUrl).withHeaders(headers: _*)
+        val request = FakeRequest("GET", pageUrl()).withHeaders(headers: _*)
 
         lazy val result: Future[Result] = {
           authoriseIndividual()
@@ -155,7 +173,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
     "as an agent user, with a previously submitted return to that tax year, the page" should {
 
       "return the page" which {
-        val request = FakeRequest("GET", pageUrl).withHeaders(headers: _*)
+        val request = FakeRequest("GET", pageUrl()).withHeaders(headers: _*)
 
         lazy val result: Future[Result] = {
           authoriseAgent()

@@ -21,6 +21,7 @@ import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
+import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
@@ -31,7 +32,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  val taxYear = 2022
+  val taxYear = 2021
 
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
@@ -67,7 +68,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
 
   import Selectors._
 
-  private val urlPath = s"/income-through-software/return/$taxYear/address-changed"
+  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/address-changed"
 
   "Rendering the address change error page in English" should {
     import ExpectedResults._
@@ -75,7 +76,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
-      val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
@@ -98,7 +99,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
     }
 
     "render correctly when the user is an agent" should {
-      val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseAgent()
@@ -120,6 +121,24 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
+  "Attempting to Render the address change error page in year" should {
+
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
+
+    "fail to render and return a redirect that" should {
+      val request = FakeRequest("GET", urlPath(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
+
+      lazy val result: Future[Result] = {
+        authoriseIndividual()
+        route(app, request).get
+      }
+
+      "returns status of SEE_OTHER(303) and the overview page" in {
+        status(result) shouldBe SEE_OTHER
+        redirectUrl(result) shouldBe appConfig.overviewUrl(frontendAppConfig.defaultTaxYear)
+      }
+    }
+  }
 
   "Rendering the address change error page in Welsh" should {
     import ExpectedResultsWelsh._
@@ -127,7 +146,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
-      val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
@@ -150,7 +169,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
     }
 
     "render correctly when the user is an agent" should {
-      val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseAgent()
