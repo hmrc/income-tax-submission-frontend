@@ -38,7 +38,7 @@ GET         /:taxYear/already-have-income-tax-return        controllers.errors.R
 
 GET         /:taxYear/income-tax-return-updated             controllers.errors.TaxReturnPreviouslyUpdatedController.show(taxYear: Int)
 
-GET         /:taxYear/someone-else-submitting-income-tax-return      controllers.errors.OtherTryingToSubmitController.show(taxYear: Int)
+GET         /:taxYear/no-business-income                    controllers.errors.NoValidIncomeSourceController.show(taxYear: Int)
 
 GET         /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)
 

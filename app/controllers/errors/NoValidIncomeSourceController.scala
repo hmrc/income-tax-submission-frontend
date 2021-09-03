@@ -16,23 +16,20 @@
 
 package controllers.errors
 
-import views.html.errors.OtherTryingToSubmitView
-import common.SessionValues
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
-import controllers.predicates.TaxYearAction.taxYearAction
-
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
+import views.html.errors.NoValidIncomeSourcesView
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OtherTryingToSubmitController @Inject()(val authorisedAction: AuthorisedAction,
-                                              val otherTryingToSubmitView: OtherTryingToSubmitView,
+class NoValidIncomeSourceController @Inject()(val authorisedAction: AuthorisedAction,
+                                              val view: NoValidIncomeSourcesView,
                                               implicit val appConfig: AppConfig,
                                               implicit val mcc: MessagesControllerComponents,
                                               implicit val inYearAction: InYearAction,
@@ -41,8 +38,7 @@ class OtherTryingToSubmitController @Inject()(val authorisedAction: AuthorisedAc
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
     inYearAction.notInYear(taxYear) {
-      Future.successful(Ok(otherTryingToSubmitView(isAgent = user.isAgent, taxYear)))
+      Future.successful(Ok(view(isAgent = user.isAgent, taxYear)))
     }
-
   }
 }
