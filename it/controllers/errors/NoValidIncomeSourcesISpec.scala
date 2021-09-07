@@ -38,8 +38,8 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
     val headingSelector = "#main-content > div > div > header > h1"
     val p1Selector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val p2Selector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val bul1Selector = "#main-content > div > div > ul > li:nth-child(1)"
-    val bul2Selector = "#main-content > div > div > ul > li:nth-child(2)"
+    val bul1Selector = "#main-content > div > div > div.govuk-body > ul > li:nth-child(1)"
+    val bul2Selector = "#main-content > div > div > div.govuk-body > ul > li:nth-child(2)"
     val goToIncomeTaxAccountSelector = "#returnToOverviewPageBtn"
     val signOutButtonSelector = "#signOutBtn"
   }
@@ -98,7 +98,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
 
       welshToggleCheck("English")
       titleCheck(title)
-      h1Check(heading)
+      h1Check(heading, "xl")
       textOnPageCheck(p1, p1Selector)
       textOnPageCheck(p2, p2Selector)
       textOnPageCheck(bul1, bul1Selector)
@@ -170,7 +170,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
 
       welshToggleCheck("Welsh")
       titleCheck(title)
-      h1Check(heading)
+      h1Check(heading, "xl")
       textOnPageCheck(p1, p1Selector)
       textOnPageCheck(p2, p2Selector)
       textOnPageCheck(bul1, bul1Selector)

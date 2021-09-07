@@ -24,20 +24,19 @@
 
 @mainHTML = {
     <header class="hmrc-page-heading govuk-!-margin-0 govuk-!-margin-bottom-5">
-        <h1 class="govuk-heading-l govuk-!-margin-0">
+        <h1 class="govuk-heading-xl govuk-!-margin-0">
             @messages(s"error.no-valid-income.heading")
         </h1>
     </header>
 
     <div class="govuk-body">
         <p>@messages("error.no-valid-income.p1")</p>
-        <p>@messages("error.no-valid-income.p2")</p>
+        <p class="govuk-!-margin-bottom-2">@messages("error.no-valid-income.p2")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("error.no-valid-income.p2.bullet1")</li>
+            <li>@messages("error.no-valid-income.p2.bullet2")</li>
+        </ul>
     </div>
-    
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("error.no-valid-income.p2.bullet1")</li>
-        <li>@messages("error.no-valid-income.p2.bullet2")</li>
-    </ul>
 
     <div class="govuk-button-group">
         @govUkButton(Button(
