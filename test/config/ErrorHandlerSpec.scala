@@ -20,7 +20,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.FakeRequest
 import utils.UnitTest
-import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
+import views.html.errors._
 import play.api.http.Status._
 
 class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
@@ -29,27 +29,102 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
   val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
   val notFoundPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
 
+  val noUpdatesProvidedPage: NoUpdatesProvidedPage = app.injector.instanceOf[NoUpdatesProvidedPage]
+  val returnTaxYearExistsView: ReturnTaxYearExistsView = app.injector.instanceOf[ReturnTaxYearExistsView]
+
+  val addressHasChangedPage: AddressHasChangedPage = app.injector.instanceOf[AddressHasChangedPage]
+  val taxReturnPreviouslyUpdatedView: TaxReturnPreviouslyUpdatedView = app.injector.instanceOf[TaxReturnPreviouslyUpdatedView]
+  val noValidIncomeSourcesView: NoValidIncomeSourcesView = app.injector.instanceOf[NoValidIncomeSourcesView]
+
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
 
-  val errorHandler = new ErrorHandler(messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable)
+  val errorHandler = new ErrorHandler(messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable,
+                                      noUpdatesProvidedPage, returnTaxYearExistsView, addressHasChangedPage,
+                                      noValidIncomeSourcesView, taxReturnPreviouslyUpdatedView)
+
+  val taxYear: Int = 2022
+  val isAgent: Boolean = false
 
   ".handleError" should {
 
     "return a 503 page for service unavailable" in {
-
-      errorHandler.handleError(SERVICE_UNAVAILABLE).header.status shouldBe SERVICE_UNAVAILABLE
+      errorHandler.handleError(SERVICE_UNAVAILABLE)
+        .header.status shouldBe SERVICE_UNAVAILABLE
     }
 
     "return a 500 page for internal server error" in {
-
-      errorHandler.handleError(INTERNAL_SERVER_ERROR).header.status shouldBe INTERNAL_SERVER_ERROR
+      errorHandler.handleError(INTERNAL_SERVER_ERROR)
+        .header.status shouldBe INTERNAL_SERVER_ERROR
     }
+
     "return a 404 page" in {
-
-      errorHandler.onClientError(fakeRequest, NOT_FOUND,"").map(_.header.status shouldBe NOT_FOUND)
+      errorHandler.onClientError(fakeRequest, NOT_FOUND,"")
+        .map(_.header.status shouldBe NOT_FOUND)
     }
+  }
+
+  ".handleIntentToCrystalliseError" should {
+
+    "return a 403 page for No Updates Provided" in {
+      errorHandler.handleIntentToCrystalliseError(FORBIDDEN, isAgent, taxYear)
+        .header.status shouldBe FORBIDDEN
+    }
+
+    "return a 409 page for Return Tax Year Exists" in {
+      errorHandler.handleIntentToCrystalliseError(CONFLICT, isAgent, taxYear)
+        .header.status shouldBe CONFLICT
+    }
+
+    "return a 503 page for service unavailable" in {
+      errorHandler.handleIntentToCrystalliseError(SERVICE_UNAVAILABLE, isAgent, taxYear)
+        .header.status shouldBe SERVICE_UNAVAILABLE
+    }
+
+    "return a 500 page for internal server error" in {
+      errorHandler.handleIntentToCrystalliseError(INTERNAL_SERVER_ERROR, isAgent, taxYear)
+        .header.status shouldBe INTERNAL_SERVER_ERROR
+    }
+  }
+
+  ".handleDeclareCrystallisationError" should {
+
+    "return a 409 page for Address has changed" in {
+      errorHandler.handleDeclareCrystallisationError(CONFLICT, "RESIDENCY_CHANGED", isAgent, taxYear)
+        .header.status shouldBe CONFLICT
+    }
+
+    "return a 409 page for Tax Return Previously Updated" in {
+      errorHandler.handleDeclareCrystallisationError(CONFLICT, "INCOME_SOURCES_CHANGED", isAgent, taxYear)
+        .header.status shouldBe CONFLICT
+    }
+
+    "return a 409 page for Recent Submissions Exist" in {
+      errorHandler.handleDeclareCrystallisationError(CONFLICT, "RECENT_SUBMISSIONS_EXIST", isAgent, taxYear)
+        .header.status shouldBe CONFLICT
+    }
+
+    "return a 409 page for Final Declaration Received" in {
+      errorHandler.handleDeclareCrystallisationError(CONFLICT, "FINAL_DECLARATION_RECEIVED", isAgent, taxYear)
+        .header.status shouldBe CONFLICT
+    }
+
+    "return a 422 page for No Valid Income Sources" in {
+      errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "INCOME_SUBMISSIONS_NOT_EXIST", isAgent, taxYear)
+        .header.status shouldBe UNPROCESSABLE_ENTITY
+    }
+
+    "return a 503 page for service unavailable" in {
+      errorHandler.handleDeclareCrystallisationError(SERVICE_UNAVAILABLE, "", isAgent, taxYear)
+        .header.status shouldBe SERVICE_UNAVAILABLE
+    }
+
+    "return a 500 page for internal server error" in {
+      errorHandler.handleDeclareCrystallisationError(INTERNAL_SERVER_ERROR, "", isAgent, taxYear)
+        .header.status shouldBe INTERNAL_SERVER_ERROR
+    }
+
   }
 
 }

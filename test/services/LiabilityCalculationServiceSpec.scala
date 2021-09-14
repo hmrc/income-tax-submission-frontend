@@ -16,30 +16,47 @@
 
 package services
 
-import connectors.CalculationIdConnector
-import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
+import connectors.LiabilityCalculationConnector
+import connectors.httpParsers.LiabilityCalculationHttpParser.LiabilityCalculationResponse
 import models.LiabilityCalculationIdModel
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
 
 import scala.concurrent.Future
 
-class CalculationIdServiceSpec extends UnitTest {
+class LiabilityCalculationServiceSpec extends UnitTest {
 
-  val connector: CalculationIdConnector = mock[CalculationIdConnector]
-  val service: CalculationIdService = new CalculationIdService(connector)
+  val connector: LiabilityCalculationConnector = mock[LiabilityCalculationConnector]
+  val service: LiabilityCalculationService = new LiabilityCalculationService(connector)
 
-  ".getIncomeSources" should {
+  ".getCalculationId" should {
 
     "return the connector response" in {
       val responseBody = LiabilityCalculationIdModel("calculationId")
-      val expectedResult: CalculationIdResponse = Right(responseBody)
+      val expectedResult: LiabilityCalculationResponse = Right(responseBody)
 
       (connector.getCalculationId(_: String, _: Int)(_: HeaderCarrier))
         .expects("123456789",1999, headerCarrierWithSession.withExtraHeaders("mtditid"->"987654321"))
         .returning(Future.successful(expectedResult))
 
       val result = await(service.getCalculationId("123456789", 1999, "987654321"))
+
+      result shouldBe expectedResult
+    }
+
+  }
+
+  ".getIntentToCrystallise" should {
+
+    "return the connector response" in {
+      val responseBody = LiabilityCalculationIdModel("calculationId")
+      val expectedResult: LiabilityCalculationResponse = Right(responseBody)
+
+      (connector.getIntentToCrystallise(_: String, _: Int)(_: HeaderCarrier))
+        .expects("123456789",1999, headerCarrierWithSession.withExtraHeaders("mtditid"->"987654321"))
+        .returning(Future.successful(expectedResult))
+
+      val result = await(service.getIntentToCrystallise("123456789", 1999, "987654321"))
 
       result shouldBe expectedResult
     }

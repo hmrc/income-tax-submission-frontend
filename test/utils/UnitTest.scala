@@ -29,7 +29,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
-import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE}
+import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, FORBIDDEN, CONFLICT}
 import play.api.test.{FakeRequest, Helpers}
 import services.AuthService
 import uk.gov.hmrc.auth.core._
@@ -147,6 +147,8 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   val error500: APIErrorModel = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("INTERNAL_SERVER_ERROR","Internal server error"))
   val error503: APIErrorModel = APIErrorModel(SERVICE_UNAVAILABLE,APIErrorBodyModel("SERVICE_UNAVAILABLE","Service unavailable"))
 
+  val intentToCrystalliseError403: APIErrorModel = APIErrorModel(FORBIDDEN, APIErrorBodyModel("NO_SUBMISSION_EXIST", "The remote endpoint has indicated that no income submissions exist"))
+  val intentToCrystalliseError409: APIErrorModel = APIErrorModel(CONFLICT, APIErrorBodyModel("CONFLICT", "The remote endpoint has indicated that final declaration has already been received"))
 
   lazy val dividendsModel:Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
   lazy val interestsModel:Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))

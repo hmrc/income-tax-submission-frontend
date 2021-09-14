@@ -22,16 +22,16 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.PagerDutyHelper.PagerDutyKeys.{FOURXX_RESPONSE_FROM_API, _}
 import utils.PagerDutyHelper.pagerDutyLog
 
-object CalculationIdHttpParser extends APIParser {
-  type CalculationIdResponse = Either[APIErrorModel, LiabilityCalculationIdModel]
+object LiabilityCalculationHttpParser extends APIParser {
+  type LiabilityCalculationResponse = Either[APIErrorModel, LiabilityCalculationIdModel]
 
-  override val parserName: String = "CalculationIdHttpParser"
+  override val parserName: String = "LiabilityCalculationHttpParser"
   override val service: String = "income-tax-calculation"
 
-  implicit object CalculationIdHttpReads extends HttpReads[CalculationIdResponse] {
-    override def read(method: String, url: String, response: HttpResponse): CalculationIdResponse = {
+  implicit object LiabilityCalculationHttpReads extends HttpReads[LiabilityCalculationResponse] {
+    override def read(method: String, url: String, response: HttpResponse): LiabilityCalculationResponse = {
       response.status match {
-        case OK => response.json.validate[LiabilityCalculationIdModel].fold[CalculationIdResponse](
+        case OK => response.json.validate[LiabilityCalculationIdModel].fold[LiabilityCalculationResponse](
           jsonErrors => badSuccessJsonFromAPI,
           parsedModel => Right(parsedModel)
         )

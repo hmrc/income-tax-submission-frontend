@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result
-import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{FORBIDDEN, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import views.html.errors.NoUpdatesProvidedPage
 
@@ -79,8 +79,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of FORBIDDEN(200)" in {
+        status(result) shouldBe FORBIDDEN
       }
 
       welshToggleCheck("English")
@@ -101,8 +101,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of FORBIDDEN(200)" in {
+        status(result) shouldBe FORBIDDEN
       }
 
       welshToggleCheck("English")
@@ -147,8 +147,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of FORBIDDEN(403)" in {
+        status(result) shouldBe FORBIDDEN
       }
 
       welshToggleCheck("Welsh")
@@ -169,8 +169,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of FORBIDDEN(403)" in {
+        status(result) shouldBe FORBIDDEN
       }
 
       welshToggleCheck("Welsh")

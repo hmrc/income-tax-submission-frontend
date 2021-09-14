@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result
-import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{CONFLICT, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 
 import scala.concurrent.Future
@@ -80,8 +80,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of CONFLICT(409)" in {
+        status(result) shouldBe CONFLICT
       }
 
       welshToggleCheck("English")
@@ -102,8 +102,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of CONFLICT(409)" in {
+        status(result) shouldBe CONFLICT
       }
 
       welshToggleCheck("English")
@@ -147,8 +147,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of CONFLICT(409)" in {
+        status(result) shouldBe CONFLICT
       }
 
       welshToggleCheck("Welsh")
@@ -169,8 +169,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of CONFLICT(409)" in {
+        status(result) shouldBe CONFLICT
       }
 
       welshToggleCheck("Welsh")

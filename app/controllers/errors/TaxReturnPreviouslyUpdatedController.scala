@@ -40,7 +40,7 @@ class TaxReturnPreviouslyUpdatedController @Inject()(val authorisedAction: Autho
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
     inYearAction.notInYear(taxYear) {
-      Future.successful(Ok(taxReturnPreviouslyUpdatedView(isAgent = user.isAgent, taxYear)))
+      Future.successful(Conflict(taxReturnPreviouslyUpdatedView(isAgent = user.isAgent, taxYear)))
     }
   }
 

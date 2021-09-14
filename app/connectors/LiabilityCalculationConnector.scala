@@ -17,20 +17,23 @@
 package connectors
 
 import config.AppConfig
-import connectors.httpParsers.CalculationIdHttpParser.{CalculationIdHttpReads, CalculationIdResponse}
+import connectors.httpParsers.LiabilityCalculationHttpParser.{LiabilityCalculationHttpReads, LiabilityCalculationResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import javax.inject.Inject
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CalculationIdConnector @Inject()(val http: HttpClient,
-                                       val config: AppConfig
+class LiabilityCalculationConnector @Inject()(val http: HttpClient,
+                                              val config: AppConfig
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
-  def getCalculationId(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[CalculationIdResponse] = {
+  def getCalculationId(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
     val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation"
-    http.GET[CalculationIdResponse](Url)
+    http.GET[LiabilityCalculationResponse](Url)
   }
 
-
+  def getIntentToCrystallise(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
+    val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation?crystallise=true"
+    http.GET[LiabilityCalculationResponse](Url)
+  }
 }

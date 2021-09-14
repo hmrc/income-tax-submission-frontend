@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package services
+package common
 
-import connectors.CalculationIdConnector
-import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
-import uk.gov.hmrc.http.HeaderCarrier
+object StatusMessage {
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
-
-
-@Singleton
-class CalculationIdService @Inject()(calculationIdConnector: CalculationIdConnector) {
-  def getCalculationId(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[CalculationIdResponse] =
-    calculationIdConnector.getCalculationId(nino, taxYear)(hc.withExtraHeaders("mtditid" -> mtditid))
+  val residencyChanged: String = "RESIDENCY_CHANGED"
+  val finalDeclarationReceived: String = "FINAL_DECLARATION_RECEIVED"
 
 }
