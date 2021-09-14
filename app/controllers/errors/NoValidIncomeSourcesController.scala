@@ -28,17 +28,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NoValidIncomeSourceController @Inject()(val authorisedAction: AuthorisedAction,
-                                              val view: NoValidIncomeSourcesView,
-                                              implicit val appConfig: AppConfig,
-                                              implicit val mcc: MessagesControllerComponents,
-                                              implicit val inYearAction: InYearAction,
-                                              implicit val ec: ExecutionContext
+class NoValidIncomeSourcesController @Inject()(val authorisedAction: AuthorisedAction,
+                                               val view: NoValidIncomeSourcesView,
+                                               implicit val appConfig: AppConfig,
+                                               implicit val mcc: MessagesControllerComponents,
+                                               implicit val inYearAction: InYearAction,
+                                               implicit val ec: ExecutionContext
                                              ) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
     inYearAction.notInYear(taxYear) {
-      Future.successful(Ok(view(isAgent = user.isAgent, taxYear)))
+      Future.successful(UnprocessableEntity(view(isAgent = user.isAgent, taxYear)))
     }
   }
 }

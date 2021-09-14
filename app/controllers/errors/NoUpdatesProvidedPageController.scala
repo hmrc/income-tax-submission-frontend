@@ -18,8 +18,6 @@ package controllers.errors
 
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
-import controllers.predicates.TaxYearAction.taxYearAction
-
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -40,7 +38,7 @@ class NoUpdatesProvidedPageController @Inject()(val authorisedAction: Authorised
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
       inYearAction.notInYear(taxYear) {
-        Future.successful(Ok(noUpdatesProvidedPageView(isAgent = user.isAgent, taxYear)))
+        Future.successful(Forbidden(noUpdatesProvidedPageView(isAgent = user.isAgent, taxYear)))
       }
   }
 

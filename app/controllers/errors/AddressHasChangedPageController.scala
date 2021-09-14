@@ -16,10 +16,8 @@
 
 package controllers.errors
 
-import common.SessionValues
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
-import controllers.predicates.TaxYearAction.taxYearAction
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -41,7 +39,7 @@ class AddressHasChangedPageController @Inject()(val authorisedAction: Authorised
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
     inYearAction.notInYear(taxYear) {
-      Future.successful(Ok(addressHasChangedPageView(isAgent = user.isAgent, taxYear)))
+      Future.successful(Conflict(addressHasChangedPageView(isAgent = user.isAgent, taxYear)))
     }
   }
 

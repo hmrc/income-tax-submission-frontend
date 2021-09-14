@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result
-import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{UNPROCESSABLE_ENTITY, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 
 import scala.concurrent.Future
@@ -92,8 +92,8 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of UNPROCESSABLE_ENTITY(422)" in {
+        status(result) shouldBe UNPROCESSABLE_ENTITY
       }
 
       welshToggleCheck("English")
@@ -122,8 +122,8 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of UNPROCESSABLE_ENTITY(422)" in {
+        status(result) shouldBe UNPROCESSABLE_ENTITY
       }
       
       buttonCheck(submit, goToIncomeTaxAccountSelector, Some(viewAndChangeOverviewLinkAgent))
@@ -164,8 +164,8 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of UNPROCESSABLE_ENTITY(422)" in {
+        status(result) shouldBe UNPROCESSABLE_ENTITY
       }
 
       welshToggleCheck("Welsh")

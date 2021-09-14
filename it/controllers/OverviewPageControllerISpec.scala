@@ -30,7 +30,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
-import services.{CalculationIdService, IncomeSourcesService}
+import services.{LiabilityCalculationService, IncomeSourcesService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
@@ -248,7 +248,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     scala.concurrent.ExecutionContext.Implicits.global,
     inYearAction,
     app.injector.instanceOf[IncomeSourcesService],
-    app.injector.instanceOf[CalculationIdService],
+    app.injector.instanceOf[LiabilityCalculationService],
     app.injector.instanceOf[OverviewPageView],
     app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[ErrorHandler]

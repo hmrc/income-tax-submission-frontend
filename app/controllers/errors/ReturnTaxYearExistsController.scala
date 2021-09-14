@@ -24,7 +24,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.errors.ReturnTaxYearExistsView
-import controllers.predicates.TaxYearAction.taxYearAction
 
 import scala.concurrent.Future
 
@@ -37,7 +36,7 @@ class ReturnTaxYearExistsController @Inject()(val authorisedAction: AuthorisedAc
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
     inYearAction.notInYear(taxYear) {
-      Future.successful(Ok(returnTaxYearExistsView(isAgent = user.isAgent, taxYear)))
+      Future.successful(Conflict(returnTaxYearExistsView(isAgent = user.isAgent, taxYear)))
     }
   }
 }

@@ -16,20 +16,25 @@
 
 package config
 
+import common.StatusMessage
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.errors.{InternalServerErrorPage, NotFoundPage, ServiceUnavailablePage}
-import play.api.http.Status.SERVICE_UNAVAILABLE
+import views.html.errors._
+import play.api.http.Status._
+
 import scala.concurrent.Future
 
 @Singleton
 class ErrorHandler @Inject()(val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
-                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
+                             serviceUnavailablePage: ServiceUnavailablePage, noUpdatesProvidedPage: NoUpdatesProvidedPage,
+                             returnTaxYearExistsView: ReturnTaxYearExistsView, addressHasChangedPage: AddressHasChangedPage,
+                             noValidIncomeSourcesView: NoValidIncomeSourcesView, taxReturnPreviouslyUpdatedView: TaxReturnPreviouslyUpdatedView
+                            )(implicit appConfig: AppConfig)
 
   extends FrontendErrorHandler {
 
@@ -47,9 +52,29 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
     }
   }
 
+  def handleIntentToCrystalliseError(status: Int, isAgent: Boolean, taxYear: Int)(implicit request: Request[_]): Result = {
+    status match {
+      case FORBIDDEN => Forbidden(noUpdatesProvidedPage(isAgent, taxYear))
+      case CONFLICT => Conflict(returnTaxYearExistsView(isAgent, taxYear))
+      case SERVICE_UNAVAILABLE => ServiceUnavailable(serviceUnavailablePage())
+      case _ => InternalServerError(internalServerErrorPage())
+    }
+  }
+
+  def handleDeclareCrystallisationError(status: Int, errorMessage: String, isAgent: Boolean, taxYear: Int)(implicit request: Request[_]): Result = {
+    (status, errorMessage) match {
+      case (CONFLICT, StatusMessage.residencyChanged) => Conflict(addressHasChangedPage(isAgent, taxYear))
+      case (CONFLICT, StatusMessage.finalDeclarationReceived) => Conflict(returnTaxYearExistsView(isAgent, taxYear))
+      case (CONFLICT, _) => Conflict(taxReturnPreviouslyUpdatedView(isAgent, taxYear))
+      case (UNPROCESSABLE_ENTITY, _) => UnprocessableEntity(noValidIncomeSourcesView(isAgent, taxYear))
+      case (SERVICE_UNAVAILABLE, _) => ServiceUnavailable(serviceUnavailablePage())
+      case _ => InternalServerError(internalServerErrorPage())
+    }
+  }
+
   override def onClientError(requestHeader: RequestHeader, statusCode: Int, message: String): Future[Result] = Future.successful {
     statusCode match {
-      case play.mvc.Http.Status.NOT_FOUND =>
+      case NOT_FOUND =>
         NotFound(notFoundTemplate(requestHeader.withBody("")))
       case _ =>
         InternalServerError(internalServerErrorPage()(requestHeader.withBody(""), messagesApi.preferred(requestHeader), appConfig))

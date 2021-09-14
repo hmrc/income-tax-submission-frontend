@@ -24,7 +24,7 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{CalculationIdService, IncomeSourcesService}
+import services.{LiabilityCalculationService, IncomeSourcesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
@@ -37,7 +37,7 @@ class OverviewPageController @Inject()(
                                         implicit val ec: ExecutionContext,
                                         inYearAction: InYearAction,
                                         incomeSourcesService: IncomeSourcesService,
-                                        calculationIdService: CalculationIdService,
+                                        liabilityCalculationService: LiabilityCalculationService,
                                         overviewPageView: OverviewPageView,
                                         authorisedAction: AuthorisedAction,
                                         errorHandler: ErrorHandler) extends FrontendController(mcc) with I18nSupport {
@@ -71,7 +71,7 @@ class OverviewPageController @Inject()(
 
   def getCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
 
-    calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
+    liabilityCalculationService.getCalculationId(user.nino, taxYear, user.mtditid).map {
       case Right(calculationId) =>
         Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
       case Left(error) => errorHandler.handleError(error.status)
@@ -80,14 +80,14 @@ class OverviewPageController @Inject()(
 
   def finalCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
 
-      calculationIdService.getCalculationId(user.nino, taxYear, user.mtditid).map {
+      liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {
         case Right(calculationId) =>
           if(user.isAgent) {
             Redirect(appConfig.viewAndChangeFinalCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
           } else {
             Redirect(appConfig.viewAndChangeFinalCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
           }
-        case Left(error) => errorHandler.handleError(error.status)
+        case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, user.isAgent, taxYear)
       }
     }
 }

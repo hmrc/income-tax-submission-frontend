@@ -86,8 +86,8 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
 
         implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-        "returns status of OK(200)" in {
-          status(result) shouldBe OK
+        "returns status of CONFLICT(409)" in {
+          status(result) shouldBe CONFLICT
         }
 
         welshToggleCheck("English")
@@ -112,8 +112,8 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-      "returns status of OK(200)" in {
-        status(result) shouldBe OK
+      "returns status of CONFLICT(409)" in {
+        status(result) shouldBe CONFLICT
       }
       textOnPageCheck(expectedP2TextAgent, p2TextSelector)
       buttonCheck(expectedSignOutButtonText, signOutButtonSelector, Some(expectedSignOutButtonLinkAgent))
@@ -156,8 +156,8 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
 
         implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-        "returns status of OK(200)" in {
-          status(result) shouldBe OK
+        "returns status of CONFLICT(409)" in {
+          status(result) shouldBe CONFLICT
         }
 
         welshToggleCheck("Welsh")
@@ -182,8 +182,8 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
 
         implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
-        "returns status of OK(200)" in {
-          status(result) shouldBe OK
+        "returns status of OK(409)" in {
+          status(result) shouldBe CONFLICT
         }
 
         welshToggleCheck("Welsh")

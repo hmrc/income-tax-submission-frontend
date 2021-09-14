@@ -20,7 +20,7 @@ package controllers
 import common.SessionValues
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
-import connectors.httpParsers.CalculationIdHttpParser.CalculationIdResponse
+import connectors.httpParsers.LiabilityCalculationHttpParser.LiabilityCalculationResponse
 import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
 import controllers.predicates.InYearAction
 import models._
@@ -33,13 +33,13 @@ import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import services.{CalculationIdService, IncomeSourcesService}
+import services.{IncomeSourcesService, LiabilityCalculationService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
 import views.html.OverviewPageView
-import views.html.errors.{InternalServerErrorPage, ServiceUnavailablePage}
+import views.html.errors.{InternalServerErrorPage, NoUpdatesProvidedPage, ReturnTaxYearExistsView, ServiceUnavailablePage}
 
 import scala.concurrent.Future
 
@@ -67,9 +67,11 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]
   private val serviceUnavailablePageView: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
   private val internalServerErrorPageView: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
+  private val noUpdatesProvidedPage: NoUpdatesProvidedPage = app.injector.instanceOf[NoUpdatesProvidedPage]
+  private val returnTaxYearExistsView: ReturnTaxYearExistsView = app.injector.instanceOf[ReturnTaxYearExistsView]
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
   private val mockErrorHandler = mock[ErrorHandler]
-  private val mockCalculationIdService = mock[CalculationIdService]
+  private val mockLiabilityCalculationService = mock[LiabilityCalculationService]
 
 
   private val nino = Some("AA123456A")
@@ -126,29 +128,65 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
       .returning(result)
   }
 
-  def mockGetCalculationId():CallHandler4[String, Int, String, HeaderCarrier, Future[CalculationIdResponse]] = {
-    (mockCalculationIdService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
+  def mockHandleIntentToCrystalliseError(result: Result): CallHandler4[Int, Boolean, Int, Request[_], Result] = {
+    (mockErrorHandler.handleIntentToCrystalliseError(_: Int, _: Boolean, _: Int)(_: Request[_]))
+      .expects(*, *, *, *)
+      .returning(result)
+  }
+
+  def mockGetCalculationId():CallHandler4[String, Int, String, HeaderCarrier, Future[LiabilityCalculationResponse]] = {
+    (mockLiabilityCalculationService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
       .returning(Future.successful(Right(LiabilityCalculationIdModel("calculationId"))))
   }
-  def mockGetCalculationIdInternalServiceError():CallHandler4[String, Int, String, HeaderCarrier, Future[CalculationIdResponse]] = {
-    (mockCalculationIdService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
+
+  def mockGetCalculationIdInternalServerError():CallHandler4[String, Int, String, HeaderCarrier, Future[LiabilityCalculationResponse]] = {
+    (mockLiabilityCalculationService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
       .returning(Future.successful(Left(error500)))
   }
-  def mockGetCalculationIdServiceUnavailableError():CallHandler4[String, Int, String, HeaderCarrier, Future[CalculationIdResponse]] = {
-    (mockCalculationIdService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
+
+  def mockGetCalculationIdServiceUnavailableError():CallHandler4[String, Int, String, HeaderCarrier, Future[LiabilityCalculationResponse]] = {
+    (mockLiabilityCalculationService.getCalculationId(_: String, _: Int, _: String)(_: HeaderCarrier))
       .expects(*, *, *, *)
       .returning(Future.successful(Left(error503)))
   }
 
+  def mockPostIntentToCrystallise():CallHandler4[String, Int, String, HeaderCarrier, Future[LiabilityCalculationResponse]] = {
+    (mockLiabilityCalculationService.getIntentToCrystallise(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(Right(LiabilityCalculationIdModel("calculationId"))))
+  }
+
+  def mockPostIntentToCrystalliseInternalServerError():CallHandler4[String, Int, String, HeaderCarrier, Future[LiabilityCalculationResponse]] = {
+    (mockLiabilityCalculationService.getIntentToCrystallise(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(Left(error500)))
+  }
+  def mockPostIntentToCrystalliseServiceUnavailableError():CallHandler4[String, Int, String, HeaderCarrier, Future[LiabilityCalculationResponse]] = {
+    (mockLiabilityCalculationService.getIntentToCrystallise(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(Left(error503)))
+  }
+
+  def mockPostIntentToCrystalliseNoUpdatesProvidedError():CallHandler4[String, Int, String, HeaderCarrier, Future[LiabilityCalculationResponse]] = {
+    (mockLiabilityCalculationService.getIntentToCrystallise(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(Left(intentToCrystalliseError403)))
+  }
+  def mockPostIntentToCrystalliseReturnTaxYearExistsError():CallHandler4[String, Int, String, HeaderCarrier, Future[LiabilityCalculationResponse]] = {
+    (mockLiabilityCalculationService.getIntentToCrystallise(_: String, _: Int, _: String)(_: HeaderCarrier))
+      .expects(*, *, *, *)
+      .returning(Future.successful(Left(intentToCrystalliseError409)))
+  }
+
   private val controller = new OverviewPageController(
-    frontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, inYearAction, mockIncomeSourcesService, mockCalculationIdService,
+    frontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, inYearAction, mockIncomeSourcesService, mockLiabilityCalculationService,
     overviewPageView, authorisedAction, mockErrorHandler
   )
 
   private val controllerEndOfYear = new OverviewPageController(
-    mockAppConfigTaxYearFeatureOff, stubMessagesControllerComponents(),mockExecutionContext, inYearAction, mockIncomeSourcesService, mockCalculationIdService,
+    mockAppConfigTaxYearFeatureOff, stubMessagesControllerComponents(),mockExecutionContext, inYearAction, mockIncomeSourcesService, mockLiabilityCalculationService,
     overviewPageView, authorisedAction, mockErrorHandler
   )
 
@@ -162,7 +200,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesValid()
-          
+
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -172,7 +210,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesValid()
-          
+
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
@@ -187,7 +225,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesNone()
-          
+
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -210,7 +248,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockGetIncomeSourcesNone()
-          
+
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
@@ -278,7 +316,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesValid()
-          
+
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -288,7 +326,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesValid()
-          
+
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
@@ -302,7 +340,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesNone()
-          
+
           controller.show(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.OK
@@ -312,7 +350,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockGetIncomeSourcesNone()
-          
+
           controller.show(taxYear)(fakeGetRequest)
         }
         contentType(result) shouldBe Some("text/html")
@@ -365,7 +403,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
-          mockGetCalculationIdInternalServiceError()
+          mockGetCalculationIdInternalServerError()
           mockHandleError(InternalServerError(internalServerErrorPageView()))
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
@@ -402,7 +440,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
-          mockGetCalculationIdInternalServiceError()
+          mockGetCalculationIdInternalServerError()
           mockHandleError(InternalServerError(internalServerErrorPageView()))
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
@@ -421,7 +459,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
-          mockGetCalculationId()
+          mockPostIntentToCrystallise()
           controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
         status(result) shouldBe Status.SEE_OTHER
@@ -432,8 +470,8 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
-          mockGetCalculationIdServiceUnavailableError()
-          mockHandleError(ServiceUnavailable(serviceUnavailablePageView()))
+          mockPostIntentToCrystalliseServiceUnavailableError()
+          mockHandleIntentToCrystalliseError(ServiceUnavailable(serviceUnavailablePageView()))
 
           controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
@@ -444,12 +482,36 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
-          mockGetCalculationIdInternalServiceError()
-          mockHandleError(InternalServerError(internalServerErrorPageView()))
+          mockPostIntentToCrystalliseInternalServerError()
+          mockHandleIntentToCrystalliseError(InternalServerError(internalServerErrorPageView()))
 
           controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
         status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+      }
+
+      "return a NoUpdatesProvided error page when no submissions exist" in {
+
+        val result = {
+          mockAuth(nino)
+          mockPostIntentToCrystalliseNoUpdatesProvidedError()
+          mockHandleIntentToCrystalliseError(Forbidden(noUpdatesProvidedPage(false, taxYear)))
+
+          controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+        status(result) shouldBe Status.FORBIDDEN
+      }
+
+      "return an Conflict page when there is a final declaration already rceived" in {
+
+        val result = {
+          mockAuth(nino)
+          mockPostIntentToCrystalliseReturnTaxYearExistsError()
+          mockHandleIntentToCrystalliseError(Conflict(returnTaxYearExistsView(false, taxYear)))
+
+          controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+        status(result) shouldBe Status.CONFLICT
       }
     }
 
@@ -459,7 +521,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuthAsAgent()
-          mockGetCalculationId()
+          mockPostIntentToCrystallise()
 
           controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
@@ -471,8 +533,8 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuthAsAgent()
-          mockGetCalculationIdServiceUnavailableError()
-          mockHandleError(ServiceUnavailable(serviceUnavailablePageView()))
+          mockPostIntentToCrystalliseServiceUnavailableError()
+          mockHandleIntentToCrystalliseError(ServiceUnavailable(serviceUnavailablePageView()))
 
           controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
@@ -483,12 +545,36 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuthAsAgent()
-          mockGetCalculationIdInternalServiceError()
-          mockHandleError(InternalServerError(internalServerErrorPageView()))
+          mockPostIntentToCrystalliseInternalServerError()
+          mockHandleIntentToCrystalliseError(InternalServerError(internalServerErrorPageView()))
 
           controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
         status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+      }
+
+      "return a NoUpdatesProvided error page when no submissions exist" in {
+
+        val result = {
+          mockAuthAsAgent()
+          mockPostIntentToCrystalliseNoUpdatesProvidedError()
+          mockHandleIntentToCrystalliseError(Forbidden(noUpdatesProvidedPage(true, taxYear)))
+
+          controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+        status(result) shouldBe Status.FORBIDDEN
+      }
+
+      "return an Conflict page when there is a final declaration already received" in {
+
+        val result = {
+          mockAuthAsAgent()
+          mockPostIntentToCrystalliseReturnTaxYearExistsError()
+          mockHandleIntentToCrystalliseError(Conflict(returnTaxYearExistsView(true, taxYear)))
+
+          controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
+        }
+        status(result) shouldBe Status.CONFLICT
       }
     }
   }
