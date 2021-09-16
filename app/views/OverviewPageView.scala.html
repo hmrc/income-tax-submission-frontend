@@ -31,14 +31,15 @@
         </h2>
         <ol class="app-task-list__items">
             <li class="govuk-body">@caption</li>
-
-            <div class="govuk-warning-text govuk-body govuk-!-margin-bottom-0" style="right:1.875em">
-                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">
-                        <span class="govuk-warning-text__assistive">Warning</span>
-                        @warningEOY
-                    </strong>
-            </div>
+            <li>
+                <div class="govuk-warning-text govuk-body govuk-!-margin-bottom-0">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            @warningEOY
+                        </strong>
+                </div>
+            </li>
 
             <li class="app-task-list__item"></li>
                 <li class="app-task-list__item">
@@ -168,9 +169,11 @@
             </h2>
                 <ul class="app-task-list__items">
                     <li class="govuk-body">@captionEOY</li>
-                    @formWithCSRF(action = controllers.routes.OverviewPageController.finalCalculation(taxYear)) {
-                        @button()
-                    }
+                    <li>
+                        @formWithCSRF(action = controllers.routes.OverviewPageController.finalCalculation(taxYear)) {
+                            @button()
+                        }
+                    </li>
                 </ul>
         </li>
         }
