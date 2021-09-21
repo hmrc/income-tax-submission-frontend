@@ -27,9 +27,9 @@
         title = Text(messages("taxReturnReceived.panel.heading")),
         content = Text(messages(s"taxReturnReceived.panel.subheading.${if(isAgent) "agent" else "individual"}"))
     ))
-    <br>
 
     @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-top-6",
         rows = Seq(
             SummaryListRow(
                 key = Key(
@@ -64,26 +64,23 @@
         )
     ))
 
-    <br>
+    <h2 class="govuk-heading-m ">@messages("taxReturnReceived.nextSteps.subheading")</h2>
 
-    <h2 class="govuk-heading-m">@messages("taxReturnReceived.nextSteps.subheading")</h2>
-
-    <div class="govuk-body">
+    <div class="govuk-body govuk-!-margin-bottom-8">
         <p>@messages("taxReturnReceived.nextSteps.p1")
             <a class="govuk-link" id="amount_owed_link" href=@if(isAgent){@appConfig.viewAndChangePaymentsOwedAgentUrl}else{@appConfig.viewAndChangePaymentsOwedUrl}>
                 @messages(s"taxReturnReceived.nextSteps.p2.${if(isAgent) "agent" else "individual"}")
             </a>
         </p>
 
-        <p>@messages(s"taxReturnReceived.nextSteps.p4.${if(isAgent) "agent" else "individual"}")</p>
-        <br>
+        <p class="govuk-body govuk-!-margin-bottom-8">@messages(s"taxReturnReceived.nextSteps.p4.${if(isAgent) "agent" else "individual"}")</p>
+
         <p class="govuk-body-m">
             <a class="govuk-link" id="print_link">
                 @messages("taxReturnReceived.print")
             </a>
         </p>
     </div>
-    <br>
 }
 @layout(pageTitle = messages(s"taxReturnReceived.title.${if(isAgent) "agent" else "individual"}"), taxYear = Some(taxYear), isAgent = isAgent, showBreadcrumbs = false)(mainHTML)
 
