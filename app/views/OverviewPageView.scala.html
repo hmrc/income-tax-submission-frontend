@@ -150,26 +150,13 @@
 
             @if(!isInYear && isAnIncomeSourceDefined(incomeSources)){
 
-                @if(isAgent) {
-            <p class="govuk-body">@messages("overview.EOY.paragraph.3.agent")
+            <p class="govuk-body">@messages(s"overview.EOY.paragraph.3.${if(isAgent) "agent" else "individual"}")
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
                     @messages("overview.EOY.paragraph.4")
                 </a>
-                @messages("overview.EOY.paragraph.5.agent")
+                @messages(s"overview.EOY.paragraph.5.${if(isAgent) "agent" else "individual"}")
             </p>
-
-            } else {
-
-            <p class="govuk-body">@messages("overview.EOY.paragraph.3.individual")
-                <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
-                    @messages("overview.EOY.paragraph.4")
-                </a>
-                @messages("overview.EOY.paragraph.5.individual")
-            </p>
-
-                    }
-                }
-
+            }
     </li>
 }
 
