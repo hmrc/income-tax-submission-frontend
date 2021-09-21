@@ -254,13 +254,13 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val endOfYearBulletPoint1Selector = "#main-content > div > div > ul > li:nth-child(1)"
     val endOfYearBulletPoint2Selector = "#main-content > div > div > ul > li:nth-child(2)"
     val endOfYearWarningTextSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(2) > div > strong"
-    val interestStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
-    val dividendsStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
-    val giftAidStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
-    val employmentStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
+    val interestStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
+    val dividendsStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+    val giftAidStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
+    val employmentStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
     val endOfYearContinueButtonSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > li:nth-child(2) > form"
-    val ifWeHaveInformationEOYSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > p:nth-child(1)"
-    val fillInTheSectionsEOYSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > p:nth-child(2)"
+    val ifWeHaveInformationEOYSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(1)"
+    val fillInTheSectionsEOYSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(2)"
     val goToYourIncomeTaxReturnEOYSelector = "#main-content > div > div > ol > li:nth-child(1) > p"
   }
 
@@ -447,7 +447,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYearMinusOne))
-            textOnPageCheck(notStartedText, dividendsStatusSelector)
+            textOnPageCheck(notStartedText, dividendsStatusSelectorEndOfYear)
           }
 
           "has an interest section" which {
@@ -457,12 +457,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           "has an employment section " which {
             linkCheck(employmentLinkText, employmentLinkSelector, newEmploymentLink(taxYearMinusOne))
-            textOnPageCheck(notStartedText, employmentStatusSelector)
+            textOnPageCheck(notStartedText, employmentStatusSelectorEndOfYear)
           }
 
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearMinusOne))
-            textOnPageCheck(notStartedText, giftAidStatusSelector)
+            textOnPageCheck(notStartedText, giftAidStatusSelectorEndOfYear)
           }
 
         }

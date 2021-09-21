@@ -48,17 +48,19 @@
 
             } else {
             <h2 class="app-task-list__section">@heading</h2>
-            <ol style="padding-left:0;" class="app-task-list__items">
+                <ol style="padding-left:0;" class="app-task-list__items">
+                    <li>
 
-                @if(isAgent){
-                <p class="govuk-body">@messages("overview.EOY.paragraph.1.agent")</p>
-                <p class="govuk-body">@messages("overview.EOY.paragraph.2")</p>
+                    @if(isAgent){
+                    <p class="govuk-body">@messages("overview.EOY.paragraph.1.agent")</p>
+                    <p class="govuk-body">@messages("overview.EOY.paragraph.2")</p>
 
-                } else {
-                <p class="govuk-body">@messages("overview.EOY.paragraph.1.individual")</p>
-                <p class="govuk-body">@messages("overview.EOY.paragraph.2")</p>
+                    } else {
+                        <p class="govuk-body">@messages("overview.EOY.paragraph.1.individual")</p>
+                        <p class="govuk-body">@messages("overview.EOY.paragraph.2")</p>
+                    }
+                    </li>
                 }
-            }
 
             <li class="app-task-list__item"></li>
                 <li class="app-task-list__item">
