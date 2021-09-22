@@ -150,7 +150,7 @@
 
         </ol>
 
-            @if(!isInYear && isAnIncomeSourceDefined(incomeSources)){
+            @if(!isInYear){
 
             <p class="govuk-body">@messages(s"overview.EOY.paragraph.3.${if(isAgent) "agent" else "individual"}")
                 <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
