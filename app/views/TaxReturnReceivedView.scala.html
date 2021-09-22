@@ -24,13 +24,12 @@
 
 @mainHTML = {
     @govukPanel(Panel(
-        title = Text(messages(s"taxReturnReceived.panel.heading.${if(isAgent) "agent" else "individual"}")),
-        content = Text(messages(
-            "taxReturnReceived.panel.subheading", (taxYear -1).toString, taxYear.toString
-        ))
+        title = Text(messages("taxReturnReceived.panel.heading")),
+        content = Text(messages(s"taxReturnReceived.panel.subheading.${if(isAgent) "agent" else "individual"}"))
     ))
 
     @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-top-6",
         rows = Seq(
             SummaryListRow(
                 key = Key(
@@ -61,53 +60,22 @@
                     classes = "govuk-!-width-one-quarter",
                     content = HtmlContent(timeStamp)
                 )
-            ),
-            SummaryListRow(
-                key = Key(
-                    classes = "govuk-!-width-three-quarters",
-                    content = Text(messages("taxReturnReceived.summaryrow.4"))
-                ),
-                value = Value(
-                    classes = "govuk-!-width-one-quarter",
-                    content = HtmlContent(bigDecimalCurrency(summaryData.incomeTaxAndNationalInsuranceContributions.toString))
-                )
             )
         )
     ))
 
-    <h2 class="govuk-heading-m">@messages("taxReturnReceived.nextSteps.subheading")</h2>
+    <h2 class="govuk-heading-m ">@messages("taxReturnReceived.nextSteps.subheading")</h2>
 
-    <div class="govuk-body">
+    <div class="govuk-body govuk-!-margin-bottom-8">
         <p>@messages("taxReturnReceived.nextSteps.p1")
             <a class="govuk-link" id="amount_owed_link" href=@if(isAgent){@appConfig.viewAndChangePaymentsOwedAgentUrl}else{@appConfig.viewAndChangePaymentsOwedUrl}>
                 @messages(s"taxReturnReceived.nextSteps.p2.${if(isAgent) "agent" else "individual"}")
             </a>
         </p>
-    </div>
 
-    <div class="govuk-body">
-        <p>@messages("common.nextSteps")</p>
-    </div>
+        <p class="govuk-body govuk-!-margin-bottom-8">@messages(s"taxReturnReceived.nextSteps.p4.${if(isAgent) "agent" else "individual"}")</p>
 
-    <ul class="govuk-list govuk-list--bullet">
-        <li>
-            <a class="govuk-link" id="find_next_update_link" href=@if(isAgent){@appConfig.viewAndChangeNextUpdatesAgentUrl}else{@appConfig.viewAndChangeNextUpdatesUrl}>
-                @messages(s"taxReturnReceived.nextSteps.bullet1.${if(isAgent) "agent" else "individual"}")
-            </a>
-        </li>
-        <li>
-            <a class="govuk-link" id="view_final_calc_link" href=@if(isAgent){@appConfig.viewAndChangeTaxYearsAgentUrl}else{@appConfig.viewAndChangeTaxYearsUrl}>
-                @messages(s"taxReturnReceived.nextSteps.bullet2.${if(isAgent) "agent" else "individual"}")
-            </a>
-        </li>
-    </ul>
-
-    <div class="govuk-body">
-        <p>@messages(s"taxReturnReceived.nextSteps.p4.${if(isAgent) "agent" else "individual"}")</p>
-    </div>
-
-    <div class="govuk-body">
-        <p>
+        <p class="govuk-body-m">
             <a class="govuk-link" id="print_link">
                 @messages("taxReturnReceived.print")
             </a>

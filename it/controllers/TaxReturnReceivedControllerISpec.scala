@@ -51,23 +51,17 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
   object ExpectedResults {
     val taxYear: Int = 2022
     val taxYearMinusOne: Int = taxYear - 1
-    val panelSubheading: String = taxYearMinusOne + " to " + taxYear
     val summaryRow1Key: String = "Name"
     val summaryRow2Key: String = "Unique Tax Reference (UTR)"
     val summaryRow3Key: String = "Date submitted"
     val summaryRow4Key: String = "Income Tax and National Insurance contributions"
-    val nextStepsSubheading: String = "What you need to do next"
-    val nextStepsP3: String = "You can also:"
     val nextStepsPrint: String = "Print this page"
     val printLink: String = ""
 
-    val panelSubheadingWelsh: String = taxYearMinusOne + " to " + taxYear
     val summaryRow1KeyWelsh: String = "Name"
     val summaryRow2KeyWelsh: String = "Unique Tax Reference (UTR)"
     val summaryRow3KeyWelsh: String = "Date submitted"
     val summaryRow4KeyWelsh: String = "Income Tax and National Insurance contributions"
-    val nextStepsSubheadingWelsh: String = "What you need to do next"
-    val nextStepsP3Welsh: String = "You can also:"
     val nextStepsPrintWelsh: String = "Print this page"
 
     val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/income-through-software/return/$taxYear/view"
@@ -82,9 +76,9 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
     val summaryRow1Value: String = "John Individual"
     val summaryRow2Value: String = "IN12345"
     val summaryRow3Value: String = timeStamp
-    val summaryRow4Value: String = "£1000"
 
-    val panelHeading: String = "We’ve received your Income Tax Return for:"
+    val panelHeading: String = "Confirmation:"
+    val panelSubheading: String = "We’ve received your Income Tax Return for 2019 to 2020"
 
     val nextStepsP1: String = "Find out what you owe and how to pay."
     val nextStepsP2: String = "what you owe and how to pay."
@@ -92,13 +86,8 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
 
     val nextStepsP4: String = "If you need to contact us about your Income Tax Return, tell us your UTR."
 
-    val nextStepsBullet1: String = "find out when your next updates are due"
-    val nextStepsBullet1Link: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/obligations"
-
-    val nextStepsBullet2: String = "view your final Income Tax and National Insurance calculation"
-    val nextStepsBullet2Link: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/tax-years"
-
-    val panelHeadingWelsh: String = "We’ve received your Income Tax Return for:"
+    val panelHeadingWelsh: String = "Confirmation:"
+    val panelSubheadingWelsh: String = "We’ve received your Income Tax Return for 2019 to 2020"
     val summaryRow1ValueWelsh: String = "John Individual"
     val summaryRow2ValueWelsh: String = "IN12345"
     val summaryRow3ValueWelsh: String = timeStamp
@@ -107,9 +96,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
     val nextStepsP1Welsh: String = "Find out what you owe and how to pay."
     val nextStepsP2Welsh: String = "what you owe and how to pay."
     val nextStepsP4Welsh: String = "If you need to contact us about your Income Tax Return, tell us your UTR."
-
-    val nextStepsBullet1Welsh: String = "find out when your next updates are due"
-    val nextStepsBullet2Welsh: String = "view your final Income Tax and National Insurance calculation"
   }
 
   object AgentExpectedResults {
@@ -123,33 +109,26 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
     val summaryRow3Value: String = timeStamp
     val summaryRow4Value: String = "£750.50"
 
-    val panelHeading = "We’ve received your client’s Income Tax Return for:"
+    val panelHeading = "Confirmation:"
+    val panelSubheading = "We’ve received your client’s Income Tax Return for 2019 to 2020"
 
-    val nextStepsP1: String = "Find out what your client owes."
-    val nextStepsP2: String = "what your client owes."
+    val nextStepsP1: String = "Find out what your client owes and how to pay."
+    val nextStepsP2: String = "what your client owes and how to pay."
     val nextStepsP2Link: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/payments-owed"
 
     val nextStepsP4: String = "If you need to contact us about your client’s Income Tax Return, tell us their UTR."
 
-    val nextStepsBullet1: String = "find out when your client’s next updates are due"
-    val nextStepsBullet1Link: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/obligations"
-
-    val nextStepsBullet2: String = "view your client’s final Income Tax and National Insurance calculation"
-    val nextStepsBullet2Link: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-years"
-
-    val panelHeadingWelsh = "We’ve received your client’s Income Tax Return for:"
+    val panelHeadingWelsh = "Confirmation:"
+    val panelSubheadingWelsh = "We’ve received your client’s Income Tax Return for 2019 to 2020"
 
     val summaryRow1ValueWelsh: String = "Jane Agent"
     val summaryRow2ValueWelsh: String = "AG98765"
     val summaryRow3ValueWelsh: String = timeStamp
     val summaryRow4ValueWelsh: String = "£750.50"
 
-    val nextStepsP1Welsh: String = "Find out what your client owes."
-    val nextStepsP2Welsh: String = "what your client owes."
+    val nextStepsP1Welsh: String = "Find out what your client owes and how to pay."
+    val nextStepsP2Welsh: String = "what your client owes and how to pay."
     val nextStepsP4Welsh: String = "If you need to contact us about your client’s Income Tax Return, tell us their UTR."
-
-    val nextStepsBullet1Welsh: String = "find out when your client’s next updates are due"
-    val nextStepsBullet2Welsh: String = "view your client’s final Income Tax and National Insurance calculation"
   }
 
   object Selectors {
@@ -161,17 +140,9 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
     val summaryValue2Selector = "#main-content > div > div > dl > div:nth-child(2) > dd"
     val summaryKey3Selector = "#main-content > div > div > dl > div:nth-child(3) > dt"
     val summaryValue3Selector = "#main-content > div > div > dl > div:nth-child(3) > dd"
-    val summaryKey4Selector = "#main-content > div > div > dl > div:nth-child(4) > dt"
-    val summaryValue4Selector = "#main-content > div > div > dl > div:nth-child(4) > dd"
-    val nextStepsSubheadingSelector = "#main-content > div > div > h2"
-    val nextStepsP1TextSelector = "#main-content > div > div > div:nth-child(4) > p"
+    val nextStepsP1TextSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val nextStepsP2LinkSelector = "#amount_owed_link"
-    val nextStepsP3TextSelector = "#main-content > div > div > div:nth-child(5) > p"
-    val nextStepsBullet1Selector = "#main-content > div > div > ul > li:nth-child(1)"
-    val nextStepsBullet1LinkSelector = "#main-content > div > div > ul > li:nth-child(1) > a"
-    val nextStepsBullet2Selector = "#main-content > div > div > ul > li:nth-child(2)"
-    val nextStepsBullet2LinkSelector = "#main-content > div > div > ul > li:nth-child(2) > a"
-    val nextStepsP4TextSelector = "#main-content > div > div > div:nth-child(7) > p"
+    val nextStepsP4TextSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
     val printLinkSelector = "#print_link"
   }
 
@@ -217,15 +188,10 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
         textOnPageCheck(summaryRow2Value, summaryValue2Selector)
         textOnPageCheck(summaryRow3Key, summaryKey3Selector)
         textOnPageCheck(summaryRow3Value, summaryValue3Selector)
-        textOnPageCheck(summaryRow4Key, summaryKey4Selector)
-        textOnPageCheck(summaryRow4Value, summaryValue4Selector)
 
-        textOnPageCheck(nextStepsSubheading, nextStepsSubheadingSelector)
+
         textOnPageCheck(nextStepsP1, nextStepsP1TextSelector)
         linkCheck(nextStepsP2, nextStepsP2LinkSelector, nextStepsP2Link)
-        textOnPageCheck(nextStepsP3, nextStepsP3TextSelector)
-        linkCheck(nextStepsBullet1, nextStepsBullet1LinkSelector, nextStepsBullet1Link)
-        linkCheck(nextStepsBullet2, nextStepsBullet2LinkSelector, nextStepsBullet2Link)
         textOnPageCheck(nextStepsP4, nextStepsP4TextSelector)
         linkCheck(nextStepsPrint, printLinkSelector, printLink)
       }
@@ -264,15 +230,9 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
         textOnPageCheck(summaryRow2ValueWelsh, summaryValue2Selector)
         textOnPageCheck(summaryRow3KeyWelsh, summaryKey3Selector)
         textOnPageCheck(summaryRow3ValueWelsh, summaryValue3Selector)
-        textOnPageCheck(summaryRow4KeyWelsh, summaryKey4Selector)
-        textOnPageCheck(summaryRow4ValueWelsh, summaryValue4Selector)
 
-        textOnPageCheck(nextStepsSubheadingWelsh, nextStepsSubheadingSelector)
         textOnPageCheck(nextStepsP1Welsh, nextStepsP1TextSelector)
         linkCheck(nextStepsP2Welsh, nextStepsP2LinkSelector, nextStepsP2Link)
-        textOnPageCheck(nextStepsP3Welsh, nextStepsP3TextSelector)
-        linkCheck(nextStepsBullet1, nextStepsBullet1LinkSelector, nextStepsBullet1Link)
-        linkCheck(nextStepsBullet2, nextStepsBullet2LinkSelector, nextStepsBullet2Link)
         textOnPageCheck(nextStepsP4Welsh, nextStepsP4TextSelector)
         linkCheck(nextStepsPrintWelsh, printLinkSelector, printLink)
       }
@@ -316,15 +276,9 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
         textOnPageCheck(summaryRow2Value, summaryValue2Selector)
         textOnPageCheck(summaryRow3Key, summaryKey3Selector)
         textOnPageCheck(summaryRow3Value, summaryValue3Selector)
-        textOnPageCheck(summaryRow4Key, summaryKey4Selector)
-        textOnPageCheck(summaryRow4Value, summaryValue4Selector)
 
-        textOnPageCheck(nextStepsSubheading, nextStepsSubheadingSelector)
         textOnPageCheck(nextStepsP1, nextStepsP1TextSelector)
         linkCheck(nextStepsP2, nextStepsP2LinkSelector, nextStepsP2Link)
-        textOnPageCheck(nextStepsP3, nextStepsP3TextSelector)
-        linkCheck(nextStepsBullet1, nextStepsBullet1LinkSelector, nextStepsBullet1Link)
-        linkCheck(nextStepsBullet2, nextStepsBullet2LinkSelector, nextStepsBullet2Link)
         textOnPageCheck(nextStepsP4, nextStepsP4TextSelector)
         linkCheck(nextStepsPrint, printLinkSelector, printLink)
       }
@@ -365,15 +319,9 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
         textOnPageCheck(summaryRow2ValueWelsh, summaryValue2Selector)
         textOnPageCheck(summaryRow3KeyWelsh, summaryKey3Selector)
         textOnPageCheck(summaryRow3ValueWelsh, summaryValue3Selector)
-        textOnPageCheck(summaryRow4KeyWelsh, summaryKey4Selector)
-        textOnPageCheck(summaryRow4ValueWelsh, summaryValue4Selector)
 
-        textOnPageCheck(nextStepsSubheadingWelsh, nextStepsSubheadingSelector)
         textOnPageCheck(nextStepsP1Welsh, nextStepsP1TextSelector)
         linkCheck(nextStepsP2Welsh, nextStepsP2LinkSelector, nextStepsP2Link)
-        textOnPageCheck(nextStepsP3Welsh, nextStepsP3TextSelector)
-        linkCheck(nextStepsBullet1, nextStepsBullet1LinkSelector, nextStepsBullet1Link)
-        linkCheck(nextStepsBullet2, nextStepsBullet2LinkSelector, nextStepsBullet2Link)
         textOnPageCheck(nextStepsP4Welsh, nextStepsP4TextSelector)
         linkCheck(nextStepsPrintWelsh, printLinkSelector, printLink)
       }
