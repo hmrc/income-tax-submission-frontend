@@ -33,31 +33,31 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(
-                    classes = "govuk-!-width-three-quarters",
+                    classes = "govuk-!-width-two-thirds",
                     content = Text(messages("taxReturnReceived.summaryrow.1"))
                 ),
                 value = Value(
-                    classes = "govuk-!-width-one-quarter",
+                    classes = "govuk-!-width-one-third",
                     content = HtmlContent(summaryData.name)
                 )
             ),
             SummaryListRow(
                 key = Key(
-                    classes = "govuk-!-width-three-quarters",
+                    classes = "govuk-!-width-two-thirds",
                     content = Text(messages("taxReturnReceived.summaryrow.2"))
                 ),
                 value = Value(
-                    classes = "govuk-!-width-one-quarter",
+                    classes = "govuk-!-width-one-third",
                     content = HtmlContent(summaryData.saUTR)
                 )
             ),
             SummaryListRow(
                 key = Key(
-                    classes = "govuk-!-width-three-quarters",
+                    classes = "govuk-!-width-two-thirds",
                     content = Text(messages("taxReturnReceived.summaryrow.3"))
                 ),
                 value = Value(
-                    classes = "govuk-!-width-one-quarter",
+                    classes = "govuk-!-width-one-third",
                     content = HtmlContent(timeStamp)
                 )
             )
