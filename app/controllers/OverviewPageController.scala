@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.{AuditService, IntentToCrystalliseDetail}
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.{AuthorisedAction, InYearAction}
@@ -24,7 +25,7 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{LiabilityCalculationService, IncomeSourcesService}
+import services.{IncomeSourcesService, LiabilityCalculationService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
@@ -40,7 +41,8 @@ class OverviewPageController @Inject()(
                                         liabilityCalculationService: LiabilityCalculationService,
                                         overviewPageView: OverviewPageView,
                                         authorisedAction: AuthorisedAction,
-                                        errorHandler: ErrorHandler) extends FrontendController(mcc) with I18nSupport {
+                                        errorHandler: ErrorHandler,
+                                        auditService: AuditService) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: AppConfig = appConfig
 
@@ -82,6 +84,10 @@ class OverviewPageController @Inject()(
 
       liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {
         case Right(calculationId) =>
+          
+          val userTypeString = if(user.isAgent) "agent" else "individual"
+          auditService.sendAudit(IntentToCrystalliseDetail(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
+          
           if(user.isAgent) {
             Redirect(appConfig.viewAndChangeFinalCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
           } else {

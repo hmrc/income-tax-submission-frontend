@@ -16,10 +16,12 @@
 
 package controllers
 
+import audit.{AuditService, DeclarationDetail, FinalDeclarationDetail}
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.AuthorisedAction
+
 import javax.inject.{Inject, Singleton}
 import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel}
 import play.api.i18n.I18nSupport
@@ -39,7 +41,8 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                                           implicit val ec: ExecutionContext,
                                           declarationPageView: DeclarationPageView,
                                           authorisedAction: AuthorisedAction,
-                                          errorHandler: ErrorHandler) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
+                                          errorHandler: ErrorHandler,
+                                          auditService: AuditService) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
 
   lazy val logger: Logger = Logger.apply(this.getClass)
 
@@ -61,10 +64,21 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
     implicit user =>
       val optionalCalculationId: Option[String] = user.session.get(CALCULATION_ID)
-      optionalCalculationId match {
-        case Some(calculationId) =>
+      val optionalSummaryDataReceived: Option[DeclarationModel] = getSessionData[DeclarationModel](SUMMARY_DATA)
+
+      (optionalSummaryDataReceived, optionalCalculationId) match {
+        case (Some(summaryDataReceived), Some(calculationId)) =>
           declareCrystallisationService.postDeclareCrystallisation(user.nino, taxYear, calculationId, user.mtditid).map {
             case Right(_) =>
+              auditService.sendAudit(FinalDeclarationDetail(
+                taxYear, if(user.isAgent) "agent" else "individual", user.nino, user.mtditid,
+                DeclarationDetail(
+                  summaryDataReceived.income,
+                  summaryDataReceived.allowancesAndDeductions,
+                  summaryDataReceived.totalTaxableIncome,
+                  summaryDataReceived.incomeTaxAndNationalInsuranceContributions
+                )
+              ).toAuditModel)
               Redirect(controllers.routes.TaxReturnReceivedController.show(taxYear))
             case Left(error) =>
               error.body match {
