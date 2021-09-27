@@ -29,6 +29,7 @@
 )
 
 @(pageTitle: String,
+        backLink: Boolean = false,
         headBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
         isAgent: Boolean = false,
@@ -61,6 +62,7 @@
     <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
     <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
     <script src='@routes.Assets.versioned("javascripts/application.js")'></script>
+    <script src='@routes.Assets.versioned("javascripts/app.js")'></script>
     @scriptsBlock.map(x => x)
 }
 
@@ -69,6 +71,6 @@
     headBlock = Some(head(headBlock, timeout)),
     headerBlock = Some(headerBlock),
     scriptsBlock = None,
-    beforeContentBlock = Some(beforeBodyContent(taxYear, isAgent, isOverviewPage, showBreadcrumbs)),
+    beforeContentBlock = Some(beforeBodyContent(taxYear, isAgent, isOverviewPage, showBreadcrumbs, backLink)),
     footerBlock = Some(footerBlock)
 )(content)

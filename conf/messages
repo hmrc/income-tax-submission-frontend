@@ -48,7 +48,6 @@ overview.agent.task2.caption.noUpdate = Provide at least one update before you c
 overview.task3.heading = Submit return
 overview.agent.task3.caption = Update your client’s Income Tax Return and submit it to us after 5 April {0}.
 
-
 overview.individual.task2.caption.noUpdate = Provide at least one update before you can view your tax calculation to date.
 overview.individual.task3.caption = Update your Income Tax Return and submit it to us after 5 April {0}.
 
@@ -80,6 +79,11 @@ overview.task3.crystallisation.heading.EOY.agent = Check and submit your client�
 overview.notStarted = Not started
 overview.updated = Updated
 overview.cannotUpdate = Cannot update
+
+declaration.title = Declaration
+declaration.p1.individual = The information I have provided is correct and complete to the best of my knowledge and belief. If I give false information I may have to pay financial penalties and face prosecution.
+declaration.p1.agent = I confirm that my client has reviewed the information provided and confirmed that it is correct and complete to the best of their knowledge to establish the liability for the tax year {0} to {1}. My client understands that they may have to pay financial penalties or face prosecution if they give false information.
+declaration.button = I agree - Submit Income Tax Return
 
 taxReturnReceived.title.individual = We’ve received your Income Tax Return
 taxReturnReceived.title.agent = We’ve received your client’s Income Tax Return
