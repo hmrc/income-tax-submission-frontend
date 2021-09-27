@@ -13,6 +13,8 @@ GET         /:taxYear/view                                  controllers.Overview
 GET         /:taxYear/income-tax-return-overview            controllers.OverviewPageController.showCrystallisation(taxYear: Int)
 GET         /:taxYear/calculate                             controllers.OverviewPageController.getCalculation(taxYear: Int)
 POST        /:taxYear/final-calculation                     controllers.OverviewPageController.finalCalculation(taxYear: Int)
+GET         /:taxYear/declaration                           controllers.DeclarationPageController.show(taxYear:Int)
+POST        /:taxYear/declaration                           controllers.DeclarationPageController.submit(taxYear: Int)
 
 GET         /:taxYear/income-tax-return-received            controllers.TaxReturnReceivedController.show(taxYear: Int)
 
