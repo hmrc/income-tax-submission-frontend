@@ -220,7 +220,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
           result.status shouldBe SEE_OTHER
         }
 
-        "has a redirect url pointing ot the confirmation page" in {
+        "has a redirect url pointing at the confirmation page" in {
           result.headers("Location").head shouldBe controllers.routes.TaxReturnReceivedController.show(taxYear).url
         }
       }
@@ -252,7 +252,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
           result.status shouldBe SEE_OTHER
         }
 
-        "has a redirect url pointing ot the confirmation page" in {
+        "has a redirect url pointing at the confirmation page" in {
           result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYear).url
         }
       }
@@ -279,7 +279,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
           result.status shouldBe SEE_OTHER
         }
 
-        "has a redirect url pointing ot the confirmation page" in {
+        "has a redirect url pointing at the confirmation page" in {
           result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYear).url
         }
         
