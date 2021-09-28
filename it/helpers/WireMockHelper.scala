@@ -177,5 +177,7 @@ trait WireMockHelper {
     ))
   }
 
-
+  def verifyAuditPost(): Unit = {
+    verifyPost("/write/audit")
+  }
 }

@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.AuditService
 import common.SessionValues
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
@@ -27,7 +28,7 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.test.Helpers.{CONFLICT, OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{CONFLICT, OK, SEE_OTHER, NO_CONTENT, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import services.DeclareCrystallisationService
 import views.html.DeclarationPageView
@@ -43,7 +44,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     scala.concurrent.ExecutionContext.Implicits.global,
     app.injector.instanceOf[DeclarationPageView],
     app.injector.instanceOf[AuthorisedAction],
-    app.injector.instanceOf[ErrorHandler]
+    app.injector.instanceOf[ErrorHandler],
+    app.injector.instanceOf[AuditService]
   )
 
   val nino: String = "AA012345A"
@@ -185,6 +187,102 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         textOnPageCheck(informationTextWelsh, informationTextSelector)
         buttonCheck(agreeButtonWelsh, agreeButtonSelector)
+      }
+    }
+  }
+  
+  "/submit" should {
+    
+    "Redirect to the confirmation page" when {
+      import IndividualExpectedResults.individualSummaryData
+
+      lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.CALCULATION_ID -> "string"
+      ))
+
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+      "there is summary data and a calculation id in session" which {
+        lazy val result = {
+          authoriseIndividual()
+          stubPost(crystallisationUrl, NO_CONTENT, "{}")
+
+          await(wsClient
+            .url(s"http://localhost:$port" + urlPath)
+            .withHttpHeaders(headers:_*)
+            .withFollowRedirects(false)
+            .post("{}"))
+        }
+
+        "returns a status of SEE_OTHER(303)" in {
+          result.status shouldBe SEE_OTHER
+        }
+
+        "has a redirect url pointing at the confirmation page" in {
+          result.headers("Location").head shouldBe controllers.routes.TaxReturnReceivedController.show(taxYear).url
+        }
+      }
+
+    }
+    
+    "Redirect to the overview page" when {
+      import IndividualExpectedResults.individualSummaryData
+
+      "the calc id is missing" which {
+        lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
+          SessionValues.TAX_YEAR -> taxYear.toString
+        ))
+        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+        lazy val result = {
+          authoriseIndividual()
+          stubPost(crystallisationUrl, NO_CONTENT, "{}")
+
+          await(wsClient
+            .url(s"http://localhost:$port" + urlPath)
+            .withHttpHeaders(headers:_*)
+            .withFollowRedirects(false)
+            .post("{}"))
+        }
+
+        "returns a status of SEE_OTHER(303)" in {
+          result.status shouldBe SEE_OTHER
+        }
+
+        "has a redirect url pointing at the confirmation page" in {
+          result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYear).url
+        }
+      }
+
+      "the summary data is missing" which {
+        lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.CALCULATION_ID -> "string"
+        ))
+        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+        lazy val result = {
+          authoriseIndividual()
+          stubPost(crystallisationUrl, NO_CONTENT, "{}")
+
+          await(wsClient
+            .url(s"http://localhost:$port" + urlPath)
+            .withHttpHeaders(headers:_*)
+            .withFollowRedirects(false)
+            .post("{}"))
+        }
+
+        "returns a status of SEE_OTHER(303)" in {
+          result.status shouldBe SEE_OTHER
+        }
+
+        "has a redirect url pointing at the confirmation page" in {
+          result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYear).url
+        }
+        
       }
     }
   }

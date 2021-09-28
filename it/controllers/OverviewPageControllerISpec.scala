@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.AuditService
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
 import config.{AppConfig, ErrorHandler}
@@ -30,7 +31,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
-import services.{LiabilityCalculationService, IncomeSourcesService}
+import services.{IncomeSourcesService, LiabilityCalculationService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
@@ -278,7 +279,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     app.injector.instanceOf[LiabilityCalculationService],
     app.injector.instanceOf[OverviewPageView],
     app.injector.instanceOf[AuthorisedAction],
-    app.injector.instanceOf[ErrorHandler]
+    app.injector.instanceOf[ErrorHandler],
+    app.injector.instanceOf[AuditService]
   )
 
 

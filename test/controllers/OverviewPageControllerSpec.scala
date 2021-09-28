@@ -17,12 +17,12 @@
 package controllers
 
 
+import audit.IntentToCrystalliseDetail
 import common.SessionValues
 import common.SessionValues._
-import config.{AppConfig, ErrorHandler}
-import connectors.httpParsers.LiabilityCalculationHttpParser.LiabilityCalculationResponse
+import config.{AppConfig, ErrorHandler, MockAuditService}
 import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
-import controllers.predicates.InYearAction
+import connectors.httpParsers.LiabilityCalculationHttpParser.LiabilityCalculationResponse
 import models._
 import org.scalamock.handlers.{CallHandler2, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -43,7 +43,7 @@ import views.html.errors.{InternalServerErrorPage, NoUpdatesProvidedPage, Return
 
 import scala.concurrent.Future
 
-class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
+class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite with MockAuditService {
 
   private val fakeGetRequest = FakeRequest("GET", "/").withSession(
     SessionValues.CLIENT_MTDITID -> "1234567890",
@@ -72,8 +72,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
   private val mockIncomeSourcesService = mock[IncomeSourcesService]
   private val mockErrorHandler = mock[ErrorHandler]
   private val mockLiabilityCalculationService = mock[LiabilityCalculationService]
-
-
+  
   private val nino = Some("AA123456A")
   private val taxYear = 2022
   private val taxYearEndOfYear = taxYear - 1
@@ -182,12 +181,12 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   private val controller = new OverviewPageController(
     frontendAppConfig, stubMessagesControllerComponents(),mockExecutionContext, inYearAction, mockIncomeSourcesService, mockLiabilityCalculationService,
-    overviewPageView, authorisedAction, mockErrorHandler
+    overviewPageView, authorisedAction, mockErrorHandler, mockAuditService
   )
 
   private val controllerEndOfYear = new OverviewPageController(
     mockAppConfigTaxYearFeatureOff, stubMessagesControllerComponents(),mockExecutionContext, inYearAction, mockIncomeSourcesService, mockLiabilityCalculationService,
-    overviewPageView, authorisedAction, mockErrorHandler
+    overviewPageView, authorisedAction, mockErrorHandler, mockAuditService
   )
 
 
@@ -262,6 +261,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
 
         val result = {
           mockAuth(nino)
+          
           controllerEndOfYear.show(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
         status(result) shouldBe SEE_OTHER
@@ -460,6 +460,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuth(nino)
           mockPostIntentToCrystallise()
+          verifyAuditEvent[IntentToCrystalliseDetail]
           controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
         status(result) shouldBe Status.SEE_OTHER
@@ -522,7 +523,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite {
         val result = {
           mockAuthAsAgent()
           mockPostIntentToCrystallise()
-
+          verifyAuditEvent[IntentToCrystalliseDetail]
           controllerEndOfYear.finalCalculation(taxYearEndOfYear)(fakeGetRequestEndOfYear)
         }
         status(result) shouldBe Status.SEE_OTHER
