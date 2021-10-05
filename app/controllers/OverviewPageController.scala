@@ -75,7 +75,11 @@ class OverviewPageController @Inject()(
 
     liabilityCalculationService.getCalculationId(user.nino, taxYear, user.mtditid).map {
       case Right(calculationId) =>
-        Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+        if(user.isAgent) {
+          Redirect(appConfig.viewAndChangeCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+        } else {
+          Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+        }
       case Left(error) => errorHandler.handleError(error.status)
       }
     }

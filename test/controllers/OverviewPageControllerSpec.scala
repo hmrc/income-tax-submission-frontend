@@ -383,6 +383,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite with 
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.SEE_OTHER
+        redirectUrl(result) shouldBe frontendAppConfig.viewAndChangeCalculationUrl(taxYear)
         session(result).get(CALCULATION_ID) shouldBe Some("calculationId")
       }
 
@@ -421,6 +422,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite with 
           controller.getCalculation(taxYear)(fakeGetRequest)
         }
         status(result) shouldBe Status.SEE_OTHER
+        redirectUrl(result) shouldBe frontendAppConfig.viewAndChangeCalculationUrlAgent(taxYear)
         session(result).get(CALCULATION_ID) shouldBe Some("calculationId")
       }
 
