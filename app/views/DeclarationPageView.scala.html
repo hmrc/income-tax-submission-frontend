@@ -28,7 +28,7 @@
         <p>@messages(s"declaration.p1.${if(isAgent) "agent" else "individual"}", (taxYear -1).toString, taxYear.toString)</p>
     </div>
 
-    @formWithCSRF(action = controllers.routes.TaxReturnReceivedController.show(taxYear)) {
+    @formWithCSRF(action = controllers.routes.DeclarationPageController.submit(taxYear)) {
         @govUkButton(Button(
             attributes = Map("id" -> "agree"),
             preventDoubleClick = true,
