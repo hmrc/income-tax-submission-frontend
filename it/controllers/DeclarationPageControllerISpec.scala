@@ -51,7 +51,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
   val nino: String = "AA012345A"
   val mtditid: String = "1234567890"
 
-  val crystallisationUrl: String = "/income-tax/nino/AA123456A/taxYear/2022/string/declare-crystallisation"
+  val crystallisationUrl: String = "/income-tax-calculation/income-tax/nino/AA123456A/taxYear/2022/string/declare-crystallisation"
 
   trait SpecificExpectedResults {
     val taxYear: Int = 2022
