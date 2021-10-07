@@ -30,13 +30,14 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
   val mtditid: String = "968501689"
   val calculationId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
 
+  val declareUrl: String = s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation"
 
   ".DeclareCrystallisationConnector" should {
 
     "return a NO_CONTENT" in {
       val expectedResult = Right()
 
-      stubPost(s"/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation", NO_CONTENT, "")
+      stubPost(declareUrl, NO_CONTENT, "")
 
       val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
 
@@ -46,7 +47,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
     "return a INTERNAL_SERVER_ERROR" in {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal server error"))
 
-      stubPost(s"/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation", INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
+      stubPost(declareUrl, INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
 
       val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
 
@@ -55,7 +56,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
     "return a SERVICE_UNAVAILABLE" in {
       val expectedResult = APIErrorModel(SERVICE_UNAVAILABLE, APIErrorBodyModel("SERVICE_UNAVAILABLE", "Dependent systems are currently not responding."))
 
-      stubPost(s"/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation", SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
+      stubPost(declareUrl, SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
 
       val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
 
@@ -65,7 +66,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
       val expectedResult = APIErrorModel(NOT_FOUND, APIErrorBodyModel("NOT_FOUND",
         "The remote endpoint has indicated that no calculation exist for given calcId or calcid does not relate to an intent-to-crystallise calculation"))
 
-      stubPost(s"/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation", NOT_FOUND, expectedResult.toJson.toString())
+      stubPost(declareUrl, NOT_FOUND, expectedResult.toJson.toString())
 
       val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
 
@@ -75,7 +76,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
       val expectedResult = APIErrorModel(CONFLICT, APIErrorBodyModel("CONFLICT",
         "The remote endpoint has indicated Income Sources changed - please recalculate before crystallising."))
 
-      stubPost(s"/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation", CONFLICT, expectedResult.toJson.toString())
+      stubPost(declareUrl, CONFLICT, expectedResult.toJson.toString())
 
       val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
 
@@ -84,7 +85,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
     "return a INVALID_IDTYPE" in {
       val expectedResult = APIErrorModel(BAD_REQUEST, APIErrorBodyModel("INVALID_IDTYPE", "Invalid id type"))
 
-      stubPost(s"/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation", BAD_REQUEST, expectedResult.toJson.toString())
+      stubPost(declareUrl, BAD_REQUEST, expectedResult.toJson.toString())
 
       val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
 
@@ -93,7 +94,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
     "return a PARSING_ERROR when unexpected response code" in {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR,APIErrorBodyModel("PARSING_ERROR","Error parsing response from API"))
 
-      stubPost(s"/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation", GONE, expectedResult.toJson.toString())
+      stubPost(declareUrl, GONE, expectedResult.toJson.toString())
 
       val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
 

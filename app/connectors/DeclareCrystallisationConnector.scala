@@ -28,7 +28,7 @@ class DeclareCrystallisationConnector @Inject()(val http: HttpClient,
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def postDeclareCrystallisation(nino: String, taxYear: Int, calculationId: String)(implicit hc: HeaderCarrier): Future[DeclareCrystallisationResponse] = {
-    val Url: String = config.calculationBaseUrl + s"/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation"
+    val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation"
     http.POSTEmpty[DeclareCrystallisationResponse](Url)
   }
 
