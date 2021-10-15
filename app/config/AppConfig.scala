@@ -52,6 +52,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
   lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeUrl)
   def viewAndChangeCalculationUrl(taxYear: Int): String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
+  val viewAndChangeCalculationUrlAgent: Int => String = taxYear => s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/calculation/$taxYear/submitted"
   def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view"
   def viewAndChangeEnterUtrUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
   def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/income-tax-account"
