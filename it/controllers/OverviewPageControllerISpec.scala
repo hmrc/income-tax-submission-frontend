@@ -66,7 +66,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     def viewEstimateLink(taxYear: Int = taxYear): String = s"/income-through-software/return/$taxYear/calculate"
 
-    def vcBreadCrumbUrl(isAgent:Boolean): String = if (isAgent) {"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"}
+    def viewAndChangeLink(isAgent:Boolean): String = if (isAgent) {"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"}
       else {"http://localhost:9081/report-quarterly/income-and-expenses/view"}
 
     val endOfYearContinueLink = s"/income-through-software/return/$taxYearEndOfYear/final-calculation"
@@ -275,7 +275,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           welshToggleCheck(welshTest(user.isWelsh))
-          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
@@ -322,7 +322,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           welshToggleCheck(welshTest(user.isWelsh))
-          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
@@ -375,7 +375,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           welshToggleCheck(welshTest(user.isWelsh))
-          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
@@ -431,7 +431,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             }
 
             welshToggleCheck(welshTest(user.isWelsh))
-            linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+            linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
             linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
@@ -486,7 +486,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           welshToggleCheck(welshTest(user.isWelsh))
-          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
@@ -543,7 +543,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             }
 
             welshToggleCheck(welshTest(user.isWelsh))
-            linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+            linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
             linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
@@ -610,7 +610,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           welshToggleCheck(welshTest(user.isWelsh))
-          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, Links.startPageBreadcrumbUrl(taxYearEndOfYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
@@ -658,7 +658,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           welshToggleCheck(welshTest(user.isWelsh))
-          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, Links.startPageBreadcrumbUrl(taxYearEndOfYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 

@@ -71,19 +71,6 @@ class OverviewPageController @Inject()(
     }
   }
 
-  def getCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
-
-    liabilityCalculationService.getCalculationId(user.nino, taxYear, user.mtditid).map {
-      case Right(calculationId) =>
-        if(user.isAgent) {
-          Redirect(appConfig.viewAndChangeCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-        } else {
-          Redirect(appConfig.viewAndChangeCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-        }
-      case Left(error) => errorHandler.handleError(error.status)
-      }
-    }
-
   def finalCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
 
       liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {

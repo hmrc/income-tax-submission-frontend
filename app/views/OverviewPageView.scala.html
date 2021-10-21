@@ -139,7 +139,7 @@
 
 
             <p class="govuk-body govuk-!-margin-bottom-8">@messages(s"overview.paragraph.3.${if(isAgent) "agent" else "individual"}")
-                <a class="govuk-link" id="calculation_link" href="@routes.OverviewPageController.getCalculation(taxYear).url.toString()">
+                <a class="govuk-link" id="calculation_link" href="@if(isAgent) {@appConfig.viewAndChangeViewUrlAgent} else {@appConfig.viewAndChangeViewUrl}">
                     @messages("overview.paragraph.4")
                 </a>
                 @messages(s"overview.paragraph.5.${if(isAgent) "agent" else "individual"}")
