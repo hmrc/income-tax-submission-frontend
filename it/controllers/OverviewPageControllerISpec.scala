@@ -75,84 +75,59 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
     val headingExpected = "Your Income Tax Return"
-    val updateIncomeTaxReturnText = "1. Update your Income Tax Return"
-    val updateIncomeTaxReturnTextEOY = "Update your Income Tax Return"
-    def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your Income Tax Return and submit it to us after 5 April $taxYear."
+    val updateIncomeTaxReturnText = "Update your Income Tax Return"
     val submitReturnHeaderEOY = "Check and submit your Income Tax Return"
     val submitReturnText: String = "If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. " +
       "You can check your calculation and then submit your Income Tax Return."
-    val provideUpdate: String = "Provide at least one update before you can view your tax calculation to date."
-    val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from:"
-    val warning = "Warning Use your software package to update parts of your Income Tax Return that are not on this list."
-    val incomeCalcToDate = "This is your Income Tax calculation so far. It is not a projection for the tax year or your final tax calculation."
-    val ifWeHaveInfoEOY = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
-    val goToYourIncomeTaxEOY = "Go to your Income Tax Account to find out more about your current tax position."
+    val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
+    val goToYourIncomeTax = "Go to your Income Tax Account to find out more about your current tax position."
+    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"You cannot submit your Income Tax Return until 6 April $taxYear."
 
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
     val headingExpected = "Your client’s Income Tax Return"
-    val updateIncomeTaxReturnText = "1. Update your client’s Income Tax Return"
-    val updateIncomeTaxReturnTextEOY = "Update your client’s Income Tax Return"
-    def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYear."
+    val updateIncomeTaxReturnText = "Update your client’s Income Tax Return"
     val submitReturnHeaderEOY = "Check and submit your client’s Income Tax Return"
-    val submitReturnText: String = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation. " +
-      "Check the calculation and submit the Income Tax Return."
-    val provideUpdate: String = "Provide at least one update before you can view your client’s tax calculation to date."
-    val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from:"
-    val warning = "Warning Use your software package to update parts of your client’s Income Tax Return that are not on this list."
-    val incomeCalcToDate = "This is your client’s Income Tax calculation so far. It is not a projection for the tax year or your client’s final tax calculation."
-    val ifWeHaveInfoEOY = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
-    val goToYourIncomeTaxEOY = "Go to your client’s Income Tax Account to find out more about their current tax position."
+    val submitReturnText: String = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation." +
+      " You can check their calculation and then submit their Income Tax Return."
+    val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
+    val goToYourIncomeTax = "Go to your client’s Income Tax Account to find out more about their current tax position."
+    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
 
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
     val headingExpected = "Your Income Tax Return"
-    val updateIncomeTaxReturnText = "1. Update your Income Tax Return"
-    val updateIncomeTaxReturnTextEOY = "Update your Income Tax Return"
-    def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your Income Tax Return and submit it to us after 5 April $taxYear."
+    val updateIncomeTaxReturnText = "Update your Income Tax Return"
     val submitReturnHeaderEOY = "Check and submit your Income Tax Return"
     val submitReturnText: String = "If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. " +
       "You can check your calculation and then submit your Income Tax Return."
-    val provideUpdate: String = "Provide at least one update before you can view your tax calculation to date."
-    val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from:"
-    val warning = "Warning Use your software package to update parts of your Income Tax Return that are not on this list."
-    val incomeCalcToDate = "This is your Income Tax calculation so far. It is not a projection for the tax year or your final tax calculation."
-    val ifWeHaveInfoEOY = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
-    val goToYourIncomeTaxEOY = "Go to your Income Tax Account to find out more about your current tax position."
+    val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
+    val goToYourIncomeTax = "Go to your Income Tax Account to find out more about your current tax position."
+    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"You cannot submit your Income Tax Return until 6 April $taxYear."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
     val headingExpected = "Your client’s Income Tax Return"
-    val updateIncomeTaxReturnText = "1. Update your client’s Income Tax Return"
-    val updateIncomeTaxReturnTextEOY = "Update your client’s Income Tax Return"
-    def youWillBeAble(taxYear: Int = taxYearPlusOne): String = s"Update your client’s Income Tax Return and submit it to us after 5 April $taxYear."
+    val updateIncomeTaxReturnText = "Update your client’s Income Tax Return"
     val submitReturnHeaderEOY = "Check and submit your client’s Income Tax Return"
-    val submitReturnText: String = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation. " +
-      "Check the calculation and submit the Income Tax Return."
-    val provideUpdate: String = "Provide at least one update before you can view your client’s tax calculation to date."
-    val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from:"
-    val warning = "Warning Use your software package to update parts of your client’s Income Tax Return that are not on this list."
-    val incomeCalcToDate = "This is your client’s Income Tax calculation so far. It is not a projection for the tax year or your client’s final tax calculation."
-    val ifWeHaveInfoEOY = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
-    val goToYourIncomeTaxEOY = "Go to your client’s Income Tax Account to find out more about their current tax position."
+    val submitReturnText: String = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation." +
+      " You can check their calculation and then submit their Income Tax Return."
+    val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
+    val goToYourIncomeTax = "Go to your client’s Income Tax Account to find out more about their current tax position."
+    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
 
   }
 
   trait SpecificExpectedResults {
     val headingExpected: String
     val updateIncomeTaxReturnText: String
-    val updateIncomeTaxReturnTextEOY: String
-    val provideUpdate: String
-    def youWillBeAble(taxYear: Int): String
     val submitReturnHeaderEOY: String
     val submitReturnText: String
     val ifWeHaveInfo: String
-    val warning: String
-    val incomeCalcToDate: String
-    val ifWeHaveInfoEOY: String
-    val goToYourIncomeTaxEOY: String
+    val goToYourIncomeTax: String
+    def inYearInsertText(taxYear: Int): String
   }
 
   trait CommonExpectedResults {
@@ -160,7 +135,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val startPageBreadcrumb: String
     val overviewBreadcrumb: String
     def caption(taxYearMinusOne: Int, taxYear: Int): String
-    val completeSectionsText: String
     val updatedText: String
     val notStartedText: String
     val underMaintenance: String
@@ -169,14 +143,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val interestsLinkText: String
     val employmentLinkText: String
     val giftAidLinkText: String
-    val viewTaxCalcText: String
-    val viewTaxCalcLink: String
-    val submitReturnText: String
-    val ourRecords: String
-    val softwarePackage: String
     val continue: String
-    val fillInTheSectionsEOY: String
-    val incomeTaxAccountLinkEOY: String
+    val fillInTheSections: String
+    val incomeTaxAccountLink: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -184,7 +153,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
     val overviewBreadcrumb = "Your Income Tax Return"
     def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 April $taxYearMinusOne to 5 April $taxYear"
-    val completeSectionsText = "Fill in the sections you need to update."
     val updatedText = "Updated"
     val notStartedText = "Not started"
     val underMaintenance = "Under maintenance"
@@ -193,14 +161,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val interestsLinkText = "Interest"
     val employmentLinkText = "PAYE employment"
     val giftAidLinkText = "Donations to charity"
-    val viewTaxCalcText = "2. View tax calculation to date"
-    val viewTaxCalcLink = "View tax calculation to date"
-    val submitReturnText = "3. Submit return"
-    val ourRecords = "our records"
-    val softwarePackage = "your software package"
     val continue = "continue"
-    val fillInTheSectionsEOY = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
-    val incomeTaxAccountLinkEOY = "Income Tax Account"
+    val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
+    val incomeTaxAccountLink = "Income Tax Account"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -208,7 +171,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
     val overviewBreadcrumb = "Your Income Tax Return"
     def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 April $taxYearMinusOne to 5 April $taxYear"
-    val completeSectionsText = "Fill in the sections you need to update."
     val updatedText = "Updated"
     val notStartedText = "Not started"
     val underMaintenance = "Under maintenance"
@@ -217,14 +179,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val interestsLinkText = "Interest"
     val employmentLinkText = "PAYE employment"
     val giftAidLinkText = "Donations to charity"
-    val viewTaxCalcText = "2. View tax calculation to date"
-    val viewTaxCalcLink = "View tax calculation to date"
-    val submitReturnText = "3. Submit return"
-    val ourRecords = "our records"
-    val softwarePackage = "your software package"
     val continue = "continue"
-    val fillInTheSectionsEOY = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
-    val incomeTaxAccountLinkEOY = "Income Tax Account"
+    val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
+    val incomeTaxAccountLink = "Income Tax Account"
   }
 
   object Selectors {
@@ -234,7 +191,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val captionSelector = "#main-content > div > div > header > p"
     val headerSelector = "#main-content > div > div > header > h1"
     val updateYourIncomeTaxReturnSubheadingSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
-    val completeSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li.govuk-body"
+    val inYearInsertTextSelector = "#main-content > div > div > ol > li > ol > li:nth-child(2) > div"
     val interestLinkSelector = "#interest_link"
     val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
     val dividendsLinkSelector = "#dividends_link"
@@ -244,25 +201,18 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val giftAidStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
     val employmentLinkSelector = "#employment_link"
     val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
-    val viewTaxCalcSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
-    val provideUpdatesSelector = "#main-content > div > div > ol > li.app-task-list__items > p"
     val viewEstimateSelector = "#calculation_link"
-    val submitReturnSelector = "#main-content > div > div > ol > li:nth-child(4) > h2"
     val submitReturnEOYSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
     val submitReturnTextEOYSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > li.govuk-body"
     val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > li.govuk-body"
-    val endOfYearParagraph1Selector = "#main-content > div > div > p"
-    val endOfYearBulletPoint1Selector = "#main-content > div > div > ul > li:nth-child(1)"
-    val endOfYearBulletPoint2Selector = "#main-content > div > div > ul > li:nth-child(2)"
-    val endOfYearWarningTextSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(2) > div > strong"
     val interestStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
     val dividendsStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
     val giftAidStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
     val employmentStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
     val endOfYearContinueButtonSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > li:nth-child(2) > form"
-    val ifWeHaveInformationEOYSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(1)"
-    val fillInTheSectionsEOYSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(2)"
-    val goToYourIncomeTaxReturnEOYSelector = "#main-content > div > div > ol > li:nth-child(1) > p"
+    val ifWeHaveInformationSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(1)"
+    val fillInTheSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(2)"
+    val goToYourIncomeTaxReturnSelector = "#main-content > div > div > ol > li:nth-child(1) > p"
   }
 
   private val urlPathInYear = s"/income-through-software/return/$taxYear/view"
@@ -332,12 +282,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, endOfYearParagraph1Selector)
-          textOnPageCheck(ourRecords, endOfYearBulletPoint1Selector)
-          textOnPageCheck(softwarePackage, endOfYearBulletPoint2Selector)
-          textOnPageCheck(specific.warning, endOfYearWarningTextSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(completeSectionsText, completeSectionsSelector)
+          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
 
           "have a dividends section that says under maintenance" which {
             textOnPageCheck(underMaintenance, dividendsStatusSelector)
@@ -352,10 +300,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(underMaintenance, giftAidStatusSelector)
           }
 
-          textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-          textOnPageCheck(specific.provideUpdate, provideUpdatesSelector)
-          textOnPageCheck(submitReturnText, submitReturnSelector)
-          textOnPageCheck(specific.youWillBeAble(taxYearPlusOne), youWillBeAbleSelector)
+          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
         }
 
         "render overview page with 'Not Started' status tags when there is no prior data and the employment section with" +
@@ -383,12 +329,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, endOfYearParagraph1Selector)
-          textOnPageCheck(ourRecords, endOfYearBulletPoint1Selector)
-          textOnPageCheck(softwarePackage, endOfYearBulletPoint2Selector)
-          textOnPageCheck(specific.warning, endOfYearWarningTextSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(completeSectionsText, completeSectionsSelector)
+          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYear))
@@ -410,63 +354,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
-          textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-          textOnPageCheck(specific.provideUpdate, provideUpdatesSelector)
-          textOnPageCheck(submitReturnText, submitReturnSelector)
-          textOnPageCheck(specific.youWillBeAble(taxYearPlusOne), youWillBeAbleSelector)
-        }
-
-        "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +
-          "the status tag 'Not Started' when user is in a previous year" when {
-          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
-          val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/income-tax-return-overview"
-          val taxYearMinusTwo = taxYearMinusOne - 1
-          val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
-
-          lazy val result: Future[Result] = {
-            authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel)
-            route(appWithTaxYearErrorOff, request, user.isWelsh).get
-          }
-
-          implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
-
-          "returns status of OK(200)" in {
-            status(result) shouldBe OK
-          }
-
-          welshToggleCheck(welshTest(user.isWelsh))
-          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
-          linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYearMinusOne))
-          textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
-
-          titleCheck(specific.headingExpected)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEndOfYear), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfoEOY, ifWeHaveInformationEOYSelector)
-          textOnPageCheck(fillInTheSectionsEOY, fillInTheSectionsEOYSelector)
-          textOnPageCheck(specific.updateIncomeTaxReturnTextEOY, updateYourIncomeTaxReturnSubheadingSelector)
-
-          "has a dividends section" which {
-            linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYearMinusOne))
-            textOnPageCheck(notStartedText, dividendsStatusSelectorEndOfYear)
-          }
-
-          "has an interest section" which {
-            linkCheck(interestsLinkText, interestLinkSelector, interestsLink(taxYearMinusOne))
-            textOnPageCheck(notStartedText, interestStatusSelectorEndOfYear)
-          }
-
-          "has an employment section " which {
-            linkCheck(employmentLinkText, employmentLinkSelector, newEmploymentLink(taxYearMinusOne))
-            textOnPageCheck(notStartedText, employmentStatusSelectorEndOfYear)
-          }
-
-          "has a donations to charity section" which {
-            linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearMinusOne))
-            textOnPageCheck(notStartedText, giftAidStatusSelectorEndOfYear)
-          }
-
+          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
         }
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
@@ -493,12 +382,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, endOfYearParagraph1Selector)
-          textOnPageCheck(ourRecords, endOfYearBulletPoint1Selector)
-          textOnPageCheck(softwarePackage, endOfYearBulletPoint2Selector)
-          textOnPageCheck(specific.warning, endOfYearWarningTextSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(completeSectionsText, completeSectionsSelector)
+          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -520,11 +407,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
-          textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-          textOnPageCheck(specific.incomeCalcToDate, provideUpdatesSelector)
-          linkCheck(viewTaxCalcLink, viewEstimateSelector, viewEstimateLink(taxYear))
-          textOnPageCheck(submitReturnText, submitReturnSelector)
-          textOnPageCheck(specific.youWillBeAble(taxYearPlusOne), youWillBeAbleSelector)
+          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
         }
 
         "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
@@ -554,12 +438,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             titleCheck(specific.headingExpected)
             h1Check(specific.headingExpected, "xl")
             textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
-            textOnPageCheck(specific.ifWeHaveInfo, endOfYearParagraph1Selector)
-            textOnPageCheck(ourRecords, endOfYearBulletPoint1Selector)
-            textOnPageCheck(softwarePackage, endOfYearBulletPoint2Selector)
-            textOnPageCheck(specific.warning, endOfYearWarningTextSelector)
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-            textOnPageCheck(completeSectionsText, completeSectionsSelector)
+            textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+            textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+            textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
 
             "has a dividends section" which {
               linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -581,11 +463,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
-            textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-            textOnPageCheck(specific.incomeCalcToDate, provideUpdatesSelector)
-            linkCheck(viewTaxCalcLink, viewEstimateSelector, viewEstimateLink(taxYear))
-            textOnPageCheck(submitReturnText, submitReturnSelector)
-            textOnPageCheck(specific.youWillBeAble(taxYearPlusOne), youWillBeAbleSelector)
+            textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+            linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
           }
         }
 
@@ -614,12 +493,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, endOfYearParagraph1Selector)
-          textOnPageCheck(ourRecords, endOfYearBulletPoint1Selector)
-          textOnPageCheck(softwarePackage, endOfYearBulletPoint2Selector)
-          textOnPageCheck(specific.warning, endOfYearWarningTextSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(completeSectionsText, completeSectionsSelector)
+          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -641,11 +518,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
-          textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-          textOnPageCheck(specific.incomeCalcToDate, provideUpdatesSelector)
-          linkCheck(viewTaxCalcLink, viewEstimateSelector, viewEstimateLink(taxYear))
-          textOnPageCheck(submitReturnText, submitReturnSelector)
-          textOnPageCheck(specific.youWillBeAble(taxYearPlusOne), youWillBeAbleSelector)
+          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
         }
 
         "have the status as 'Updated' for interest" when {
@@ -676,12 +550,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             titleCheck(specific.headingExpected)
             h1Check(specific.headingExpected, "xl")
             textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
-            textOnPageCheck(specific.ifWeHaveInfo, endOfYearParagraph1Selector)
-            textOnPageCheck(ourRecords, endOfYearBulletPoint1Selector)
-            textOnPageCheck(softwarePackage, endOfYearBulletPoint2Selector)
-            textOnPageCheck(specific.warning, endOfYearWarningTextSelector)
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-            textOnPageCheck(completeSectionsText, completeSectionsSelector)
+            textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+            textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+            textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
 
             "has a dividends section" which {
               linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -703,11 +575,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
-            textOnPageCheck(viewTaxCalcText, viewTaxCalcSelector)
-            textOnPageCheck(specific.incomeCalcToDate, provideUpdatesSelector)
-            linkCheck(viewTaxCalcLink, viewEstimateSelector, viewEstimateLink(taxYear))
-            textOnPageCheck(submitReturnText, submitReturnSelector)
-            textOnPageCheck(specific.youWillBeAble(taxYearPlusOne), youWillBeAbleSelector)
+            textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+            linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
           }
         }
       }
@@ -748,9 +617,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEndOfYear), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfoEOY, ifWeHaveInformationEOYSelector)
-          textOnPageCheck(fillInTheSectionsEOY, fillInTheSectionsEOYSelector)
-          textOnPageCheck(specific.updateIncomeTaxReturnTextEOY, updateYourIncomeTaxReturnSubheadingSelector)
+          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+          textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
 
           "have a dividends section that says under maintenance" which {
             textOnPageCheck(underMaintenance, dividendsStatusSelectorEndOfYear)
@@ -796,11 +665,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           titleCheck(specific.headingExpected)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEndOfYear), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfoEOY, ifWeHaveInformationEOYSelector)
-          textOnPageCheck(fillInTheSectionsEOY, fillInTheSectionsEOYSelector)
-          textOnPageCheck(specific.updateIncomeTaxReturnTextEOY, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(specific.goToYourIncomeTaxEOY, goToYourIncomeTaxReturnEOYSelector)
-          linkCheck(incomeTaxAccountLinkEOY, viewEstimateSelector, viewEstimateLink(taxYearEndOfYear))
+          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+          textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
+          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYearEndOfYear))
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYearEndOfYear))
@@ -825,6 +694,66 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
           formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+        }
+
+        "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +
+          "the status tag 'Not Started' when user is in a previous year" when {
+          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
+          val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/income-tax-return-overview"
+          val taxYearMinusTwo = taxYearMinusOne - 1
+          val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
+
+          lazy val result: Future[Result] = {
+            authoriseAgentOrIndividual(user.isAgent)
+            stubIncomeSources(incomeSourcesModel)
+            route(appWithTaxYearErrorOff, request, user.isWelsh).get
+          }
+
+          implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+          "returns status of OK(200)" in {
+            status(result) shouldBe OK
+          }
+
+          welshToggleCheck(welshTest(user.isWelsh))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+          linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYearMinusOne))
+          textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+          titleCheck(specific.headingExpected)
+          h1Check(specific.headingExpected, "xl")
+          textOnPageCheck(caption(taxYearMinusTwo, taxYearMinusOne), captionSelector)
+          textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
+          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+
+          "has a dividends section" which {
+            linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYearMinusOne))
+            textOnPageCheck(notStartedText, dividendsStatusSelectorEndOfYear)
+          }
+
+          "has an interest section" which {
+            linkCheck(interestsLinkText, interestLinkSelector, interestsLink(taxYearMinusOne))
+            textOnPageCheck(notStartedText, interestStatusSelectorEndOfYear)
+          }
+
+          "has an employment section " which {
+            linkCheck(employmentLinkText, employmentLinkSelector, newEmploymentLink(taxYearMinusOne))
+            textOnPageCheck(notStartedText, employmentStatusSelectorEndOfYear)
+          }
+
+          "has a donations to charity section" which {
+            linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearMinusOne))
+            textOnPageCheck(notStartedText, giftAidStatusSelectorEndOfYear)
+          }
+
+          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYearMinusOne))
+
+          textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
+          textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
+          formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+
         }
       }
     }
