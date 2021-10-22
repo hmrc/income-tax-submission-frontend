@@ -46,35 +46,25 @@ overview.task1.caption = Fill in the sections you need to update.
 
 overview.agent.task2.caption.noUpdate = Provide at least one update before you can view your client’s tax calculation to date.
 overview.task3.heading = Submit return
-overview.agent.task3.caption = Update your client’s Income Tax Return and submit it to us after 5 April {0}.
 
-overview.individual.task2.caption.noUpdate = Provide at least one update before you can view your tax calculation to date.
-overview.individual.task3.caption = Update your Income Tax Return and submit it to us after 5 April {0}.
+overview.insertText.agent = You cannot submit your client’s Income Tax Return until 6 April {0}.
+overview.insertText.individual = You cannot submit your Income Tax Return until 6 April {0}.
 
-overview.crystallisation.paragraph.1.individual = If we have information about your income and deductions, we’ll enter it for you. We get this information from:
-overview.crystallisation.paragraph.1.agent = If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from:
-overview.crystallisation.bullet.1 = our records
-overview.crystallisation.bullet.2 = your software package
 overview.crystallisation.warning.individual = Use your software package to update parts of your Income Tax Return that are not on this list.
 overview.crystallisation.warning.agent = Use your software package to update parts of your client’s Income Tax Return that are not on this list.
-overview.task3.crystallisation.paragraph.individual = If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. You can check your calculation and then submit your Income Tax Return.
-overview.task3.crystallisation.paragraph.agent = If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation. Check the calculation and submit the Income Tax Return.
-overview.task2.crystallisation.caption.individual = This is your Income Tax calculation so far. It is not a projection for the tax year or your final tax calculation.
-overview.task2.crystallisation.caption.agent = This is your client’s Income Tax calculation so far. It is not a projection for the tax year or your client’s final tax calculation.
-overview.task3.crystallisation.heading.individual = Submit your Income Tax Return
-overview.task3.crystallisation.heading.agent = Submit your client’s Income Tax Return
-overview.viewTaxCalculation = View tax calculation to date
+overview.crystallisation.paragraph.individual = If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. You can check your calculation and then submit your Income Tax Return.
+overview.crystallisation.paragraph.agent = If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation. You can check their calculation and then submit their Income Tax Return.
 
-overview.EOY.paragraph.1.individual = If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one.
-overview.EOY.paragraph.1.agent = If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one.
-overview.EOY.paragraph.2 = Fill in the sections you need to update. Use your software package to update items that are not on this list.
-overview.EOY.paragraph.3.individual = Go to your
-overview.EOY.paragraph.3.agent = Go to your client’s
-overview.EOY.paragraph.4 = Income Tax Account
-overview.EOY.paragraph.5.individual = to find out more about your current tax position.
-overview.EOY.paragraph.5.agent = to find out more about their current tax position.
-overview.task3.crystallisation.heading.EOY.individual = Check and submit your Income Tax Return
-overview.task3.crystallisation.heading.EOY.agent = Check and submit your client’s Income Tax Return
+overview.paragraph.1.individual = If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one.
+overview.paragraph.1.agent = If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one.
+overview.paragraph.2 = Fill in the sections you need to update. Use your software package to update items that are not on this list.
+overview.paragraph.3.individual = Go to your
+overview.paragraph.3.agent = Go to your client’s
+overview.paragraph.4 = Income Tax Account
+overview.paragraph.5.individual = to find out more about your current tax position.
+overview.paragraph.5.agent = to find out more about their current tax position.
+overview.crystallisation.heading.EOY.individual = Check and submit your Income Tax Return
+overview.crystallisation.heading.EOY.agent = Check and submit your client’s Income Tax Return
 
 overview.notStarted = Not started
 overview.updated = Updated
