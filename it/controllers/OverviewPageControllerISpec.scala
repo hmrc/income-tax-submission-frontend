@@ -301,7 +301,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
         "render overview page with 'Not Started' status tags when there is no prior data and the employment section with" +
@@ -355,7 +355,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
@@ -408,7 +408,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
         "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
@@ -464,7 +464,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             }
 
             textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-            linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
+            linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
           }
         }
 
@@ -519,7 +519,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
         "have the status as 'Updated' for interest" when {
@@ -576,7 +576,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             }
 
             textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-            linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYear))
+            linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
           }
         }
       }
@@ -669,7 +669,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYearEndOfYear))
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYearEndOfYear))
@@ -716,7 +716,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           welshToggleCheck(welshTest(user.isWelsh))
-          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.vcBreadCrumbUrl(user.isAgent))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYearMinusOne))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
@@ -748,7 +748,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, viewEstimateLink(taxYearMinusOne))
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
