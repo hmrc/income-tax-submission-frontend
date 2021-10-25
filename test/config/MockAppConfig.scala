@@ -42,8 +42,6 @@ class MockAppConfig extends MockFactory {
     override def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxLocalBaseUrl/$taxYear/charity/charity-donation-using-gift-aid"
     override def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxLocalBaseUrl/$taxYear/charity/check-donations-to-charity"
 
-    override def viewAndChangeCalculationUrl(taxYear: Int): String = s"/report-quarterly/income-and-expenses/view/calculation/$taxYear/submitted"
-
     override def viewAndChangeFinalCalculationUrl(taxYear: Int): String = {
       s"/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview-and-declaration/calculate"
     }
