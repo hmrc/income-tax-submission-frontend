@@ -23,14 +23,14 @@ import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.PagerDutyHelper.pagerDutyLog
 
 object NrsSubmissionHttpParser extends APIParser {
-  type NrsSubmissionResponse = Either[APIErrorModel, Int]
+  type NrsSubmissionResponse = Either[APIErrorModel, Unit]
   override val parserName: String = "NrsSubmissionHttpParser"
   override val service: String = "income-tax-nrs-proxy"
 
   implicit object NrsSubmissionHttpReads extends HttpReads[NrsSubmissionResponse] {
     override def read(method: String, url: String, response: HttpResponse): NrsSubmissionResponse = {
       response.status match {
-        case ACCEPTED => Right(ACCEPTED)
+        case ACCEPTED => Right()
         case NOT_FOUND | BAD_REQUEST | UNAUTHORIZED =>
           pagerDutyLog(FOURXX_RESPONSE_FROM_API, logMessage(response))
           handleAPIError(response)

@@ -40,12 +40,10 @@ class NrsConnectorSpec extends IntegrationTest {
 
     "return an Accepted response when successful" in {
 
-      val expectedResult = ACCEPTED
-
       stubPost(url, ACCEPTED, "{}")
       val result = await(connector.postNrsConnector(nino, nrsSubmissionModel))
 
-      result shouldBe Right(expectedResult)
+      result shouldBe Right()
     }
 
     "return an InternalServerError" in {
