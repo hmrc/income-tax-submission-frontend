@@ -23,11 +23,11 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.AuthorisedAction
 
 import javax.inject.{Inject, Singleton}
-import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel}
+import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel, NrsSubmissionModel}
 import play.api.i18n.I18nSupport
 import play.api.Logger
 import play.api.mvc._
-import services.DeclareCrystallisationService
+import services.{DeclareCrystallisationService, NrsService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationPageView
 import utils.SessionDataHelper
@@ -36,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeclarationPageController @Inject()(declareCrystallisationService: DeclareCrystallisationService,
+                                          nrsService: NrsService,
                                           appConfig: AppConfig,
                                           implicit val mcc: MessagesControllerComponents,
                                           implicit val ec: ExecutionContext,
@@ -79,6 +80,11 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                   summaryDataReceived.incomeTaxAndNationalInsuranceContributions
                 )
               ).toAuditModel)
+
+              val nrsSubmissionModelCalcId: NrsSubmissionModel = NrsSubmissionModel(calculationId = calculationId)
+
+              nrsService.submit(user.nino, nrsSubmissionModelCalcId, user.mtditid)
+
               Redirect(controllers.routes.TaxReturnReceivedController.show(taxYear))
             case Left(error) =>
               error.body match {

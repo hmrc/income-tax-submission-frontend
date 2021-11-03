@@ -34,6 +34,8 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   lazy val signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
 
   lazy val calculationBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCalculationUrl)
+  lazy val nrsProxyBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxNrsProxyUrl)
+
   lazy val incomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxSubmissionUrl)
   lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax"
   lazy val personalIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.personalIncomeTaxFrontendUrl)

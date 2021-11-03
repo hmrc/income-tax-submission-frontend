@@ -28,9 +28,9 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.test.Helpers.{CONFLICT, OK, SEE_OTHER, NO_CONTENT, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{CONFLICT, NO_CONTENT, OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
-import services.DeclareCrystallisationService
+import services.{DeclareCrystallisationService, NrsService}
 import views.html.DeclarationPageView
 
 import scala.concurrent.Future
@@ -39,6 +39,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   def controller: DeclarationPageController = new DeclarationPageController(
     app.injector.instanceOf[DeclareCrystallisationService],
+    app.injector.instanceOf[NrsService],
     frontendAppConfig,
     mcc,
     scala.concurrent.ExecutionContext.Implicits.global,
