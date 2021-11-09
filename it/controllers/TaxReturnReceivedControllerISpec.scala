@@ -54,15 +54,13 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
     val summaryRow1Key: String = "Name"
     val summaryRow2Key: String = "Unique Tax Reference (UTR)"
     val summaryRow3Key: String = "Date submitted"
-    val summaryRow4Key: String = "Income Tax and National Insurance contributions"
     val nextStepsPrint: String = "Print this page"
     val printLink: String = ""
 
-    val summaryRow1KeyWelsh: String = "Name"
-    val summaryRow2KeyWelsh: String = "Unique Tax Reference (UTR)"
-    val summaryRow3KeyWelsh: String = "Date submitted"
-    val summaryRow4KeyWelsh: String = "Income Tax and National Insurance contributions"
-    val nextStepsPrintWelsh: String = "Print this page"
+    val summaryRow1KeyWelsh: String = "Enw"
+    val summaryRow2KeyWelsh: String = "Cyfeirnod Unigryw y Trethdalwr (UTR)"
+    val summaryRow3KeyWelsh: String = "Dyddiad cyflwyno"
+    val nextStepsPrintWelsh: String = "Argraffu’r dudalen hon"
 
     val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/income-through-software/return/$taxYear/view"
   }
@@ -86,16 +84,15 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
 
     val nextStepsP4: String = "If you need to contact us about your Income Tax Return, tell us your UTR."
 
-    val panelHeadingWelsh: String = "Confirmation:"
-    val panelSubheadingWelsh: String = "We’ve received your Income Tax Return for 2019 to 2020"
+    val panelHeadingWelsh: String = "Cadarnhad:"
+    val panelSubheadingWelsh: String = "Rydym wedi cael eich Ffurflen Dreth Incwm ar gyfer 2019 i 2020"
     val summaryRow1ValueWelsh: String = "John Individual"
     val summaryRow2ValueWelsh: String = "IN12345"
     val summaryRow3ValueWelsh: String = timeStamp
-    val summaryRow4ValueWelsh: String = "£1000"
 
-    val nextStepsP1Welsh: String = "Find out what you owe and how to pay."
-    val nextStepsP2Welsh: String = "what you owe and how to pay."
-    val nextStepsP4Welsh: String = "If you need to contact us about your Income Tax Return, tell us your UTR."
+    val nextStepsP1Welsh: String = "Gallwch gael gwybod: faint sy’n ddyledus gennych a sut i dalu."
+    val nextStepsP2Welsh: String = "faint sy’n ddyledus gennych a sut i dalu."
+    val nextStepsP4Welsh: String = "Os oes angen i chi gysylltu â ni am eich Ffurflen Dreth Incwm, rhowch eich UTR i ni."
   }
 
   object AgentExpectedResults {
@@ -107,7 +104,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
     val summaryRow1Value: String = "Jane Agent"
     val summaryRow2Value: String = "AG98765"
     val summaryRow3Value: String = timeStamp
-    val summaryRow4Value: String = "£750.50"
 
     val panelHeading = "Confirmation:"
     val panelSubheading = "We’ve received your client’s Income Tax Return for 2019 to 2020"
@@ -118,17 +114,16 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
 
     val nextStepsP4: String = "If you need to contact us about your client’s Income Tax Return, tell us their UTR."
 
-    val panelHeadingWelsh = "Confirmation:"
-    val panelSubheadingWelsh = "We’ve received your client’s Income Tax Return for 2019 to 2020"
+    val panelHeadingWelsh = "Cadarnhad:"
+    val panelSubheadingWelsh = "Rydym wedi cael Ffurflen Dreth Incwm eich cleient ar gyfer 2019 i 2020"
 
     val summaryRow1ValueWelsh: String = "Jane Agent"
     val summaryRow2ValueWelsh: String = "AG98765"
     val summaryRow3ValueWelsh: String = timeStamp
-    val summaryRow4ValueWelsh: String = "£750.50"
 
-    val nextStepsP1Welsh: String = "Find out what your client owes and how to pay."
-    val nextStepsP2Welsh: String = "what your client owes and how to pay."
-    val nextStepsP4Welsh: String = "If you need to contact us about your client’s Income Tax Return, tell us their UTR."
+    val nextStepsP1Welsh: String = "Gallwch gael gwybod: faint sy’n ddyledus gan eich cleient a sut i dalu."
+    val nextStepsP2Welsh: String = "faint sy’n ddyledus gan eich cleient a sut i dalu."
+    val nextStepsP4Welsh: String = "Os oes angen i chi gysylltu â ni am Ffurflen Dreth Incwm eich cleient rhowch ei UTR i ni."
   }
 
   object Selectors {
@@ -188,7 +183,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
         textOnPageCheck(summaryRow2Value, summaryValue2Selector)
         textOnPageCheck(summaryRow3Key, summaryKey3Selector)
         textOnPageCheck(summaryRow3Value, summaryValue3Selector)
-
 
         textOnPageCheck(nextStepsP1, nextStepsP1TextSelector)
         linkCheck(nextStepsP2, nextStepsP2LinkSelector, nextStepsP2Link)

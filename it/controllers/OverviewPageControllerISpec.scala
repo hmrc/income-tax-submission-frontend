@@ -98,26 +98,23 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
-    val headingExpected = "Your Income Tax Return"
-    val updateIncomeTaxReturnText = "Update your Income Tax Return"
-    val submitReturnHeaderEOY = "Check and submit your Income Tax Return"
-    val submitReturnText: String = "If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. " +
-      "You can check your calculation and then submit your Income Tax Return."
-    val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
-    val goToYourIncomeTax = "Go to your Income Tax Account to find out more about your current tax position."
-    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"You cannot submit your Income Tax Return until 6 April $taxYear."
+    val headingExpected = "Eich Ffurflen Dreth Incwm"
+    val updateIncomeTaxReturnText = "Diweddarwch eich Ffurflen Dreth Incwm"
+    val submitReturnHeaderEOY = "Diweddaru a chyflwyno’ch Ffurflen Dreth Incwm"
+    val submitReturnText: String = "Os ydych wedi gorffen diweddaru eich Ffurflen Dreth Incwm, gallwch barhau a gweld eich cyfrifiad treth terfynol. Gallwch wirio eich cyfrifiad ac yna fe allwch gyflwyno eich Ffurflen Dreth Incwm."
+    val ifWeHaveInfo = "Os oes gennym wybodaeth am eich incwm a didyniadau, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
+    val goToYourIncomeTax = "Ewch i’ch Cyfrif Treth Incwm i wybod mwy am eich sefyllfa dreth bresennol."
+    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm tan 6 Ebrill $taxYear."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
-    val headingExpected = "Your client’s Income Tax Return"
-    val updateIncomeTaxReturnText = "Update your client’s Income Tax Return"
-    val submitReturnHeaderEOY = "Check and submit your client’s Income Tax Return"
-    val submitReturnText: String = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation." +
-      " You can check their calculation and then submit their Income Tax Return."
-    val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
-    val goToYourIncomeTax = "Go to your client’s Income Tax Account to find out more about their current tax position."
-    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
-
+    val headingExpected = "Ffurflen Dreth Incwm eich cleient"
+    val updateIncomeTaxReturnText = "Diweddarwch Ffurflen Dreth Incwm eich cleient."
+    val submitReturnHeaderEOY = "Gwiriwch a chyflwynwch Ffurflen Dreth Incwm eich cleient"
+    val submitReturnText: String = "Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, gallwch barhau a gweld eu cyfrifiad treth terfynol. Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm."
+    val ifWeHaveInfo = "Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
+    val goToYourIncomeTax = "Ewch i’r canlynol ar ran eich cleient Cyfrif Treth Incwm i wybod mwy am ei sefyllfa dreth bresennol."
+    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm eich cleient tan 6 Ebrill $taxYear."
   }
 
   trait SpecificExpectedResults {
@@ -167,21 +164,21 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    val vcBreadcrumb = "Income Tax"
-    val startPageBreadcrumb = "Update and submit an Income Tax Return"
-    val overviewBreadcrumb = "Your Income Tax Return"
-    def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 April $taxYearMinusOne to 5 April $taxYear"
-    val updatedText = "Updated"
-    val notStartedText = "Not started"
-    val underMaintenance = "Under maintenance"
-    val cannotUpdateText = "Cannot update"
-    val dividendsLinkText = "Dividends"
-    val interestsLinkText = "Interest"
-    val employmentLinkText = "PAYE employment"
-    val giftAidLinkText = "Donations to charity"
+    val vcBreadcrumb = "Treth Incwm"
+    val startPageBreadcrumb = "Diweddaru a chyflwyno Ffurflen Dreth Incwm"
+    val overviewBreadcrumb = "Eich Ffurflen Dreth Incwm"
+    def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 Ebrill $taxYearMinusOne i 5 Ebrill $taxYear"
+    val updatedText = "Wedi diweddaru"
+    val notStartedText = "Heb ddechrau"
+    val underMaintenance = "Wrthi’n cynnal a chadw’r safle"
+    val cannotUpdateText = "Methu diweddaru"
+    val dividendsLinkText = "Difidendau"
+    val interestsLinkText = "Llog"
+    val employmentLinkText = "Cyflogaeth TWE"
+    val giftAidLinkText = "Rhoddion i elusennau"
     val continue = "continue"
-    val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
-    val incomeTaxAccountLink = "Income Tax Account"
+    val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
+    val incomeTaxAccountLink = "Cyfrif Treth Incwm"
   }
 
   object Selectors {
@@ -279,7 +276,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-          titleCheck(specific.headingExpected)
+          titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
@@ -326,7 +323,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-          titleCheck(specific.headingExpected)
+          titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
@@ -379,7 +376,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-          titleCheck(specific.headingExpected)
+          titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
@@ -435,7 +432,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-            titleCheck(specific.headingExpected)
+            titleCheck(specific.headingExpected, user.isWelsh)
             h1Check(specific.headingExpected, "xl")
             textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
@@ -490,7 +487,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-          titleCheck(specific.headingExpected)
+          titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
@@ -547,7 +544,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-            titleCheck(specific.headingExpected)
+            titleCheck(specific.headingExpected, user.isWelsh)
             h1Check(specific.headingExpected, "xl")
             textOnPageCheck(caption(taxYearMinusOne, taxYear), captionSelector)
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
@@ -614,7 +611,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, Links.startPageBreadcrumbUrl(taxYearEndOfYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-          titleCheck(specific.headingExpected)
+          titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEndOfYear), captionSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
@@ -662,7 +659,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, Links.startPageBreadcrumbUrl(taxYearEndOfYear))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-          titleCheck(specific.headingExpected)
+          titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEndOfYear), captionSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
@@ -720,7 +717,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYearMinusOne))
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
-          titleCheck(specific.headingExpected)
+          titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusTwo, taxYearMinusOne), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)

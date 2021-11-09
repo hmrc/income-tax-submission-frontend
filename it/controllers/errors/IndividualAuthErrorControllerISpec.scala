@@ -29,6 +29,11 @@ class IndividualAuthErrorControllerISpec extends IntegrationTest with ViewHelper
     val pageContent: String = "You need to sign up for Making Tax Digital for Income Tax before you can view this page."
     val linkContent: String = "sign up for Making Tax Digital for Income Tax"
     val linkHref: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax"
+
+    val validTitleWelsh: String = "Ni allwch fwrw golwg dros y dudalen hon"
+    val pageContentWelsh: String = "Mae’n rhaid i chi Cofrestrwch ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth " +
+      "Incwm cyn i chi allu bwrw golwg ar y dudalen hon."
+    val linkContentWelsh: String = "Cofrestrwch ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm"
   }
 
   object Selectors {
@@ -55,7 +60,7 @@ class IndividualAuthErrorControllerISpec extends IntegrationTest with ViewHelper
           result.status shouldBe UNAUTHORIZED
         }
 
-        titleCheck(validTitle)
+        titleCheck(validTitle, isWelsh = false)
         welshToggleCheck("English")
         h1Check(validTitle, "xl")
         textOnPageCheck(pageContent, paragraphSelector)
@@ -76,11 +81,11 @@ class IndividualAuthErrorControllerISpec extends IntegrationTest with ViewHelper
           result.status shouldBe UNAUTHORIZED
         }
 
-        titleCheck(validTitle)
+        titleCheck(validTitleWelsh, isWelsh = true)
         welshToggleCheck("Welsh")
-        h1Check(validTitle, "xl")
-        textOnPageCheck(pageContent, paragraphSelector)
-        linkCheck(linkContent, linkSelector, linkHref)
+        h1Check(validTitleWelsh, "xl")
+        textOnPageCheck(pageContentWelsh, paragraphSelector)
+        linkCheck(linkContentWelsh, linkSelector, linkHref)
       }
     }
   }

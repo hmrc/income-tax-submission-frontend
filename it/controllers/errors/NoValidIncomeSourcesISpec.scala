@@ -62,13 +62,13 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
   }
 
   object ExpectedResultsWelsh {
-    val title = "No business income sources"
-    val heading = "No business income sources"
-    val p1 = "You need at least one source of business income in order to complete an Income Tax Return."
-    val p2 = "Business income sources include:"
-    val bul1 = "Self-employment"
-    val bul2 = "UK or overseas property"
-    val submit = "Go to your Income Tax account"
+    val title = "Dim ffynonellau incwm busnes"
+    val heading = "Dim ffynonellau incwm busnes"
+    val p1 = "Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm."
+    val p2 = "Mae ffynonellau incwm busnes yn cynnwys:"
+    val bul1 = "Hunangyflogaeth"
+    val bul2 = "Eiddo yn y DU neu dramor"
+    val submit = "Ewch i’ch cyfrif Treth Incwm"
 
     val incomeTaxReturnButtonLink = s"http://localhost:9081/report-quarterly/income-and-expenses/view"
   }
@@ -97,7 +97,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
       }
 
       welshToggleCheck("English")
-      titleCheck(title)
+      titleCheck(title, isWelsh = false)
       h1Check(heading, "xl")
       textOnPageCheck(p1, p1Selector)
       textOnPageCheck(p2, p2Selector)
@@ -169,7 +169,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
       }
 
       welshToggleCheck("Welsh")
-      titleCheck(title)
+      titleCheck(title, isWelsh = true)
       h1Check(heading, "xl")
       textOnPageCheck(p1, p1Selector)
       textOnPageCheck(p2, p2Selector)

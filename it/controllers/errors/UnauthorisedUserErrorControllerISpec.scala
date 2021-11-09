@@ -34,10 +34,18 @@ class UnauthorisedUserErrorControllerISpec extends IntegrationTest with ViewHelp
     lazy val useText = "use"
     lazy val generalEnquiriesText = "Self Assessment: general enquiries (opens in new tab)"
     lazy val toSpeakText = "to speak to someone about your income tax"
-    lazy val incomeTaxLinkText = "Income Tax home page (opens in new tab)"
-    lazy val selfAssessmentLinkText = "Self Assessment: general enquiries (opens in new tab)"
     lazy val incomeTaxLink = "https://www.gov.uk/income-tax"
     lazy val selfAssessmentLink = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
+
+    lazy val pageHeadingTextWelsh = "Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn"
+    lazy val pageTitleTextWelsh = "Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn"
+    lazy val youCanTextWelsh = "Gallwch:"
+    lazy val goToTextWelsh = "neu ewch i’r"
+    lazy val incomeTaxHomePageTextWelsh = "Hafan Treth Incwm (agor mewn tab newydd)"
+    lazy val forMoreTextWelsh = "am ragor o wybodaeth"
+    lazy val useTextWelsh = "defnyddiwch"
+    lazy val generalEnquiriesTextWelsh = "Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)"
+    lazy val toSpeakTextWelsh = "i siarad â rhywun am eich Treth Incwm"
   }
 
   object Selectors {
@@ -69,13 +77,13 @@ class UnauthorisedUserErrorControllerISpec extends IntegrationTest with ViewHelp
         }
 
         welshToggleCheck("English")
-        titleCheck(pageTitleText)
+        titleCheck(pageTitleText, isWelsh = false)
         h1Check(pageHeadingText, "xl")
         textOnPageCheck(s"$youCanText", youCanSelector)
         textOnPageCheck(s"$goToText $incomeTaxHomePageText $forMoreText", incomeTaxSelector)
         textOnPageCheck(s"$useText $generalEnquiriesText $toSpeakText",selfAssessmentSelector)
-        linkCheck(incomeTaxLinkText, incomeTaxLinkSelector, incomeTaxLink)
-        linkCheck(selfAssessmentLinkText,selfAssessmentLinkSelector,selfAssessmentLink)
+        linkCheck(incomeTaxHomePageText, incomeTaxLinkSelector, incomeTaxLink)
+        linkCheck(generalEnquiriesText,selfAssessmentLinkSelector,selfAssessmentLink)
       }
     }
 
@@ -93,13 +101,13 @@ class UnauthorisedUserErrorControllerISpec extends IntegrationTest with ViewHelp
         }
 
         welshToggleCheck("Welsh")
-        titleCheck(pageTitleText)
-        h1Check(pageHeadingText, "xl")
-        textOnPageCheck(s"$youCanText", youCanSelector)
-        textOnPageCheck(s"$goToText $incomeTaxHomePageText $forMoreText", incomeTaxSelector)
-        textOnPageCheck(s"$useText $generalEnquiriesText $toSpeakText",selfAssessmentSelector)
-        linkCheck(incomeTaxLinkText, incomeTaxLinkSelector, incomeTaxLink)
-        linkCheck(selfAssessmentLinkText,selfAssessmentLinkSelector,selfAssessmentLink)
+        titleCheck(pageTitleTextWelsh, isWelsh = true)
+        h1Check(pageHeadingTextWelsh, "xl")
+        textOnPageCheck(s"$youCanTextWelsh", youCanSelector)
+        textOnPageCheck(s"$goToTextWelsh $incomeTaxHomePageTextWelsh $forMoreTextWelsh", incomeTaxSelector)
+        textOnPageCheck(s"$useTextWelsh $generalEnquiriesTextWelsh $toSpeakTextWelsh", selfAssessmentSelector)
+        linkCheck(incomeTaxHomePageTextWelsh, incomeTaxLinkSelector, incomeTaxLink)
+        linkCheck(generalEnquiriesTextWelsh, selfAssessmentLinkSelector, selfAssessmentLink)
       }
     }
   }

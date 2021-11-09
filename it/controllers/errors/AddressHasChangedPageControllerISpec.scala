@@ -55,15 +55,15 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
   }
 
   object ExpectedResultsWelsh {
-    val titleIndividualWelsh = "Your address has changed"
-    val titleAgentWelsh = "Your client’s address has changed"
-    val headingIndividualWelsh = "Your address has changed"
-    val headingAgentWelsh = "Your client’s address has changed"
-    val addressHasChangedTextIndividualWelsh = "Your address has changed to a country with a different rate of tax."
-    val addressHasChangedTextAgentWelsh = "Your client’s address has changed to a country with a different rate of tax."
-    val submitYourReturnIndividualWelsh = "You must submit your Income Tax Return again to get a new tax calculation."
-    val submitYourReturnAgentWelsh = "You must submit your client’s Income Tax Return again to get a new tax calculation."
-    val incomeTaxReturnButtonTextWelsh = "Back to Income Tax Return"
+    val titleIndividualWelsh = "Mae’ch cyfeiriad wedi’i newid"
+    val titleAgentWelsh = "Mae cyfeiriad eich cleient wedi newid"
+    val headingIndividualWelsh = "Mae’ch cyfeiriad wedi’i newid"
+    val headingAgentWelsh = "Mae cyfeiriad eich cleient wedi newid"
+    val addressHasChangedTextIndividualWelsh = "Mae eich cyfeiriad wedi newid i wlad gyda chyfradd dreth wahanol."
+    val addressHasChangedTextAgentWelsh = "Mae cyfeiriad eich cleient wedi newid i wlad gyda chyfradd dreth wahanol."
+    val submitYourReturnIndividualWelsh = "Rhaid i chi gyflwyno eich Ffurflen Dreth Incwm eto i gael cyfrifiad treth newydd."
+    val submitYourReturnAgentWelsh = "Rhaid i chi gyflwyno Ffurflen Dreth Incwm eich cleient eto i gael cyfrifiad treth newydd."
+    val incomeTaxReturnButtonTextWelsh = "Yn ôl i hafan Ffurflen Dreth Incwm"
   }
 
   import Selectors._
@@ -90,7 +90,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       }
 
       welshToggleCheck("English")
-      titleCheck(titleIndividual)
+      titleCheck(titleIndividual, isWelsh = false)
       h1Check(headingIndividual, "xl")
       textOnPageCheck(addressHasChangedTextIndividual, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnIndividual, submitYourReturnSelector)
@@ -113,7 +113,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       }
 
       welshToggleCheck("English")
-      titleCheck(titleAgent)
+      titleCheck(titleAgent, isWelsh = false)
       h1Check(headingAgent, "xl")
       textOnPageCheck(addressHasChangedTextAgent, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnAgent, submitYourReturnSelector)
@@ -160,7 +160,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       }
 
       welshToggleCheck("Welsh")
-      titleCheck(titleIndividualWelsh)
+      titleCheck(titleIndividualWelsh, isWelsh = true)
       h1Check(headingIndividualWelsh, "xl")
       textOnPageCheck(addressHasChangedTextIndividualWelsh, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnIndividualWelsh, submitYourReturnSelector)
@@ -183,7 +183,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       }
 
       welshToggleCheck("Welsh")
-      titleCheck(titleAgentWelsh)
+      titleCheck(titleAgentWelsh, isWelsh = true)
       h1Check(headingAgentWelsh, "xl")
       textOnPageCheck(addressHasChangedTextAgentWelsh, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnAgentWelsh, submitYourReturnSelector)

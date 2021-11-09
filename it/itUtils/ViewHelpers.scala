@@ -27,6 +27,9 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers with WireMockHelper =>
   val serviceName = "Update and submit an Income Tax Return"
   val govUkExtension = "GOV.UK"
 
+  val serviceNameWelsh = "Diweddaru a chyflwyno Ffurflen Dreth Incwm"
+  val govUkExtensionWelsh = "GOV.UK/CYMRAEG"
+
   def welshTest(isWelsh: Boolean): String = if (isWelsh) "Welsh" else "English"
   def agentTest(isAgent: Boolean): String = if (isAgent) "Agent" else "Individual"
 
@@ -46,9 +49,15 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers with WireMockHelper =>
     !document().select(selector).isEmpty
   }
 
-  def titleCheck(title: String)(implicit document: () => Document): Unit = {
-    s"has a title of $title" in {
-      document().title() shouldBe s"$title - $serviceName - $govUkExtension"
+  def titleCheck(title: String, isWelsh: Boolean)(implicit document: () => Document): Unit = {
+    if(isWelsh) {
+      s"has a title of $title" in {
+        document().title() shouldBe s"$title - $serviceNameWelsh - $govUkExtensionWelsh"
+      }
+    } else {
+      s"has a title of $title" in {
+        document().title() shouldBe s"$title - $serviceName - $govUkExtension"
+      }
     }
   }
 
