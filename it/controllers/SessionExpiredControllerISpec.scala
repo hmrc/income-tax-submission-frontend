@@ -30,6 +30,11 @@ class SessionExpiredControllerISpec extends IntegrationTest with ViewHelpers wit
     val pageHeadingText = "For your security, we signed you out"
     val p1Text = "We did not save your answers."
     val buttonText = "Sign in"
+
+    val pageTitleTextWelsh = "Er eich diogelwch, gwnaethom eich allgofnodi"
+    val pageHeadingTextWelsh = "Er eich diogelwch, gwnaethom eich allgofnodi"
+    val p1TextWelsh = "Ni wnaethom gadw’ch atebion."
+    val buttonTextWelsh = "Mewngofnodi"
   }
 
   object Selectors {
@@ -56,7 +61,7 @@ class SessionExpiredControllerISpec extends IntegrationTest with ViewHelpers wit
           result.status shouldBe OK
         }
 
-        titleCheck(pageTitleText)
+        titleCheck(pageTitleText, isWelsh = false)
         welshToggleCheck("English")
         h1Check(pageHeadingText, "xl")
         textOnPageCheck(p1Text, p1)
@@ -77,11 +82,11 @@ class SessionExpiredControllerISpec extends IntegrationTest with ViewHelpers wit
           result.status shouldBe OK
         }
 
-        titleCheck(pageTitleText)
+        titleCheck(pageTitleTextWelsh, isWelsh = true)
         welshToggleCheck("Welsh")
-        h1Check(pageHeadingText, "xl")
-        textOnPageCheck(p1Text, p1)
-        buttonCheck(buttonText, continueButtonSelector)
+        h1Check(pageHeadingTextWelsh, "xl")
+        textOnPageCheck(p1TextWelsh, p1)
+        buttonCheck(buttonTextWelsh, continueButtonSelector)
       }
     }
   }

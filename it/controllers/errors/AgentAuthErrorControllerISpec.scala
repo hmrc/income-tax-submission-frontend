@@ -28,12 +28,19 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
   object ExpectedResults {
     val heading: String = "There’s a problem"
     val title = "There’s a problem"
-    val youCan = "You cannot view this client’s information. Your client needs to authorise you as their agent " +
+    val youCan: String = "You cannot view this client’s information. Your client needs to authorise you as their agent " +
       "(opens in new tab) before you can sign in to this service."
     val tryAnother = "Try another client’s details"
     val tryAnotherExpectedHref = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/client-utr"
     val authoriseAsAnAgentLink = "https://www.gov.uk/guidance/client-authorisation-an-overview"
     val authoriseYouAsText = "authorise you as their agent (opens in new tab)"
+
+    val headingWelsh: String = "Mae problem wedi codi"
+    val titleWelsh = "Mae problem wedi codi"
+    val youCanWelsh: String = "Ni allwch fwrw golwg dros wybodaeth y cleient hwn. Mae angen i’ch cleient eich awdurdodi " +
+      "i weithredu ar ei ran (yn agor tab newydd) cyn y gallwch fewngofnodi i’r gwasanaeth hwn."
+    val tryAnotherWelsh = "Rhowch gynnig ar fanylion cleient arall"
+    val authoriseYouAsTextWelsh = "eich awdurdodi i weithredu ar ei ran (yn agor tab newydd)"
   }
   
   object Selectors {
@@ -59,7 +66,7 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         welshToggleCheck("English")
-        titleCheck(ExpectedResults.title)
+        titleCheck(ExpectedResults.title, isWelsh = false)
         h1Check(ExpectedResults.heading,"xl")
         textOnPageCheck(ExpectedResults.youCan, Selectors.youCan)
         linkCheck(ExpectedResults.authoriseYouAsText, Selectors.authoriseAsAnAgentLinkSelector, ExpectedResults.authoriseAsAnAgentLink)
@@ -81,11 +88,11 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         welshToggleCheck("Welsh")
-        titleCheck(ExpectedResults.title)
-        h1Check(ExpectedResults.heading,"xl")
-        textOnPageCheck(ExpectedResults.youCan, Selectors.youCan)
-        linkCheck(ExpectedResults.authoriseYouAsText, Selectors.authoriseAsAnAgentLinkSelector, ExpectedResults.authoriseAsAnAgentLink)
-        buttonCheck(ExpectedResults.tryAnother, Selectors.tryAnother, Some(ExpectedResults.tryAnotherExpectedHref))
+        titleCheck(ExpectedResults.titleWelsh, isWelsh = true)
+        h1Check(ExpectedResults.headingWelsh,"xl")
+        textOnPageCheck(ExpectedResults.youCanWelsh, Selectors.youCan)
+        linkCheck(ExpectedResults.authoriseYouAsTextWelsh, Selectors.authoriseAsAnAgentLinkSelector, ExpectedResults.authoriseAsAnAgentLink)
+        buttonCheck(ExpectedResults.tryAnotherWelsh, Selectors.tryAnother, Some(ExpectedResults.tryAnotherExpectedHref))
       }
     }
   }

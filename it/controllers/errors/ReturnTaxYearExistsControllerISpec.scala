@@ -48,13 +48,13 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   }
 
   object ExpectedResultsWelsh {
-    lazy val expectedTitleTextWelsh: String = "We already have an Income Tax Return for that tax year"
-    lazy val expectedHeadingTextWelsh: String = "We already have an Income Tax Return for that tax year"
-    lazy val expectedP1TextWelsh: String = s"We have an Income Tax Return for the $lastTaxYear to $taxYear tax year."
-    lazy val expectedP2TextIndividualWelsh: String = "You can go to your Income Tax account to see your Income Tax Returns."
-    lazy val expectedP2TextAgentWelsh: String = "You can go to your client’s Income Tax account to see their Income Tax Returns."
-    lazy val expectedReturnToTaxAccountButtonTextWelsh: String = "Back to Income Tax account"
-    lazy val expectedSignOutButtonTextWelsh: String = "Sign out"
+    lazy val expectedTitleTextWelsh: String = "Rydym eisoes â Ffurflen Dreth Incwm ar gyfer y flwyddyn dreth honno"
+    lazy val expectedHeadingTextWelsh: String = "Rydym eisoes â Ffurflen Dreth Incwm ar gyfer y flwyddyn dreth honno"
+    lazy val expectedP1TextWelsh: String = s"Mae gennym Ffurflen Dreth Incwm ar gyfer y flwyddyn dreth $lastTaxYear i $taxYear."
+    lazy val expectedP2TextIndividualWelsh: String = "Gallwch fynd i’ch cyfrif Treth Incwm i weld eich Ffurflenni Treth Incwm."
+    lazy val expectedP2TextAgentWelsh: String = "Gallwch fynd i gyfrif Treth Incwm eich cleient i weld ei Ffurflenni Dreth Incwm."
+    lazy val expectedReturnToTaxAccountButtonTextWelsh: String = "Yn ôl i gyfrif Treth Incwm"
+    lazy val expectedSignOutButtonTextWelsh: String = "Allgofnodi"
   }
 
   object Selectors {
@@ -91,7 +91,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
         }
 
         welshToggleCheck("English")
-        titleCheck(expectedTitleText)
+        titleCheck(expectedTitleText, isWelsh = false)
         h1Check(expectedHeadingText, "xl")
         textOnPageCheck(expectedP1Text, p1TextSelector)
         textOnPageCheck(expectedP2TextIndividual, p2TextSelector)
@@ -161,7 +161,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
         }
 
         welshToggleCheck("Welsh")
-        titleCheck(expectedTitleTextWelsh)
+        titleCheck(expectedTitleTextWelsh, isWelsh = true)
         h1Check(expectedHeadingTextWelsh, "xl")
         textOnPageCheck(expectedP1TextWelsh, p1TextSelector)
         textOnPageCheck(expectedP2TextIndividualWelsh, p2TextSelector)

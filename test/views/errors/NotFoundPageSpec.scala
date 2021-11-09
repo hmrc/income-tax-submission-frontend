@@ -33,11 +33,19 @@ class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest{
 
   val pageTitleText = "Page not found"
   val pageHeaderText = "Page not found"
-  val ifYouTypedText = "If you typed the web address, check it is correct."
-  val ifYouUsedText = "If you used ‘copy and paste’ to enter the web address, check you copied the full address."
-  val ifTheWebsiteText: String = "If the website address is correct or you selected a link or button, " +
+  val ifYouTypedAddressText = "If you typed the web address, check it is correct."
+  val ifYouUsedCopyPasteText = "If you used ‘copy and paste’ to enter the web address, check you copied the full address."
+  val ifAddressCorrectText: String = "If the website address is correct or you selected a link or button, " +
     "you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
   val linkText = "Self Assessment: general enquiries (opens in new tab)"
+
+  val pageTitleTextWelsh = "Heb ddod o hyd i’r dudalen"
+  val pageHeaderTextWelsh = "Heb ddod o hyd i’r dudalen"
+  val ifYouTypedAddressTextWelsh = "Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir."
+  val ifYouUsedCopyPasteTextWelsh = "Os ydych wedi copïo a gludo’r cyfeiriad gwe, sicrhewch eich bod wedi copïo’r cyfeiriad llawn."
+  val ifAddressCorrectTextWelsh: String = "Os yw’r cyfeiriad gwe yn gywir neu os ydych wedi dewis cysylltiad neu fotwm," +
+    " gallwch wneud y canlynol: Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd) i siarad â rhywun am eich Treth Incwm."
+  val linkTextWelsh = "Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)"
 
   val linkHref = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
 
@@ -49,13 +57,13 @@ class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest{
       lazy val view: Html = notFoundPage()(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
-      titleCheck(pageTitleText)
+      titleCheck(pageTitleText, isWelsh = false)
       welshToggleCheck("English")
       h1Check(pageHeaderText)
       linkCheck(linkText, link, linkHref)
-      textOnPageCheck(ifYouTypedText, paragraph)
-      textOnPageCheck(ifYouUsedText, paragraph2)
-      textOnPageCheck(ifTheWebsiteText, paragraph3)
+      textOnPageCheck(ifYouTypedAddressText, paragraph)
+      textOnPageCheck(ifYouUsedCopyPasteText, paragraph2)
+      textOnPageCheck(ifAddressCorrectText, paragraph3)
     }
   }
 
@@ -65,13 +73,13 @@ class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest{
       lazy val view: Html = notFoundPage()(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
-      titleCheck(pageTitleText)
+      titleCheck(pageTitleTextWelsh, isWelsh = true)
       welshToggleCheck("Welsh")
-      h1Check(pageHeaderText)
-      linkCheck(linkText, link, linkHref)
-      textOnPageCheck(ifYouTypedText, paragraph)
-      textOnPageCheck(ifYouUsedText, paragraph2)
-      textOnPageCheck(ifTheWebsiteText, paragraph3)
+      h1Check(pageHeaderTextWelsh)
+      linkCheck(linkTextWelsh, link, linkHref)
+      textOnPageCheck(ifYouTypedAddressTextWelsh, paragraph)
+      textOnPageCheck(ifYouUsedCopyPasteTextWelsh, paragraph2)
+      textOnPageCheck(ifAddressCorrectTextWelsh, paragraph3)
     }
   }
 }

@@ -66,10 +66,10 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     val agreeButton: String = "I agree - Submit Income Tax Return"
 
-    val headingWelsh: String = "Declaration"
-    val subheadingWelsh: String = "6 April " + taxYearMinusOne + " to " + "5 April " + taxYear
+    val headingWelsh: String = "Datganiad"
+    val subheadingWelsh: String = "6 Ebrill " + taxYearMinusOne + " i " + "5 Ebrill " + taxYear
 
-    val agreeButtonWelsh: String = "I agree - Submit Income Tax Return"
+    val agreeButtonWelsh: String = "Cytunaf - Cyflwyno Ffurflen Dreth Incwm"
 
     val addressHasChangedTitle: String = "Your address has changed"
 
@@ -90,8 +90,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     val informationText: String = "The information I have provided is correct and complete to the best of my knowledge and belief." +
       " If I give false information I may have to pay financial penalties and face prosecution."
 
-    val informationTextWelsh: String = "The information I have provided is correct and complete to the best of my knowledge and belief." +
-      " If I give false information I may have to pay financial penalties and face prosecution."
+    val informationTextWelsh: String = "Mae’r wybodaeth a roddwyd gennyf yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth " +
+      "a’m cred. Os byddaf yn rhoi gwybodaeth ffug, efallai y bydd yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad."
   }
 
   object AgentExpectedResults extends SpecificExpectedResults {
@@ -105,10 +105,9 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       taxYearMinusOne + " to " + taxYear +
       ". My client understands that they may have to pay financial penalties or face prosecution if they give false information."
 
-    val agentInformationTextWelsh: String = "I confirm that my client has reviewed the information provided and confirmed" +
-      " that it is correct and complete to the best of their knowledge to establish the liability for the tax year " +
-      taxYearMinusOne + " to " + taxYear +
-      ". My client understands that they may have to pay financial penalties or face prosecution if they give false information."
+    val agentInformationTextWelsh: String = "Cadarnhaf fod fy nghleient wedi adolygu’r wybodaeth a roddwyd ac yn cadarnhau " +
+      "ei bod yn gywir ac yn gyflawn hyd eithaf ei allu i sefydlu atebolrwydd am y flwyddyn dreth " + taxYearMinusOne +
+      " i " + taxYear + ". Mae fy nghleient yn deall y gallai fod yn rhaid iddo dalu cosbau ariannol neu wynebu erlyniad os yw’n rhoi gwybodaeth anwir."
   }
 
   object Selectors {
@@ -350,6 +349,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         welshToggleCheck("Welsh")
+        titleCheck(headingWelsh, isWelsh = true)
         textOnPageCheck(headingWelsh, headingSelector)
         textOnPageCheck(subheadingWelsh, subheadingSelector)
 
@@ -415,7 +415,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
-          titleCheck(ExpectedResults.addressHasChangedTitle)
+          titleCheck(ExpectedResults.addressHasChangedTitle, isWelsh = false)
       }
     }
 
@@ -446,7 +446,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
-        titleCheck(ExpectedResults.returnTaxYearExistsTitle)
+        titleCheck(ExpectedResults.returnTaxYearExistsTitle, isWelsh = false)
       }
     }
 
@@ -477,7 +477,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
-        titleCheck(ExpectedResults.taxYearReturnUpdatedTitle)
+        titleCheck(ExpectedResults.taxYearReturnUpdatedTitle, isWelsh = false)
       }
     }
   }

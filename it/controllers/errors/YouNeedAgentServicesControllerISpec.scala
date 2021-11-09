@@ -31,6 +31,12 @@ class YouNeedAgentServicesControllerISpec extends IntegrationTest with ViewHelpe
     lazy val createAnAgentText = "create an agent services account"
     lazy val beforeYouCanText = "before you can view this page."
     lazy val createAnAgentLink = "https://www.gov.uk/guidance/get-an-hmrc-agent-services-account"
+
+    lazy val pageHeadingTextWelsh = "Ni allwch fwrw golwg dros y dudalen hon"
+    lazy val pageTitleTextWelsh = "Ni allwch fwrw golwg dros y dudalen hon"
+    lazy val youNeedTextWelsh = "Mae’n rhaid i chi"
+    lazy val createAnAgentTextWelsh = "greu cyfrif gwasanaethau asiant"
+    lazy val beforeYouCanTextWelsh = "cyn i chi allu bwrw golwg ar y dudalen hon."
   }
 
   object Selectors {
@@ -58,7 +64,7 @@ class YouNeedAgentServicesControllerISpec extends IntegrationTest with ViewHelpe
         }
 
         welshToggleCheck("English")
-        titleCheck(pageTitleText)
+        titleCheck(pageTitleText, isWelsh = false)
         h1Check(pageHeadingText, "xl")
         textOnPageCheck(s"$youNeedText $createAnAgentText $beforeYouCanText", p1Selector)
         linkCheck(createAnAgentText, createAnAgentLinkSelector, createAnAgentLink)
@@ -79,10 +85,10 @@ class YouNeedAgentServicesControllerISpec extends IntegrationTest with ViewHelpe
         }
 
         welshToggleCheck("Welsh")
-        titleCheck(pageTitleText)
-        h1Check(pageHeadingText, "xl")
-        textOnPageCheck(s"$youNeedText $createAnAgentText $beforeYouCanText", p1Selector)
-        linkCheck(createAnAgentText, createAnAgentLinkSelector, createAnAgentLink)
+        titleCheck(pageTitleTextWelsh, isWelsh = true)
+        h1Check(pageHeadingTextWelsh, "xl")
+        textOnPageCheck(s"$youNeedTextWelsh $createAnAgentTextWelsh $beforeYouCanTextWelsh", p1Selector)
+        linkCheck(createAnAgentTextWelsh, createAnAgentLinkSelector, createAnAgentLink)
       }
     }
   }

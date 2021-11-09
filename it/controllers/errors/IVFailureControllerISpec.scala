@@ -33,6 +33,14 @@ class IVFailureControllerISpec extends IntegrationTest with ViewHelpers with Sta
     lazy val couldNotMatchText = "we could not match your details to our system"
     lazy val signOutButtonText = "Sign out"
     lazy val signOutUrl = "/income-through-software/return/sign-out?isAgent=false"
+
+    lazy val pageTitleTextWelsh = "Mae problem wedi codi"
+    lazy val pageHeadingTextWelsh = "Mae problem wedi codi"
+    lazy val cannotAccessTextWelsh = "Ni allwch gael mynediad at y gwasanaeth hwn. Gall hyn fod oherwydd y canlynol:"
+    lazy val tookTooLongTextWelsh = "gwnaethoch gymryd gormod o amser i nodi gwybodaeth ac mae’ch cyfle i ddefnyddio’r gwasanaeth wedi dod i ben"
+    lazy val failedToAnswerTextWelsh = "rydych wedi methu ag ateb digon o gwestiynau’n gywir"
+    lazy val couldNotMatchTextWelsh = "nid oeddem yn gallu paru’ch manylion â’r hyn sydd ar ein system"
+    lazy val signOutButtonTextWelsh = "Allgofnodi"
   }
 
   object Selectors {
@@ -64,7 +72,7 @@ class IVFailureControllerISpec extends IntegrationTest with ViewHelpers with Sta
         }
 
         welshToggleCheck("English")
-        titleCheck(pageTitleText)
+        titleCheck(pageTitleText, isWelsh = false)
         h1Check(pageHeadingText, "xl")
 
         textOnPageCheck(cannotAccessText, cannotAccessTextSelector)
@@ -91,16 +99,16 @@ class IVFailureControllerISpec extends IntegrationTest with ViewHelpers with Sta
         }
 
         welshToggleCheck("Welsh")
-        titleCheck(pageTitleText)
-        h1Check(pageHeadingText, "xl")
+        titleCheck(pageTitleTextWelsh, isWelsh = true)
+        h1Check(pageHeadingTextWelsh, "xl")
 
-        textOnPageCheck(cannotAccessText, cannotAccessTextSelector)
-        textOnPageCheck(tookTooLongText, tookTooLongTextSelector)
-        textOnPageCheck(failedToAnswerText, failedToAnswerTextSelector)
-        textOnPageCheck(couldNotMatchText, couldNotMatchTextSelector)
+        textOnPageCheck(cannotAccessTextWelsh, cannotAccessTextSelector)
+        textOnPageCheck(tookTooLongTextWelsh, tookTooLongTextSelector)
+        textOnPageCheck(failedToAnswerTextWelsh, failedToAnswerTextSelector)
+        textOnPageCheck(couldNotMatchTextWelsh, couldNotMatchTextSelector)
 
         formGetLinkCheck(signOutUrl, signOutFormSelector)
-        buttonCheck(signOutButtonText, signOutButtonSelector, None)
+        buttonCheck(signOutButtonTextWelsh, signOutButtonSelector, None)
       }
     }
   }

@@ -60,7 +60,9 @@ class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
     "header.govuk.url",
     "footer.cookies.url",
     "language.day.plural",
-    "language.day.singular"
+    "language.day.singular",
+    "back.text",
+    "error.summary.title"
   )
 
   val betaMessagesInBothHMRCLibraryAndMessages = 3

@@ -42,6 +42,15 @@ class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with ViewTes
   val link1Text = "Income Tax home page (opens in new tab)"
   val link2Text = "Self Assessment: general enquiries (opens in new tab)"
 
+  val pageTitleTextWelsh = "Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth"
+  val pageHeaderTextWelsh = "Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth"
+  val tryAgainTextWelsh = "Rhowch gynnig arall arni yn nes ymlaen."
+  val youCanAlsoTextWelsh = "Gallwch hefyd wneud y canlynol:"
+  val goToTheTextWelsh = "neu ewch i’r Hafan Treth Incwm (agor mewn tab newydd) am ragor o wybodaeth"
+  val useSelfAssesTextWelsh = "defnyddiwch Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd) i siarad â rhywun am eich Treth Incwm"
+  val link1TextWelsh = "Hafan Treth Incwm (agor mewn tab newydd)"
+  val link2TextWelsh = "Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)"
+
   val link1Href = "https://www.gov.uk/income-tax"
   val link2Href = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
 
@@ -53,7 +62,7 @@ class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with ViewTes
       lazy val view: Html = internalServerErrorPage()(fakeRequest, messages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
-      titleCheck(pageTitleText)
+      titleCheck(pageTitleText, isWelsh = false)
       welshToggleCheck("English")
       h1Check(pageHeaderText)
       linkCheck(link1Text, link, link1Href)
@@ -71,15 +80,15 @@ class InternalServerErrorPageSpec extends AnyWordSpec with Matchers with ViewTes
       lazy val view: Html = internalServerErrorPage()(fakeRequest, welshMessages, appConfig)
       lazy implicit val document: Document = Jsoup.parse(view.body)
 
-      titleCheck(pageTitleText)
+      titleCheck(pageTitleTextWelsh, isWelsh = true)
       welshToggleCheck("Welsh")
-      h1Check(pageHeaderText)
-      linkCheck(link1Text, link, link1Href)
-      linkCheck(link2Text, link2, link2Href)
-      textOnPageCheck(tryAgainText, paragraph)
-      textOnPageCheck(youCanAlsoText, paragraph2)
-      textOnPageCheck(goToTheText, paragraph3)
-      textOnPageCheck(useSelfAssesText, paragraph4)
+      h1Check(pageHeaderTextWelsh)
+      linkCheck(link1TextWelsh, link, link1Href)
+      linkCheck(link2TextWelsh, link2, link2Href)
+      textOnPageCheck(tryAgainTextWelsh, paragraph)
+      textOnPageCheck(youCanAlsoTextWelsh, paragraph2)
+      textOnPageCheck(goToTheTextWelsh, paragraph3)
+      textOnPageCheck(useSelfAssesTextWelsh, paragraph4)
     }
   }
 }
