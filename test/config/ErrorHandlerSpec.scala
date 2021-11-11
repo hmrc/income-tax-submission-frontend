@@ -35,6 +35,7 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
   val addressHasChangedPage: AddressHasChangedPage = app.injector.instanceOf[AddressHasChangedPage]
   val taxReturnPreviouslyUpdatedView: TaxReturnPreviouslyUpdatedView = app.injector.instanceOf[TaxReturnPreviouslyUpdatedView]
   val noValidIncomeSourcesView: NoValidIncomeSourcesView = app.injector.instanceOf[NoValidIncomeSourcesView]
+  val businessValidationRulesView: BusinessValidationRulesView = app.injector.instanceOf[BusinessValidationRulesView]
 
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -42,7 +43,7 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
   val errorHandler = new ErrorHandler(messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable,
                                       noUpdatesProvidedPage, returnTaxYearExistsView, addressHasChangedPage,
-                                      noValidIncomeSourcesView, taxReturnPreviouslyUpdatedView)
+                                      noValidIncomeSourcesView, taxReturnPreviouslyUpdatedView, businessValidationRulesView)
 
   val taxYear: Int = 2022
   val isAgent: Boolean = false
@@ -111,7 +112,12 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
     }
 
     "return a 422 page for No Valid Income Sources" in {
-      errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "INCOME_SUBMISSIONS_NOT_EXIST", isAgent, taxYear)
+      errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "CRYSTALLISATION_BEFORE_TAX_YEAR_END", isAgent, taxYear)
+        .header.status shouldBe UNPROCESSABLE_ENTITY
+    }
+
+    "return a 422 page for a Business Validation Rules error" in {
+      errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "BUSINESS_VALIDATION_RULE_FAILURE", isAgent, taxYear)
         .header.status shouldBe UNPROCESSABLE_ENTITY
     }
 

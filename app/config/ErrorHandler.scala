@@ -33,7 +33,8 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
                              serviceUnavailablePage: ServiceUnavailablePage, noUpdatesProvidedPage: NoUpdatesProvidedPage,
                              returnTaxYearExistsView: ReturnTaxYearExistsView, addressHasChangedPage: AddressHasChangedPage,
-                             noValidIncomeSourcesView: NoValidIncomeSourcesView, taxReturnPreviouslyUpdatedView: TaxReturnPreviouslyUpdatedView
+                             noValidIncomeSourcesView: NoValidIncomeSourcesView, taxReturnPreviouslyUpdatedView: TaxReturnPreviouslyUpdatedView,
+                             businessValidationRulesView: BusinessValidationRulesView
                             )(implicit appConfig: AppConfig)
 
   extends FrontendErrorHandler {
@@ -66,7 +67,8 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
       case (CONFLICT, StatusMessage.residencyChanged) => Conflict(addressHasChangedPage(isAgent, taxYear))
       case (CONFLICT, StatusMessage.finalDeclarationReceived) => Conflict(returnTaxYearExistsView(isAgent, taxYear))
       case (CONFLICT, _) => Conflict(taxReturnPreviouslyUpdatedView(isAgent, taxYear))
-      case (UNPROCESSABLE_ENTITY, _) => UnprocessableEntity(noValidIncomeSourcesView(isAgent, taxYear))
+      case (UNPROCESSABLE_ENTITY, StatusMessage.crystallisationBeforeTaxYearEnd) => UnprocessableEntity(noValidIncomeSourcesView(isAgent, taxYear))
+      case (UNPROCESSABLE_ENTITY, StatusMessage.businessValidationRuleFailure) => UnprocessableEntity(businessValidationRulesView(isAgent, taxYear))
       case (SERVICE_UNAVAILABLE, _) => ServiceUnavailable(serviceUnavailablePage())
       case _ => InternalServerError(internalServerErrorPage())
     }

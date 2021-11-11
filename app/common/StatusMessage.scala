@@ -20,5 +20,7 @@ object StatusMessage {
 
   val residencyChanged: String = "RESIDENCY_CHANGED"
   val finalDeclarationReceived: String = "FINAL_DECLARATION_RECEIVED"
+  val crystallisationBeforeTaxYearEnd: String = "CRYSTALLISATION_BEFORE_TAX_YEAR_END"
+  val businessValidationRuleFailure: String = "BUSINESS_VALIDATION_RULE_FAILURE"
 
 }

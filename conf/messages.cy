@@ -169,3 +169,7 @@ error.no-valid-income.p2 = Mae ffynonellau incwm busnes yn cynnwys:
 error.no-valid-income.p2.bullet1 = Hunangyflogaeth
 error.no-valid-income.p2.bullet2 = Eiddo yn y DU neu dramor
 error.no-valid-income.submit = Ewch i’ch cyfrif Treth Incwm
+
+error.business-validation-rules.heading = There’s a problem with your updates
+error.business-validation-rules.paragraph.agent = Check your client’s Income Tax Return and submit it again.
+error.business-validation-rules.paragraph.individual = Check your Income Tax Return and submit it again.
