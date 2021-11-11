@@ -27,10 +27,10 @@ import scala.concurrent.Future
 import views.html.errors.BusinessValidationRulesView
 
 class BusinessValidationRulesController @Inject() (implicit val appConfig: AppConfig,
-                                                   val mcc: MessagesControllerComponents,
+                                                   implicit val mcc: MessagesControllerComponents,
+                                                   implicit val inYearAction: InYearAction,
                                                    val authorisedAction: AuthorisedAction,
-                                                   val inYearAction: InYearAction,
-                                                   val businessValidationRulesView: BusinessValidationRulesView,
+                                                   val businessValidationRulesView: BusinessValidationRulesView
                                                   ) extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
