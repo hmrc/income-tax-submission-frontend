@@ -22,29 +22,41 @@ import controllers.predicates.AuthorisedAction
 import helpers.PlaySessionCookieBaker
 import itUtils.{IntegrationTest, ViewHelpers}
 import models.TaxReturnReceivedModel
-import org.joda.time.{DateTimeZone, LocalDate}
-import org.joda.time.format.DateTimeFormat
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
+import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Result
-import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers.{OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.{FakeRequest, Helpers}
+import uk.gov.hmrc.play.language.LanguageUtils
+import utils.ImplicitDateFormatter
 import views.html.TaxReturnReceivedView
 
+import java.time.LocalDate
+import java.util.Locale
 import scala.concurrent.Future
 
-class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers {
+class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDateFormatter with ViewHelpers {
+
+  implicit val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
+
+  def toMessages(language: String): Messages = {
+    mcc.messagesApi.preferred(Seq(
+      new Lang(new Locale(language))
+    ))
+  }
 
   def controller: TaxReturnReceivedController = new TaxReturnReceivedController(
     app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[TaxReturnReceivedView],
+    app.injector.instanceOf[LanguageUtils],
     frontendAppConfig,
     mcc,
     scala.concurrent.ExecutionContext.Implicits.global
   )
 
-  val timeStamp: String = DateTimeFormat.forPattern("d MMMM YYYY").print(LocalDate.now(DateTimeZone.forID("GMT")))
+  val timeStamp: LocalDate = LocalDate.now()
   val nino: String = "AA012345A"
   val mtditid: String = "1234567890"
 
@@ -73,7 +85,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
 
     val summaryRow1Value: String = "John Individual"
     val summaryRow2Value: String = "IN12345"
-    val summaryRow3Value: String = timeStamp
+    val summaryRow3Value: String = timeStamp.toLongDate(toMessages("EN"))
 
     val panelHeading: String = "Confirmation:"
     val panelSubheading: String = "We’ve received your Income Tax Return for 2019 to 2020"
@@ -88,7 +100,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
     val panelSubheadingWelsh: String = "Rydym wedi cael eich Ffurflen Dreth Incwm ar gyfer 2019 i 2020"
     val summaryRow1ValueWelsh: String = "John Individual"
     val summaryRow2ValueWelsh: String = "IN12345"
-    val summaryRow3ValueWelsh: String = timeStamp
+    val summaryRow3ValueWelsh: String = timeStamp.toLongDate(toMessages("CY"))
 
     val nextStepsP1Welsh: String = "Gallwch gael gwybod: faint sy’n ddyledus gennych a sut i dalu."
     val nextStepsP2Welsh: String = "faint sy’n ddyledus gennych a sut i dalu."
@@ -103,7 +115,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
 
     val summaryRow1Value: String = "Jane Agent"
     val summaryRow2Value: String = "AG98765"
-    val summaryRow3Value: String = timeStamp
+    val summaryRow3Value: String = timeStamp.toLongDate(toMessages("EN"))
 
     val panelHeading = "Confirmation:"
     val panelSubheading = "We’ve received your client’s Income Tax Return for 2019 to 2020"
@@ -119,7 +131,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
 
     val summaryRow1ValueWelsh: String = "Jane Agent"
     val summaryRow2ValueWelsh: String = "AG98765"
-    val summaryRow3ValueWelsh: String = timeStamp
+    val summaryRow3ValueWelsh: String = timeStamp.toLongDate(toMessages("CY"))
 
     val nextStepsP1Welsh: String = "Gallwch gael gwybod: faint sy’n ddyledus gan eich cleient a sut i dalu."
     val nextStepsP2Welsh: String = "faint sy’n ddyledus gan eich cleient a sut i dalu."
@@ -141,8 +153,8 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ViewHelpers 
     val printLinkSelector = "#print_link"
   }
 
-  import Selectors._
   import ExpectedResults._
+  import Selectors._
 
   private val urlPath = s"/income-through-software/return/$taxYear/income-tax-return-received"
 
