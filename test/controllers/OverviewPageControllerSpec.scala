@@ -20,7 +20,7 @@ package controllers
 import audit.IntentToCrystalliseDetail
 import common.SessionValues
 import common.SessionValues._
-import config.{AppConfig, ErrorHandler, MockAuditService}
+import config.{AppConfig, ErrorHandler, MockAppConfig, MockAppConfigTaxYearFeatureOff, MockAuditService}
 import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
 import connectors.httpParsers.LiabilityCalculationHttpParser.LiabilityCalculationResponse
 import models._
@@ -57,11 +57,7 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite with 
     SessionValues.TAX_YEAR -> "2021"
   ).withHeaders("X-Session-ID" -> sessionId)
 
-  private val env = Environment.simple()
-  private val configuration = Configuration.load(env)
-
-  private val serviceConfig = new ServicesConfig(configuration)
-  private implicit val frontendAppConfig: AppConfig = new AppConfig(serviceConfig)
+  private implicit val frontendAppConfig: AppConfig = new MockAppConfigTaxYearFeatureOff
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
   private val overviewPageView: OverviewPageView = app.injector.instanceOf[OverviewPageView]

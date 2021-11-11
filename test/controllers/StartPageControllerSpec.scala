@@ -18,7 +18,7 @@ package controllers
 
 import audit.EnterUpdateAndSubmissionServiceAuditDetail
 import common.SessionValues
-import config.{AppConfig, MockAuditService}
+import config.{MockAppConfigTaxYearFeatureOff, MockAuditService}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.test.FakeRequest
@@ -28,7 +28,6 @@ import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
 import views.html.StartPageView
@@ -43,8 +42,7 @@ class StartPageControllerSpec extends UnitTest with MockAuditService with GuiceO
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
-  private val serviceConfig = new ServicesConfig(configuration)
-  private val mockFrontendAppConfig = new AppConfig(serviceConfig)
+  private val mockFrontendAppConfig = new MockAppConfigTaxYearFeatureOff
   private val startPageView: StartPageView = app.injector.instanceOf[StartPageView]
 
   private val controller = new StartPageController(authorisedAction,

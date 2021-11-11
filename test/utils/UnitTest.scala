@@ -50,7 +50,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     super.beforeEach()
     SharedMetricRegistries.clear()
   }
-  implicit val mockAppConfig: AppConfig = new MockAppConfig().config
+  implicit val mockAppConfig: AppConfig = new MockAppConfig()
   val inYearAction = new InYearAction
 
 
@@ -67,7 +67,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
-  val mockAppConfigTaxYearFeatureOff: AppConfig = new MockAppConfigTaxYearFeatureOff().config
+  val mockAppConfigTaxYearFeatureOff: AppConfig = new MockAppConfigTaxYearFeatureOff()
   implicit val mockControllerComponents: ControllerComponents = Helpers.stubControllerComponents()
   implicit val mockExecutionContext: ExecutionContext = ExecutionContext.Implicits.global
   implicit val mockAuthConnector: AuthConnector = mock[AuthConnector]

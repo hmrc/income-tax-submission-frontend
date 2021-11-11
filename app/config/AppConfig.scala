@@ -16,16 +16,16 @@
 
 package config
 
+import com.google.inject.ImplementedBy
 import common.IncomeSources._
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import javax.inject.{Inject, Singleton}
 
-@Singleton
-class AppConfig @Inject()(servicesConfig: ServicesConfig) {
+import javax.inject.Inject
 
+class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppConfig {
   private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
   def defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
   private lazy val signInContinueBaseUrl: String = servicesConfig.getString(ConfigKeys.signInContinueUrl)
@@ -135,5 +135,84 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
       (EMPLOYMENT, employmentEnabled)
     ).filter(!_._2).map(_._1)
   }
+}
+
+@ImplementedBy(classOf[FrontendAppConfig])
+trait AppConfig {
+  def defaultTaxYear: Int
+  val signInContinueUrl: String
+  val signInUrl: String
+
+  val calculationBaseUrl: String
+  val nrsProxyBaseUrl: String
+
+  val incomeTaxSubmissionBaseUrl: String
+  val incomeTaxSubmissionUrl: String
+  val personalIncomeTaxSubmissionBaseUrl: String
+  val personalIncomeTaxSubmissionUrl: String
+  def personalIncomeTaxDividendsUrl(taxYear: Int): String
+  def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String
+  def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String
+  def personalIncomeTaxInterestUrl(taxYear: Int): String
+  def personalIncomeTaxGiftAidUrl(taxYear: Int): String
+  def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
+
+  val employmentIncomeTaxSubmissionBaseUrl: String
+  val employmentIncomeTaxSubmissionUrl: String
+  def employmentFEUrl(taxYear: Int): String
+  def addEmploymentUrl(taxYear: Int): String
+
+  val vcBaseUrl: String
+  def viewAndChangeViewUrl: String
+  def viewAndChangeEnterUtrUrl: String
+  def viewAndChangeViewUrlAgent: String
+  def viewAndChangePaymentsOwedUrl: String
+  def viewAndChangePaymentsOwedAgentUrl: String
+  def viewAndChangeNextUpdatesUrl: String
+  def viewAndChangeNextUpdatesAgentUrl: String
+  def viewAndChangeTaxYearsUrl: String
+  def viewAndChangeTaxYearsAgentUrl: String
+
+  def viewAndChangeFinalCalculationUrl(taxYear: Int): String
+  def viewAndChangeFinalCalculationUrlAgent(taxYear: Int): String
+
+  val incomeTaxSubmissionFrontendUrl: String
+  def overviewUrl(taxYear: Int): String
+
+  def contactFormServiceIdentifier(implicit isAgent: Boolean): String
+
+  def betaFeedbackUrl(implicit request: RequestHeader, isAgent: Boolean): String
+
+  def feedbackSurveyUrl(implicit isAgent: Boolean): String
+
+  def contactUrl(implicit isAgent: Boolean): String
+
+  val signOutUrl: String
+
+  val ivSuccessUrl: String
+  val ivFailureUrl: String
+
+  val ivUpliftUrl: String
+
+  val timeoutDialogTimeout: Int
+  val timeoutDialogCountdown: Int
+
+  def taxYearErrorFeature: Boolean
+
+  def languageMap: Map[String, Lang]
+
+  def routeToSwitchLanguage: String => Call
+
+  val welshToggleEnabled: Boolean
+
+  //Enabled income sources
+  val dividendsEnabled: Boolean
+  val interestEnabled: Boolean
+  val giftAidEnabled: Boolean
+  val giftAidReleased: Boolean
+  val employmentEnabled: Boolean
+  val employmentReleased: Boolean
+
+  val excludedIncomeSources: Seq[String]
 
 }
