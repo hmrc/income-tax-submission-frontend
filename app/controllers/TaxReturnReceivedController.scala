@@ -22,27 +22,29 @@ import controllers.predicates.AuthorisedAction
 import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import models.TaxReturnReceivedModel
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{DateTimeZone, LocalDate}
 import play.api.i18n.I18nSupport
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.TaxReturnReceivedView
-import utils.SessionDataHelper
+import uk.gov.hmrc.play.language.LanguageUtils
+import utils.{ImplicitDateFormatter, SessionDataHelper}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class TaxReturnReceivedController @Inject()(val authorisedAction: AuthorisedAction,
                                             val taxReturnReceivedView: TaxReturnReceivedView,
+                                            val languageUtils: LanguageUtils,
                                             implicit val appConfig: AppConfig,
                                             implicit val mcc: MessagesControllerComponents,
-                                            implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
+                                            implicit val ec: ExecutionContext) extends FrontendController(mcc)
+  with I18nSupport with SessionDataHelper with ImplicitDateFormatter {
 
   lazy val logger: Logger = Logger.apply(this.getClass)
 
-  val timeStamp: String = DateTimeFormat.forPattern("d MMMM YYYY").print(LocalDate.now(DateTimeZone.forID("GMT")))
+  val timeStamp: LocalDate = LocalDate.now()
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).apply { implicit user =>
 
@@ -50,7 +52,7 @@ class TaxReturnReceivedController @Inject()(val authorisedAction: AuthorisedActi
 
     summaryDataReceived match {
       case Some(summaryData) =>
-        Ok(taxReturnReceivedView(summaryData, user.isAgent, taxYear, timeStamp))
+        Ok(taxReturnReceivedView(summaryData, user.isAgent, taxYear, timeStamp.toLongDate))
       case _ =>
         logger.info("[TaxReturnReceivedController][show] No Tax Return Submission Data in session, routing user to Overview page.")
         Redirect(routes.OverviewPageController.show(taxYear))
