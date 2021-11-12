@@ -116,7 +116,7 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
     }
 
     "return a 422 page for No Valid Income Sources" in {
-      errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "CRYSTALLISATION_BEFORE_TAX_YEAR_END", isAgent, taxYear)
+      errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "INCOME_SUBMISSIONS_NOT_EXIST", isAgent, taxYear)
         .header.status shouldBe UNPROCESSABLE_ENTITY
     }
 
