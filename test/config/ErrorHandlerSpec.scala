@@ -78,6 +78,10 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
         .header.status shouldBe CONFLICT
     }
 
+    "return a 422 page for Business Validation Rules error" in {
+      errorHandler.handleIntentToCrystalliseError(UNPROCESSABLE_ENTITY, isAgent, taxYear)
+    }
+
     "return a 503 page for service unavailable" in {
       errorHandler.handleIntentToCrystalliseError(SERVICE_UNAVAILABLE, isAgent, taxYear)
         .header.status shouldBe SERVICE_UNAVAILABLE
@@ -113,11 +117,6 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
     "return a 422 page for No Valid Income Sources" in {
       errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "CRYSTALLISATION_BEFORE_TAX_YEAR_END", isAgent, taxYear)
-        .header.status shouldBe UNPROCESSABLE_ENTITY
-    }
-
-    "return a 422 page for a Business Validation Rules error" in {
-      errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "BUSINESS_VALIDATION_RULE_FAILURE", isAgent, taxYear)
         .header.status shouldBe UNPROCESSABLE_ENTITY
     }
 

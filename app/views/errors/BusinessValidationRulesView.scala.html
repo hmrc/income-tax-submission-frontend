@@ -26,9 +26,7 @@
 
  @heading(messages("error.business-validation-rules.heading"))
 
-    <div class="govuk-body">
-        <p>@messages(s"error.business-validation-rules.paragraph.${if(isAgent) "agent" else "individual"}")</p>
-    </div>
+    <p class="govuk-body">@messages(s"error.business-validation-rules.paragraph.${if(isAgent) "agent" else "individual"}")</p>
 
     @govUkButton(Button(
         attributes = Map("id" -> "returnToOverviewPageBtn"),

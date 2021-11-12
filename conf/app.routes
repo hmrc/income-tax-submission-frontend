@@ -46,4 +46,4 @@ GET         /:taxYear/address-changed                       controllers.errors.A
 
 GET         /:taxYear/no-updates-provided                   controllers.errors.NoUpdatesProvidedPageController.show(taxYear: Int)
 
-GET         /:taxYear/error/problem-with-updates            controllers.errors.BusinessValidationRulesController.show(taxYear: Int)
+GET         /:taxYear/problem-with-updates                  controllers.errors.BusinessValidationRulesController.show(taxYear: Int)

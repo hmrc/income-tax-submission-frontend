@@ -21,6 +21,7 @@ import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import controllers.predicates.TaxYearAction.taxYearAction
+import models.{APIErrorBodyModel, APIErrorsBodyModel}
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -75,7 +76,7 @@ class OverviewPageController @Inject()(
 
       liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {
         case Right(calculationId) =>
-          
+
           val userTypeString = if(user.isAgent) "agent" else "individual"
           auditService.sendAudit(IntentToCrystalliseDetail(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
           

@@ -38,7 +38,7 @@ object DeclareCrystallisationHttpParser extends APIParser {
         case SERVICE_UNAVAILABLE =>
           pagerDutyLog(SERVICE_UNAVAILABLE_FROM_API, logMessage(response))
           handleAPIError(response)
-        case BAD_REQUEST | NOT_FOUND | CONFLICT =>
+        case BAD_REQUEST | NOT_FOUND | CONFLICT | UNPROCESSABLE_ENTITY =>
           pagerDutyLog(FOURXX_RESPONSE_FROM_API, logMessage(response))
           handleAPIError(response)
         case _ =>

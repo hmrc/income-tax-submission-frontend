@@ -37,7 +37,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
 
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
-    val checkYourIncomeTaxReturnSelector = "#main-content > div > div > div.govuk-body > p"
+    val checkYourIncomeTaxReturnSelector = "#main-content > div > div > p"
     val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"
     val businessValidationRulesView: BusinessValidationRulesView = app.injector.instanceOf[BusinessValidationRulesView]
   }
@@ -52,17 +52,17 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
   }
 
   object ExpectedResultsWelsh {
-    val title = "There’s a problem with your updates"
-    val heading = "There’s a problem with your updates"
-    val checkYourIncomeTaxReturnAgent = "Check your client’s Income Tax Return and submit it again."
-    val checkYourIncomeTaxReturnIndividual = "Check your Income Tax Return and submit it again."
+    val title = "Mae problem gyda’ch diweddariadau"
+    val heading = "Mae problem gyda’ch diweddariadau"
+    val checkYourIncomeTaxReturnAgent = "Ewch ati i wirio Ffurflen Dreth eich cleient ar gyfer Treth Incwm a’i chyflwyno eto."
+    val checkYourIncomeTaxReturnIndividual = "Ewch ati i wirio’ch Ffurflen Dreth ar gyfer Treth Incwm a’i chyflwyno eto."
     val incomeTaxReturnButtonText = "Yn ôl i hafan Ffurflen Dreth Incwm"
     val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
   }
 
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/error/problem-with-updates"
+  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/problem-with-updates"
 
   "Rendering the business validation rules page in English" should {
 
