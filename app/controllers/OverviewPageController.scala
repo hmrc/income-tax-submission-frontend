@@ -85,7 +85,7 @@ class OverviewPageController @Inject()(
           } else {
             Redirect(appConfig.viewAndChangeFinalCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
           }
-        case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, user.isAgent, taxYear)
+        case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, taxYear)
       }
     }
 }

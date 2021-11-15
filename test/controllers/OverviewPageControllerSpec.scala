@@ -24,7 +24,7 @@ import config.{AppConfig, ErrorHandler, MockAuditService}
 import connectors.httpParsers.IncomeSourcesHttpParser.IncomeSourcesResponse
 import connectors.httpParsers.LiabilityCalculationHttpParser.LiabilityCalculationResponse
 import models._
-import org.scalamock.handlers.{CallHandler2, CallHandler4}
+import org.scalamock.handlers.{CallHandler2, CallHandler3, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -127,9 +127,9 @@ class OverviewPageControllerSpec extends UnitTest with GuiceOneAppPerSuite with 
       .returning(result)
   }
 
-  def mockHandleIntentToCrystalliseError(result: Result): CallHandler4[Int, Boolean, Int, Request[_], Result] = {
-    (mockErrorHandler.handleIntentToCrystalliseError(_: Int, _: Boolean, _: Int)(_: Request[_]))
-      .expects(*, *, *, *)
+  def mockHandleIntentToCrystalliseError(result: Result): CallHandler3[Int, Int, Request[_], Result] = {
+    (mockErrorHandler.handleIntentToCrystalliseError(_: Int, _: Int)(_: Request[_]))
+      .expects(*, *, *)
       .returning(result)
   }
 
