@@ -20,5 +20,4 @@ object StatusMessage {
 
   val residencyChanged: String = "RESIDENCY_CHANGED"
   val finalDeclarationReceived: String = "FINAL_DECLARATION_RECEIVED"
-
 }

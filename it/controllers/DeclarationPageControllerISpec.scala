@@ -28,7 +28,7 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.test.Helpers.{CONFLICT, NO_CONTENT, OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{CONFLICT, NO_CONTENT, OK, SEE_OTHER, UNPROCESSABLE_ENTITY, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import services.{DeclareCrystallisationService, NrsService}
 import views.html.DeclarationPageView
@@ -78,6 +78,15 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     val taxYearReturnUpdatedTitle: String = "Your Income Tax Return has been updated"
 
     val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/income-through-software/return/$taxYear/view"
+
+    val expectedNoValidIncomeSourcesUrl: String = s"/income-through-software/return/$taxYear/no-business-income"
+
+    val expectedTaxReturnPreviouslyUpdatedUrl: String = s"/income-through-software/return/$taxYear/income-tax-return-updated"
+
+    val expectedTaxReturnExistsUrl: String = s"/income-through-software/return/$taxYear/already-have-income-tax-return"
+
+    val expectedAddressChangedUrl: String = s"/income-through-software/return/$taxYear/address-changed"
+
 
   }
 
@@ -410,12 +419,13 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
           route(app, request).get
         }
 
-        "returns status of CONFLICT(409)" in {
-          status(result) shouldBe CONFLICT
+        "returns status of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
         }
 
-          implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
-          titleCheck(ExpectedResults.addressHasChangedTitle, isWelsh = false)
+        "redirects to the address changed page" in {
+          redirectUrl(result) shouldBe expectedAddressChangedUrl
+        }
       }
     }
 
@@ -441,12 +451,13 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
           route(app, request).get
         }
 
-        "returns status of CONFLICT(409)" in {
-          status(result) shouldBe CONFLICT
+        "returns status of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
         }
 
-        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
-        titleCheck(ExpectedResults.returnTaxYearExistsTitle, isWelsh = false)
+        "redirects to the tax return exists page" in {
+          redirectUrl(result) shouldBe expectedTaxReturnExistsUrl
+        }
       }
     }
 
@@ -472,12 +483,45 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
           route(app, request).get
         }
 
-        "returns status of CONFLICT(409)" in {
-          status(result) shouldBe CONFLICT
+        "returns status of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
         }
 
-        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
-        titleCheck(ExpectedResults.taxYearReturnUpdatedTitle, isWelsh = false)
+        "redirects to the tax return previously updated page" in {
+          redirectUrl(result) shouldBe expectedTaxReturnPreviouslyUpdatedUrl
+        }
+      }
+    }
+
+    "the users tax return has no valid income sources" should {
+      lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.CALCULATION_ID -> "string"
+      ))
+
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+      lazy val returnedError = Json.toJson(APIErrorBodyModel(UNPROCESSABLE_ENTITY.toString, "")).toString()
+      lazy val request = {
+        stubPost(crystallisationUrl, UNPROCESSABLE_ENTITY, returnedError)
+        FakeRequest("POST", urlPath).withHeaders(headers: _*)
+      }
+
+      "redirect to the no valid income sources page" which {
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(app, request).get
+        }
+
+        "returns a status of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
+        }
+
+        "redirects to the no valid income sources page" in {
+          redirectUrl(result) shouldBe expectedNoValidIncomeSourcesUrl
+        }
       }
     }
   }

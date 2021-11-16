@@ -17,10 +17,11 @@
 package config
 
 import common.StatusMessage
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
-import play.api.mvc.{Request, RequestHeader, Result}
+import play.api.mvc.{Call, Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.errors._
@@ -31,10 +32,7 @@ import scala.concurrent.Future
 @Singleton
 class ErrorHandler @Inject()(val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
-                             serviceUnavailablePage: ServiceUnavailablePage, noUpdatesProvidedPage: NoUpdatesProvidedPage,
-                             returnTaxYearExistsView: ReturnTaxYearExistsView, addressHasChangedPage: AddressHasChangedPage,
-                             noValidIncomeSourcesView: NoValidIncomeSourcesView, taxReturnPreviouslyUpdatedView: TaxReturnPreviouslyUpdatedView
-                            )(implicit appConfig: AppConfig)
+                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
 
   extends FrontendErrorHandler {
 
@@ -52,21 +50,22 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
     }
   }
 
-  def handleIntentToCrystalliseError(status: Int, isAgent: Boolean, taxYear: Int)(implicit request: Request[_]): Result = {
+  def handleIntentToCrystalliseError(status: Int, taxYear: Int)(implicit request: Request[_]): Result = {
     status match {
-      case FORBIDDEN => Forbidden(noUpdatesProvidedPage(isAgent, taxYear))
-      case CONFLICT => Conflict(returnTaxYearExistsView(isAgent, taxYear))
+      case FORBIDDEN => Redirect(controllers.errors.routes.NoUpdatesProvidedPageController.show(taxYear))
+      case CONFLICT => Redirect(controllers.errors.routes.ReturnTaxYearExistsController.show(taxYear))
+      case UNPROCESSABLE_ENTITY => Redirect(controllers.errors.routes.BusinessValidationRulesController.show(taxYear))
       case SERVICE_UNAVAILABLE => ServiceUnavailable(serviceUnavailablePage())
       case _ => InternalServerError(internalServerErrorPage())
     }
   }
 
-  def handleDeclareCrystallisationError(status: Int, errorMessage: String, isAgent: Boolean, taxYear: Int)(implicit request: Request[_]): Result = {
+  def handleDeclareCrystallisationError(status: Int, errorMessage: String, taxYear: Int)(implicit request: Request[_]): Result = {
     (status, errorMessage) match {
-      case (CONFLICT, StatusMessage.residencyChanged) => Conflict(addressHasChangedPage(isAgent, taxYear))
-      case (CONFLICT, StatusMessage.finalDeclarationReceived) => Conflict(returnTaxYearExistsView(isAgent, taxYear))
-      case (CONFLICT, _) => Conflict(taxReturnPreviouslyUpdatedView(isAgent, taxYear))
-      case (UNPROCESSABLE_ENTITY, _) => UnprocessableEntity(noValidIncomeSourcesView(isAgent, taxYear))
+      case (CONFLICT, StatusMessage.residencyChanged) => Redirect(controllers.errors.routes.AddressHasChangedPageController.show(taxYear))
+      case (CONFLICT, StatusMessage.finalDeclarationReceived) => Redirect(controllers.errors.routes.ReturnTaxYearExistsController.show(taxYear))
+      case (CONFLICT, _) => Redirect(controllers.errors.routes.TaxReturnPreviouslyUpdatedController.show(taxYear))
+      case (UNPROCESSABLE_ENTITY, _) => Redirect(controllers.errors.routes.NoValidIncomeSourcesController.show(taxYear))
       case (SERVICE_UNAVAILABLE, _) => ServiceUnavailable(serviceUnavailablePage())
       case _ => InternalServerError(internalServerErrorPage())
     }

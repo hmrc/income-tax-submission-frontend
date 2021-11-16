@@ -88,9 +88,9 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
               Redirect(controllers.routes.TaxReturnReceivedController.show(taxYear))
             case Left(error) =>
               error.body match {
-                case apiError: APIErrorBodyModel => errorHandler.handleDeclareCrystallisationError(error.status, apiError.reason, user.isAgent, taxYear)
+                case apiError: APIErrorBodyModel => errorHandler.handleDeclareCrystallisationError(error.status, apiError.reason, taxYear)
                 case apiErrors: APIErrorsBodyModel =>
-                  errorHandler.handleDeclareCrystallisationError(error.status, apiErrors.failures.head.reason, user.isAgent, taxYear)
+                  errorHandler.handleDeclareCrystallisationError(error.status, apiErrors.failures.head.reason, taxYear)
               }
           }
         case _ =>

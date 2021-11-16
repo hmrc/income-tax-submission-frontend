@@ -169,3 +169,7 @@ error.no-valid-income.p2 = Mae ffynonellau incwm busnes yn cynnwys:
 error.no-valid-income.p2.bullet1 = Hunangyflogaeth
 error.no-valid-income.p2.bullet2 = Eiddo yn y DU neu dramor
 error.no-valid-income.submit = Ewch i’ch cyfrif Treth Incwm
+
+error.business-validation-rules.heading = Mae problem gyda’ch diweddariadau
+error.business-validation-rules.paragraph.agent = Ewch ati i wirio Ffurflen Dreth eich cleient ar gyfer Treth Incwm a’i chyflwyno eto.
+error.business-validation-rules.paragraph.individual = Ewch ati i wirio’ch Ffurflen Dreth ar gyfer Treth Incwm a’i chyflwyno eto.
