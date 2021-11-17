@@ -16,48 +16,43 @@
 
 package controllers
 
-import audit.{AuditModel, IVFailureAuditDetail}
-import config.MockAuditService
-import org.scalamock.handlers.CallHandler
+import audit.{AuditModel, AuditService, IVFailureAuditDetail}
+import itUtils.{IntegrationTest, ViewHelpers}
 import play.api.http.Status.OK
-import play.api.mvc.Result
-import play.api.test.Helpers.stubMessagesControllerComponents
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utils.UnitTest
+import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import views.html.errors.IVFailurePage
 
 import scala.concurrent.Future
 
-class IVFailureControllerSpec extends UnitTest with MockAuditService{
+class IVFailureControllerSpec extends IntegrationTest with ViewHelpers {
 
   private val page: IVFailurePage = app.injector.instanceOf[IVFailurePage]
+  private val auditService = app.injector.instanceOf[AuditService]
+  
   val controller = new IVFailureController()(
-    mockAppConfig,stubMessagesControllerComponents, page, mockAuditService, scala.concurrent.ExecutionContext.Implicits.global)
+    appConfig,stubMessagesControllerComponents, page, auditService, scala.concurrent.ExecutionContext.Implicits.global)
 
   def event(id: String): AuditModel[IVFailureAuditDetail] =
     AuditModel("LowConfidenceLevelIvOutcomeFail", "LowConfidenceLevelIvOutcomeFail", IVFailureAuditDetail(id))
-
-  def verifyAudit(id:String): CallHandler[Future[AuditResult]] = verifyAuditEvent(event(id))
 
   "IVFailureController" should {
 
     "redirect user to failure page" when {
 
-      "show() is called it" should {
+      "the url is called" should {
 
-        def response(id: Option[String] = Some("68948af0-5d8b-4de9-b070-0650d12fda74")): Future[Result] = controller.show(id)(fakeRequest)
-
+        def request(id: Option[String]): FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", controllers.routes.IVFailureController.show(id).url)
+        def result(id: Option[String] = Some("68948af0-5d8b-4de9-b070-0650d12fda74")): Future[Result] = {
+          route(appWithSourcesTurnedOff, request(id)).get
+        }
+        
         "return status code OK" in {
-          verifyAudit("68948af0-5d8b-4de9-b070-0650d12fda74")
-          status(response()) shouldBe OK
+          status(result()) shouldBe OK
         }
         "return status code OK if no id is supplied" in {
-          verifyAuditEvent
-          status(response(None)) shouldBe OK
-        }
-        "return status code OK if no id is supplied and default to session id" in {
-          verifyAudit("sesh id")
-          status(controller.show(None)(fakeRequest.withSession("sessionId" -> "sesh id"))) shouldBe OK
+          status(result(None)) shouldBe OK
         }
       }
     }

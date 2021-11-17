@@ -17,10 +17,11 @@
 package config
 
 import akka.pattern.FutureRef
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import itUtils.IntegrationTest
+import play.api.http.Status._
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import utils.UnitTest
 import views.html.errors._
 import play.api.http.Status._
 import play.api.test.ResultExtractors
@@ -29,7 +30,9 @@ import play.api.test.Helpers.{defaultAwaitTimeout, header}
 
 import scala.concurrent.Future
 
-class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
+import scala.concurrent.ExecutionContext
+
+class ErrorHandlerISpec extends IntegrationTest {
 
   val serviceUnavailable: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
   val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
@@ -43,14 +46,13 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
   val noValidIncomeSourcesView: NoValidIncomeSourcesView = app.injector.instanceOf[NoValidIncomeSourcesView]
   val businessValidationRulesView: BusinessValidationRulesView = app.injector.instanceOf[BusinessValidationRulesView]
 
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
 
   val errorHandler = new ErrorHandler(messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable)
 
   val taxYear: Int = 2022
-
+  
   ".handleError" should {
 
     "return a 503 page for service unavailable" in {
@@ -65,7 +67,7 @@ class ErrorHandlerSpec extends UnitTest with GuiceOneAppPerSuite {
 
     "return a 404 page" in {
       errorHandler.onClientError(fakeRequest, NOT_FOUND,"")
-        .map(_.header.status shouldBe NOT_FOUND)
+        .map(_.header.status shouldBe NOT_FOUND)(ExecutionContext.Implicits.global)
     }
   }
 

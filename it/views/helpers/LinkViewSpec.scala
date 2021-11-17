@@ -16,9 +16,9 @@
 
 package views.helpers
 
+import itUtils.ViewTest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import utils.ViewTest
 import views.html.templates.helpers.Link
 
 class LinkViewSpec extends ViewTest {

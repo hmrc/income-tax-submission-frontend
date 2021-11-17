@@ -16,6 +16,7 @@
 
 package itUtils
 
+import akka.actor.ActorSystem
 import common.SessionValues
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
@@ -29,16 +30,19 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.{HeaderNames, Writeable}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
-import play.api.mvc.{MessagesControllerComponents, Request, Result}
+import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
 import services.AuthService
-import uk.gov.hmrc.auth.core.ConfidenceLevel
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 import views.html.authErrorPages.AgentAuthErrorPageView
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Awaitable, Future}
+import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
 
 trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll
   with BeforeAndAfterEach with DefaultAwaitTimeout with OptionValues {
@@ -46,8 +50,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   val inYearAction = new InYearAction
 
-  implicit val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
-
+  implicit val actorSystem: ActorSystem = ActorSystem()
+  
   val startUrl = s"http://localhost:$port/income-through-software/return"
 
   implicit def wsClient: WSClient = app.injector.instanceOf[WSClient]
@@ -119,7 +123,6 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   )
 
 
-
   def sourcesTurnedOffConfigEndOfYear: Map[String, String] = Map(
     "auditing.enabled" -> "false",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
@@ -182,7 +185,6 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     .build
 
 
-
   override protected def beforeEach(): Unit = {
     resetWiremock()
   }
@@ -198,7 +200,15 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   }
 
   val sessionId: String = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
-  val fakeRequest = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
+  implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
+  val fallBackSessionIdFakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("sessionId" -> sessionId)
+  val fakeRequestAgent: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+    .withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A").withHeaders("X-Session-ID" -> sessionId)
+  val fakeRequestAgentNoMtditid: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession("ClientNino" -> "AA123456A")
+  val fakeRequestAgentNoNino: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession("ClientMTDID" -> "1234567890")
+  
+  implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+  val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   lazy val agentAuthErrorPage: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
   lazy val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
@@ -207,10 +217,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     ConfidenceLevel.L200,
     ConfidenceLevel.L500
   )
+
   def redirectUrl(awaitable: Future[Result]): String = await(awaitable).header.headers("Location")
 
   def route[T](app: Application, request: Request[T], isWelsh: Boolean = false)(implicit w: Writeable[T]): Option[Future[Result]] = {
-    val newHeaders = request.headers.add((HeaderNames.ACCEPT_LANGUAGE, if(isWelsh) "cy" else "en"))
+    val newHeaders = request.headers.add((HeaderNames.ACCEPT_LANGUAGE, if (isWelsh) "cy" else "en"))
     val requestWithHeaders = request.withHeaders(newHeaders)
 
     Helpers.route(app, requestWithHeaders)
@@ -228,15 +239,31 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     mcc
   )
 
-  lazy val incomeSourcesModel:IncomeSourcesModel = IncomeSourcesModel(
+  //noinspection ScalaStyle
+  def mockIVCredentials(affinityGroup: AffinityGroup, confidenceLevel: Int) = {
+    val confidenceLevelResponse = confidenceLevel match {
+      case 500 => ConfidenceLevel.L500
+      case 200 => ConfidenceLevel.L200
+      case 50 => ConfidenceLevel.L50
+    }
+
+    Future.successful(Some(affinityGroup) and confidenceLevelResponse)
+  }
+
+  def bodyOf(awaitable: Future[Result]): String = {
+    val awaited = await(awaitable)
+    await(awaited.body.consumeData.map(_.utf8String)(ExecutionContext.Implicits.global))
+  }
+
+  lazy val incomeSourcesModel: IncomeSourcesModel = IncomeSourcesModel(
     dividends = dividendsModel,
     interest = interestsModel,
     giftAid = Some(giftAidModel),
     employment = Some(employmentsModel)
   )
 
-  lazy val dividendsModel:Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
-  lazy val interestsModel:Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
+  lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
+  lazy val interestsModel: Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
   lazy val employmentsModel: AllEmploymentData = AllEmploymentData(
     hmrcEmploymentData = Seq(
       EmploymentSource(

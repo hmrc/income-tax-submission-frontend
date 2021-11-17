@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import com.github.tomakehurst.wiremock.http.HttpHeader
+import com.github.tomakehurst.wiremock.http.{HttpHeader, HttpHeaders}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import play.api.http.Status.{OK, UNAUTHORIZED}
@@ -124,6 +124,18 @@ trait WireMockHelper {
       )
     )
 
+  def stubPostWithHeaders(url: String, status: Integer, responseBody: String, headers: Seq[(String, String)]): StubMapping =
+    stubFor(post(urlMatching(url))
+      .willReturn(
+        aResponse().
+          withStatus(status).
+          withBody(responseBody)
+          .withHeaders(new HttpHeaders(
+            headers.map(h => new HttpHeader(h._1, h._2)): _*
+          ))
+      )
+    )
+
 
   def stubPut(url: String, status: Integer, responseBody: String): StubMapping =
     stubFor(put(urlMatching(url))
@@ -154,12 +166,26 @@ trait WireMockHelper {
 
   def authoriseIndividual(withNino: Boolean = true): StubMapping = {
     stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), None, Seq.empty[JsObject]: _*)))
-    stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(None, Some(ConfidenceLevel.L200), Seq(mtditEnrolment, ninoEnrolment): _*)))
+    stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), Some(ConfidenceLevel.L200), Seq(mtditEnrolment, ninoEnrolment): _*)))
   }
 
   def unauthorisedIndividualInsufficientConfidenceLevel(withNino: Boolean = true): StubMapping = {
     stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), None, Seq.empty[JsObject]: _*)))
     stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(None, Some(ConfidenceLevel.L50), Seq(mtditEnrolment, ninoEnrolment): _*)))
+  }
+
+  def unauthorisedInactiveSession(): StubMapping = {
+    stubPostWithHeaders(
+      authoriseUri, 401, "{}",
+      Seq("WWW-Authenticate" -> "MDTP detail=\"BearerTokenExpired\"")
+    )
+  }
+
+  def unauthorisedAuthorisationException(): StubMapping = {
+    stubPostWithHeaders(
+      authoriseUri, 401, "{}",
+      Seq("WWW-Authenticate" -> "MDTP detail=\"InsufficientConfidenceLevel\"")
+    )
   }
 
   def unauthorisedIndividualWrongCredentials(withNino: Boolean = true): StubMapping = {

@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package utils
+package itUtils
 
-import config.AppConfig
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.Helpers
 
-trait ViewTest extends UnitTest {
+trait ViewTest extends IntegrationTest {
 
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
   lazy val welshMessages: Messages = messagesApi.preferred(Seq(Lang("cy")))
   implicit lazy val mockMessagesControllerComponents: MessagesControllerComponents = Helpers.stubMessagesControllerComponents()
-  implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   val serviceName = "Update and submit an Income Tax Return"
   val govUkExtension = "GOV.UK"
@@ -58,7 +56,7 @@ trait ViewTest extends UnitTest {
   }
 
   def titleCheck(title: String, isWelsh: Boolean)(implicit document: Document): Unit = {
-    if(isWelsh) {
+    if (isWelsh) {
       s"has a title of $title" in {
         document.title() shouldBe s"$title - $serviceNameWelsh - $govUkExtensionWelsh"
       }
@@ -102,7 +100,7 @@ trait ViewTest extends UnitTest {
       }
 
       s"has a class of govuk-button" in {
-        document.select(selector).attr("class") should include ("govuk-button")
+        document.select(selector).attr("class") should include("govuk-button")
       }
 
       if (href.isDefined) {
@@ -128,9 +126,9 @@ trait ViewTest extends UnitTest {
     elementText(selector) shouldBe text
   }
 
-  def checkMessagesAreUnique(msgFile : Map[String, String], exclusionKeys: Set[String]=Set()){
+  def checkMessagesAreUnique(msgFile: Map[String, String], exclusionKeys: Set[String] = Set()) {
     val msgKeys = msgFile.keys
-      .filter( keys => !exclusionKeys.contains(keys))
+      .filter(keys => !exclusionKeys.contains(keys))
       .toSet
 
     val allMsgVals = msgFile.filterKeys(msgKeys)
@@ -147,10 +145,13 @@ trait ViewTest extends UnitTest {
 
   def welshToggleCheck(activeLanguage: String)(implicit document: Document): Unit = {
     val otherLanguage = if (activeLanguage == "English") "Welsh" else "English"
+
     def selector = Map("English" -> 0, "Welsh" -> 1)
+
     def linkLanguage = Map("English" -> "English", "Welsh" -> "Cymraeg")
+
     def linkText = Map("English" -> "Change the language to English English",
-    "Welsh" -> "Newid yr iaith ir Gymraeg Cymraeg")
+      "Welsh" -> "Newid yr iaith ir Gymraeg Cymraeg")
 
     s"have the language toggle already set to $activeLanguage" which {
       s"has the text '$activeLanguage" in {

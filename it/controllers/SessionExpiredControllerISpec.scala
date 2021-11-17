@@ -46,9 +46,12 @@ class SessionExpiredControllerISpec extends IntegrationTest with ViewHelpers wit
   import Selectors._
 
   val errorPageUrl = s"http://localhost:$port/income-through-software/return/timeout"
+  val keepAliveUrl = s"http://localhost:$port/income-through-software/return/keep-alive"
 
-  "an user calling GET" when {
+  "a user calling GET" when {
+    
     "language is set to ENGLISH" should {
+      
       "return a page" which {
         lazy val result: WSResponse = {
           authoriseIndividual()
@@ -57,7 +60,7 @@ class SessionExpiredControllerISpec extends IntegrationTest with ViewHelpers wit
 
         implicit def document: () => Document = () => Jsoup.parse(result.body)
 
-        "returns status of OK(200)" in {
+        "has a status of OK(200)" in {
           result.status shouldBe OK
         }
 
@@ -70,6 +73,7 @@ class SessionExpiredControllerISpec extends IntegrationTest with ViewHelpers wit
     }
 
     "language is set to WELSH" should {
+      
       "return a page" which {
         lazy val result: WSResponse = {
           authoriseIndividual()
@@ -89,6 +93,69 @@ class SessionExpiredControllerISpec extends IntegrationTest with ViewHelpers wit
         buttonCheck(buttonTextWelsh, continueButtonSelector)
       }
     }
+  }
+  
+  "a user calling GET with a tax year" when {
+    
+    val differentTaxYear = 2030
+    lazy val cookies = playSessionCookies(differentTaxYear)
+
+    "language is set to ENGLISH" should {
+      
+      "return a page" which {
+        lazy val result: WSResponse = {
+          authoriseIndividual()
+          await(wsClient.url(errorPageUrl).withFollowRedirects(false).withHttpHeaders(HeaderNames.COOKIE -> cookies).get())
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(result.body)
+
+        "has a status of OK(200)" in {
+          result.status shouldBe OK
+        }
+
+        titleCheck(pageTitleText, isWelsh = false)
+        welshToggleCheck("English")
+        h1Check(pageHeadingText, "xl")
+        textOnPageCheck(p1Text, p1)
+        buttonCheck(buttonText, continueButtonSelector)
+      }
+    }
+
+    "language is set to WELSH" should {
+      
+      "return a page" which {
+        lazy val result: WSResponse = {
+          authoriseIndividual()
+          await(wsClient.url(errorPageUrl).withFollowRedirects(false).withHttpHeaders(HeaderNames.COOKIE -> cookies, HeaderNames.ACCEPT_LANGUAGE -> "cy").get())
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(result.body)
+
+        "returns status of OK(200)" in {
+          result.status shouldBe OK
+        }
+
+        titleCheck(pageTitleTextWelsh, isWelsh = true)
+        welshToggleCheck("Welsh")
+        h1Check(pageHeadingTextWelsh, "xl")
+        textOnPageCheck(p1TextWelsh, p1)
+        buttonCheck(buttonTextWelsh, continueButtonSelector)
+      }
+    }
+  }
+  
+  "when the keep alive endpoint is called" should {
+    
+    "return a 204" in {
+      lazy val result: WSResponse = {
+        authoriseIndividual()
+        await(wsClient.url(keepAliveUrl).get())
+      }
+      
+      result.status shouldBe NO_CONTENT
+    }
+    
   }
 
 }

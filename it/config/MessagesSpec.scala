@@ -16,13 +16,12 @@
 
 package config
 
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import itUtils.ViewTest
 import play.api.i18n.MessagesApi
-import utils.ViewTest
 
 import scala.io.Source
 
-class MessagesSpec extends ViewTest with GuiceOneAppPerSuite {
+class MessagesSpec extends ViewTest {
 
   lazy val allLanguages: Map[String, Map[String, String]] = app.injector.instanceOf[MessagesApi].messages
 

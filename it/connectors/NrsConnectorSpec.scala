@@ -20,11 +20,11 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import itUtils.IntegrationTest
 import models.{APIErrorBodyModel, APIErrorModel, NrsSubmissionModel}
 import play.mvc.Http.Status._
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 class NrsConnectorSpec extends IntegrationTest {
 
   lazy val connector: NrsConnector = app.injector.instanceOf[NrsConnector]
-
 
   val nino: String = "AA123456A"
   val taxYear: Int = 2019

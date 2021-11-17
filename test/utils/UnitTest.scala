@@ -22,14 +22,13 @@ import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.{AppConfig, MockAppConfig, MockAppConfigTaxYearFeatureOff}
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
-import models.{APIErrorBodyModel, APIErrorModel, DividendsModel, GiftAidModel, GiftAidPaymentsModel, GiftsModel, InterestModel}
+import models._
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
-import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, FORBIDDEN, CONFLICT}
+import play.api.test.Helpers.{CONFLICT, FORBIDDEN, INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE}
 import play.api.test.{FakeRequest, Helpers}
 import services.AuthService
 import uk.gov.hmrc.auth.core._
@@ -38,13 +37,11 @@ import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import views.html.authErrorPages.AgentAuthErrorPageView
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
 
-trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAndAfterEach with GuiceOneAppPerSuite{
+trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -53,7 +50,6 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   implicit val mockAppConfig: AppConfig = new MockAppConfig()
   val inYearAction = new InYearAction
 
-
   implicit val actorSystem: ActorSystem = ActorSystem()
 
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
@@ -61,9 +57,6 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   val sessionId = "sessionId-1618a1e8-4979-41d8-a32e-5ffbe69fac81"
 
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
-  val fallBackSessionIdFakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("sessionId" -> sessionId)
-  val fakeRequestAgent: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-    .withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A").withHeaders("X-Session-ID" -> sessionId)
   implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
@@ -72,20 +65,9 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   implicit val mockExecutionContext: ExecutionContext = ExecutionContext.Implicits.global
   implicit val mockAuthConnector: AuthConnector = mock[AuthConnector]
   implicit val mockAuthService: AuthService = new AuthService(mockAuthConnector)
-  val agentAuthErrorPageView: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
-
-  val authorisedAction = new AuthorisedAction(mockAppConfig, agentAuthErrorPageView)(mockAuthService, stubMessagesControllerComponents())
-
+  
   def status(awaitable: Future[Result]): Int = await(awaitable).header.status
   def redirectUrl(awaitable: Future[Result]): String = await(awaitable).header.headers("Location")
-
-  def bodyOf(awaitable: Future[Result]): String = {
-    val awaited = await(awaitable)
-    await(awaited.body.consumeData.map(_.utf8String))
-  }
-
-  val fakeRequestAgentNoMtditid: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession("ClientNino" -> "AA123456A")
-  val fakeRequestAgentNoNino: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession("ClientMTDID" -> "1234567890")
 
   //noinspection ScalaStyle
   def mockAuth(nino: Option[String]) = {
@@ -105,20 +87,6 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
       .expects(*, Retrievals.allEnrolments and Retrievals.confidenceLevel, *, *)
       .returning(Future.successful(enrolments and ConfidenceLevel.L200))
-  }
-
-  //noinspection ScalaStyle
-  def mockIVCredentials(affinityGroup: AffinityGroup, confidenceLevel: Int) = {
-    val confidenceLevelResponse = confidenceLevel match {
-      case 500 => ConfidenceLevel.L500
-      case 200 => ConfidenceLevel.L200
-      case 50 => ConfidenceLevel.L50
-    }
-
-    (
-    mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-    .expects(*, *, *, *)
-    .returning(Future.successful(Some(affinityGroup) and confidenceLevelResponse))
   }
 
   //noinspection ScalaStyle

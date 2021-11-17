@@ -19,22 +19,24 @@ package controllers
 import audit.AuditService
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
+import common.SessionValues.CALCULATION_ID
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, ViewHelpers}
-import models.{IncomeSourcesModel, InterestModel}
+import models.{IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
-import play.api.http.Status.SEE_OTHER
+import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{OK, session, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import services.{IncomeSourcesService, LiabilityCalculationService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
+import java.util.UUID
 import scala.concurrent.Future
 
 class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
@@ -235,6 +237,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK, Json.toJson(incomeSources).toString())
   }
 
+  def stubLiabilityCalculation(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
+    stubGet("/income-tax-calculation/income-tax/nino/AA123456A/taxYear/2022/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
+  }
+  
   val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = {
     Seq(
       UserScenario(isWelsh = false, isAgent = false, CommonExpectedEN, Some(ExpectedIndividualEN)),
@@ -850,6 +856,78 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   }
 
+  "Hitting the final calculation endpoint" when {
+    
+    userScenarios.filterNot(_.isWelsh).foreach { user =>
+      
+      def authUser(): StubMapping = {
+        if(!user.isAgent) authoriseIndividual()
+        else authoriseAgent()
+      }
+      
+      s"as an ${if(user.isAgent) "agent" else "individual"}" should {
+
+        "return a redirect with the calc id in session" which {
+
+          lazy val calcId = UUID.randomUUID().toString
+          lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYear)).withSession(
+            SessionValues.CLIENT_MTDITID -> "1234567890",
+            SessionValues.CLIENT_NINO -> "AA123456A",
+            SessionValues.TAX_YEAR -> "2022"
+          ).withHeaders("X-Session-ID" -> sessionId)
+          
+          lazy val result: Future[Result] = {
+            authUser()
+            stubLiabilityCalculation(Some(LiabilityCalculationIdModel(calcId)))
+            route(appWithSourcesTurnedOff, request).get
+          }
+
+          "has a status of SEE_OTHER" in {
+            status(result) shouldBe SEE_OTHER
+          }
+          
+          s"has a redirect to the view and change ${if(user.isAgent) "agent" else "individual"} page" in {
+            val expectedUrl = if(user.isAgent) "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/2022/final-tax-overview/calculate"
+            else "http://localhost:9081/report-quarterly/income-and-expenses/view/2022/final-tax-overview/calculate"
+            
+            await(result).header.headers("Location") shouldBe expectedUrl 
+          }
+        }
+        
+      }
+      
+    }
+    
+    "there is an error with the liability calculation" should {
+      
+      "redirect to an error page" which {
+
+        lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYear)).withSession(
+          SessionValues.CLIENT_MTDITID -> "1234567890",
+          SessionValues.CLIENT_NINO -> "AA123456A",
+          SessionValues.TAX_YEAR -> "2022"
+        ).withHeaders("X-Session-ID" -> sessionId)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          stubLiabilityCalculation(None, SERVICE_UNAVAILABLE)
+          route(appWithSourcesTurnedOff, request).get
+        }
+        
+        "has the status SERVICE_AVAILABLE (503)" in {
+          status(result) shouldBe SERVICE_UNAVAILABLE
+        }
+        
+        "is a webpage" in {
+          await(result).body.contentType shouldBe Some("text/html; charset=utf-8")
+        }
+        
+      }
+      
+    }
+    
+  }
+  
   def stubIncomeSources: StubMapping = stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,
     """{
       |	"dividends": {
