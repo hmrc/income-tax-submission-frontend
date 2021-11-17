@@ -48,30 +48,30 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   val taxYearEndOfYearMinusOne: Int = taxYearEndOfYear - 1
 
   object Links {
-    def startPageBreadcrumbUrl(taxYear: Int = taxYear): String = s"/income-through-software/return/$taxYear/start"
+    def startPageBreadcrumbUrl(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/start"
 
     def dividendsLink(taxYear: Int = taxYear): String =
-      s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/dividends-from-uk-companies"
+      s"http://localhost:9308/update-and-submit-income-tax-return/personal-income/$taxYear/dividends/dividends-from-uk-companies"
 
     def dividendsLinkWithPriorData(taxYear: Int = taxYear): String =
-      s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/dividends/check-income-from-dividends"
+      s"http://localhost:9308/update-and-submit-income-tax-return/personal-income/$taxYear/dividends/check-income-from-dividends"
 
     def interestsLink(taxYear: Int = taxYear): String =
-      s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/untaxed-uk-interest"
+      s"http://localhost:9308/update-and-submit-income-tax-return/personal-income/$taxYear/interest/untaxed-uk-interest"
 
     def interestsLinkWithPriorData(taxYear: Int = taxYear): String =
-      s"http://localhost:9308/income-through-software/return/personal-income/$taxYear/interest/check-interest"
+      s"http://localhost:9308/update-and-submit-income-tax-return/personal-income/$taxYear/interest/check-interest"
 
-    def employmentLink(taxYear: Int = taxYear): String = s"http://localhost:9317/income-through-software/return/employment-income/$taxYear/employment-summary"
+    def employmentLink(taxYear: Int = taxYear): String = s"http://localhost:9317/update-and-submit-income-tax-return/employment-income/$taxYear/employment-summary"
 
-    def newEmploymentLink(taxYear: Int = taxYear): String = s"http://localhost:9317/income-through-software/return/employment-income/$taxYear/add-employment"
+    def newEmploymentLink(taxYear: Int = taxYear): String = s"http://localhost:9317/update-and-submit-income-tax-return/employment-income/$taxYear/add-employment"
 
-    def viewEstimateLink(taxYear: Int = taxYear): String = s"/income-through-software/return/$taxYear/calculate"
+    def viewEstimateLink(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/calculate"
 
     def viewAndChangeLink(isAgent:Boolean): String = if (isAgent) {"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"}
       else {"http://localhost:9081/report-quarterly/income-and-expenses/view"}
 
-    val endOfYearContinueLink = s"/income-through-software/return/$taxYearEndOfYear/final-calculation"
+    val endOfYearContinueLink = s"/update-and-submit-income-tax-return/$taxYearEndOfYear/final-calculation"
 
   }
 
@@ -214,8 +214,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val goToYourIncomeTaxReturnSelector = "#main-content > div > div > ol > li:nth-child(1) > p"
   }
 
-  private val urlPathInYear = s"/income-through-software/return/$taxYear/view"
-  private val urlPathEndOfYear = s"/income-through-software/return/$taxYearEndOfYear/income-tax-return-overview"
+  private val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/view"
+  private val urlPathEndOfYear = s"/update-and-submit-income-tax-return/$taxYearEndOfYear/income-tax-return-overview"
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -702,7 +702,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +
           "the status tag 'Not Started' when user is in a previous year" when {
           val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearMinusOne), "Csrf-Token" -> "nocheck")
-          val previousYearUrl = s"/income-through-software/return/$taxYearMinusOne/income-tax-return-overview"
+          val previousYearUrl = s"/update-and-submit-income-tax-return/$taxYearMinusOne/income-tax-return-overview"
           val taxYearMinusTwo = taxYearMinusOne - 1
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
 
@@ -830,7 +830,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         result.header.status shouldBe SEE_OTHER
-        result.header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
+        result.header.headers shouldBe Map("Location" -> "/update-and-submit-income-tax-return/iv-uplift")
       }
 
     }

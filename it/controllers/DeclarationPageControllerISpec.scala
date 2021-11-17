@@ -77,15 +77,15 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     val taxYearReturnUpdatedTitle: String = "Your Income Tax Return has been updated"
 
-    val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/income-through-software/return/$taxYear/view"
+    val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/update-and-submit-income-tax-return/$taxYear/view"
 
-    val expectedNoValidIncomeSourcesUrl: String = s"/income-through-software/return/$taxYear/no-business-income"
+    val expectedNoValidIncomeSourcesUrl: String = s"/update-and-submit-income-tax-return/$taxYear/no-business-income"
 
-    val expectedTaxReturnPreviouslyUpdatedUrl: String = s"/income-through-software/return/$taxYear/income-tax-return-updated"
+    val expectedTaxReturnPreviouslyUpdatedUrl: String = s"/update-and-submit-income-tax-return/$taxYear/income-tax-return-updated"
 
-    val expectedTaxReturnExistsUrl: String = s"/income-through-software/return/$taxYear/already-have-income-tax-return"
+    val expectedTaxReturnExistsUrl: String = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
 
-    val expectedAddressChangedUrl: String = s"/income-through-software/return/$taxYear/address-changed"
+    val expectedAddressChangedUrl: String = s"/update-and-submit-income-tax-return/$taxYear/address-changed"
 
 
   }
@@ -129,7 +129,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
   import ExpectedResults._
   import Selectors._
 
-  private val urlPath = s"/income-through-software/return/$taxYear/declaration"
+  private val urlPath = s"/update-and-submit-income-tax-return/$taxYear/declaration"
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

@@ -48,7 +48,7 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
     val youMustResubmitTextIndividual = "You must submit your Income Tax Return again."
     val youMustResubmitTextAgent = "You must submit your client’s Income Tax Return again."
     val incomeTaxReturnButtonText = "Back to Income Tax Return"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
   object ExpectedResultsWelsh {
@@ -64,7 +64,7 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
   import ExpectedResults._
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/income-tax-return-updated"
+  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/income-tax-return-updated"
 
   "Rendering the tax return previously updated page in English" should {
 

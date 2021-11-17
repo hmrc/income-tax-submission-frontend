@@ -74,7 +74,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val summaryRow3KeyWelsh: String = "Dyddiad cyflwyno"
     val nextStepsPrintWelsh: String = "Argraffu’r dudalen hon"
 
-    val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/income-through-software/return/$taxYear/view"
+    val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/update-and-submit-income-tax-return/$taxYear/view"
   }
 
   object IndividualExpectedResults {
@@ -156,7 +156,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
   import ExpectedResults._
   import Selectors._
 
-  private val urlPath = s"/income-through-software/return/$taxYear/income-tax-return-received"
+  private val urlPath = s"/update-and-submit-income-tax-return/$taxYear/income-tax-return-received"
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

@@ -77,7 +77,7 @@ class ErrorHandlerISpec extends IntegrationTest {
 
        errorHandler.handleIntentToCrystalliseError(FORBIDDEN, taxYear).header.status shouldBe SEE_OTHER
 
-      val response: String = s"/income-through-software/return/$taxYear/no-updates-provided"
+      val response: String = s"/update-and-submit-income-tax-return/$taxYear/no-updates-provided"
 
       redirectUrl(Future.successful(errorHandler.handleIntentToCrystalliseError(FORBIDDEN, taxYear))) shouldBe response
 
@@ -86,7 +86,7 @@ class ErrorHandlerISpec extends IntegrationTest {
     "return a 409 page for Return Tax Year Exists" in {
       errorHandler.handleIntentToCrystalliseError(CONFLICT, taxYear).header.status shouldBe SEE_OTHER
 
-      val response: String = s"/income-through-software/return/$taxYear/already-have-income-tax-return"
+      val response: String = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
 
       redirectUrl(Future.successful(errorHandler.handleIntentToCrystalliseError(CONFLICT, taxYear))) shouldBe response
     }
@@ -94,7 +94,7 @@ class ErrorHandlerISpec extends IntegrationTest {
     "return a 422 page for Business Validation Rules error" in {
       errorHandler.handleIntentToCrystalliseError(UNPROCESSABLE_ENTITY, taxYear).header.status shouldBe SEE_OTHER
 
-      val response: String = s"/income-through-software/return/$taxYear/problem-with-updates"
+      val response: String = s"/update-and-submit-income-tax-return/$taxYear/problem-with-updates"
 
       redirectUrl(Future.successful(errorHandler.handleIntentToCrystalliseError(UNPROCESSABLE_ENTITY, taxYear))) shouldBe response
     }
@@ -116,7 +116,7 @@ class ErrorHandlerISpec extends IntegrationTest {
       errorHandler.handleDeclareCrystallisationError(CONFLICT, "RESIDENCY_CHANGED", taxYear)
         .header.status shouldBe SEE_OTHER
 
-      val response: String = s"/income-through-software/return/$taxYear/address-changed"
+      val response: String = s"/update-and-submit-income-tax-return/$taxYear/address-changed"
 
       redirectUrl(Future.successful(errorHandler.handleDeclareCrystallisationError(CONFLICT, "RESIDENCY_CHANGED", taxYear))) shouldBe response
     }
@@ -125,7 +125,7 @@ class ErrorHandlerISpec extends IntegrationTest {
       errorHandler.handleDeclareCrystallisationError(CONFLICT, "INCOME_SOURCES_CHANGED", taxYear)
         .header.status shouldBe SEE_OTHER
 
-      val response: String = s"/income-through-software/return/$taxYear/income-tax-return-updated"
+      val response: String = s"/update-and-submit-income-tax-return/$taxYear/income-tax-return-updated"
 
       redirectUrl(Future.successful(errorHandler.handleDeclareCrystallisationError(CONFLICT, "INCOME_SOURCES_CHANGED", taxYear))) shouldBe response
     }
@@ -134,7 +134,7 @@ class ErrorHandlerISpec extends IntegrationTest {
       errorHandler.handleDeclareCrystallisationError(CONFLICT, "FINAL_DECLARATION_RECEIVED", taxYear)
         .header.status shouldBe SEE_OTHER
 
-      val response: String = s"/income-through-software/return/$taxYear/already-have-income-tax-return"
+      val response: String = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
 
       redirectUrl(Future.successful(errorHandler.handleDeclareCrystallisationError(CONFLICT, "FINAL_DECLARATION_RECEIVED", taxYear))) shouldBe response
     }
@@ -143,7 +143,7 @@ class ErrorHandlerISpec extends IntegrationTest {
       errorHandler.handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "INCOME_SUBMISSIONS_NOT_EXIST", taxYear)
         .header.status shouldBe SEE_OTHER
 
-      val response: String = s"/income-through-software/return/$taxYear/no-business-income"
+      val response: String = s"/update-and-submit-income-tax-return/$taxYear/no-business-income"
 
       redirectUrl(Future.successful(errorHandler
         .handleDeclareCrystallisationError(UNPROCESSABLE_ENTITY, "INCOME_SUBMISSIONS_NOT_EXIST", taxYear))) shouldBe response

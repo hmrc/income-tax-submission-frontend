@@ -60,7 +60,7 @@ class UnauthorisedUserErrorControllerISpec extends IntegrationTest with ViewHelp
   import ExpectedResults._
   import Selectors._
 
-  val errorPageUrl = s"http://localhost:$port/income-through-software/return/error/not-authorised-to-use-service"
+  val errorPageUrl = s"http://localhost:$port/update-and-submit-income-tax-return/error/not-authorised-to-use-service"
 
   "an user calling GET" when {
     "language is set to ENGLISH" should {

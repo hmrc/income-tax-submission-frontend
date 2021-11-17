@@ -44,7 +44,7 @@ class IndividualAuthErrorControllerISpec extends IntegrationTest with ViewHelper
   import ExpectedResults._
   import Selectors._
 
-  val errorPageUrl = s"http://localhost:$port/income-through-software/return/error/you-need-to-sign-up"
+  val errorPageUrl = s"http://localhost:$port/update-and-submit-income-tax-return/error/you-need-to-sign-up"
 
   "an user calling GET" when {
     "language is set to ENGLISH" should {

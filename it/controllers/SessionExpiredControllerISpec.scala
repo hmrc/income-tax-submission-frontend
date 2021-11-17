@@ -45,8 +45,8 @@ class SessionExpiredControllerISpec extends IntegrationTest with ViewHelpers wit
   import ExpectedResults._
   import Selectors._
 
-  val errorPageUrl = s"http://localhost:$port/income-through-software/return/timeout"
-  val keepAliveUrl = s"http://localhost:$port/income-through-software/return/keep-alive"
+  val errorPageUrl = s"http://localhost:$port/update-and-submit-income-tax-return/timeout"
+  val keepAliveUrl = s"http://localhost:$port/update-and-submit-income-tax-return/keep-alive"
 
   "a user calling GET" when {
     

@@ -57,7 +57,7 @@ class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
           
           status(response) shouldBe SEE_OTHER
           await(response).header.headers shouldBe Map("Location" ->
-            "http://localhost:9538/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
+            "http://localhost:9538/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/update-and-submit-income-tax-return/iv-uplift-callback&failureURL=/update-and-submit-income-tax-return/error/we-could-not-confirm-your-details")
         }
         
       }
@@ -78,11 +78,11 @@ class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
 
         "return status code 303" in {
           status(response) shouldBe SEE_OTHER
-          await(response).header.headers shouldBe Map("Location" -> "/income-through-software/return/2022/start")
+          await(response).header.headers shouldBe Map("Location" -> "/update-and-submit-income-tax-return/2022/start")
         }
         "return status code 303 when there is a tax year in session" in {
           status(response2) shouldBe SEE_OTHER
-          await(response2).header.headers shouldBe Map("Location" -> "/income-through-software/return/2024/start")
+          await(response2).header.headers shouldBe Map("Location" -> "/update-and-submit-income-tax-return/2024/start")
         }
       }
     }

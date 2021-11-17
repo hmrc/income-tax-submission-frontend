@@ -49,7 +49,7 @@ class AgentAuthErrorControllerISpec extends IntegrationTest with ViewHelpers {
     val authoriseAsAnAgentLinkSelector = "#client_auth_link"
   }
 
-  val url = s"http://localhost:$port/income-through-software/return/error/you-need-client-authorisation"
+  val url = s"http://localhost:$port/update-and-submit-income-tax-return/error/you-need-client-authorisation"
 
   "an agent calling GET" when {
     "language is set to ENGLISH" should {

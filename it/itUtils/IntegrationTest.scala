@@ -52,7 +52,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
   implicit val actorSystem: ActorSystem = ActorSystem()
   
-  val startUrl = s"http://localhost:$port/income-through-software/return"
+  val startUrl = s"http://localhost:$port/update-and-submit-income-tax-return"
 
   implicit def wsClient: WSClient = app.injector.instanceOf[WSClient]
 
