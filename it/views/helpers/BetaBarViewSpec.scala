@@ -16,10 +16,9 @@
 
 package views.helpers
 
-import config.{AppConfig, MockAppConfig}
+import itUtils.ViewTest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import utils.ViewTest
 import views.html.templates.helpers.BetaBar
 
 class BetaBarViewSpec extends ViewTest {
@@ -33,7 +32,6 @@ class BetaBarViewSpec extends ViewTest {
     "provided with an implicit appConfig" should {
 
       "use appConfig.feedbackUrl in the beta banner link" which {
-        implicit val appConfig: AppConfig = new MockAppConfig().config
 
         "contains the correct href value when the service is accessed as an individual" in {
 

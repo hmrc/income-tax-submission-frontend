@@ -16,15 +16,15 @@
 
 package views.errors
 
+import itUtils.ViewTest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.twirl.api.Html
-import utils.ViewTest
 import views.html.errors.NotFoundPage
 
-class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest{
+class NotFoundPageSpec extends AnyWordSpec with Matchers with ViewTest {
 
   val link = "#govuk-income-tax-link"
   val paragraph = "#main-content > div > div > div.govuk-body > p:nth-child(1)"

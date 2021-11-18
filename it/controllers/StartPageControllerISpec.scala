@@ -17,6 +17,7 @@
 package controllers
 
 import audit.AuditService
+import common.SessionValues
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, ViewHelpers}
@@ -31,7 +32,7 @@ import views.html.StartPageView
 
 import scala.concurrent.Future
 
-class StartPageControllerTest extends IntegrationTest with ViewHelpers {
+class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -308,4 +309,28 @@ class StartPageControllerTest extends IntegrationTest with ViewHelpers {
 
   }
 
+  "Hitting the submit endpoint" should {
+
+    "redirect to the overview page" when {
+
+      "the user is an individual" which {
+        lazy val result: Future[Result] = {
+          wireMockServer.resetAll()
+          authoriseIndividual()
+          controller.submit(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> "2022"))
+        }
+
+        "has a result of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
+        }
+
+        "has overview page as the redirect url" in {
+          redirectUrl(result) shouldBe controllers.routes.OverviewPageController.show(taxYear).url
+        }
+      }
+
+    }
+
+  }
+  
 }

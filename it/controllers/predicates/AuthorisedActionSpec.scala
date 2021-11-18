@@ -17,26 +17,23 @@
 package controllers.predicates
 
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
+import itUtils.IntegrationTest
 import models.User
+import org.scalatest.events.TestFailed
 import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.status
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.UnitTest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class AuthorisedActionSpec extends UnitTest {
-
-  val auth: AuthorisedAction = authorisedAction
+class AuthorisedActionSpec extends IntegrationTest {
+  
   val nino = "AA123456A"
+  lazy val auth: AuthorisedAction = app.injector.instanceOf[AuthorisedAction]
 
   ".enrolmentGetIdentifierValue" should {
 
@@ -49,8 +46,8 @@ class AuthorisedActionSpec extends UnitTest {
         Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, returnValueAgent)), "Activated")
       ))
 
-      auth.enrolmentGetIdentifierValue(EnrolmentKeys.Individual, EnrolmentIdentifiers.individualId, enrolments) shouldBe Some(returnValue)
-      auth.enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) shouldBe Some(returnValueAgent)
+      authAction(Future.successful(None)).enrolmentGetIdentifierValue(EnrolmentKeys.Individual, EnrolmentIdentifiers.individualId, enrolments) shouldBe Some(returnValue)
+      authAction(Future.successful(None)).enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) shouldBe Some(returnValueAgent)
     }
 
     "return a None" when {
@@ -62,11 +59,11 @@ class AuthorisedActionSpec extends UnitTest {
 
 
       "the given identifier cannot be found" in {
-        auth.enrolmentGetIdentifierValue(key, "someOtherIdentifier", enrolments) shouldBe None
+        authAction(Future.successful(None)).enrolmentGetIdentifierValue(key, "someOtherIdentifier", enrolments) shouldBe None
       }
 
       "the given key cannot be found" in {
-        auth.enrolmentGetIdentifierValue("someOtherKey", identifierKey, enrolments) shouldBe None
+        authAction(Future.successful(None)).enrolmentGetIdentifierValue("someOtherKey", identifierKey, enrolments) shouldBe None
       }
 
     }
@@ -86,10 +83,8 @@ class AuthorisedActionSpec extends UnitTest {
         ))
 
         lazy val result: Future[Result] = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, allEnrolments and confidenceLevel, *, *)
-            .returning(Future.successful(enrolments and ConfidenceLevel.L200))
-          auth.individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
+          val retrieval = Future.successful(enrolments and ConfidenceLevel.L200)
+          authAction(retrieval).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
         }
 
         "returns an OK status" in {
@@ -110,10 +105,8 @@ class AuthorisedActionSpec extends UnitTest {
         ))
 
         lazy val result: Future[Result] = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, allEnrolments and confidenceLevel, *, *)
-            .returning(Future.successful(enrolments and ConfidenceLevel.L200))
-          auth.individualAuthentication[AnyContent](block)(fallBackSessionIdFakeRequest, emptyHeaderCarrier)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L200)
+          authAction(retrievals).individualAuthentication[AnyContent](block)(fallBackSessionIdFakeRequest, emptyHeaderCarrier)
         }
 
         "returns an OK status" in {
@@ -138,10 +131,8 @@ class AuthorisedActionSpec extends UnitTest {
         ))
 
         lazy val result: Future[Result] = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, allEnrolments and confidenceLevel, *, *)
-            .returning(Future.successful(enrolments and ConfidenceLevel.L200))
-          auth.individualAuthentication[AnyContent](block)(FakeRequest(), emptyHeaderCarrier)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L200)
+          authAction(retrievals).individualAuthentication[AnyContent](block)(FakeRequest(), emptyHeaderCarrier)
         }
 
         "returns an SEE_OTHER status" in {
@@ -155,10 +146,8 @@ class AuthorisedActionSpec extends UnitTest {
         val enrolments = Enrolments(Set(Enrolment("notAnIndividualOops", Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated")))
 
         lazy val result: Future[Result] = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, allEnrolments and confidenceLevel, *, *)
-            .returning(Future.successful(enrolments and ConfidenceLevel.L200))
-          auth.individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L200)
+          authAction(retrievals).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
         }
 
         "returns an Unauthorised" in {
@@ -166,7 +155,7 @@ class AuthorisedActionSpec extends UnitTest {
         }
 
         "has the correct redirect url" in {
-          redirectUrl(result) shouldBe mockAppConfig.signInUrl
+          redirectUrl(result) shouldBe appConfig.signInUrl
         }
       }
 
@@ -176,10 +165,8 @@ class AuthorisedActionSpec extends UnitTest {
         val enrolments = Enrolments(Set(Enrolment("HMRC-NI", Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, nino)), "Activated")))
 
         lazy val result: Future[Result] = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, allEnrolments and confidenceLevel, *, *)
-            .returning(Future.successful(enrolments and ConfidenceLevel.L200))
-          auth.individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L200)
+          authAction(retrievals).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
         }
 
         "returns an Unauthorised" in {
@@ -203,10 +190,8 @@ class AuthorisedActionSpec extends UnitTest {
         ))
 
         lazy val result: Future[Result] = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, allEnrolments and confidenceLevel, *, *)
-            .returning(Future.successful(enrolments and ConfidenceLevel.L50))
-          auth.individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L50)
+          authAction(retrievals).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
         }
 
         "has a status of 303" in {
@@ -236,11 +221,8 @@ class AuthorisedActionSpec extends UnitTest {
         ))
 
         lazy val result = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, *, *, *)
-            .returning(Future.successful(enrolments))
-
-          auth.agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
+          val retrievals = Future.successful(enrolments)
+          authAction(retrievals).agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
         }
 
         "has a status of OK" in {
@@ -258,7 +240,7 @@ class AuthorisedActionSpec extends UnitTest {
       "there is no MTDITID in session" which {
 
         lazy val result = {
-          auth.agentAuthentication(block)(fakeRequestAgentNoMtditid, headerCarrierWithSession)
+          authAction(Future.successful(None)).agentAuthentication(block)(fakeRequestAgentNoMtditid, headerCarrierWithSession)
         }
 
         "has a status of SEE_OTHER(303)" in {
@@ -266,7 +248,7 @@ class AuthorisedActionSpec extends UnitTest {
         }
 
         "has the correct redirect url" in {
-          redirectUrl(result) shouldBe mockAppConfig.viewAndChangeEnterUtrUrl
+          redirectUrl(result) shouldBe appConfig.viewAndChangeEnterUtrUrl
         }
 
       }
@@ -274,7 +256,7 @@ class AuthorisedActionSpec extends UnitTest {
       "there is no NINO in session" which {
 
         lazy val result = {
-          auth.agentAuthentication(block)(fakeRequestAgentNoNino, headerCarrierWithSession)
+          authAction(Future.successful(None)).agentAuthentication(block)(fakeRequestAgentNoNino, headerCarrierWithSession)
         }
 
         "has a status of SEE_OTHER(303)" in {
@@ -282,7 +264,7 @@ class AuthorisedActionSpec extends UnitTest {
         }
 
         "has the correct redirect url" in {
-          redirectUrl(result) shouldBe mockAppConfig.viewAndChangeEnterUtrUrl
+          redirectUrl(result) shouldBe appConfig.viewAndChangeEnterUtrUrl
         }
 
       }
@@ -293,16 +275,13 @@ class AuthorisedActionSpec extends UnitTest {
 
       "the session id is missing" which {
 
-        val enrolments = Enrolments(Set(
+        val enrolments: Enrolments = Enrolments(Set(
           Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
           Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
         ))
 
         lazy val result = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, *, *, *)
-            .returning(Future.successful(enrolments))
-
+          authoriseAgent()
           auth.agentAuthentication(block)(fakeRequestAgent, emptyHeaderCarrier)
         }
 
@@ -312,11 +291,8 @@ class AuthorisedActionSpec extends UnitTest {
       }
 
       "the authorisation service returns an AuthorisationException exception" in {
-        object AuthException extends AuthorisationException("Some reason")
-
         lazy val result = {
-          mockAuthReturnException(AuthException)
-
+          unauthorisedIndividualWrongCredentials()
           auth.agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
         }
         status(result) shouldBe SEE_OTHER
@@ -327,15 +303,13 @@ class AuthorisedActionSpec extends UnitTest {
     "redirect to the sign in page" when {
 
       "the authorisation service returns a NoActiveSession exception" in {
-        object NoActiveSession extends NoActiveSession("Some reason")
-
         lazy val result = {
-          mockAuthReturnException(NoActiveSession)
+          unauthorisedInactiveSession()
           auth.agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
         }
 
         status(result) shouldBe SEE_OTHER
-        redirectUrl(result) shouldBe mockAppConfig.signInUrl
+        redirectUrl(result) shouldBe appConfig.signInUrl
       }
     }
 
@@ -348,10 +322,7 @@ class AuthorisedActionSpec extends UnitTest {
         ))
 
         lazy val result = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, *, *, *)
-            .returning(Future.successful(enrolments))
-          auth.agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
+          authAction(Future.successful(enrolments)).agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
         }
         status(result) shouldBe SEE_OTHER
       }
@@ -360,7 +331,6 @@ class AuthorisedActionSpec extends UnitTest {
   }
 
   ".invokeBlock" should {
-
     lazy val block: User[AnyContent] => Future[Result] = user =>
       Future.successful(Ok(s"mtditid: ${user.mtditid}${user.arn.fold("")(arn => " arn: " + arn)}"))
 
@@ -369,20 +339,20 @@ class AuthorisedActionSpec extends UnitTest {
       "the user is successfully verified as an agent" which {
 
         lazy val result = {
-          mockAuthAsAgent()
+          authoriseAgent()
           auth.invokeBlock(fakeRequestAgent, block)
         }
 
         "should return an OK(200) status" in {
           status(result) shouldBe OK
-          bodyOf(result) shouldBe "mtditid: 1234567890 arn: 0987654321"
+          bodyOf(result) shouldBe "mtditid: 1234567890 arn: XARN1234567"
         }
       }
 
       "the user is successfully verified as an individual" in {
 
         lazy val result = {
-          mockAuth(Some(nino))
+          authoriseIndividual()
           auth.invokeBlock(fakeRequest, block)
         }
 
@@ -395,21 +365,17 @@ class AuthorisedActionSpec extends UnitTest {
     "return a redirect" when {
 
       "the authorisation service returns an AuthorisationException exception" in {
-        object AuthException extends AuthorisationException("Some reason")
-
         lazy val result = {
-          mockAuthReturnException(AuthException)
+          unauthorisedAuthorisationException()
           auth.invokeBlock(fakeRequest, block)
         }
         status(result) shouldBe SEE_OTHER
+        TestFailed
       }
 
       "there is no MTDITID value in session" which {
         lazy val result = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, Retrievals.affinityGroup, *, *)
-            .returning(Future.successful(Some(AffinityGroup.Agent)))
-
+          authoriseAgent()
           auth.invokeBlock(fakeRequest.withSession("ClientNino" -> "AA123456A"), block)
         }
 
@@ -418,25 +384,10 @@ class AuthorisedActionSpec extends UnitTest {
         }
 
         "redirects to the view and change 'enter utr' page" in {
-          redirectUrl(result) shouldBe "/utr-entry"
+          redirectUrl(result) shouldBe "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/client-utr"
         }
-
-      }
-
-    }
-
-    "redirect to the sign in page" when {
-      "the authorisation service returns a NoActiveSession exception" in {
-        object NoActiveSession extends NoActiveSession("Some reason")
-
-        lazy val result = {
-          mockAuthReturnException(NoActiveSession)
-          auth.invokeBlock(fakeRequest, block)
-        }
-
-        status(result) shouldBe SEE_OTHER
       }
     }
+    
   }
-
 }

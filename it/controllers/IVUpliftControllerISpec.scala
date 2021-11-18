@@ -1,0 +1,90 @@
+/*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers
+
+import audit.AuditService
+import controllers.predicates.AuthorisedAction
+import helpers.WireMockHelper
+import itUtils.IntegrationTest
+import play.api.http.Status.SEE_OTHER
+import play.api.test.Helpers.{status, stubMessagesControllerComponents}
+import services.AuthService
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
+
+import scala.concurrent.Future
+
+class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
+
+  private def controller = new IVUpliftController()(
+    appConfig,
+    stubMessagesControllerComponents,
+    app.injector.instanceOf[AuditService],
+    app.injector.instanceOf[AuthService],
+    app.injector.instanceOf[AuthorisedAction],
+    scala.concurrent.ExecutionContext.Implicits.global)
+
+  val individualHandoffReason = "individual"
+  val individualConfidenceLevel = 50
+  val organisationHandoffReason = "organisation"
+  val organisationConfidenceLevel = 200
+  val minimumConfidenceLevel = 200
+
+  "IVUpliftController" should {
+
+    "redirect user to initialiseJourney" when {
+
+      "initialiseJourney() is called it" should {
+
+        "as an individual return status code 303" in {
+          lazy val response = {
+            authoriseIndividual()
+            controller.initialiseJourney()(fakeRequest)
+          }
+          
+          status(response) shouldBe SEE_OTHER
+          await(response).header.headers shouldBe Map("Location" ->
+            "http://localhost:9538/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/income-through-software/return/iv-uplift-callback&failureURL=/income-through-software/return/error/we-could-not-confirm-your-details")
+        }
+        
+      }
+    }
+    
+    "redirect user to start page" when {
+
+      "callback() is called it" should {
+        lazy val response = {
+          authoriseIndividual()
+          controller.callback()(fakeRequest)
+        }
+        
+        lazy val response2 = {
+          authoriseIndividual()
+          controller.callback()(fakeRequest.withSession("TAX_YEAR" -> "2024"))
+        }
+
+        "return status code 303" in {
+          status(response) shouldBe SEE_OTHER
+          await(response).header.headers shouldBe Map("Location" -> "/income-through-software/return/2022/start")
+        }
+        "return status code 303 when there is a tax year in session" in {
+          status(response2) shouldBe SEE_OTHER
+          await(response2).header.headers shouldBe Map("Location" -> "/income-through-software/return/2024/start")
+        }
+      }
+    }
+  }
+}
