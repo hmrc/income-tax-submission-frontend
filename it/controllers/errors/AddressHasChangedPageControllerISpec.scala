@@ -39,7 +39,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
     val addressHasChangedSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val submitYourReturnSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
     val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
   object ExpectedResults {
@@ -68,7 +68,7 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
 
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/address-changed"
+  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/address-changed"
 
   "Rendering the address change error page in English" should {
     import ExpectedResults._

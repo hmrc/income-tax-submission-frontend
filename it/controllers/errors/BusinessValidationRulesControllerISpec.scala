@@ -48,7 +48,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
     val checkYourIncomeTaxReturnAgent = "Check your client’s Income Tax Return and submit it again."
     val checkYourIncomeTaxReturnIndividual = "Check your Income Tax Return and submit it again."
     val incomeTaxReturnButtonText = "Back to Income Tax Return"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
   object ExpectedResultsWelsh {
@@ -57,12 +57,12 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
     val checkYourIncomeTaxReturnAgent = "Ewch ati i wirio Ffurflen Dreth eich cleient ar gyfer Treth Incwm a’i chyflwyno eto."
     val checkYourIncomeTaxReturnIndividual = "Ewch ati i wirio’ch Ffurflen Dreth ar gyfer Treth Incwm a’i chyflwyno eto."
     val incomeTaxReturnButtonText = "Yn ôl i hafan Ffurflen Dreth Incwm"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/problem-with-updates"
+  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/problem-with-updates"
 
   "Rendering the business validation rules page in English" should {
 

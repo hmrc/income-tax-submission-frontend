@@ -47,7 +47,7 @@ class YouNeedAgentServicesControllerISpec extends IntegrationTest with ViewHelpe
   import ExpectedResults._
   import Selectors._
 
-  val errorPageUrl = s"http://localhost:$port/income-through-software/return/error/you-need-agent-services-account"
+  val errorPageUrl = s"http://localhost:$port/update-and-submit-income-tax-return/error/you-need-agent-services-account"
 
   "an user calling GET" when {
     "language is set to ENGLISH" should {

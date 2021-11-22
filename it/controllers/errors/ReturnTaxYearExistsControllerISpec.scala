@@ -41,10 +41,10 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
     lazy val expectedP2TextIndividual: String = "You can go to your Income Tax account to see your Income Tax Returns."
     lazy val expectedP2TextAgent: String = "You can go to your client’s Income Tax account to see their Income Tax Returns."
     lazy val expectedReturnToTaxAccountButtonText: String = "Back to Income Tax account"
-    lazy val expectedReturnToTaxAccountButtonLink: String = s"http://localhost:9302/income-through-software/return/$taxYear/view"
+    lazy val expectedReturnToTaxAccountButtonLink: String = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
     lazy val expectedSignOutButtonText: String = "Sign out"
-    lazy val expectedSignOutButtonLinkIndividual: String = "/income-through-software/return/sign-out?isAgent=false"
-    lazy val expectedSignOutButtonLinkAgent: String = "/income-through-software/return/sign-out?isAgent=true"
+    lazy val expectedSignOutButtonLinkIndividual: String = "/update-and-submit-income-tax-return/sign-out?isAgent=false"
+    lazy val expectedSignOutButtonLinkAgent: String = "/update-and-submit-income-tax-return/sign-out?isAgent=true"
   }
 
   object ExpectedResultsWelsh {
@@ -68,7 +68,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   import ExpectedResults._
   import Selectors._
 
-  private def pageUrl(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/already-have-income-tax-return"
+  private def pageUrl(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
 
   "when the language is set to ENGLISH, the page" should {
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")

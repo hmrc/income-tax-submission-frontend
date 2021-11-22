@@ -32,7 +32,7 @@ class IVFailureControllerISpec extends IntegrationTest with ViewHelpers with Sta
     lazy val failedToAnswerText = "you have failed to answer enough questions correctly"
     lazy val couldNotMatchText = "we could not match your details to our system"
     lazy val signOutButtonText = "Sign out"
-    lazy val signOutUrl = "/income-through-software/return/sign-out?isAgent=false"
+    lazy val signOutUrl = "/update-and-submit-income-tax-return/sign-out?isAgent=false"
 
     lazy val pageTitleTextWelsh = "Mae problem wedi codi"
     lazy val pageHeadingTextWelsh = "Mae problem wedi codi"
@@ -55,7 +55,7 @@ class IVFailureControllerISpec extends IntegrationTest with ViewHelpers with Sta
   import ExpectedResults._
   import Selectors._
 
-  val errorPageUrl = s"http://localhost:$port/income-through-software/return/error/we-could-not-confirm-your-details"
+  val errorPageUrl = s"http://localhost:$port/update-and-submit-income-tax-return/error/we-could-not-confirm-your-details"
 
   "an user calling GET" when {
     "language is set to ENGLISH" should {

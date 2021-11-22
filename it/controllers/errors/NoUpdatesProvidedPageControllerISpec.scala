@@ -48,7 +48,7 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
     val youNeedToProvideTextIndividual = "You need to provide at least one update before you can submit your Income Tax Return."
     val youNeedToProvideTextAgent = "You need to provide at least one update before you can submit your client’s Income Tax Return."
     val incomeTaxReturnButtonText = "Back to Income Tax Return"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
   object ExpectedResultsWelsh {
@@ -57,12 +57,12 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
     val youNeedToProvideTextIndividual = "Mae angen i chi roi o leiaf un diweddariad cyn i chi allu cyflwyno eich Ffurflen Dreth Incwm."
     val youNeedToProvideTextAgent = "Mae angen i chi roi o leiaf un diweddariad cyn i chi allu cyflwyno Ffurflen Dreth Incwm eich cleient."
     val incomeTaxReturnButtonText = "Yn ôl i hafan Ffurflen Dreth Incwm"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/income-through-software/return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/no-updates-provided"
+  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/no-updates-provided"
 
   "Rendering the no updates provided error page in English" should {
     import ExpectedResults._

@@ -56,7 +56,7 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers with 
   import ExpectedResults._
   import Selectors._
 
-  val errorPageUrl = s"http://localhost:$port/income-through-software/return/error/wrong-tax-year"
+  val errorPageUrl = s"http://localhost:$port/update-and-submit-income-tax-return/error/wrong-tax-year"
 
   "an user calling GET" when {
     "language is set to ENGLISH" should {

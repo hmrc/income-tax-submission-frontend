@@ -164,7 +164,7 @@ trait ViewTest extends IntegrationTest {
       }
       s"has a link to change the language" in {
         document.select(".hmrc-language-select__list-item > a").attr("href") shouldBe
-          s"/income-through-software/return/language/${linkLanguage(otherLanguage).toLowerCase}"
+          s"/update-and-submit-income-tax-return/language/${linkLanguage(otherLanguage).toLowerCase}"
       }
     }
   }

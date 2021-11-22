@@ -68,7 +68,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     val bullet2DividendsFromUKTextWelsh = "difidendau gan gwmnïau, ymddiriedolaethau a chwmnïau buddsoddi penagored yn y DU"
     val continueButtonText = "Continue"
     val continueButtonTextWelsh = "Welsh"
-    val continueButtonHref = s"/income-through-software/return/$taxYear/start"
+    val continueButtonHref = s"/update-and-submit-income-tax-return/$taxYear/start"
   }
 
   object IndividualExpectedResultsEN {
@@ -117,7 +117,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   import CommonExpectedResults._
 
-  private val urlPath = s"/income-through-software/return/$taxYear/start"
+  private val urlPath = s"/update-and-submit-income-tax-return/$taxYear/start"
 
   "Rendering the start page in English" should {
 
@@ -282,7 +282,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         "has the iv journey url as the redirect link" in {
-          result.header.headers shouldBe Map("Location" -> "/income-through-software/return/iv-uplift")
+          result.header.headers shouldBe Map("Location" -> "/update-and-submit-income-tax-return/iv-uplift")
         }
       }
 

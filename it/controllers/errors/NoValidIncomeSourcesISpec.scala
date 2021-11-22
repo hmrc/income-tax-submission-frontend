@@ -57,8 +57,8 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
     val viewAndChangeOverviewLink = s"http://localhost:9081/report-quarterly/income-and-expenses/view"
     val viewAndChangeOverviewLinkAgent = s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
     
-    val signOutLink = "/income-through-software/return/sign-out?isAgent=false"
-    val signOutLinkAgent = "/income-through-software/return/sign-out?isAgent=true"
+    val signOutLink = "/update-and-submit-income-tax-return/sign-out?isAgent=false"
+    val signOutLinkAgent = "/update-and-submit-income-tax-return/sign-out?isAgent=true"
   }
 
   object ExpectedResultsWelsh {
@@ -76,7 +76,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
   import ExpectedResults._
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/income-through-software/return/$taxYear/no-business-income"
+  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/no-business-income"
 
   "Rendering the No Valid Income Source error page in English" should {
 

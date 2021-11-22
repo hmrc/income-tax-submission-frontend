@@ -11,7 +11,7 @@
 
 # Add all the application routes to the prod.routes file
 
-GET        /income-through-software/return/test-only/:taxYear/agent-access/:mtdItId        controllers.testOnly.AgentAccessController.show(mtdItId, taxYear: Int)
-GET        /income-through-software/return/test-only/:taxYear/prior-submission             controllers.testOnly.PriorSubmissionController.show(ukDividends: Option[String], otherUkDividends: Option[String], taxYear: Int)
-GET        /income-through-software/return/test-only/:taxYear/additional-parameters        controllers.testOnly.AdditionalSessionDataController.show(taxYear: Int)
+GET        /update-and-submit-income-tax-return/test-only/:taxYear/agent-access/:mtdItId        controllers.testOnly.AgentAccessController.show(mtdItId, taxYear: Int)
+GET        /update-and-submit-income-tax-return/test-only/:taxYear/prior-submission             controllers.testOnly.PriorSubmissionController.show(ukDividends: Option[String], otherUkDividends: Option[String], taxYear: Int)
+GET        /update-and-submit-income-tax-return/test-only/:taxYear/additional-parameters        controllers.testOnly.AdditionalSessionDataController.show(taxYear: Int)
 ->         /                                                                               prod.Routes
