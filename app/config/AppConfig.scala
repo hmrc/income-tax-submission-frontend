@@ -126,6 +126,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val giftAidReleased: Boolean = servicesConfig.getBoolean("feature-switch.giftAidReleased")
   lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
   lazy val employmentReleased: Boolean = servicesConfig.getBoolean("feature-switch.employmentReleased")
+  lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
 
   lazy val excludedIncomeSources: Seq[String] = {
     Seq(
@@ -212,6 +213,7 @@ trait AppConfig {
   val giftAidReleased: Boolean
   val employmentEnabled: Boolean
   val employmentReleased: Boolean
+  val nrsEnabled: Boolean
 
   val excludedIncomeSources: Seq[String]
 
