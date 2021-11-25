@@ -27,7 +27,14 @@ import scala.concurrent.Future
 class NrsService @Inject() (nrsConnector: NrsConnector) {
 
   def submit(nino: String, nrsSubmissionModel: NrsSubmissionModel, mtditid: String)(implicit hc: HeaderCarrier): Future[NrsSubmissionResponse] = {
-    nrsConnector.postNrsConnector(nino, nrsSubmissionModel)(hc.withExtraHeaders("mtditid" -> mtditid))
+    
+    val extraHeaders = Seq(
+      Some("mtditid" -> mtditid),
+      hc.trueClientIp.map(ip => "clientIP" -> ip),
+      hc.trueClientPort.map(port => "clientPort" -> port)
+    ).flatten
+    
+    nrsConnector.postNrsConnector(nino, nrsSubmissionModel)(hc.withExtraHeaders(extraHeaders: _*))
   }
 
 }
