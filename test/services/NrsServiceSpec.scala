@@ -36,20 +36,42 @@ class NrsServiceSpec extends UnitTest {
 
   val nrsSubmissionModel: NrsSubmissionModel = NrsSubmissionModel(calculationId)
 
-  ".postNrsConnector" should {
+  ".postNrsConnector" when {
+    
+    "there is a true client ip and port" should {
+      
+      "return the connector response" in {
 
-    "return the connector response" in {
+        val expectedResult: NrsSubmissionResponse = Right()
 
-      val expectedResult: NrsSubmissionResponse = Right()
+        val headerCarrierWithTrueClientDetails = headerCarrierWithSession.copy(trueClientIp = Some("127.0.0.1"), trueClientPort = Some("80"))
 
-      (connector.postNrsConnector(_: String, _: NrsSubmissionModel)(_: HeaderCarrier))
-        .expects(nino, nrsSubmissionModel, headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid))
-        .returning(Future.successful(expectedResult))
+        (connector.postNrsConnector(_: String, _: NrsSubmissionModel)(_: HeaderCarrier))
+          .expects(nino, nrsSubmissionModel, headerCarrierWithTrueClientDetails.withExtraHeaders("mtditid" -> mtditid, "clientIP" -> "127.0.0.1", "clientPort" -> "80"))
+          .returning(Future.successful(expectedResult))
 
-      val result = await(service.submit(nino, nrsSubmissionModel, mtditid))
+        val result = await(service.submit(nino, nrsSubmissionModel, mtditid)(headerCarrierWithTrueClientDetails))
 
-      result shouldBe expectedResult
+        result shouldBe expectedResult
+      }
     }
+    
+    "there isn't a true client ip and port" should {
+      
+      "return the connector response" in {
+
+        val expectedResult: NrsSubmissionResponse = Right()
+
+        (connector.postNrsConnector(_: String, _: NrsSubmissionModel)(_: HeaderCarrier))
+          .expects(nino, nrsSubmissionModel, headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid))
+          .returning(Future.successful(expectedResult))
+
+        val result = await(service.submit(nino, nrsSubmissionModel, mtditid))
+
+        result shouldBe expectedResult
+      }
+    }
+    
   }
 
 }
