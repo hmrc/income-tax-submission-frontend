@@ -84,7 +84,7 @@ class MockAppConfig extends AppConfig with MockFactory {
 
   override lazy val giftAidReleased: Boolean = true
 
-  override lazy val nrsEnabled: Boolean = false
+  override lazy val nrsEnabled: Boolean = true
 
   override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
 
