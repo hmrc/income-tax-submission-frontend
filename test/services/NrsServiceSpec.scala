@@ -19,6 +19,8 @@ package services
 import connectors.NrsConnector
 import connectors.httpParsers.NrsSubmissionHttpParser.NrsSubmissionResponse
 import models.NrsSubmissionModel
+import play.api.mvc.Request
+import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
 
@@ -38,7 +40,7 @@ class NrsServiceSpec extends UnitTest {
 
   ".postNrsConnector" when {
     
-    "there is a true client ip and port" should {
+    "there is user-agent, true client ip and port" should {
       
       "return the connector response" in {
 
@@ -47,24 +49,28 @@ class NrsServiceSpec extends UnitTest {
         val headerCarrierWithTrueClientDetails = headerCarrierWithSession.copy(trueClientIp = Some("127.0.0.1"), trueClientPort = Some("80"))
 
         (connector.postNrsConnector(_: String, _: NrsSubmissionModel)(_: HeaderCarrier))
-          .expects(nino, nrsSubmissionModel, headerCarrierWithTrueClientDetails.withExtraHeaders("mtditid" -> mtditid, "clientIP" -> "127.0.0.1", "clientPort" -> "80"))
+          .expects(nino, nrsSubmissionModel, headerCarrierWithTrueClientDetails.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "Firefox v4.4543 / Android v3.42 / IOS v134.32", "clientIP" -> "127.0.0.1", "clientPort" -> "80"))
           .returning(Future.successful(expectedResult))
 
-        val result = await(service.submit(nino, nrsSubmissionModel, mtditid)(headerCarrierWithTrueClientDetails))
+        val request = FakeRequest().withHeaders("User-Agent" -> "Firefox v4.4543 / Android v3.42 / IOS v134.32")
+
+        val result = await(service.submit(nino, nrsSubmissionModel, mtditid)(request, headerCarrierWithTrueClientDetails))
 
         result shouldBe expectedResult
       }
     }
     
-    "there isn't a true client ip and port" should {
+    "there isn't user-agent, true client ip and port" should {
       
       "return the connector response" in {
 
         val expectedResult: NrsSubmissionResponse = Right()
 
         (connector.postNrsConnector(_: String, _: NrsSubmissionModel)(_: HeaderCarrier))
-          .expects(nino, nrsSubmissionModel, headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid))
+          .expects(nino, nrsSubmissionModel, headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "No user agent provided"))
           .returning(Future.successful(expectedResult))
+
+        val request: Request[_] = FakeRequest()
 
         val result = await(service.submit(nino, nrsSubmissionModel, mtditid))
 
