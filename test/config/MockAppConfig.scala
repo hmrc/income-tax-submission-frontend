@@ -133,6 +133,7 @@ class MockAppConfig extends AppConfig with MockFactory {
     (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
 
   override val excludedIncomeSources: Seq[String] = Seq()
+  override val testOnly_authLoginUrl: String = "/auth-login"
 }
 
 class MockAppConfigTaxYearFeatureOff extends MockAppConfig {

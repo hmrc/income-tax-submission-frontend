@@ -66,11 +66,13 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "microservice.services.income-tax-nrs-proxy.url" -> s"http://$wiremockHost:$wiremockPort",
     "microservice.services.auth.host" -> wiremockHost,
     "microservice.services.auth.port" -> wiremockPort.toString,
+    "microservice.services.auth-login-api.url" -> s"http://$wiremockHost:$wiremockPort",
     "feature-switch.dividendsEnabled" -> "true",
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
-    "metrics.enabled" -> "false"
+    "metrics.enabled" -> "false",
+    "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"
   )
 
   def sourcesTurnedOffConfig: Map[String, String] = Map(

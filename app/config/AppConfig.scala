@@ -136,6 +136,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
       (EMPLOYMENT, employmentEnabled)
     ).filter(!_._2).map(_._1)
   }
+
+  lazy val testOnly_authLoginUrl: String = servicesConfig.getString("microservice.services.auth-login-api.url")
 }
 
 @ImplementedBy(classOf[FrontendAppConfig])
@@ -217,4 +219,6 @@ trait AppConfig {
 
   val excludedIncomeSources: Seq[String]
 
+  //Test Only
+  val testOnly_authLoginUrl: String
 }
