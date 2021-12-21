@@ -14,4 +14,8 @@
 GET        /update-and-submit-income-tax-return/test-only/:taxYear/agent-access/:mtdItId        controllers.testOnly.AgentAccessController.show(mtdItId, taxYear: Int)
 GET        /update-and-submit-income-tax-return/test-only/:taxYear/prior-submission             controllers.testOnly.PriorSubmissionController.show(ukDividends: Option[String], otherUkDividends: Option[String], taxYear: Int)
 GET        /update-and-submit-income-tax-return/test-only/:taxYear/additional-parameters        controllers.testOnly.AdditionalSessionDataController.show(taxYear: Int)
-->         /                                                                               prod.Routes
+
+GET        /update-and-submit-income-tax-return/test-only/user-research-login                   controllers.testOnly.UserResearchLoginController.show()
+POST       /update-and-submit-income-tax-return/test-only/user-research-login                   controllers.testOnly.UserResearchLoginController.submit()
+
+->         /                                                                                    prod.Routes

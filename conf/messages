@@ -133,6 +133,9 @@ ivFailurePage.li1 = you took too long to enter information and the service has t
 ivFailurePage.li2 = you have failed to answer enough questions correctly
 ivFailurePage.li3 = we could not match your details to our system
 
+user-research.sign-in = Sign in
+user-research.login-label = User ID
+
 error.individual-unauthorised.2 = sign up for Making Tax Digital for Income Tax
 error-unauthorised.p3 = before you can view this page.
 
