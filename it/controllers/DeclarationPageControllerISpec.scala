@@ -96,11 +96,13 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       "Jerry Individual", 9000, "EE54321", 321, 312, 123
     )
 
-    val informationText: String = "The information I have provided is correct and complete to the best of my knowledge and belief." +
-      " If I give false information I may have to pay financial penalties and face prosecution."
+    val informationText: String = "I declare that the information and self-assessment I have filed are (taken together) " +
+      "correct and complete to the best of my knowledge. I understand that I may have to pay financial penalties and " +
+      "face prosecution if I give false information."
 
-    val informationTextWelsh: String = "Mae’r wybodaeth a roddwyd gennyf yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth " +
-      "a’m cred. Os byddaf yn rhoi gwybodaeth ffug, efallai y bydd yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad."
+    val informationTextWelsh: String = "I declare that the information and self-assessment I have filed are (taken together) " +
+      "correct and complete to the best of my knowledge. I understand that I may have to pay financial penalties and " +
+      "face prosecution if I give false information."
   }
 
   object AgentExpectedResults extends SpecificExpectedResults {
@@ -109,14 +111,13 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       "Joan Agent", 940.40, "EW62340", 231, 132, 321
     )
 
-    val agentInformationText: String = "I confirm that my client has reviewed the information provided and confirmed" +
-      " that it is correct and complete to the best of their knowledge to establish the liability for the tax year " +
-      taxYearMinusOne + " to " + taxYear +
-      ". My client understands that they may have to pay financial penalties or face prosecution if they give false information."
+    val agentInformationText: String = "I confirm that my client has received a copy of all the information being filed " +
+      "and approved the information as being correct and complete to the best of their knowledge and belief. My client " +
+      "understands that they may have to pay financial penalties and face prosecution if they give false information."
 
-    val agentInformationTextWelsh: String = "Cadarnhaf fod fy nghleient wedi adolygu’r wybodaeth a roddwyd ac yn cadarnhau " +
-      "ei bod yn gywir ac yn gyflawn hyd eithaf ei allu i sefydlu atebolrwydd am y flwyddyn dreth " + taxYearMinusOne +
-      " i " + taxYear + ". Mae fy nghleient yn deall y gallai fod yn rhaid iddo dalu cosbau ariannol neu wynebu erlyniad os yw’n rhoi gwybodaeth anwir."
+    val agentInformationTextWelsh: String = "I confirm that my client has received a copy of all the information being filed " +
+      "and approved the information as being correct and complete to the best of their knowledge and belief. My client " +
+      "understands that they may have to pay financial penalties and face prosecution if they give false information."
   }
 
   object Selectors {
