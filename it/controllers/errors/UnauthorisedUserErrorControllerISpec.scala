@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ class UnauthorisedUserErrorControllerISpec extends IntegrationTest with ViewHelp
     lazy val pageHeadingTextWelsh = "Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn"
     lazy val pageTitleTextWelsh = "Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn"
     lazy val youCanTextWelsh = "Gallwch:"
-    lazy val goToTextWelsh = "neu ewch i’r"
-    lazy val incomeTaxHomePageTextWelsh = "Hafan Treth Incwm (agor mewn tab newydd)"
+    lazy val goToTextWelsh = "fynd i’r"
+    lazy val incomeTaxHomePageTextWelsh = "Hafan Treth Incwm (yn agor tab newydd)"
     lazy val forMoreTextWelsh = "am ragor o wybodaeth"
     lazy val useTextWelsh = "defnyddiwch"
     lazy val generalEnquiriesTextWelsh = "Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)"

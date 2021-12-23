@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,8 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
     lazy val expectedP1Text: String = s"We have an Income Tax Return for the $lastTaxYear to $taxYear tax year."
     lazy val expectedP2TextIndividual: String = "You can go to your Income Tax account to see your Income Tax Returns."
     lazy val expectedP2TextAgent: String = "You can go to your client’s Income Tax account to see their Income Tax Returns."
-    lazy val expectedReturnToTaxAccountButtonText: String = "Back to Income Tax account"
+    lazy val expectedReturnToTaxAccountButtonTextIndividual: String = "Go to your Income Tax account"
+    lazy val expectedReturnToTaxAccountButtonTextAgent: String = "Go to Income Tax account"
     lazy val expectedReturnToTaxAccountButtonLink: String = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
     lazy val expectedSignOutButtonText: String = "Sign out"
     lazy val expectedSignOutButtonLinkIndividual: String = "/update-and-submit-income-tax-return/sign-out?isAgent=false"
@@ -53,7 +54,8 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
     lazy val expectedP1TextWelsh: String = s"Mae gennym Ffurflen Dreth Incwm ar gyfer y flwyddyn dreth $lastTaxYear i $taxYear."
     lazy val expectedP2TextIndividualWelsh: String = "Gallwch fynd i’ch cyfrif Treth Incwm i weld eich Ffurflenni Treth Incwm."
     lazy val expectedP2TextAgentWelsh: String = "Gallwch fynd i gyfrif Treth Incwm eich cleient i weld ei Ffurflenni Dreth Incwm."
-    lazy val expectedReturnToTaxAccountButtonTextWelsh: String = "Yn ôl i gyfrif Treth Incwm"
+    lazy val expectedReturnToTaxAccountButtonTextIndividualWelsh: String = "Ewch i’ch cyfrif Treth Incwm"
+    lazy val expectedReturnToTaxAccountButtonTextAgentWelsh: String = "Yn ôl i gyfrif Treth Incwm"
     lazy val expectedSignOutButtonTextWelsh: String = "Allgofnodi"
   }
 
@@ -95,7 +97,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
         h1Check(expectedHeadingText, "xl")
         textOnPageCheck(expectedP1Text, p1TextSelector)
         textOnPageCheck(expectedP2TextIndividual, p2TextSelector)
-        buttonCheck(expectedReturnToTaxAccountButtonText, returnToTaxAccountButtonSelector, Some(expectedReturnToTaxAccountButtonLink))
+        buttonCheck(expectedReturnToTaxAccountButtonTextIndividual, returnToTaxAccountButtonSelector, Some(expectedReturnToTaxAccountButtonLink))
         buttonCheck(expectedSignOutButtonText, signOutButtonSelector, Some(expectedSignOutButtonLinkIndividual))
       }
     }
@@ -116,6 +118,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
         status(result) shouldBe CONFLICT
       }
       textOnPageCheck(expectedP2TextAgent, p2TextSelector)
+      buttonCheck(expectedReturnToTaxAccountButtonTextAgent, returnToTaxAccountButtonSelector, Some(expectedReturnToTaxAccountButtonLink))
       buttonCheck(expectedSignOutButtonText, signOutButtonSelector, Some(expectedSignOutButtonLinkAgent))
     }
   }
@@ -165,7 +168,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
         h1Check(expectedHeadingTextWelsh, "xl")
         textOnPageCheck(expectedP1TextWelsh, p1TextSelector)
         textOnPageCheck(expectedP2TextIndividualWelsh, p2TextSelector)
-        buttonCheck(expectedReturnToTaxAccountButtonTextWelsh, returnToTaxAccountButtonSelector, Some(expectedReturnToTaxAccountButtonLink))
+        buttonCheck(expectedReturnToTaxAccountButtonTextIndividualWelsh, returnToTaxAccountButtonSelector, Some(expectedReturnToTaxAccountButtonLink))
         buttonCheck(expectedSignOutButtonTextWelsh, signOutButtonSelector, Some(expectedSignOutButtonLinkIndividual))
       }
     }
@@ -188,6 +191,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
 
         welshToggleCheck("Welsh")
         textOnPageCheck(expectedP2TextAgentWelsh, p2TextSelector)
+        buttonCheck(expectedReturnToTaxAccountButtonTextAgentWelsh, returnToTaxAccountButtonSelector, Some(expectedReturnToTaxAccountButtonLink))
         buttonCheck(expectedSignOutButtonTextWelsh, signOutButtonSelector, Some(expectedSignOutButtonLinkAgent))
       }
     }

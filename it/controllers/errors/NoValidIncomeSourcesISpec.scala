@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,36 +41,38 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
     val bul1Selector = "#main-content > div > div > div.govuk-body > ul > li:nth-child(1)"
     val bul2Selector = "#main-content > div > div > div.govuk-body > ul > li:nth-child(2)"
     val goToIncomeTaxAccountSelector = "#returnToOverviewPageBtn"
-    val signOutButtonSelector = "#signOutBtn"
   }
 
   object ExpectedResults {
     val title = "No business income sources"
     val heading = "No business income sources"
-    val p1 = "You need at least one source of business income in order to complete an Income Tax Return."
+    val p1Individual = "You need at least one source of business income in order to complete an Income Tax Return."
+    val p1Agent = "Your client needs at least one source of business income in order to complete an Income Tax Return."
     val p2 = "Business income sources include:"
     val bul1 = "Self-employment"
     val bul2 = "UK or overseas property"
-    val submit = "Go to your Income Tax account"
-    val signOut = "Sign out"
-    
+    val submitIndividual = "Back to your Income Tax Return"
+    val submitAgent = "Back to Income Tax Return"
+
     val viewAndChangeOverviewLink = s"http://localhost:9081/report-quarterly/income-and-expenses/view"
     val viewAndChangeOverviewLinkAgent = s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
-    
-    val signOutLink = "/update-and-submit-income-tax-return/sign-out?isAgent=false"
-    val signOutLinkAgent = "/update-and-submit-income-tax-return/sign-out?isAgent=true"
+
   }
 
   object ExpectedResultsWelsh {
     val title = "Dim ffynonellau incwm busnes"
     val heading = "Dim ffynonellau incwm busnes"
-    val p1 = "Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm."
+    val p1Individual = "Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm."
+    val p1Agent = "Mae angen o leiaf un ffynhonnell incwm busnes ar eich cleient er mwyn llenwi Ffurflen Dreth ar gyfer Treth Incwm."
     val p2 = "Mae ffynonellau incwm busnes yn cynnwys:"
     val bul1 = "Hunangyflogaeth"
     val bul2 = "Eiddo yn y DU neu dramor"
-    val submit = "Ewch i’ch cyfrif Treth Incwm"
+    val submitIndividual = "Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm"
+    val submitAgent = "Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm"
 
-    val incomeTaxReturnButtonLink = s"http://localhost:9081/report-quarterly/income-and-expenses/view"
+    val viewAndChangeOverviewLink = s"http://localhost:9081/report-quarterly/income-and-expenses/view"
+    val viewAndChangeOverviewLinkAgent = s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+
   }
 
   import ExpectedResults._
@@ -99,12 +101,11 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
       welshToggleCheck("English")
       titleCheck(title, isWelsh = false)
       h1Check(heading, "xl")
-      textOnPageCheck(p1, p1Selector)
+      textOnPageCheck(p1Individual, p1Selector)
       textOnPageCheck(p2, p2Selector)
       textOnPageCheck(bul1, bul1Selector)
       textOnPageCheck(bul2, bul2Selector)
-      buttonCheck(submit, goToIncomeTaxAccountSelector, Some(viewAndChangeOverviewLink))
-      buttonCheck(signOut, signOutButtonSelector, Some(signOutLink))
+      buttonCheck(submitIndividual, goToIncomeTaxAccountSelector, Some(viewAndChangeOverviewLink))
     }
   }
 
@@ -125,9 +126,15 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
       "returns status of UNPROCESSABLE_ENTITY(422)" in {
         status(result) shouldBe UNPROCESSABLE_ENTITY
       }
-      
-      buttonCheck(submit, goToIncomeTaxAccountSelector, Some(viewAndChangeOverviewLinkAgent))
-      buttonCheck(signOut, signOutButtonSelector, Some(signOutLinkAgent))
+
+      welshToggleCheck("English")
+      titleCheck(title, isWelsh = false)
+      h1Check(heading, "xl")
+      textOnPageCheck(p1Agent, p1Selector)
+      textOnPageCheck(p2, p2Selector)
+      textOnPageCheck(bul1, bul1Selector)
+      textOnPageCheck(bul2, bul2Selector)
+      buttonCheck(submitAgent, goToIncomeTaxAccountSelector, Some(viewAndChangeOverviewLinkAgent))
     }
   }
   
@@ -171,11 +178,35 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
       welshToggleCheck("Welsh")
       titleCheck(title, isWelsh = true)
       h1Check(heading, "xl")
-      textOnPageCheck(p1, p1Selector)
+      textOnPageCheck(p1Individual, p1Selector)
       textOnPageCheck(p2, p2Selector)
       textOnPageCheck(bul1, bul1Selector)
       textOnPageCheck(bul2, bul2Selector)
-      buttonCheck(submit, goToIncomeTaxAccountSelector, Some(incomeTaxReturnButtonLink))
+      buttonCheck(submitIndividual, goToIncomeTaxAccountSelector, Some(viewAndChangeOverviewLink))
+    }
+
+    "render correctly when the user is an agent" should {
+      val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
+
+      lazy val result: Future[Result] = {
+        authoriseAgent()
+        route(app, request).get
+      }
+
+      implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+      "returns status of UNPROCESSABLE_ENTITY(422)" in {
+        status(result) shouldBe UNPROCESSABLE_ENTITY
+      }
+
+      welshToggleCheck("Welsh")
+      titleCheck(title, isWelsh = true)
+      h1Check(heading, "xl")
+      textOnPageCheck(p1Agent, p1Selector)
+      textOnPageCheck(p2, p2Selector)
+      textOnPageCheck(bul1, bul1Selector)
+      textOnPageCheck(bul2, bul2Selector)
+      buttonCheck(submitAgent, goToIncomeTaxAccountSelector, Some(viewAndChangeOverviewLinkAgent))
     }
   }
 

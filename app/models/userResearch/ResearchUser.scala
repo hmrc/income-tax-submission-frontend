@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ sealed trait AffinityGroup {
 case object AG_Individual extends AffinityGroup { val value = "Individual" }
 case object AG_Agent extends AffinityGroup { val value = "Agent" }
 
-case class ResearchUser(userId: String, taxYear: Int, nino: String, credentialStrength: CredentialStrength, confidenceLevel: ConfidenceLevel, affinityGroup: AffinityGroup, enrolments: Enrolments, delegatedEnrolments: DelegatedEnrolments) {
+case class ResearchUser(taxYear: Int, nino: String, credentialStrength: CredentialStrength, confidenceLevel: ConfidenceLevel, affinityGroup: AffinityGroup, enrolments: Enrolments, delegatedEnrolments: DelegatedEnrolments) {
   def toLoginRequest: AuthLoginRequest = AuthLoginRequest(
     affinityGroup = this.affinityGroup,
     confidenceLevel = this.confidenceLevel,

@@ -12,9 +12,11 @@ common.donationsToCharity = Rhoddion i elusennau
 common.employment = Cyflogaeth TWE
 common.underMaintenance = Wrthi’n cynnal a chadw’r safle
 common.govUk = GOV.UK/CYMRAEG
-common.return.button = Yn ôl i hafan Ffurflen Dreth Incwm
+common.return.button.individual = Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm
+common.return.button.agent = Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm
 common.signout.button = Allgofnodi
-common.returnToIncomeTaxAccount.button = Yn ôl i gyfrif Treth Incwm
+common.returnToIncomeTaxAccount.button.individual = Ewch i’ch cyfrif Treth Incwm
+common.returnToIncomeTaxAccount.button.agent = Yn ôl i gyfrif Treth Incwm
 common.back = Yn ôl
 
 betaBar.beta = beta
@@ -29,11 +31,9 @@ common.yourIncomeTaxReturn.agent = Ffurflen Dreth Incwm eich cleient
 common.caption = 6 Ebrill {0} i 5 Ebrill {1}
 startPage1 = Defnyddiwch y gwasanaeth hwn i ddiweddaru a chyflwyno Ffurflen Dreth Incwm.
 startPage2 = Mae hwn yn wasanaeth newydd. Ar hyn o bryd, gallwch ond diweddaru gwybodaeth am y canlynol:
-startPage.interestBullet.agent = llog a dalwyd i’ch cleient yn y DU
-startPage.interestBullet.individual = llog a dalwyd i chi yn y DU
+startPage.interestBullet = llog y DU
 startPage.dividendsBullet = difidendau gan gwmnïau, ymddiriedolaethau a chwmnïau buddsoddi penagored yn y DU
-startPage.charityBullet.agent = rhoddion eich cleient i elusennau
-startPage.charityBullet.individual = eich rhoddion chi i elusennau
+startPage.charityBullet = rhoddion i elusennau
 startPage.employment.agent = Gallwch weld gwybodaeth am gyflogaeth eich cleient ond ni allwch ddefnyddio’r gwasanaeth hwn i’w diweddaru tan 6 Ebrill {0}.
 startPage.employment.individual = Gallwch weld eich gwybodaeth am gyflogaeth ond ni allwch ddefnyddio’r gwasanaeth hwn i’w diweddaru tan 6 Ebrill {0}.
 startPage3.agent.true = I ddiweddaru incwm o hunangyflogaeth ac incwm o eiddo eich cleient, mae’n rhaid i chi ddefnyddio’ch meddalwedd fasnachol ddewisedig.
@@ -41,7 +41,7 @@ startPage3.agent.false = I ddiweddaru’ch incwm o hunangyflogaeth a’ch incwm 
 startPage.continue = Yn eich blaen
 
 overview.individual.task1.heading = Diweddarwch eich Ffurflen Dreth Incwm
-overview.agent.task1.heading = Diweddarwch Ffurflen Dreth Incwm eich cleient.
+overview.agent.task1.heading = Diweddarwch Ffurflen Dreth Incwm eich cleient
 overview.task1.caption = Llenwch yr adrannau mae angen i chi eu diweddaru.
 
 overview.agent.task2.caption.noUpdate =Rhowch o leiaf un diweddariad cyn i chi allu gweld cyfrifiad treth eich cleient hyd yn hyn.
@@ -71,21 +71,21 @@ overview.updated = Wedi diweddaru
 overview.cannotUpdate = Methu diweddaru
 
 declaration.title = Datganiad
-declaration.p1.individual = Mae’r wybodaeth a roddwyd gennyf yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth a’m cred. Os byddaf yn rhoi gwybodaeth ffug, efallai y bydd yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad.
-declaration.p1.agent = Cadarnhaf fod fy nghleient wedi adolygu’r wybodaeth a roddwyd ac yn cadarnhau ei bod yn gywir ac yn gyflawn hyd eithaf ei allu i sefydlu atebolrwydd am y flwyddyn dreth {0} i {1}. Mae fy nghleient yn deall y gallai fod yn rhaid iddo dalu cosbau ariannol neu wynebu erlyniad os yw’n rhoi gwybodaeth anwir.
-declaration.button = Cytunaf - Cyflwyno Ffurflen Dreth Incwm
+declaration.p1.individual = Rwy’n datgan bod yr wybodaeth a’r Hunanasesiad a gyflwynwyd gennyf (o’u hystyried gyda’i gilydd) yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth. Rwy’n deall y gallai fod yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad os byddaf yn rhoi gwybodaeth anwir.
+declaration.p1.agent = Rwy’n cadarnhau bod fy nghleient wedi cael copi o’r holl wybodaeth sy’n cael ei chyflwyno, a’i fod wedi cytuno bod yr wybodaeth yn gywir ac yn gyflawn hyd eithaf ei wybodaeth a’i gred. Mae fy nghleient yn deall y gallai fod yn rhaid iddo dalu cosbau ariannol ac wynebu erlyniad os bydd yn rhoi gwybodaeth anwir.
+declaration.button = Cytuno a chyflwyno
 
 taxReturnReceived.title.individual =  Mae’ch Ffurflen Dreth Incwm wedi dod i law
 taxReturnReceived.title.agent = Mae Ffurflen Dreth Incwm eich cleient wedi dod i law
 taxReturnReceived.panel.heading = Cadarnhad:
-taxReturnReceived.panel.subheading.individual = Rydym wedi cael eich Ffurflen Dreth Incwm ar gyfer 2019 i 2020
-taxReturnReceived.panel.subheading.agent = Rydym wedi cael Ffurflen Dreth Incwm eich cleient ar gyfer 2019 i 2020
+taxReturnReceived.panel.subheading.individual = Rydym wedi cael eich Ffurflen Dreth Incwm ar gyfer {0} i {1}
+taxReturnReceived.panel.subheading.agent = Rydym wedi cael Ffurflen Dreth Incwm eich cleient ar gyfer {0} i {1}
 taxReturnReceived.summaryrow.1 = Enw
 taxReturnReceived.summaryrow.2 = Cyfeirnod Unigryw y Trethdalwr (UTR)
 taxReturnReceived.summaryrow.3 = Dyddiad cyflwyno
 taxReturnReceived.summaryrow.4 = Treth Incwm a chyfraniadau Yswiriant Gwladol
 taxReturnReceived.nextSteps.subheading = Yr hyn y mae angen i chi ei wneud nawr
-taxReturnReceived.nextSteps.p1 = Gallwch gael gwybod:
+taxReturnReceived.nextSteps.p1 = Gallwch gael gwybod
 taxReturnReceived.nextSteps.p2.individual = faint sy’n ddyledus gennych a sut i dalu.
 taxReturnReceived.nextSteps.p2.agent = faint sy’n ddyledus gan eich cleient a sut i dalu.
 taxReturnReceived.nextSteps.bullet1.individual = gwybod pryd mae eich diweddariadau nesaf yn ddyledus
@@ -98,8 +98,8 @@ taxReturnReceived.print = Argraffu’r dudalen hon
 
 errors.500.heading = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
 errors.500.p1 = Rhowch gynnig arall arni yn nes ymlaen.
-errors.XXX.p3 = neu ewch i’r
-errors.XXX.p4 = Hafan Treth Incwm (agor mewn tab newydd)
+errors.XXX.p3 = fynd i’r
+errors.XXX.p4 = Hafan Treth Incwm (yn agor tab newydd)
 errors.XXX.p5 = am ragor o wybodaeth
 errors.XXX.p6 = defnyddiwch
 errors.XXX.p7 = Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)
@@ -133,7 +133,7 @@ ivFailurePage.li1 = gwnaethoch gymryd gormod o amser i nodi gwybodaeth ac mae’
 ivFailurePage.li2 = rydych wedi methu ag ateb digon o gwestiynau’n gywir
 ivFailurePage.li3 = nid oeddem yn gallu paru’ch manylion â’r hyn sydd ar ein system
 
-error.individual-unauthorised.2 = Cofrestrwch ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+error.individual-unauthorised.2 = gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 error-unauthorised.p3 = cyn i chi allu bwrw golwg ar y dudalen hon.
 
 error.tax-year.paragraph1 = Gallwch ond nodi gwybodaeth ar gyfer blwyddyn dreth 2021 i 2022.
@@ -164,11 +164,11 @@ error.taxReturnPreviouslyUpdated.paragraph1.individual = Rhaid i chi gyflwyno ei
 error.taxReturnPreviouslyUpdated.paragraph1.agent = Rhaid i chi gyflwyno Ffurflen Dreth Incwm eich cleient eto.
 
 error.no-valid-income.heading = Dim ffynonellau incwm busnes
-error.no-valid-income.p1 = Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm.
+error.no-valid-income.p1.individual = Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm.
+error.no-valid-income.p1.agent = Mae angen o leiaf un ffynhonnell incwm busnes ar eich cleient er mwyn llenwi Ffurflen Dreth ar gyfer Treth Incwm.
 error.no-valid-income.p2 = Mae ffynonellau incwm busnes yn cynnwys:
 error.no-valid-income.p2.bullet1 = Hunangyflogaeth
 error.no-valid-income.p2.bullet2 = Eiddo yn y DU neu dramor
-error.no-valid-income.submit = Ewch i’ch cyfrif Treth Incwm
 
 error.business-validation-rules.heading = Mae problem gyda’ch diweddariadau
 error.business-validation-rules.paragraph.agent = Ewch ati i wirio Ffurflen Dreth eich cleient ar gyfer Treth Incwm a’i chyflwyno eto.

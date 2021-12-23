@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,18 +50,18 @@ class UserResearchLoginController @Inject()(
   ))
 
   def submit(): Action[AnyContent] = Action.async { implicit request =>
-    val suppliedUsername: String = UserResearchLoginForm.researchLoginForm.bindFromRequest.get
-    val userDetails: Option[ResearchUser] = ResearchUsers.getUserCredentials(suppliedUsername)
-    
-    userDetails match {
-      case Some(details) => loginStubConnector.submitLoginRequest(details).map {
-        case Some(response) => Redirect(controllers.routes.StartPageController.show(details.taxYear))
+    val suppliedCredentialAndYear: Array[String] = UserResearchLoginForm.researchLoginForm.bindFromRequest.get.split("::")
+    val suppliedCredential = suppliedCredentialAndYear.head
+    val suppliedYear = if(suppliedCredentialAndYear.length > 1 && suppliedCredentialAndYear.last.matches("[0-9]{4}")) suppliedCredentialAndYear.last.toInt else appConfig.defaultTaxYear
+
+    val userDetails: ResearchUser = ResearchUsers.generateUserCredentials(suppliedCredential, suppliedYear)
+
+    loginStubConnector.submitLoginRequest(userDetails).map {
+        case Some(response) => Redirect(controllers.routes.StartPageController.show(userDetails.taxYear))
           .withSession(buildGGSession(response))
         case None => Redirect(controllers.testOnly.routes.UserResearchLoginController.show())
-      }
-      case _ => Future.successful(Redirect(controllers.testOnly.routes.UserResearchLoginController.show()))
     }
-    
+
   }
 
 }

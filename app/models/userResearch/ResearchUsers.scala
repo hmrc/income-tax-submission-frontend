@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,15 @@
 package models.userResearch
 
 object ResearchUsers {
-  
-  private[userResearch] val users: Seq[ResearchUser] = Seq[ResearchUser](
-    ResearchUser("TEST_ID", 2021, "AA123456A", CS_Strong, L250, AG_Individual, Seq(Enrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")))), Seq(DelegatedEnrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")), "mtd-auth"))),
-    ResearchUser("70365", 2021, "AA123456A", CS_Strong, L250, AG_Individual, Seq(Enrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")))), Seq())
+
+  def generateUserCredentials(nino: String, suppliedYear: Int): ResearchUser = ResearchUser(
+    taxYear = suppliedYear,
+    nino = nino,
+    credentialStrength = CS_Strong,
+    confidenceLevel = L250,
+    affinityGroup = AG_Individual,
+    enrolments = Seq(Enrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")))),
+    delegatedEnrolments = Seq(DelegatedEnrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")), "mtd-auth"))
   )
-  
-  def getUserCredentials(userId: String): Option[ResearchUser] = users.find(_.userId == userId)
-  
+
 }

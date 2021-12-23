@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,8 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
     val heading = "There’s a problem with your updates"
     val checkYourIncomeTaxReturnAgent = "Check your client’s Income Tax Return and submit it again."
     val checkYourIncomeTaxReturnIndividual = "Check your Income Tax Return and submit it again."
-    val incomeTaxReturnButtonText = "Back to Income Tax Return"
+    val incomeTaxReturnButtonTextIndividual = "Back to your Income Tax Return"
+    val incomeTaxReturnButtonTextAgent = "Back to Income Tax Return"
     val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
@@ -56,7 +57,8 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
     val heading = "Mae problem gyda’ch diweddariadau"
     val checkYourIncomeTaxReturnAgent = "Ewch ati i wirio Ffurflen Dreth eich cleient ar gyfer Treth Incwm a’i chyflwyno eto."
     val checkYourIncomeTaxReturnIndividual = "Ewch ati i wirio’ch Ffurflen Dreth ar gyfer Treth Incwm a’i chyflwyno eto."
-    val incomeTaxReturnButtonText = "Yn ôl i hafan Ffurflen Dreth Incwm"
+    val incomeTaxReturnButtonTextIndividual = "Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm"
+    val incomeTaxReturnButtonTextAgent = "Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm"
     val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
@@ -89,7 +91,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
       titleCheck(title, isWelsh = false)
       h1Check(heading, size = "xl")
       textOnPageCheck(checkYourIncomeTaxReturnIndividual, checkYourIncomeTaxReturnSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      buttonCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -111,7 +113,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
       titleCheck(title, isWelsh = false)
       h1Check(heading, size = "xl")
       textOnPageCheck(checkYourIncomeTaxReturnAgent, checkYourIncomeTaxReturnSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      buttonCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
 
@@ -138,7 +140,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
       titleCheck(title, isWelsh = true)
       h1Check(heading, "xl")
       textOnPageCheck(checkYourIncomeTaxReturnIndividual, checkYourIncomeTaxReturnSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      buttonCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -159,7 +161,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
       titleCheck(title, isWelsh = true)
       h1Check(heading, "xl")
       textOnPageCheck(checkYourIncomeTaxReturnAgent, checkYourIncomeTaxReturnSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      buttonCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
   }

@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
     </header>
 
     <div class="govuk-body">
-        <p>@messages("error.no-valid-income.p1")</p>
+        <p>@messages(s"error.no-valid-income.p1.${if(isAgent) "agent" else "individual"}")</p>
         <p class="govuk-!-margin-bottom-2">@messages("error.no-valid-income.p2")</p>
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("error.no-valid-income.p2.bullet1")</li>
@@ -42,23 +42,17 @@
         @govUkButton(Button(
             attributes = Map("id" -> "returnToOverviewPageBtn"),
             preventDoubleClick = true,
-            content = Text(messages("error.no-valid-income.submit")),
+            content = Text(messages(s"common.return.button.${if(isAgent) "agent" else "individual"}")),
             classes = "govuk-button",
             href = Some(if(isAgent) appConfig.viewAndChangeViewUrlAgent else appConfig.viewAndChangeViewUrl)
         ))
-    
-        @govUkButton(Button(
-            attributes = Map("id" -> "signOutBtn"),
-            preventDoubleClick = true,
-            content = Text(messages("common.signout.button")),
-            classes = "govuk-button govuk-button--secondary",
-            href = Some(if(isAgent) controllers.routes.SignOutController.signOut(true).url else controllers.routes.SignOutController.signOut(false).url)
-        ))
+
     </div>
     
 }
 
 @layout(pageTitle = messages("error.no-valid-income.heading"),
+                    backLink = true,
                     taxYear = Some(taxYear),
                     isAgent = isAgent,
                     showSignOut = false,

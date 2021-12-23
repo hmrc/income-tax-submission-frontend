@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,8 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
     val addressHasChangedTextAgent = "Your client’s address has changed to a country with a different rate of tax."
     val submitYourReturnIndividual = "You must submit your Income Tax Return again to get a new tax calculation."
     val submitYourReturnAgent = "You must submit your client’s Income Tax Return again to get a new tax calculation."
-    val incomeTaxReturnButtonText = "Back to Income Tax Return"
+    val incomeTaxReturnButtonTextIndividual = "Back to your Income Tax Return"
+    val incomeTaxReturnButtonTextAgent = "Back to Income Tax Return"
   }
 
   object ExpectedResultsWelsh {
@@ -63,7 +64,8 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
     val addressHasChangedTextAgentWelsh = "Mae cyfeiriad eich cleient wedi newid i wlad gyda chyfradd dreth wahanol."
     val submitYourReturnIndividualWelsh = "Rhaid i chi gyflwyno eich Ffurflen Dreth Incwm eto i gael cyfrifiad treth newydd."
     val submitYourReturnAgentWelsh = "Rhaid i chi gyflwyno Ffurflen Dreth Incwm eich cleient eto i gael cyfrifiad treth newydd."
-    val incomeTaxReturnButtonTextWelsh = "Yn ôl i hafan Ffurflen Dreth Incwm"
+    val incomeTaxReturnButtonTextIndividualWelsh = "Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm"
+    val incomeTaxReturnButtonTextAgentWelsh = "Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm"
   }
 
   import Selectors._
@@ -94,8 +96,8 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       h1Check(headingIndividual, "xl")
       textOnPageCheck(addressHasChangedTextIndividual, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnIndividual, submitYourReturnSelector)
-      textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -117,8 +119,8 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       h1Check(headingAgent, "xl")
       textOnPageCheck(addressHasChangedTextAgent, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnAgent, submitYourReturnSelector)
-      textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
   "Attempting to Render the address change error page in year" should {
@@ -164,8 +166,8 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       h1Check(headingIndividualWelsh, "xl")
       textOnPageCheck(addressHasChangedTextIndividualWelsh, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnIndividualWelsh, submitYourReturnSelector)
-      textOnPageCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextIndividualWelsh, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextIndividualWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -187,8 +189,8 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
       h1Check(headingAgentWelsh, "xl")
       textOnPageCheck(addressHasChangedTextAgentWelsh, addressHasChangedSelector)
       textOnPageCheck(submitYourReturnAgentWelsh, submitYourReturnSelector)
-      textOnPageCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextAgentWelsh, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextAgentWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
 

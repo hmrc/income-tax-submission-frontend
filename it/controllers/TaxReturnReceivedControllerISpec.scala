@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,9 +60,10 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
   val nino: String = "AA012345A"
   val mtditid: String = "1234567890"
 
+  val taxYear: Int = 2022
+  val taxYearMinusOne: Int = taxYear - 1
+
   object ExpectedResults {
-    val taxYear: Int = 2022
-    val taxYearMinusOne: Int = taxYear - 1
     val summaryRow1Key: String = "Name"
     val summaryRow2Key: String = "Unique Tax Reference (UTR)"
     val summaryRow3Key: String = "Date submitted"
@@ -78,7 +79,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
   }
 
   object IndividualExpectedResults {
-
     val individualSummaryData: TaxReturnReceivedModel = TaxReturnReceivedModel(
       "John Individual", 1000, "IN12345", 321, 312, 123
     )
@@ -88,7 +88,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val summaryRow3Value: String = timeStamp.toLongDate(toMessages("EN"))
 
     val panelHeading: String = "Confirmation:"
-    val panelSubheading: String = "We’ve received your Income Tax Return for 2019 to 2020"
+    val panelSubheading: String = s"We’ve received your Income Tax Return for $taxYearMinusOne to $taxYear"
 
     val nextStepsP1: String = "Find out what you owe and how to pay."
     val nextStepsP2: String = "what you owe and how to pay."
@@ -97,12 +97,12 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val nextStepsP4: String = "If you need to contact us about your Income Tax Return, tell us your UTR."
 
     val panelHeadingWelsh: String = "Cadarnhad:"
-    val panelSubheadingWelsh: String = "Rydym wedi cael eich Ffurflen Dreth Incwm ar gyfer 2019 i 2020"
+    val panelSubheadingWelsh: String = s"Rydym wedi cael eich Ffurflen Dreth Incwm ar gyfer $taxYearMinusOne i $taxYear"
     val summaryRow1ValueWelsh: String = "John Individual"
     val summaryRow2ValueWelsh: String = "IN12345"
     val summaryRow3ValueWelsh: String = timeStamp.toLongDate(toMessages("CY"))
 
-    val nextStepsP1Welsh: String = "Gallwch gael gwybod: faint sy’n ddyledus gennych a sut i dalu."
+    val nextStepsP1Welsh: String = "Gallwch gael gwybod faint sy’n ddyledus gennych a sut i dalu."
     val nextStepsP2Welsh: String = "faint sy’n ddyledus gennych a sut i dalu."
     val nextStepsP4Welsh: String = "Os oes angen i chi gysylltu â ni am eich Ffurflen Dreth Incwm, rhowch eich UTR i ni."
   }
@@ -118,7 +118,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val summaryRow3Value: String = timeStamp.toLongDate(toMessages("EN"))
 
     val panelHeading = "Confirmation:"
-    val panelSubheading = "We’ve received your client’s Income Tax Return for 2019 to 2020"
+    val panelSubheading = s"We’ve received your client’s Income Tax Return for $taxYearMinusOne to $taxYear"
 
     val nextStepsP1: String = "Find out what your client owes and how to pay."
     val nextStepsP2: String = "what your client owes and how to pay."
@@ -127,13 +127,13 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val nextStepsP4: String = "If you need to contact us about your client’s Income Tax Return, tell us their UTR."
 
     val panelHeadingWelsh = "Cadarnhad:"
-    val panelSubheadingWelsh = "Rydym wedi cael Ffurflen Dreth Incwm eich cleient ar gyfer 2019 i 2020"
+    val panelSubheadingWelsh = s"Rydym wedi cael Ffurflen Dreth Incwm eich cleient ar gyfer $taxYearMinusOne i $taxYear"
 
     val summaryRow1ValueWelsh: String = "Jane Agent"
     val summaryRow2ValueWelsh: String = "AG98765"
     val summaryRow3ValueWelsh: String = timeStamp.toLongDate(toMessages("CY"))
 
-    val nextStepsP1Welsh: String = "Gallwch gael gwybod: faint sy’n ddyledus gan eich cleient a sut i dalu."
+    val nextStepsP1Welsh: String = "Gallwch gael gwybod faint sy’n ddyledus gan eich cleient a sut i dalu."
     val nextStepsP2Welsh: String = "faint sy’n ddyledus gan eich cleient a sut i dalu."
     val nextStepsP4Welsh: String = "Os oes angen i chi gysylltu â ni am Ffurflen Dreth Incwm eich cleient rhowch ei UTR i ni."
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package controllers
 import audit.AuditService
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
-import common.SessionValues.CALCULATION_ID
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, ViewHelpers}
@@ -30,7 +29,7 @@ import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.test.Helpers.{OK, session, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import services.{IncomeSourcesService, LiabilityCalculationService}
 import uk.gov.hmrc.http.SessionKeys
@@ -41,11 +40,10 @@ import scala.concurrent.Future
 
 class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
-  val taxYear = 2022
-  val taxYearEndOfYear: Int = taxYear - 1
-  val taxYearMinusOne: Int = taxYear - 1
-  val taxYearPlusOne: Int = taxYear + 1
-  val taxYearEndOfYearMinusOne: Int = taxYearEndOfYear - 1
+  private val taxYear = 2022
+  private val taxYearEndOfYear = taxYear - 1
+  private val taxYearMinusOne = taxYear - 1
+  private val taxYearEndOfYearMinusOne = taxYearEndOfYear - 1
 
   object Links {
     def startPageBreadcrumbUrl(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/start"
@@ -68,8 +66,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     def viewEstimateLink(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/calculate"
 
-    def viewAndChangeLink(isAgent:Boolean): String = if (isAgent) {"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"}
-      else {"http://localhost:9081/report-quarterly/income-and-expenses/view"}
+    def viewAndChangeLink(isAgent: Boolean): String = if (isAgent) {
+      "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+    }
+    else {
+      "http://localhost:9081/report-quarterly/income-and-expenses/view"
+    }
 
     val endOfYearContinueLink = s"/update-and-submit-income-tax-return/$taxYearEndOfYear/final-calculation"
 
@@ -83,8 +85,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
       "You can check your calculation and then submit your Income Tax Return."
     val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
     val goToYourIncomeTax = "Go to your Income Tax Account to find out more about your current tax position."
-    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"You cannot submit your Income Tax Return until 6 April $taxYear."
 
+    def inYearInsertText(taxYear: Int): String = s"You cannot submit your Income Tax Return until 6 April $taxYear."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -95,8 +97,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
       " You can check their calculation and then submit their Income Tax Return."
     val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
     val goToYourIncomeTax = "Go to your client’s Income Tax Account to find out more about their current tax position."
-    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
 
+    def inYearInsertText(taxYear: Int): String = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -106,17 +108,19 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val submitReturnText: String = "Os ydych wedi gorffen diweddaru eich Ffurflen Dreth Incwm, gallwch barhau a gweld eich cyfrifiad treth terfynol. Gallwch wirio eich cyfrifiad ac yna fe allwch gyflwyno eich Ffurflen Dreth Incwm."
     val ifWeHaveInfo = "Os oes gennym wybodaeth am eich incwm a didyniadau, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
     val goToYourIncomeTax = "Ewch i’ch Cyfrif Treth Incwm i wybod mwy am eich sefyllfa dreth bresennol."
-    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm tan 6 Ebrill $taxYear."
+
+    def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm tan 6 Ebrill $taxYear."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
     val headingExpected = "Ffurflen Dreth Incwm eich cleient"
-    val updateIncomeTaxReturnText = "Diweddarwch Ffurflen Dreth Incwm eich cleient."
+    val updateIncomeTaxReturnText = "Diweddarwch Ffurflen Dreth Incwm eich cleient"
     val submitReturnHeaderEOY = "Gwiriwch a chyflwynwch Ffurflen Dreth Incwm eich cleient"
     val submitReturnText: String = "Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, gallwch barhau a gweld eu cyfrifiad treth terfynol. Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm."
     val ifWeHaveInfo = "Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
     val goToYourIncomeTax = "Ewch i’r canlynol ar ran eich cleient Cyfrif Treth Incwm i wybod mwy am ei sefyllfa dreth bresennol."
-    def inYearInsertText(taxYear: Int = taxYearPlusOne) = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm eich cleient tan 6 Ebrill $taxYear."
+
+    def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm eich cleient tan 6 Ebrill $taxYear."
   }
 
   trait SpecificExpectedResults {
@@ -126,6 +130,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val submitReturnText: String
     val ifWeHaveInfo: String
     val goToYourIncomeTax: String
+
     def inYearInsertText(taxYear: Int): String
   }
 
@@ -133,7 +138,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val vcBreadcrumb: String
     val startPageBreadcrumb: String
     val overviewBreadcrumb: String
+
     def caption(taxYearMinusOne: Int, taxYear: Int): String
+
     val updatedText: String
     val notStartedText: String
     val underMaintenance: String
@@ -151,7 +158,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val vcBreadcrumb = "Income Tax"
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
     val overviewBreadcrumb = "Your Income Tax Return"
+
     def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 April $taxYearMinusOne to 5 April $taxYear"
+
     val updatedText = "Updated"
     val notStartedText = "Not started"
     val underMaintenance = "Under maintenance"
@@ -169,7 +178,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val vcBreadcrumb = "Treth Incwm"
     val startPageBreadcrumb = "Diweddaru a chyflwyno Ffurflen Dreth Incwm"
     val overviewBreadcrumb = "Eich Ffurflen Dreth Incwm"
+
     def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 Ebrill $taxYearMinusOne i 5 Ebrill $taxYear"
+
     val updatedText = "Wedi diweddaru"
     val notStartedText = "Heb ddechrau"
     val underMaintenance = "Wrthi’n cynnal a chadw’r safle"
@@ -240,7 +251,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   def stubLiabilityCalculation(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
     stubGet("/income-tax-calculation/income-tax/nino/AA123456A/taxYear/2022/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
   }
-  
+
   val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = {
     Seq(
       UserScenario(isWelsh = false, isAgent = false, CommonExpectedEN, Some(ExpectedIndividualEN)),
@@ -288,7 +299,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
 
           "have a dividends section that says under maintenance" which {
             textOnPageCheck(underMaintenance, dividendsStatusSelector)
@@ -335,7 +346,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYear))
@@ -388,7 +399,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -444,7 +455,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
             textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
             textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-            textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
+            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
 
             "has a dividends section" which {
               linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -499,7 +510,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -556,7 +567,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
             textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
             textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-            textOnPageCheck(specific.inYearInsertText(taxYearPlusOne),inYearInsertTextSelector)
+            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
 
             "has a dividends section" which {
               linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -790,7 +801,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         result.header.status shouldBe SEE_OTHER
 
 
-
       }
     }
     s"return an OK (200) and no prior data and a session id" when {
@@ -857,15 +867,15 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   "Hitting the final calculation endpoint" when {
-    
+
     userScenarios.filterNot(_.isWelsh).foreach { user =>
-      
+
       def authUser(): StubMapping = {
-        if(!user.isAgent) authoriseIndividual()
+        if (!user.isAgent) authoriseIndividual()
         else authoriseAgent()
       }
-      
-      s"as an ${if(user.isAgent) "agent" else "individual"}" should {
+
+      s"as an ${if (user.isAgent) "agent" else "individual"}" should {
 
         "return a redirect with the calc id in session" which {
 
@@ -875,7 +885,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             SessionValues.CLIENT_NINO -> "AA123456A",
             SessionValues.TAX_YEAR -> "2022"
           ).withHeaders("X-Session-ID" -> sessionId)
-          
+
           lazy val result: Future[Result] = {
             authUser()
             stubLiabilityCalculation(Some(LiabilityCalculationIdModel(calcId)))
@@ -885,21 +895,21 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           "has a status of SEE_OTHER" in {
             status(result) shouldBe SEE_OTHER
           }
-          
-          s"has a redirect to the view and change ${if(user.isAgent) "agent" else "individual"} page" in {
-            val expectedUrl = if(user.isAgent) "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/2022/final-tax-overview/calculate"
+
+          s"has a redirect to the view and change ${if (user.isAgent) "agent" else "individual"} page" in {
+            val expectedUrl = if (user.isAgent) "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/2022/final-tax-overview/calculate"
             else "http://localhost:9081/report-quarterly/income-and-expenses/view/2022/final-tax-overview/calculate"
-            
-            await(result).header.headers("Location") shouldBe expectedUrl 
+
+            await(result).header.headers("Location") shouldBe expectedUrl
           }
         }
-        
+
       }
-      
+
     }
-    
+
     "there is an error with the liability calculation" should {
-      
+
       "redirect to an error page" which {
 
         lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYear)).withSession(
@@ -913,21 +923,21 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           stubLiabilityCalculation(None, SERVICE_UNAVAILABLE)
           route(appWithSourcesTurnedOff, request).get
         }
-        
+
         "has the status SERVICE_AVAILABLE (503)" in {
           status(result) shouldBe SERVICE_UNAVAILABLE
         }
-        
+
         "is a webpage" in {
           await(result).body.contentType shouldBe Some("text/html; charset=utf-8")
         }
-        
+
       }
-      
+
     }
-    
+
   }
-  
+
   def stubIncomeSources: StubMapping = stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,
     """{
       |	"dividends": {

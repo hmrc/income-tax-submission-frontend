@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import utils.UnitTest
 
 class ResearchUserSpec extends UnitTest {
 
-  val userId = "123456"
   val taxYear = 2021
   val nino = "AA000000A"
   val credentialStrength: CredentialStrength = CS_Strong
@@ -33,9 +32,8 @@ class ResearchUserSpec extends UnitTest {
   val delegatedEnrolments: DelegatedEnrolments = Seq(
     DelegatedEnrolment("enrolment1", Seq(Identifier("id1K", "id1V")), "mtd-auth")
   )
-  
+
   val validModel: ResearchUser = ResearchUser(
-    userId = userId,
     taxYear = taxYear,
     nino = nino,
     credentialStrength = credentialStrength,
@@ -44,17 +42,17 @@ class ResearchUserSpec extends UnitTest {
     enrolments = enrolments,
     delegatedEnrolments = delegatedEnrolments
   )
-  
+
   val validAuthRequestModel: AuthLoginRequest = AuthLoginRequest(
     "", affinityGroup, confidenceLevel, credentialStrength, enrolments, Seq.empty, Some(nino)
   )
-  
+
   "ResearchUser .toLoginRequest" should {
-    
+
     "correctly convert the model to an AuthLoginRequest" in {
       validModel.toLoginRequest shouldBe validAuthRequestModel
     }
-    
+
   }
-  
+
 }

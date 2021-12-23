@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
     val heading = "No updates provided"
     val youNeedToProvideTextIndividual = "You need to provide at least one update before you can submit your Income Tax Return."
     val youNeedToProvideTextAgent = "You need to provide at least one update before you can submit your client’s Income Tax Return."
-    val incomeTaxReturnButtonText = "Back to Income Tax Return"
+    val incomeTaxReturnButtonTextIndividual = "Back to your Income Tax Return"
+    val incomeTaxReturnButtonTextAgent = "Back to Income Tax Return"
     val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
@@ -56,7 +57,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
     val heading = "Dim diweddariad wedi’i roi"
     val youNeedToProvideTextIndividual = "Mae angen i chi roi o leiaf un diweddariad cyn i chi allu cyflwyno eich Ffurflen Dreth Incwm."
     val youNeedToProvideTextAgent = "Mae angen i chi roi o leiaf un diweddariad cyn i chi allu cyflwyno Ffurflen Dreth Incwm eich cleient."
-    val incomeTaxReturnButtonText = "Yn ôl i hafan Ffurflen Dreth Incwm"
+    val incomeTaxReturnButtonTextIndividual = "Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm"
+    val incomeTaxReturnButtonTextAgent = "Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm"
     val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
@@ -87,8 +89,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
       titleCheck(title, isWelsh = false)
       h1Check(heading, "xl")
       textOnPageCheck(youNeedToProvideTextIndividual, youNeedToProvideSelector)
-      textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -109,8 +111,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
       titleCheck(title, isWelsh = false)
       h1Check(heading, "xl")
       textOnPageCheck(youNeedToProvideTextAgent, youNeedToProvideSelector)
-      textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
   "Attempting to Render the no updates provided error page in year" should {
@@ -155,8 +157,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
       titleCheck(title, isWelsh = true)
       h1Check(heading, "xl")
       textOnPageCheck(youNeedToProvideTextIndividual, youNeedToProvideSelector)
-      textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -177,8 +179,8 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
       titleCheck(title, isWelsh = true)
       h1Check(heading, "xl")
       textOnPageCheck(youNeedToProvideTextAgent, youNeedToProvideSelector)
-      textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
 

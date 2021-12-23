@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ class IndividualAuthErrorControllerISpec extends IntegrationTest with ViewHelper
     val linkHref: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax"
 
     val validTitleWelsh: String = "Ni allwch fwrw golwg dros y dudalen hon"
-    val pageContentWelsh: String = "Mae’n rhaid i chi Cofrestrwch ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth " +
+    val pageContentWelsh: String = "Mae’n rhaid i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth " +
       "Incwm cyn i chi allu bwrw golwg ar y dudalen hon."
-    val linkContentWelsh: String = "Cofrestrwch ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm"
+    val linkContentWelsh: String = "gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm"
   }
 
   object Selectors {
