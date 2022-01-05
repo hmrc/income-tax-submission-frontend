@@ -71,9 +71,9 @@ overview.updated = Updated
 overview.cannotUpdate = Cannot update
 
 declaration.title = Declaration
-declaration.p1.individual = The information I have provided is correct and complete to the best of my knowledge and belief. If I give false information I may have to pay financial penalties and face prosecution.
-declaration.p1.agent = I confirm that my client has reviewed the information provided and confirmed that it is correct and complete to the best of their knowledge to establish the liability for the tax year {0} to {1}. My client understands that they may have to pay financial penalties or face prosecution if they give false information.
-declaration.button = I agree - Submit Income Tax Return
+declaration.p1.individual = I declare that the information and self-assessment I have filed are (taken together) correct and complete to the best of my knowledge. I understand that I may have to pay financial penalties and face prosecution if I give false information.
+declaration.p1.agent = I confirm that my client has received a copy of all the information being filed and approved the information as being correct and complete to the best of their knowledge and belief. My client understands that they may have to pay financial penalties and face prosecution if they give false information.
+declaration.button = Agree and submit
 
 taxReturnReceived.title.individual = We’ve received your Income Tax Return
 taxReturnReceived.title.agent = We’ve received your client’s Income Tax Return

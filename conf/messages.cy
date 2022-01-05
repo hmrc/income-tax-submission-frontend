@@ -71,9 +71,9 @@ overview.updated = Wedi diweddaru
 overview.cannotUpdate = Methu diweddaru
 
 declaration.title = Datganiad
-declaration.p1.individual = Mae’r wybodaeth a roddwyd gennyf yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth a’m cred. Os byddaf yn rhoi gwybodaeth ffug, efallai y bydd yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad.
-declaration.p1.agent = Cadarnhaf fod fy nghleient wedi adolygu’r wybodaeth a roddwyd ac yn cadarnhau ei bod yn gywir ac yn gyflawn hyd eithaf ei allu i sefydlu atebolrwydd am y flwyddyn dreth {0} i {1}. Mae fy nghleient yn deall y gallai fod yn rhaid iddo dalu cosbau ariannol neu wynebu erlyniad os yw’n rhoi gwybodaeth anwir.
-declaration.button = Cytunaf - Cyflwyno Ffurflen Dreth Incwm
+declaration.p1.individual = Rwy’n datgan bod yr wybodaeth a’r Hunanasesiad a gyflwynwyd gennyf (o’u hystyried gyda’i gilydd) yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth. Rwy’n deall y gallai fod yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad os byddaf yn rhoi gwybodaeth anwir.
+declaration.p1.agent = Rwy’n cadarnhau bod fy nghleient wedi cael copi o’r holl wybodaeth sy’n cael ei chyflwyno, a’i fod wedi cytuno bod yr wybodaeth yn gywir ac yn gyflawn hyd eithaf ei wybodaeth a’i gred. Mae fy nghleient yn deall y gallai fod yn rhaid iddo dalu cosbau ariannol ac wynebu erlyniad os bydd yn rhoi gwybodaeth anwir.
+declaration.button = Cytuno a chyflwyno
 
 taxReturnReceived.title.individual =  Mae’ch Ffurflen Dreth Incwm wedi dod i law
 taxReturnReceived.title.agent = Mae Ffurflen Dreth Incwm eich cleient wedi dod i law
