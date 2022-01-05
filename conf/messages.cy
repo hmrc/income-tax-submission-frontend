@@ -71,9 +71,9 @@ overview.updated = Wedi diweddaru
 overview.cannotUpdate = Methu diweddaru
 
 declaration.title = Datganiad
-declaration.p1.individual = I declare that the information and self-assessment I have filed are (taken together) correct and complete to the best of my knowledge. I understand that I may have to pay financial penalties and face prosecution if I give false information.
-declaration.p1.agent = I confirm that my client has received a copy of all the information being filed and approved the information as being correct and complete to the best of their knowledge and belief. My client understands that they may have to pay financial penalties and face prosecution if they give false information.
-declaration.button = Cytunaf - Cyflwyno Ffurflen Dreth Incwm
+declaration.p1.individual = Rwy’n datgan bod yr wybodaeth a’r Hunanasesiad a gyflwynwyd gennyf (o’u hystyried gyda’i gilydd) yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth. Rwy’n deall y gallai fod yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad os byddaf yn rhoi gwybodaeth anwir.
+declaration.p1.agent = Rwy’n cadarnhau bod fy nghleient wedi cael copi o’r holl wybodaeth sy’n cael ei chyflwyno, a’i fod wedi cytuno bod yr wybodaeth yn gywir ac yn gyflawn hyd eithaf ei wybodaeth a’i gred. Mae fy nghleient yn deall y gallai fod yn rhaid iddo dalu cosbau ariannol ac wynebu erlyniad os bydd yn rhoi gwybodaeth anwir.
+declaration.button = Cytuno a chyflwyno
 
 taxReturnReceived.title.individual =  Mae’ch Ffurflen Dreth Incwm wedi dod i law
 taxReturnReceived.title.agent = Mae Ffurflen Dreth Incwm eich cleient wedi dod i law
