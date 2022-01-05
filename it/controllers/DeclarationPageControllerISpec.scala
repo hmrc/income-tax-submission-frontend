@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,12 +64,12 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     val heading: String = "Declaration"
     val subheading: String = "6 April " + taxYearMinusOne + " to " + "5 April " + taxYear
 
-    val agreeButton: String = "I agree - Submit Income Tax Return"
+    val agreeButton: String = "Agree and submit"
 
     val headingWelsh: String = "Datganiad"
     val subheadingWelsh: String = "6 Ebrill " + taxYearMinusOne + " i " + "5 Ebrill " + taxYear
 
-    val agreeButtonWelsh: String = "Cytunaf - Cyflwyno Ffurflen Dreth Incwm"
+    val agreeButtonWelsh: String = "Cytuno a chyflwyno"
 
     val addressHasChangedTitle: String = "Your address has changed"
 
@@ -100,9 +100,9 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       "correct and complete to the best of my knowledge. I understand that I may have to pay financial penalties and " +
       "face prosecution if I give false information."
 
-    val informationTextWelsh: String = "I declare that the information and self-assessment I have filed are (taken together) " +
-      "correct and complete to the best of my knowledge. I understand that I may have to pay financial penalties and " +
-      "face prosecution if I give false information."
+    val informationTextWelsh: String = "Rwy’n datgan bod yr wybodaeth a’r Hunanasesiad a gyflwynwyd gennyf (o’u hystyried gyda’i gilydd)" +
+      " yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth. Rwy’n deall y gallai fod yn rhaid i mi dalu cosbau ariannol" +
+      " ac wynebu erlyniad os byddaf yn rhoi gwybodaeth anwir."
   }
 
   object AgentExpectedResults extends SpecificExpectedResults {
@@ -115,9 +115,9 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       "and approved the information as being correct and complete to the best of their knowledge and belief. My client " +
       "understands that they may have to pay financial penalties and face prosecution if they give false information."
 
-    val agentInformationTextWelsh: String = "I confirm that my client has received a copy of all the information being filed " +
-      "and approved the information as being correct and complete to the best of their knowledge and belief. My client " +
-      "understands that they may have to pay financial penalties and face prosecution if they give false information."
+    val agentInformationTextWelsh: String = "Rwy’n cadarnhau bod fy nghleient wedi cael copi o’r holl wybodaeth sy’n cael ei chyflwyno," +
+      " a’i fod wedi cytuno bod yr wybodaeth yn gywir ac yn gyflawn hyd eithaf ei wybodaeth a’i gred. Mae fy nghleient" +
+      " yn deall y gallai fod yn rhaid iddo dalu cosbau ariannol ac wynebu erlyniad os bydd yn rhoi gwybodaeth anwir."
   }
 
   object Selectors {
