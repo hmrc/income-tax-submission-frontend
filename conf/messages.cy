@@ -12,9 +12,11 @@ common.donationsToCharity = Rhoddion i elusennau
 common.employment = Cyflogaeth TWE
 common.underMaintenance = Wrthi’n cynnal a chadw’r safle
 common.govUk = GOV.UK/CYMRAEG
-common.return.button = Yn ôl i hafan Ffurflen Dreth Incwm
+common.return.button.individual = Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm
+common.return.button.agent = Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm
 common.signout.button = Allgofnodi
-common.returnToIncomeTaxAccount.button = Yn ôl i gyfrif Treth Incwm
+common.returnToIncomeTaxAccount.button.individual = Ewch i’ch cyfrif Treth Incwm
+common.returnToIncomeTaxAccount.button.agent = Yn ôl i gyfrif Treth Incwm
 common.back = Yn ôl
 
 betaBar.beta = beta
@@ -164,11 +166,11 @@ error.taxReturnPreviouslyUpdated.paragraph1.individual = Rhaid i chi gyflwyno ei
 error.taxReturnPreviouslyUpdated.paragraph1.agent = Rhaid i chi gyflwyno Ffurflen Dreth Incwm eich cleient eto.
 
 error.no-valid-income.heading = Dim ffynonellau incwm busnes
-error.no-valid-income.p1 = Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm.
+error.no-valid-income.p1.individual = Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm.
+error.no-valid-income.p1.agent = Mae angen o leiaf un ffynhonnell incwm busnes ar eich cleient er mwyn llenwi Ffurflen Dreth ar gyfer Treth Incwm.
 error.no-valid-income.p2 = Mae ffynonellau incwm busnes yn cynnwys:
 error.no-valid-income.p2.bullet1 = Hunangyflogaeth
 error.no-valid-income.p2.bullet2 = Eiddo yn y DU neu dramor
-error.no-valid-income.submit = Ewch i’ch cyfrif Treth Incwm
 
 error.business-validation-rules.heading = Mae problem gyda’ch diweddariadau
 error.business-validation-rules.paragraph.agent = Ewch ati i wirio Ffurflen Dreth eich cleient ar gyfer Treth Incwm a’i chyflwyno eto.

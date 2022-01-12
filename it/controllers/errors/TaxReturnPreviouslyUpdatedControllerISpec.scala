@@ -47,7 +47,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
     val headingAgent = "Your client’s Income Tax Return has been updated"
     val youMustResubmitTextIndividual = "You must submit your Income Tax Return again."
     val youMustResubmitTextAgent = "You must submit your client’s Income Tax Return again."
-    val incomeTaxReturnButtonText = "Back to Income Tax Return"
+    val incomeTaxReturnButtonTextIndividual = "Back to your Income Tax Return"
+    val incomeTaxReturnButtonTextAgent = "Back to Income Tax Return"
     val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
   }
 
@@ -58,7 +59,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
     val headingAgentWelsh = "Mae Ffurflen Dreth Incwm eich cleient wedi’i diweddaru"
     val youMustResubmitTextIndividualWelsh = "Rhaid i chi gyflwyno eich Ffurflen Dreth Incwm eto."
     val youMustResubmitTextAgentWelsh = "Rhaid i chi gyflwyno Ffurflen Dreth Incwm eich cleient eto."
-    val incomeTaxReturnButtonTextWelsh = "Yn ôl i hafan Ffurflen Dreth Incwm"
+    val incomeTaxReturnButtonTextIndividualWelsh = "Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm"
+    val incomeTaxReturnButtonTextAgentWelsh = "Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm"
   }
 
   import ExpectedResults._
@@ -88,8 +90,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
       titleCheck(titleIndividual, isWelsh = false)
       h1Check(headingIndividual, "xl")
       textOnPageCheck(youMustResubmitTextIndividual, p1TextSelector)
-      textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextIndividual, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -110,8 +112,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
       titleCheck(titleAgent, isWelsh = false)
       h1Check(headingAgent, "xl")
       textOnPageCheck(youMustResubmitTextAgent, p1TextSelector)
-      textOnPageCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonText, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextAgent, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
   "Attempting to Render the tax return previously error page in year" should {
@@ -155,8 +157,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
       titleCheck(titleIndividualWelsh, isWelsh = true)
       h1Check(headingIndividualWelsh, "xl")
       textOnPageCheck(youMustResubmitTextIndividualWelsh, p1TextSelector)
-      textOnPageCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextIndividualWelsh, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextIndividualWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
 
     "render correctly when the user is an agent" should {
@@ -177,8 +179,8 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
       titleCheck(titleAgentWelsh, isWelsh = true)
       h1Check(headingAgentWelsh, "xl")
       textOnPageCheck(youMustResubmitTextAgentWelsh, p1TextSelector)
-      textOnPageCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector)
-      buttonCheck(incomeTaxReturnButtonTextWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
+      textOnPageCheck(incomeTaxReturnButtonTextAgentWelsh, incomeTaxReturnButtonSelector)
+      buttonCheck(incomeTaxReturnButtonTextAgentWelsh, incomeTaxReturnButtonSelector, Some(incomeTaxReturnButtonLink))
     }
   }
 
