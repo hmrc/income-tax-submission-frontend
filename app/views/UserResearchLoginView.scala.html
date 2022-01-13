@@ -22,15 +22,15 @@
 
 @mainHtml = {
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">@messages("user-research.sign-in")</h1>
-    
+
     @form(controllers.testOnly.routes.UserResearchLoginController.submit()) {
         @input(Input(
-            name = "username",
-            id = "username",
+            name = "credential",
+            id = "credential",
             label = Label(isPageHeading = false, content = Text(messages("user-research.login-label"))),
             classes = "govuk-!-width-one-half"
         ))
-        
+
         @button()
     }
 }

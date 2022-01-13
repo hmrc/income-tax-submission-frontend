@@ -25,30 +25,29 @@ import play.api.libs.json.Json
 class AuthLoginApiConnectorISpec extends IntegrationTest {
 
   lazy val connector: AuthLoginApiConnector = app.injector.instanceOf[AuthLoginApiConnector]
-  
+
   def stubAuthCall(status: Int = 201): StubMapping = stubPostWithHeaders(
     url = "/government-gateway/session/login",
     status = status,
     responseBody = Json.prettyPrint(Json.obj("gatewayToken" -> "gg-token")),
     headers = Seq(HeaderNames.AUTHORIZATION -> "some-token", HeaderNames.LOCATION -> "session-id")
   )
-  
+
   def stubAuthCallWithoutHeaders(status: Int = 201): StubMapping = stubPost(
     url = "/government-gateway/session/login",
     status = status,
     responseBody = Json.prettyPrint(Json.obj("gatewayToken" -> "gg-token"))
   )
-  
+
   ".submitLoginRequest" should {
-    
+
     "return an API response" when {
-      
+
       "the call is successful" in {
         val result: Option[AuthLoginAPIResponse] = {
           stubAuthCall()
-          
+
           await(connector.submitLoginRequest(ResearchUser(
-            "userId",
             2021,
             "AA123456A",
             CS_Strong,
@@ -60,20 +59,19 @@ class AuthLoginApiConnectorISpec extends IntegrationTest {
             Seq.empty
           )))
         }
-        
+
         result shouldBe Some(AuthLoginAPIResponse("some-token", "session-id", "gg-token"))
       }
-      
+
     }
-    
+
     "return a None" when {
-      
+
       "there is a missing header" in {
         val result: Option[AuthLoginAPIResponse] = {
           stubAuthCallWithoutHeaders()
 
           await(connector.submitLoginRequest(ResearchUser(
-            "userId",
             2021,
             "AA123456A",
             CS_Strong,
@@ -88,13 +86,12 @@ class AuthLoginApiConnectorISpec extends IntegrationTest {
 
         result shouldBe None
       }
-      
+
       "the API call returns a status that isn't 201 (CREATED)" in {
         val result: Option[AuthLoginAPIResponse] = {
           stubAuthCall(status = 200)
 
           await(connector.submitLoginRequest(ResearchUser(
-            "userId",
             2021,
             "AA123456A",
             CS_Strong,
@@ -109,9 +106,9 @@ class AuthLoginApiConnectorISpec extends IntegrationTest {
 
         result shouldBe None
       }
-      
+
     }
-    
+
   }
-  
+
 }

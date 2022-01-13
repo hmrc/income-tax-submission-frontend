@@ -19,21 +19,17 @@ package models.userResearch
 import utils.UnitTest
 
 class ResearchUsersSpec extends UnitTest {
-  
-  val testEnrolment: ResearchUser = ResearchUser("TEST_ID", 2021, "AA123456A", CS_Strong, L250, AG_Individual, Seq(Enrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")))), Seq(DelegatedEnrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")), "mtd-auth")))
-  
-  ".getUserCredentials" should {
-    
-    "return the user that matches the user id" in {
-      
-      ResearchUsers.getUserCredentials("TEST_ID") shouldBe Some(testEnrolment)
-      
+
+  val testEnrolment: ResearchUser = ResearchUser(2021, "AA123456A", CS_Strong, L250, AG_Individual, Seq(Enrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")))), Seq(DelegatedEnrolment("HMRC-MTD-IT", Seq(Identifier("MTDITID", "1234567890")), "mtd-auth")))
+
+  ".generateUserCredentials" should {
+
+    "return a generic user with the provided tax year and nino" in {
+
+      ResearchUsers.generateUserCredentials("AA123456A", 2021) shouldBe testEnrolment
+
     }
-    
-    "return None if the user id cannot be found" in {
-      ResearchUsers.getUserCredentials("non-existent-id") shouldBe None
-    }
-    
+
   }
-  
+
 }
