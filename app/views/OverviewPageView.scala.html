@@ -43,7 +43,7 @@
                     @if(isInYear){
                         <li>
                             @govukInsetText(InsetText(
-                            content = Text( messages(s"overview.insertText.${if(isAgent) "agent" else "individual"}", (taxYear+1).toString))
+                            content = Text( messages(s"overview.insertText.${if(isAgent) "agent" else "individual"}", taxYear.toString))
                             ))
                         </li>
                     }
