@@ -114,7 +114,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   object ExpectedAgentCY extends SpecificExpectedResults {
     val headingExpected = "Ffurflen Dreth Incwm eich cleient"
-    val updateIncomeTaxReturnText = "Diweddarwch Ffurflen Dreth Incwm eich cleient."
+    val updateIncomeTaxReturnText = "Diweddarwch Ffurflen Dreth Incwm eich cleient"
     val submitReturnHeaderEOY = "Gwiriwch a chyflwynwch Ffurflen Dreth Incwm eich cleient"
     val submitReturnText: String = "Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, gallwch barhau a gweld eu cyfrifiad treth terfynol. Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm."
     val ifWeHaveInfo = "Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
