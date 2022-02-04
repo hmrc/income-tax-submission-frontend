@@ -19,17 +19,16 @@ package controllers
 import audit.{AuditService, IntentToCrystalliseDetail}
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
-import controllers.predicates.{AuthorisedAction, InYearAction}
 import controllers.predicates.TaxYearAction.taxYearAction
-import models.{APIErrorBodyModel, APIErrorsBodyModel}
-
-import javax.inject.{Inject, Singleton}
+import controllers.predicates.{AuthorisedAction, InYearAction}
+import controllers.routes.OverviewPageController
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.{IncomeSourcesService, LiabilityCalculationService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -47,9 +46,7 @@ class OverviewPageController @Inject()(
 
   implicit val config: AppConfig = appConfig
 
-
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-
     val isInYear: Boolean = inYearAction.inYear(taxYear)
 
     if (isInYear) {
@@ -59,7 +56,7 @@ class OverviewPageController @Inject()(
         case Left(error) => errorHandler.handleError(error.status)
       }
     } else {
-      Future.successful(Redirect(controllers.routes.OverviewPageController.showCrystallisation(taxYear)))
+      Future.successful(Redirect(OverviewPageController.showCrystallisation(taxYear)))
     }
   }
 
@@ -74,18 +71,18 @@ class OverviewPageController @Inject()(
 
   def finalCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
 
-      liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {
-        case Right(calculationId) =>
+    liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {
+      case Right(calculationId) =>
 
-          val userTypeString = if(user.isAgent) "agent" else "individual"
-          auditService.sendAudit(IntentToCrystalliseDetail(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
-          
-          if(user.isAgent) {
-            Redirect(appConfig.viewAndChangeFinalCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-          } else {
-            Redirect(appConfig.viewAndChangeFinalCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-          }
-        case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, taxYear)
-      }
+        val userTypeString = if (user.isAgent) "agent" else "individual"
+        auditService.sendAudit(IntentToCrystalliseDetail(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
+
+        if (user.isAgent) {
+          Redirect(appConfig.viewAndChangeFinalCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+        } else {
+          Redirect(appConfig.viewAndChangeFinalCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+        }
+      case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, taxYear)
     }
+  }
 }

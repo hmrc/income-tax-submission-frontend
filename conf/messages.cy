@@ -12,9 +12,11 @@ common.donationsToCharity = Rhoddion i elusennau
 common.employment = Cyflogaeth TWE
 common.underMaintenance = Wrthi’n cynnal a chadw’r safle
 common.govUk = GOV.UK/CYMRAEG
-common.return.button = Yn ôl i hafan Ffurflen Dreth Incwm
+common.return.button.individual = Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm
+common.return.button.agent = Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm
 common.signout.button = Allgofnodi
-common.returnToIncomeTaxAccount.button = Yn ôl i gyfrif Treth Incwm
+common.returnToIncomeTaxAccount.button.individual = Ewch i’ch cyfrif Treth Incwm
+common.returnToIncomeTaxAccount.button.agent = Yn ôl i gyfrif Treth Incwm
 common.back = Yn ôl
 
 betaBar.beta = beta
@@ -41,7 +43,7 @@ startPage3.agent.false = I ddiweddaru’ch incwm o hunangyflogaeth a’ch incwm 
 startPage.continue = Yn eich blaen
 
 overview.individual.task1.heading = Diweddarwch eich Ffurflen Dreth Incwm
-overview.agent.task1.heading = Diweddarwch Ffurflen Dreth Incwm eich cleient.
+overview.agent.task1.heading = Diweddarwch Ffurflen Dreth Incwm eich cleient
 overview.task1.caption = Llenwch yr adrannau mae angen i chi eu diweddaru.
 
 overview.agent.task2.caption.noUpdate =Rhowch o leiaf un diweddariad cyn i chi allu gweld cyfrifiad treth eich cleient hyd yn hyn.
@@ -85,7 +87,7 @@ taxReturnReceived.summaryrow.2 = Cyfeirnod Unigryw y Trethdalwr (UTR)
 taxReturnReceived.summaryrow.3 = Dyddiad cyflwyno
 taxReturnReceived.summaryrow.4 = Treth Incwm a chyfraniadau Yswiriant Gwladol
 taxReturnReceived.nextSteps.subheading = Yr hyn y mae angen i chi ei wneud nawr
-taxReturnReceived.nextSteps.p1 = Gallwch gael gwybod:
+taxReturnReceived.nextSteps.p1 = Gallwch gael gwybod
 taxReturnReceived.nextSteps.p2.individual = faint sy’n ddyledus gennych a sut i dalu.
 taxReturnReceived.nextSteps.p2.agent = faint sy’n ddyledus gan eich cleient a sut i dalu.
 taxReturnReceived.nextSteps.bullet1.individual = gwybod pryd mae eich diweddariadau nesaf yn ddyledus
@@ -98,8 +100,8 @@ taxReturnReceived.print = Argraffu’r dudalen hon
 
 errors.500.heading = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
 errors.500.p1 = Rhowch gynnig arall arni yn nes ymlaen.
-errors.XXX.p3 = neu ewch i’r
-errors.XXX.p4 = Hafan Treth Incwm (agor mewn tab newydd)
+errors.XXX.p3 = fynd i’r
+errors.XXX.p4 = Hafan Treth Incwm (yn agor tab newydd)
 errors.XXX.p5 = am ragor o wybodaeth
 errors.XXX.p6 = defnyddiwch
 errors.XXX.p7 = Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)
@@ -133,7 +135,7 @@ ivFailurePage.li1 = gwnaethoch gymryd gormod o amser i nodi gwybodaeth ac mae’
 ivFailurePage.li2 = rydych wedi methu ag ateb digon o gwestiynau’n gywir
 ivFailurePage.li3 = nid oeddem yn gallu paru’ch manylion â’r hyn sydd ar ein system
 
-error.individual-unauthorised.2 = Cofrestrwch ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+error.individual-unauthorised.2 = gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 error-unauthorised.p3 = cyn i chi allu bwrw golwg ar y dudalen hon.
 
 error.tax-year.paragraph1 = Gallwch ond nodi gwybodaeth ar gyfer blwyddyn dreth 2021 i 2022.
@@ -164,11 +166,11 @@ error.taxReturnPreviouslyUpdated.paragraph1.individual = Rhaid i chi gyflwyno ei
 error.taxReturnPreviouslyUpdated.paragraph1.agent = Rhaid i chi gyflwyno Ffurflen Dreth Incwm eich cleient eto.
 
 error.no-valid-income.heading = Dim ffynonellau incwm busnes
-error.no-valid-income.p1 = Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm.
+error.no-valid-income.p1.individual = Rhaid i chi gael o leiaf un ffynhonnell o incwm busnes i lenwi Ffurflen Dreth Incwm.
+error.no-valid-income.p1.agent = Mae angen o leiaf un ffynhonnell incwm busnes ar eich cleient er mwyn llenwi Ffurflen Dreth ar gyfer Treth Incwm.
 error.no-valid-income.p2 = Mae ffynonellau incwm busnes yn cynnwys:
 error.no-valid-income.p2.bullet1 = Hunangyflogaeth
 error.no-valid-income.p2.bullet2 = Eiddo yn y DU neu dramor
-error.no-valid-income.submit = Ewch i’ch cyfrif Treth Incwm
 
 error.business-validation-rules.heading = Mae problem gyda’ch diweddariadau
 error.business-validation-rules.paragraph.agent = Ewch ati i wirio Ffurflen Dreth eich cleient ar gyfer Treth Incwm a’i chyflwyno eto.

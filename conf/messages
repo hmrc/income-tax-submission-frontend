@@ -12,9 +12,11 @@ common.donationsToCharity = Donations to charity
 common.employment = PAYE employment
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
-common.return.button = Back to Income Tax Return
+common.return.button.individual = Back to your Income Tax Return
+common.return.button.agent = Back to Income Tax Return
 common.signout.button = Sign out
-common.returnToIncomeTaxAccount.button = Back to Income Tax account
+common.returnToIncomeTaxAccount.button.individual = Go to your Income Tax account
+common.returnToIncomeTaxAccount.button.agent = Go to Income Tax account
 common.back = Back
 
 betaBar.beta = beta
@@ -133,7 +135,7 @@ ivFailurePage.li1 = you took too long to enter information and the service has t
 ivFailurePage.li2 = you have failed to answer enough questions correctly
 ivFailurePage.li3 = we could not match your details to our system
 
-user-research.sign-in = Sign in
+user-research.sign-in = Sign in to the test service
 user-research.login-label = User ID
 
 error.individual-unauthorised.2 = sign up for Making Tax Digital for Income Tax
@@ -167,11 +169,11 @@ error.taxReturnPreviouslyUpdated.paragraph1.individual = You must submit your In
 error.taxReturnPreviouslyUpdated.paragraph1.agent = You must submit your client’s Income Tax Return again.
 
 error.no-valid-income.heading = No business income sources
-error.no-valid-income.p1 = You need at least one source of business income in order to complete an Income Tax Return.
+error.no-valid-income.p1.individual = You need at least one source of business income in order to complete an Income Tax Return.
+error.no-valid-income.p1.agent = Your client needs at least one source of business income in order to complete an Income Tax Return.
 error.no-valid-income.p2 = Business income sources include:
 error.no-valid-income.p2.bullet1 = Self-employment
 error.no-valid-income.p2.bullet2 = UK or overseas property
-error.no-valid-income.submit = Go to your Income Tax account
 
 error.business-validation-rules.heading = There’s a problem with your updates
 error.business-validation-rules.paragraph.agent = Check your client’s Income Tax Return and submit it again.

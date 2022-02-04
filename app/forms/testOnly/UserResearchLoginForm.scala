@@ -21,10 +21,10 @@ import play.api.data.Forms.text
 
 object UserResearchLoginForm {
 
-  val loginField = "username"
-  
+  val loginField = "credential"
+
   def researchLoginForm: Form[String] = Form(
     loginField -> text
   )
-  
+
 }

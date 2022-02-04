@@ -46,9 +46,9 @@ class ServiceUnavailableErrorPageSpec extends AnyWordSpec with Matchers with Vie
   val pageHeadingTextWelsh = "Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael"
   val youWillBeAbleTextWelsh = "Byddwch yn gallu defnyddio’r gwasanaeth yn nes ymlaen."
   val youCanAlsoTextWelsh = "Gallwch hefyd wneud y canlynol:"
-  val goToTheTextWelsh = "neu ewch i’r Hafan Treth Incwm (agor mewn tab newydd) am ragor o wybodaeth"
+  val goToTheTextWelsh = "fynd i’r Hafan Treth Incwm (yn agor tab newydd) am ragor o wybodaeth"
   val useSelfAssesTextWelsh = "defnyddiwch Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd) i siarad â rhywun am eich Treth Incwm"
-  val link1TextWelsh = "Hafan Treth Incwm (agor mewn tab newydd)"
+  val link1TextWelsh = "Hafan Treth Incwm (yn agor tab newydd)"
   val link2TextWelsh = "Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)"
 
   val link1Href = "https://www.gov.uk/income-tax"

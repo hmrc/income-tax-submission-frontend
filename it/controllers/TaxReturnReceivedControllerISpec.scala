@@ -102,7 +102,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val summaryRow2ValueWelsh: String = "IN12345"
     val summaryRow3ValueWelsh: String = timeStamp.toLongDate(toMessages("CY"))
 
-    val nextStepsP1Welsh: String = "Gallwch gael gwybod: faint sy’n ddyledus gennych a sut i dalu."
+    val nextStepsP1Welsh: String = "Gallwch gael gwybod faint sy’n ddyledus gennych a sut i dalu."
     val nextStepsP2Welsh: String = "faint sy’n ddyledus gennych a sut i dalu."
     val nextStepsP4Welsh: String = "Os oes angen i chi gysylltu â ni am eich Ffurflen Dreth Incwm, rhowch eich UTR i ni."
   }
@@ -133,7 +133,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val summaryRow2ValueWelsh: String = "AG98765"
     val summaryRow3ValueWelsh: String = timeStamp.toLongDate(toMessages("CY"))
 
-    val nextStepsP1Welsh: String = "Gallwch gael gwybod: faint sy’n ddyledus gan eich cleient a sut i dalu."
+    val nextStepsP1Welsh: String = "Gallwch gael gwybod faint sy’n ddyledus gan eich cleient a sut i dalu."
     val nextStepsP2Welsh: String = "faint sy’n ddyledus gan eich cleient a sut i dalu."
     val nextStepsP4Welsh: String = "Os oes angen i chi gysylltu â ni am Ffurflen Dreth Incwm eich cleient rhowch ei UTR i ni."
   }
