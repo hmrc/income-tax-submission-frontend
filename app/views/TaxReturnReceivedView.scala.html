@@ -24,7 +24,9 @@
 @mainHTML = {
     @govukPanel(Panel(
         title = Text(messages("taxReturnReceived.panel.heading")),
-        content = Text(messages(s"taxReturnReceived.panel.subheading.${if(isAgent) "agent" else "individual"}"))
+        content = Text(messages(s"taxReturnReceived.panel.subheading.${if(isAgent) "agent" else "individual"}",
+            (taxYear -1).toString, taxYear.toString
+        ))
     ))
 
     @govukSummaryList(SummaryList(
