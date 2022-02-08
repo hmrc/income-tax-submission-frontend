@@ -1,0 +1,47 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.headerFooterTemplate.Layout
+
+@this(
+        layout: Layout,
+        button: GovukButton
+)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(messages("userResearch.acknowledgement.title")) {
+    <h1 class="govuk-heading-l">@messages("userResearch.acknowledgement.title")</h1>
+    <p class="govuk-body govuk-!-margin-bottom-5">@messages("userResearch.acknowledgement.p1")</p>
+    <p class="govuk-body govuk-!-margin-bottom-5">@messages("userResearch.acknowledgement.p2")</p>
+    <p class="govuk-body">@messages("userResearch.acknowledgement.p3")</p>
+
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-0">@messages("userResearch.acknowledgement.list1.heading")</h2>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("userResearch.acknowledgement.list1.p")</li>
+    </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-0">@messages("userResearch.acknowledgement.list2.heading")</h2>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("userResearch.acknowledgement.list2.p")</li>
+    </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-0">@messages("userResearch.acknowledgement.list3.heading")</h2>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("userResearch.acknowledgement.list3.p")</li>
+    </ul>
+
+    @button(Button(content = Text(messages("startPage.continue")), classes = "govuk-!-margin-top-6", href = Some(controllers.testOnly.routes.UserResearchLoginController.show().url)))
+}
