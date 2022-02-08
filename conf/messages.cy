@@ -98,6 +98,17 @@ taxReturnReceived.nextSteps.p4.individual = Os oes angen i chi gysylltu â ni am
 taxReturnReceived.nextSteps.p4.agent = Os oes angen i chi gysylltu â ni am Ffurflen Dreth Incwm eich cleient rhowch ei UTR i ni.
 taxReturnReceived.print = Argraffu’r dudalen hon
 
+userResearch.acknowledgement.title = Making Tax Digital for Income Tax
+userResearch.acknowledgement.p1 = Making Tax Digital for Income Tax is the new way of reporting your earnings to HMRC. Instead of completing a Self Assessment return, you’ll use software of your choice to keep digital records and send Income Tax updates. 
+userResearch.acknowledgement.p2 = You have to start using the new service from 6 April 2024, if your annual income from self employment and/or property is over £10,000.
+userResearch.acknowledgement.p3 = Once you start using Making Tax Digital for Income Tax, you will need to send the following updates each tax year:
+userResearch.acknowledgement.list1.heading = Four quarterly updates:
+userResearch.acknowledgement.list1.p = These are summaries of your business income and expenses, for each income source. You must send these updates every 3 months, using software.
+userResearch.acknowledgement.list2.heading = End of period statements:
+userResearch.acknowledgement.list2.p = Your software will produce these statements and you’ll submit them for each income source at the end of the year. It’s your chance to make any accounting adjustments, claim any reliefs and confirm that your information is correct.
+userResearch.acknowledgement.list3.heading = One final declaration:
+userResearch.acknowledgement.list3.p = This is just to confirm that all your information for the whole year is true - to the best of your knowledge. This completes your tax return.
+
 errors.500.heading = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
 errors.500.p1 = Rhowch gynnig arall arni yn nes ymlaen.
 errors.XXX.p3 = fynd i’r
