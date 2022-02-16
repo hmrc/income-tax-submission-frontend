@@ -66,7 +66,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     val newServiceTextWelsh = "Mae hwn yn wasanaeth newydd. Ar hyn o bryd, gallwch ond diweddaru gwybodaeth am y canlynol:"
     val bullet1UkInterestPaidText = "UK interest"
     val bullet1UkInterestPaidTextWelsh = "llog y DU"
-    val bullet2DividendsFromUKText = "dividends from UK companies, trusts and open-ended investment companies"
+    val bullet2DividendsFromUKText = "dividends from UK-based companies, trusts and open-ended investment companies"
     val bullet2DividendsFromUKTextWelsh = "difidendau gan gwmnïau, ymddiriedolaethau a chwmnïau buddsoddi penagored yn y DU"
     val bullet3DonationsToCharityText = "donations to charity"
     val bullet3DonationsToCharityTextWelsh = "rhoddion i elusennau"
