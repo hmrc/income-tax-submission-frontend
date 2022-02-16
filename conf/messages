@@ -34,10 +34,8 @@ startPage2 = This is a new service. At the moment you can only update informatio
 startPage.interestBullet = UK interest
 startPage.dividendsBullet = dividends from UK companies, trusts and open-ended investment companies
 startPage.charityBullet = donations to charity
-startPage.employment.agent = You can view your client’s employment information but cannot use this service to update it until 6 April {0}.
-startPage.employment.individual = You can view your employment information but cannot use this service to update it until 6 April {0}.
-startPage3.agent.true = To update your client’s self-employment and property income, you must use your chosen commercial software.
-startPage3.agent.false = To update your self-employment and property income, you must use your chosen commercial software.
+startPage.paragraph.1 = You can view PAYE employment information, but you cannot update it until 6 April {0}.
+startPage.paragraph.2 = Use your software package to update anything not on the list.
 startPage.continue = Continue
 
 overview.individual.task1.heading = Update your Income Tax Return

@@ -34,10 +34,8 @@ startPage2 = Mae hwn yn wasanaeth newydd. Ar hyn o bryd, gallwch ond diweddaru g
 startPage.interestBullet = llog y DU
 startPage.dividendsBullet = difidendau gan gwmnïau, ymddiriedolaethau a chwmnïau buddsoddi penagored yn y DU
 startPage.charityBullet = rhoddion i elusennau
-startPage.employment.agent = Gallwch weld gwybodaeth am gyflogaeth eich cleient ond ni allwch ddefnyddio’r gwasanaeth hwn i’w diweddaru tan 6 Ebrill {0}.
-startPage.employment.individual = Gallwch weld eich gwybodaeth am gyflogaeth ond ni allwch ddefnyddio’r gwasanaeth hwn i’w diweddaru tan 6 Ebrill {0}.
-startPage3.agent.true = I ddiweddaru incwm o hunangyflogaeth ac incwm o eiddo eich cleient, mae’n rhaid i chi ddefnyddio’ch meddalwedd fasnachol ddewisedig.
-startPage3.agent.false = I ddiweddaru’ch incwm o hunangyflogaeth a’ch incwm o eiddo, mae’n rhaid i chi ddefnyddio’ch meddalwedd fasnachol ddewisedig.
+startPage.paragraph.1 = Gallwch fwrw golwg dros wybodaeth am gyflogaeth TWE, ond ni allwch ei diweddaru tan 6 Ebrill {0}.
+startPage.paragraph.2 = Defnyddiwch eich pecyn meddalwedd i ddiweddaru unrhyw beth nad yw’n ymddangos ar y rhestr.
 startPage.continue = Yn eich blaen
 
 overview.individual.task1.heading = Diweddarwch eich Ffurflen Dreth Incwm

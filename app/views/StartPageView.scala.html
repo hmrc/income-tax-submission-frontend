@@ -40,9 +40,9 @@
 
         <div class="govuk-body">
             @if(appConfig.employmentReleased){
-            <p>@messages(s"startPage.employment.${if(isAgent) "agent" else "individual"}", taxYear.toString)</p>
+            <p>@messages("startPage.paragraph.1", taxYear.toString)</p>
             }
-            <p>@messages(s"startPage3.agent.$isAgent")</p>
+            <p>@messages("startPage.paragraph.2")</p>
         </div>
 
     @formWithCSRF(action = controllers.routes.StartPageController.submit(taxYear)) {

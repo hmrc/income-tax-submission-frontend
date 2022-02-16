@@ -70,29 +70,13 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     val bullet2DividendsFromUKTextWelsh = "difidendau gan gwmnïau, ymddiriedolaethau a chwmnïau buddsoddi penagored yn y DU"
     val bullet3DonationsToCharityText = "donations to charity"
     val bullet3DonationsToCharityTextWelsh = "rhoddion i elusennau"
+    val viewEmploymentInformationText = "You can view PAYE employment information, but you cannot update it until 6 April 2022."
+    val viewEmploymentInformationTextWelsh = "Gallwch fwrw golwg dros wybodaeth am gyflogaeth TWE, ond ni allwch ei diweddaru tan 6 Ebrill 2022."
+    val toUpdateIncomeText = "Use your software package to update anything not on the list."
+    val toUpdateIncomeTextWelsh = "Defnyddiwch eich pecyn meddalwedd i ddiweddaru unrhyw beth nad yw’n ymddangos ar y rhestr."
     val continueButtonText = "Continue"
     val continueButtonTextWelsh = "Welsh"
     val continueButtonHref = s"/update-and-submit-income-tax-return/$taxYear/start"
-  }
-
-  object IndividualExpectedResultsEN {
-    val viewEmploymentInformationIndividual = "You can view your employment information but cannot use this service to update it until 6 April 2022."
-    val toUpdateIncomeIndividualText = "To update your self-employment and property income, you must use your chosen commercial software."
-  }
-
-  object IndividualExpectedResultsCY {
-    val viewEmploymentInformationIndividual = "Gallwch weld eich gwybodaeth am gyflogaeth ond ni allwch ddefnyddio’r gwasanaeth hwn i’w diweddaru tan 6 Ebrill 2022."
-    val toUpdateIncomeIndividualText = "I ddiweddaru’ch incwm o hunangyflogaeth a’ch incwm o eiddo, mae’n rhaid i chi ddefnyddio’ch meddalwedd fasnachol ddewisedig."
-  }
-
-  object AgentExpectedResultsEN {
-    val viewEmploymentInformationAgent = "You can view your client’s employment information but cannot use this service to update it until 6 April 2022."
-    val toUpdateIncomeAgentText = "To update your client’s self-employment and property income, you must use your chosen commercial software."
-  }
-
-  object AgentExpectedResultsCY {
-    val viewEmploymentInformationAgent = "Gallwch weld gwybodaeth am gyflogaeth eich cleient ond ni allwch ddefnyddio’r gwasanaeth hwn i’w diweddaru tan 6 Ebrill 2022."
-    val toUpdateIncomeAgentText = "I ddiweddaru incwm o hunangyflogaeth ac incwm o eiddo eich cleient, mae’n rhaid i chi ddefnyddio’ch meddalwedd fasnachol ddewisedig."
   }
 
 
@@ -120,7 +104,6 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
-      import IndividualExpectedResultsEN._
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
@@ -145,13 +128,12 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       textOnPageCheck(bullet1UkInterestPaidText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
       textOnPageCheck(bullet3DonationsToCharityText, Selectors.bullet3)
-      textOnPageCheck(viewEmploymentInformationIndividual, Selectors.p3)
-      textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p4)
+      textOnPageCheck(viewEmploymentInformationText, Selectors.p3)
+      textOnPageCheck(toUpdateIncomeText, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
     "render correctly when the user is an agent" should {
-      import AgentExpectedResultsEN._
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
@@ -177,8 +159,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       textOnPageCheck(bullet1UkInterestPaidText, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
       textOnPageCheck(bullet3DonationsToCharityText, Selectors.bullet3)
-      textOnPageCheck(viewEmploymentInformationAgent, Selectors.p3)
-      textOnPageCheck(toUpdateIncomeAgentText, Selectors.p4)
+      textOnPageCheck(viewEmploymentInformationText, Selectors.p3)
+      textOnPageCheck(toUpdateIncomeText, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
   }
@@ -187,7 +169,6 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
-      import IndividualExpectedResultsCY._
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
@@ -212,13 +193,12 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       textOnPageCheck(bullet1UkInterestPaidTextWelsh, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKTextWelsh, Selectors.bullet2)
       textOnPageCheck(bullet3DonationsToCharityTextWelsh, Selectors.bullet3)
-      textOnPageCheck(viewEmploymentInformationIndividual, Selectors.p3)
-      textOnPageCheck(toUpdateIncomeIndividualText, Selectors.p4)
+      textOnPageCheck(viewEmploymentInformationTextWelsh, Selectors.p3)
+      textOnPageCheck(toUpdateIncomeTextWelsh, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
     "render correctly when the user is an agent" should {
-      import AgentExpectedResultsCY._
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
@@ -244,8 +224,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       textOnPageCheck(bullet1UkInterestPaidTextWelsh, Selectors.bullet1)
       textOnPageCheck(bullet2DividendsFromUKTextWelsh, Selectors.bullet2)
       textOnPageCheck(bullet3DonationsToCharityTextWelsh, Selectors.bullet3)
-      textOnPageCheck(viewEmploymentInformationAgent, Selectors.p3)
-      textOnPageCheck(toUpdateIncomeAgentText, Selectors.p4)
+      textOnPageCheck(viewEmploymentInformationTextWelsh, Selectors.p3)
+      textOnPageCheck(toUpdateIncomeTextWelsh, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
   }
