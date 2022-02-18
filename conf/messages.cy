@@ -37,6 +37,7 @@ startPage.charityBullet = rhoddion i elusennau
 startPage.paragraph.1 = Gallwch fwrw golwg dros wybodaeth am gyflogaeth TWE, ond ni allwch ei diweddaru tan 6 Ebrill {0}.
 startPage.paragraph.2 = Defnyddiwch eich pecyn meddalwedd i ddiweddaru unrhyw beth nad yw’n ymddangos ar y rhestr.
 startPage.continue = Yn eich blaen
+startPage.updateTaxCalculation = Diweddaru cyfrifiad treth
 
 overview.individual.task1.heading = Diweddarwch eich Ffurflen Dreth Incwm
 overview.agent.task1.heading = Diweddarwch Ffurflen Dreth Incwm eich cleient

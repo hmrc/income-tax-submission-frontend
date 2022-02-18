@@ -37,6 +37,7 @@ startPage.charityBullet = donations to charity
 startPage.paragraph.1 = You can view PAYE employment information, but you cannot update it until 6 April {0}.
 startPage.paragraph.2 = Use your software package to update anything not on the list.
 startPage.continue = Continue
+startPage.updateTaxCalculation = Update tax calculation
 
 overview.individual.task1.heading = Update your Income Tax Return
 overview.agent.task1.heading = Update your client’s Income Tax Return

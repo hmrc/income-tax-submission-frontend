@@ -127,6 +127,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
   lazy val employmentReleased: Boolean = servicesConfig.getBoolean("feature-switch.employmentReleased")
   lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
+  lazy val crystallisationEnabled: Boolean = servicesConfig.getBoolean("feature-switch.crystallisationEnabled")
 
   lazy val excludedIncomeSources: Seq[String] = {
     Seq(
@@ -216,6 +217,7 @@ trait AppConfig {
   val employmentEnabled: Boolean
   val employmentReleased: Boolean
   val nrsEnabled: Boolean
+  val crystallisationEnabled: Boolean
 
   val excludedIncomeSources: Seq[String]
 

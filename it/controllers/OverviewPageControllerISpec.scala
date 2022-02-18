@@ -152,6 +152,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val continue: String
     val fillInTheSections: String
     val incomeTaxAccountLink: String
+    val updateTaxCalculation: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -172,6 +173,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val continue = "continue"
     val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
     val incomeTaxAccountLink = "Income Tax Account"
+    val updateTaxCalculation = "Update tax calculation"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -192,6 +194,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val continue = "continue"
     val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
+    val updateTaxCalculation = "Diweddaru cyfrifiad treth"
   }
 
   object Selectors {
@@ -223,6 +226,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val ifWeHaveInformationSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(1)"
     val fillInTheSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(2)"
     val goToYourIncomeTaxReturnSelector = "#main-content > div > div > ol > li:nth-child(1) > p"
+    val updateTaxCalculationSelector = "#updateTaxCalculation"
   }
 
   private val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/view"
@@ -318,8 +322,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
-        "render overview page with 'Not Started' status tags when there is no prior data and the employment section with" +
-          "the status tag 'cannot update' user in the current taxYear" when {
+        "render overview page with 'Not Started' status tags when there is no prior data, the employment section with" +
+          "the status tag 'cannot update' user in the current taxYear and all feature switches are turned on" when {
 
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
@@ -420,9 +424,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYear))
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
-
-          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
         "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
