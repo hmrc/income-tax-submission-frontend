@@ -372,8 +372,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
-          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
@@ -478,8 +476,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
-            textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-            linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
+
           }
         }
 
@@ -533,8 +530,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
-          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
+
         }
 
         "have the status as 'Updated' for interest" when {
@@ -590,8 +586,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
-            textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-            linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
+
           }
         }
       }
@@ -652,6 +647,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(underMaintenance, giftAidStatusSelectorEndOfYear)
           }
 
+          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
+          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
+
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
           formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
@@ -683,8 +681,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
+
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYearEndOfYear))
@@ -762,8 +759,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, giftAidStatusSelectorEndOfYear)
           }
 
-          textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
