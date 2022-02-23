@@ -372,6 +372,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
+
         }
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
@@ -422,6 +424,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYear))
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
+
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
         }
 
         "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
@@ -476,6 +480,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
 
           }
         }
@@ -530,6 +535,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
 
         }
 
@@ -586,6 +592,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
 
           }
         }

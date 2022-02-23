@@ -167,16 +167,14 @@
 }
 
 @updateTaxCalculationInYear = {
-    @if(appConfig.crystallisationEnabled) {
-        @if(isInYear) {
+    @if(appConfig.crystallisationEnabled && isInYear) {
             @govUkButton(Button(
                 href = if(isAgent) {Some(appConfig.viewAndChangeViewUrlAgent)} else {Some(appConfig.viewAndChangeViewUrl)},
                 attributes = Map("id" -> "updateTaxCalculation"),
                 preventDoubleClick = true,
-                content = Text(messages("startPage.updateTaxCalculation")),
+                content = Text(messages("overview.updateTaxCalculation")),
                 classes = "govuk-button"
             ))
-        }
     }
 }
 

@@ -37,7 +37,6 @@ startPage.charityBullet = rhoddion i elusennau
 startPage.paragraph.1 = Gallwch fwrw golwg dros wybodaeth am gyflogaeth TWE, ond ni allwch ei diweddaru tan 6 Ebrill {0}.
 startPage.paragraph.2 = Defnyddiwch eich pecyn meddalwedd i ddiweddaru unrhyw beth nad yw’n ymddangos ar y rhestr.
 startPage.continue = Yn eich blaen
-startPage.updateTaxCalculation = Diweddaru cyfrifiad treth
 
 overview.individual.task1.heading = Diweddarwch eich Ffurflen Dreth Incwm
 overview.agent.task1.heading = Diweddarwch Ffurflen Dreth Incwm eich cleient
@@ -68,6 +67,7 @@ overview.crystallisation.heading.EOY.agent = Gwiriwch a chyflwynwch Ffurflen Dre
 overview.notStarted = Heb ddechrau
 overview.updated = Wedi diweddaru
 overview.cannotUpdate = Methu diweddaru
+overview.updateTaxCalculation = Diweddaru cyfrifiad treth
 
 declaration.title = Datganiad
 declaration.p1.individual = Rwy’n datgan bod yr wybodaeth a’r Hunanasesiad a gyflwynwyd gennyf (o’u hystyried gyda’i gilydd) yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth. Rwy’n deall y gallai fod yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad os byddaf yn rhoi gwybodaeth anwir.

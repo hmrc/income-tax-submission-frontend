@@ -37,7 +37,6 @@ startPage.charityBullet = donations to charity
 startPage.paragraph.1 = You can view PAYE employment information, but you cannot update it until 6 April {0}.
 startPage.paragraph.2 = Use your software package to update anything not on the list.
 startPage.continue = Continue
-startPage.updateTaxCalculation = Update tax calculation
 
 overview.individual.task1.heading = Update your Income Tax Return
 overview.agent.task1.heading = Update your client’s Income Tax Return
@@ -68,6 +67,7 @@ overview.crystallisation.heading.EOY.agent = Check and submit your client’s In
 overview.notStarted = Not started
 overview.updated = Updated
 overview.cannotUpdate = Cannot update
+overview.updateTaxCalculation = Update tax calculation
 
 declaration.title = Declaration
 declaration.p1.individual = I declare that the information and self-assessment I have filed are (taken together) correct and complete to the best of my knowledge. I understand that I may have to pay financial penalties and face prosecution if I give false information.
