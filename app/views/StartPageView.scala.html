@@ -31,18 +31,16 @@
         </div>
 
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages(s"startPage.interestBullet.${if(isAgent) "agent" else "individual"}")</li>
+            <li>@messages("startPage.interestBullet")</li>
             <li>@messages("startPage.dividendsBullet")</li>
-            @if(appConfig.giftAidReleased){
-            <li>@messages(s"startPage.charityBullet.${if(isAgent) "agent" else "individual"}")</li>
-            }
+            <li>@messages("startPage.charityBullet")</li>
         </ul>
 
         <div class="govuk-body">
             @if(appConfig.employmentReleased){
-            <p>@messages(s"startPage.employment.${if(isAgent) "agent" else "individual"}", taxYear.toString)</p>
+            <p>@messages("startPage.paragraph.1", taxYear.toString)</p>
             }
-            <p>@messages(s"startPage3.agent.$isAgent")</p>
+            <p>@messages("startPage.paragraph.2")</p>
         </div>
 
     @formWithCSRF(action = controllers.routes.StartPageController.submit(taxYear)) {
