@@ -67,6 +67,7 @@ overview.crystallisation.heading.EOY.agent = Gwiriwch a chyflwynwch Ffurflen Dre
 overview.notStarted = Heb ddechrau
 overview.updated = Wedi diweddaru
 overview.cannotUpdate = Methu diweddaru
+overview.updateTaxCalculation = Diweddaru cyfrifiad treth
 
 declaration.title = Datganiad
 declaration.p1.individual = Rwy’n datgan bod yr wybodaeth a’r Hunanasesiad a gyflwynwyd gennyf (o’u hystyried gyda’i gilydd) yn gywir ac yn gyflawn hyd eithaf fy ngwybodaeth. Rwy’n deall y gallai fod yn rhaid i mi dalu cosbau ariannol ac wynebu erlyniad os byddaf yn rhoi gwybodaeth anwir.

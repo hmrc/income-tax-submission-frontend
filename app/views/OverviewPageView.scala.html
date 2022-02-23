@@ -18,7 +18,7 @@
 @import views.html.templates.helpers.Heading
 @import views.html.templates.helpers.Button
 
-@this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF)
+@this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton)
 
 @(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int, isInYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -136,13 +136,14 @@
 
         </ol>
 
-
+        @if(!appConfig.crystallisationEnabled){
             <p class="govuk-body govuk-!-margin-bottom-8">@messages(s"overview.paragraph.3.${if(isAgent) "agent" else "individual"}")
                 <a class="govuk-link" id="calculation_link" href="@if(isAgent) {@appConfig.viewAndChangeViewUrlAgent} else {@appConfig.viewAndChangeViewUrl}">
                     @messages("overview.paragraph.4")
                 </a>
                 @messages(s"overview.paragraph.5.${if(isAgent) "agent" else "individual"}")
             </p>
+        }
     </li>
 }
 
@@ -165,6 +166,18 @@
 
 }
 
+@updateTaxCalculationInYear = {
+    @if(appConfig.crystallisationEnabled && isInYear) {
+            @govUkButton(Button(
+                href = if(isAgent) {Some(appConfig.viewAndChangeViewUrlAgent)} else {Some(appConfig.viewAndChangeViewUrl)},
+                attributes = Map("id" -> "updateTaxCalculation"),
+                preventDoubleClick = true,
+                content = Text(messages("overview.updateTaxCalculation")),
+                classes = "govuk-button"
+            ))
+    }
+}
+
 @overview = {
             @heading(messages(s"common.yourIncomeTaxReturn.${if(isAgent) "agent" else "individual"}"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
 
@@ -172,9 +185,11 @@
                 @if(isAgent) {
                 @taskWithActionList(messages("overview.agent.task1.heading"), messages("overview.task1.caption"), None, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))
                 @checkSubmitIncomeTaxReturn(messages("overview.crystallisation.paragraph.agent"), messages(s"overview.crystallisation.heading.EOY.agent"))
+                @updateTaxCalculationInYear
                 } else {
                 @taskWithActionList(messages("overview.individual.task1.heading"), messages("overview.task1.caption"), Some(1), incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.individual"))
                 @checkSubmitIncomeTaxReturn(messages("overview.crystallisation.paragraph.individual"), messages(s"overview.crystallisation.heading.EOY.individual"))
+                @updateTaxCalculationInYear
                 }
             </ol>
 

@@ -71,6 +71,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"
   )
@@ -86,6 +87,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "false",
     "feature-switch.giftAidEnabled" -> "false",
     "feature-switch.employmentEnabled" -> "false",
+    "feature-switch.crystallisationEnabled" -> "false",
     "metrics.enabled" -> "false"
   )
 
@@ -136,6 +138,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "false",
     "feature-switch.giftAidEnabled" -> "false",
     "feature-switch.employmentEnabled" -> "false",
+    "feature-switch.crystallisationEnabled" -> "false",
     "metrics.enabled" -> "false",
     "taxYearErrorFeatureSwitch" -> "false"
   )
@@ -151,6 +154,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
     "taxYearErrorFeatureSwitch" -> "false"
   )
