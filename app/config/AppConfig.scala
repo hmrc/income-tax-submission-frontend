@@ -126,6 +126,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val giftAidReleased: Boolean = servicesConfig.getBoolean("feature-switch.giftAidReleased")
   lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
   lazy val employmentReleased: Boolean = servicesConfig.getBoolean("feature-switch.employmentReleased")
+  lazy val cisEnabled: Boolean = servicesConfig.getBoolean("feature-switch.cisEnabled")
+  lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
   lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
   lazy val crystallisationEnabled: Boolean = servicesConfig.getBoolean("feature-switch.crystallisationEnabled")
 
@@ -216,6 +218,8 @@ trait AppConfig {
   val giftAidReleased: Boolean
   val employmentEnabled: Boolean
   val employmentReleased: Boolean
+  val cisEnabled: Boolean
+  val cisReleased: Boolean
   val nrsEnabled: Boolean
   val crystallisationEnabled: Boolean
 
