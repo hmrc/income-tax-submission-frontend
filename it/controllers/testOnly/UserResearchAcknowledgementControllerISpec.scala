@@ -26,7 +26,7 @@ class UserResearchAcknowledgementControllerISpec extends IntegrationTest with Vi
   
   object ExpectedResults {
     val title = "Making Tax Digital for Income Tax"
-    val p1 = "Making Tax Digital for Income Tax is the new way of reporting your earnings to HMRC. Instead of completing a Self Assessment return, you’ll use software of your choice to keep digital records and send Income Tax updates."
+    val p1 = "Making Tax Digital for Income Tax is the new way of reporting your earnings to HMRC. Instead of completing a Self Assessment return, you’ll use software of your choice (like Rhino, Xero or Quickbooks) to keep digital records and send Income Tax updates."
     val p2 = "You have to start using the new service from 6 April 2024, if your annual income from self employment and/or property is over £10,000."
     val p3 = "Once you start using Making Tax Digital for Income Tax, you will need to send the following updates each tax year:"
     
