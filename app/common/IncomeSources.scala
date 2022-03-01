@@ -22,4 +22,5 @@ object IncomeSources {
   val INTEREST = "interest"
   val GIFT_AID = "gift-aid"
   val EMPLOYMENT = "employment"
+  val CIS = "cis"
 }
