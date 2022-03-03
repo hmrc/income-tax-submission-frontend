@@ -18,10 +18,27 @@
 @import views.html.templates.helpers.Heading
 @import views.html.templates.helpers.Button
 
-@this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton)
-
+@this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag)
 @(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int, isInYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean = false) = {
+    <span class="hmrc-status-tag">
+        @govukTag(Tag(
+            content = Text(if(enabledCondition){
+                if(updatedCondition) {
+                    messages("overview.updated")
+                } else if(cannotUpdateCondition) {
+                    messages("overview.cannotUpdate")
+                } else {
+                    messages("overview.notStarted")
+                }
+            } else {
+                messages("common.underMaintenance")
+            }),
+            classes = if(!updatedCondition || !enabledCondition) "govuk-tag--grey" else ""
+        ))
+    </span>
+}
 
 @taskWithActionList(heading: String, caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
 
@@ -59,17 +76,7 @@
                             @messages("common.interest")
                         }
                     </span>
-                    <span class="hmrc-status-tag">
-                        @if(appConfig.interestEnabled){
-                            @if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))){
-                                @messages("overview.updated")
-                            }else{
-                                @messages("overview.notStarted")
-                            }
-                        } else {
-                            @messages("common.underMaintenance")
-                        }
-                    </span>
+                    @statusTag(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)), appConfig.interestEnabled)
                 </li>
 
                 <li class="app-task-list__item">
@@ -82,34 +89,22 @@
                             @messages("common.dividends")
                         }
                     </span>
-                    <span class="hmrc-status-tag">
-                        @if(appConfig.dividendsEnabled){
-                            @if(incomeSources.dividends.isDefined){@messages("overview.updated")}else{@messages("overview.notStarted")}
-                        } else {
-                            @messages("common.underMaintenance")
-                        }
-                    </span>
+                    @statusTag(incomeSources.dividends.isDefined, appConfig.dividendsEnabled)
                 </li>
 
             @if(appConfig.giftAidReleased){
 
             <li class="app-task-list__item">
-                        <span class="app-task-list__task-name">
-                            @if(appConfig.giftAidEnabled){
-                            <a class="govuk-link" id="giftAid_link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else {@{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
-                                @messages("common.donationsToCharity")
-                            </a>
-                            } else {
-                                @messages("common.donationsToCharity")
-                            }
-                        </span>
-                        <span class="hmrc-status-tag">
-                            @if(appConfig.giftAidEnabled){
-                                @if(incomeSources.giftAid.isDefined){@messages("overview.updated")} else {@messages("overview.notStarted")}
-                            } else {
-                            @messages("common.underMaintenance")
-                            }
-                        </span>
+                <span class="app-task-list__task-name">
+                    @if(appConfig.giftAidEnabled){
+                    <a class="govuk-link" id="giftAid_link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else {@{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
+                        @messages("common.donationsToCharity")
+                    </a>
+                    } else {
+                        @messages("common.donationsToCharity")
+                    }
+                </span>
+                @statusTag(incomeSources.giftAid.isDefined, appConfig.giftAidEnabled)
             </li>
             }
 
@@ -124,13 +119,7 @@
                             @messages("common.employment")
                         }
                     </span>
-                    <span class="hmrc-status-tag">
-                        @if(appConfig.employmentEnabled){
-                            @if(incomeSources.employment.isDefined){@messages("overview.updated")}else if (!isInYear) {@messages("overview.notStarted")} else{@messages("overview.cannotUpdate")}
-                        } else {
-                            @messages("common.underMaintenance")
-                        }
-                    </span>
+                    @statusTag(incomeSources.employment.isDefined, appConfig.employmentEnabled, isInYear)
                 </li>
             }
 
