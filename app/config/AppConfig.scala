@@ -52,6 +52,10 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def employmentFEUrl(taxYear: Int): String = s"$employmentIncomeTaxSubmissionUrl/$taxYear/employment-summary"
   def addEmploymentUrl(taxYear: Int): String = s"$employmentIncomeTaxSubmissionUrl/$taxYear/add-employment"
 
+  lazy val cisIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCisFrontendUrl)
+  lazy val cisIncomeTaxSubmissionUrl: String =s"$cisIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/construction-industry-scheme-deductions"
+  def cisFEUrl(taxYear: Int): String = s"$cisIncomeTaxSubmissionUrl/$taxYear/summary"
+
   lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeUrl)
   def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view"
   def viewAndChangeEnterUtrUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
@@ -168,6 +172,10 @@ trait AppConfig {
   val employmentIncomeTaxSubmissionUrl: String
   def employmentFEUrl(taxYear: Int): String
   def addEmploymentUrl(taxYear: Int): String
+
+  val cisIncomeTaxSubmissionBaseUrl: String
+  val cisIncomeTaxSubmissionUrl: String
+  def cisFEUrl(taxYear: Int): String
 
   val vcBaseUrl: String
   def viewAndChangeViewUrl: String

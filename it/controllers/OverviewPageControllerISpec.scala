@@ -64,6 +64,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     def newEmploymentLink(taxYear: Int = taxYear): String = s"http://localhost:9317/update-and-submit-income-tax-return/employment-income/$taxYear/add-employment"
 
+    def cisLink(taxYear: Int = taxYear): String = s"http://localhost:9338/update-and-submit-income-tax-return/construction-industry-scheme-deductions/$taxYear/summary"
+
     def viewEstimateLink(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/calculate"
 
     def viewAndChangeLink(isAgent: Boolean): String = if (isAgent) {
@@ -148,6 +150,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val dividendsLinkText: String
     val interestsLinkText: String
     val employmentLinkText: String
+    val cisLinkText: String
     val giftAidLinkText: String
     val continue: String
     val fillInTheSections: String
@@ -169,6 +172,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val dividendsLinkText = "Dividends"
     val interestsLinkText = "Interest"
     val employmentLinkText = "PAYE employment"
+    val cisLinkText = "Construction Industry Scheme deductions"
     val giftAidLinkText = "Donations to charity"
     val continue = "continue"
     val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
@@ -190,6 +194,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val dividendsLinkText = "Difidendau"
     val interestsLinkText = "Llog"
     val employmentLinkText = "Cyflogaeth TWE"
+    val cisLinkText = "Didyniadau Cynllun y Diwydiant Adeiladu"
     val giftAidLinkText = "Rhoddion i elusennau"
     val continue = "continue"
     val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
@@ -210,10 +215,13 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val dividendsLinkSelector = "#dividends_link"
     val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
     val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.app-task-list__task-name"
+    val cisSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(8) > span.app-task-list__task-name"
     val giftAidLinkSelector = "#giftAid_link"
     val giftAidStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
     val employmentLinkSelector = "#employment_link"
     val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
+    val cisLinkSelector = "#cis_link"
+    val cisStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(8) > span.hmrc-status-tag"
     val viewEstimateSelector = "#calculation_link"
     val submitReturnEOYSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
     val submitReturnTextEOYSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > li.govuk-body"
@@ -222,6 +230,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val dividendsStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
     val giftAidStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
     val employmentStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
+    val cisStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
     val endOfYearContinueButtonSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > li:nth-child(2) > form"
     val ifWeHaveInformationSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(1)"
     val fillInTheSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(2)"
@@ -235,9 +244,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   val controller: OverviewPageController = new OverviewPageController(
-    frontendAppConfig,
-    mcc,
-    scala.concurrent.ExecutionContext.Implicits.global,
     inYearAction,
     app.injector.instanceOf[IncomeSourcesService],
     app.injector.instanceOf[LiabilityCalculationService],
@@ -245,8 +251,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[ErrorHandler],
     app.injector.instanceOf[AuditService]
-  )
-
+  )(frontendAppConfig, mcc, scala.concurrent.ExecutionContext.Implicits.global)
 
   def stubIncomeSources(incomeSources: IncomeSourcesModel): StubMapping = {
     stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK, Json.toJson(incomeSources).toString())
@@ -256,14 +261,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     stubGet("/income-tax-calculation/income-tax/nino/AA123456A/taxYear/2022/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
   }
 
-  val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = {
-    Seq(
-      UserScenario(isWelsh = false, isAgent = false, CommonExpectedEN, Some(ExpectedIndividualEN)),
-      UserScenario(isWelsh = false, isAgent = true, CommonExpectedEN, Some(ExpectedAgentEN)),
-      UserScenario(isWelsh = true, isAgent = false, CommonExpectedCY, Some(ExpectedIndividualCY)),
-      UserScenario(isWelsh = true, isAgent = true, CommonExpectedCY, Some(ExpectedAgentCY))
-    )
-  }
+  val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
+    UserScenario(isWelsh = false, isAgent = false, CommonExpectedEN, Some(ExpectedIndividualEN)),
+    UserScenario(isWelsh = false, isAgent = true, CommonExpectedEN, Some(ExpectedAgentEN)),
+    UserScenario(isWelsh = true, isAgent = false, CommonExpectedCY, Some(ExpectedIndividualCY)),
+    UserScenario(isWelsh = true, isAgent = true, CommonExpectedCY, Some(ExpectedAgentCY))
+  )
 
   ".show for in year" when {
     import Links._
@@ -317,6 +320,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           "has a donations to charity section" which {
             textOnPageCheck(underMaintenance, giftAidStatusSelector)
           }
+          "have a cis section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, cisStatusSelector)
+          }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
           linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
@@ -324,12 +330,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         "render overview page with 'Not Started' status tags when there is no prior data, the employment section with" +
           "the status tag 'cannot update' user in the current taxYear and all feature switches are turned on" when {
-
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None))
             route(app, request, user.isWelsh).get
           }
 
@@ -367,6 +372,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(cannotUpdateText, employmentStatusSelector)
           }
 
+          "has a cis section " which {
+            textOnPageCheck(cisLinkText, cisSelector)
+            textOnPageCheck(cannotUpdateText, cisStatusSelector)
+          }
+
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYear))
             textOnPageCheck(notStartedText, giftAidStatusSelector)
@@ -377,7 +387,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
-
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
@@ -425,12 +434,16 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
+          "has a cis section" which {
+            linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
+            textOnPageCheck(updatedText, cisStatusSelector)
+          }
+
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
         }
 
         "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
           "have the status as 'Not Started' for interest when interest income source is None" when {
-
             val incomeSources = incomeSourcesModel.copy(interest = None)
 
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
@@ -478,6 +491,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             "has an employment section" which {
               linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYear))
               textOnPageCheck(updatedText, employmentStatusSelector)
+            }
+
+            "has a cis section" which {
+              linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
+              textOnPageCheck(updatedText, cisStatusSelector)
             }
 
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
@@ -533,6 +551,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           "has an employment section" which {
             linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYear))
             textOnPageCheck(updatedText, employmentStatusSelector)
+          }
+
+          "has a cis section" which {
+            linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
+            textOnPageCheck(updatedText, cisStatusSelector)
           }
 
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
@@ -592,8 +615,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
-            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
+            "has a cis section" which {
+              linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
+              textOnPageCheck(updatedText, cisStatusSelector)
+            }
 
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
           }
         }
       }
@@ -650,6 +677,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(underMaintenance, employmentStatusSelectorEndOfYear)
           }
 
+          "have a cis section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, cisStatusSelectorEndOfYear)
+          }
+
           "has a donations to charity section" which {
             textOnPageCheck(underMaintenance, giftAidStatusSelectorEndOfYear)
           }
@@ -703,6 +734,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           "has an employment section" which {
             linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYearEndOfYear))
             textOnPageCheck(updatedText, employmentStatusSelectorEndOfYear)
+          }
+
+          "has a cis section" which {
+            linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYearEndOfYear))
+            textOnPageCheck(updatedText, cisStatusSelectorEndOfYear)
           }
 
           "has a donations to charity section" which {
@@ -761,16 +797,19 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, employmentStatusSelectorEndOfYear)
           }
 
+          "has a cis section " which {
+            linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYearMinusOne))
+            textOnPageCheck(notStartedText, cisStatusSelectorEndOfYear)
+          }
+
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearMinusOne))
             textOnPageCheck(notStartedText, giftAidStatusSelectorEndOfYear)
           }
 
-
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
           formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
-
         }
       }
     }
@@ -802,10 +841,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         result.header.status shouldBe SEE_OTHER
-
-
       }
     }
+
     s"return an OK (200) and no prior data and a session id" when {
 
       "all auth requirements are met" in {
@@ -816,7 +854,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         result.header.status shouldBe OK
       }
-
     }
 
     s"return an OK (200) with prior data" when {
@@ -830,7 +867,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         result.header.status shouldBe OK
       }
-
     }
 
     s"return an UNAUTHORISED (401)" when {
@@ -845,7 +881,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         result.header.status shouldBe SEE_OTHER
         result.header.headers shouldBe Map("Location" -> "/update-and-submit-income-tax-return/iv-uplift")
       }
-
     }
 
     "redirect to the sign in page" when {
@@ -864,24 +899,18 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           result.header.headers("Location") shouldBe appConfig.signInUrl
         }
       }
-
     }
-
   }
 
   "Hitting the final calculation endpoint" when {
 
     userScenarios.filterNot(_.isWelsh).foreach { user =>
 
-      def authUser(): StubMapping = {
-        if (!user.isAgent) authoriseIndividual()
-        else authoriseAgent()
-      }
+      def authUser(): StubMapping = if (!user.isAgent) authoriseIndividual() else authoriseAgent()
 
       s"as an ${if (user.isAgent) "agent" else "individual"}" should {
 
         "return a redirect with the calc id in session" which {
-
           lazy val calcId = UUID.randomUUID().toString
           lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYear)).withSession(
             SessionValues.CLIENT_MTDITID -> "1234567890",
@@ -906,9 +935,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             await(result).header.headers("Location") shouldBe expectedUrl
           }
         }
-
       }
-
     }
 
     "there is an error with the liability calculation" should {
@@ -934,11 +961,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         "is a webpage" in {
           await(result).body.contentType shouldBe Some("text/html; charset=utf-8")
         }
-
       }
-
     }
-
   }
 
   def stubIncomeSources: StubMapping = stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,
@@ -1004,7 +1028,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
       |       "employerName": "name"
       |     }
       |   ]
+      | },
+      | "cis": {
       | }
       |}""".stripMargin)
-
 }

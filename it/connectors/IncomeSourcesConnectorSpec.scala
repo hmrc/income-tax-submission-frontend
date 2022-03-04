@@ -17,23 +17,22 @@
 package connectors
 
 import itUtils.IntegrationTest
-import models.employment._
 import models._
+import models.employment._
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
 
 class IncomeSourcesConnectorSpec extends IntegrationTest {
 
-  lazy val connector: IncomeSourcesConnector = app.injector.instanceOf[IncomeSourcesConnector]
-  lazy val connectorWithSourcesTurnedOff: IncomeSourcesConnector = appWithSourcesTurnedOff.injector.instanceOf[IncomeSourcesConnector]
+  private lazy val connector: IncomeSourcesConnector = app.injector.instanceOf[IncomeSourcesConnector]
+  private lazy val connectorWithSourcesTurnedOff: IncomeSourcesConnector = appWithSourcesTurnedOff.injector.instanceOf[IncomeSourcesConnector]
 
-  val nino: String = "123456789"
-  val taxYear: Int = 1999
-  val mtditid: String = "968501689"
-  val dividendResult: Option[DividendsModel] = Some(DividendsModel(Some(500), Some(600)))
-  val interestResult: Option[Seq[InterestModel]] = Some(Seq(InterestModel("account", "1234567890", Some(500), Some(500))))
+  private val nino: String = "123456789"
+  private val taxYear: Int = 1999
+  private val dividendResult = Some(DividendsModel(Some(500.0), Some(600.0)))
+  private val interestResult = Some(Seq(InterestModel("account", "1234567890", Some(500.0), Some(500.0))))
 
-  val giftAidResult: Option[GiftAidModel] = Some(GiftAidModel(
+  private val giftAidResult: Option[GiftAidModel] = Some(GiftAidModel(
     giftAidPaymentsModel,
     giftsModel
   ))
@@ -151,7 +150,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
         val expectedResult = IncomeSourcesModel(dividendResult, interestResult)
 
         stubGetWithHeaderCheck(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYear", OK,
-          Json.toJson(expectedResult).toString(), ("excluded-income-sources", "dividends,interest,gift-aid,employment"))
+          Json.toJson(expectedResult).toString(), ("excluded-income-sources", "dividends,interest,gift-aid,employment,cis"))
 
         val result = await(connectorWithSourcesTurnedOff.getIncomeSources(nino, taxYear))
 

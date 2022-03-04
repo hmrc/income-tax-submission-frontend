@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package models.employment
+package models.cis
 
 import play.api.libs.json.{Json, OFormat}
 
-case class AllEmploymentData(hmrcEmploymentData: Seq[HmrcEmploymentSource],
-                             hmrcExpenses: Option[EmploymentExpenses],
-                             customerEmploymentData: Seq[EmploymentSource],
-                             customerExpenses: Option[EmploymentExpenses])
+case class CISDeductions(fromDate: String,
+                         toDate: String,
+                         contractorName: Option[String],
+                         employerRef: String,
+                         totalDeductionAmount: Option[BigDecimal],
+                         totalCostOfMaterials: Option[BigDecimal],
+                         totalGrossAmountPaid: Option[BigDecimal],
+                         periodData: Seq[PeriodData])
 
-object AllEmploymentData {
-  implicit val format: OFormat[AllEmploymentData] = Json.format[AllEmploymentData]
+object CISDeductions {
+  implicit val format: OFormat[CISDeductions] = Json.format[CISDeductions]
 }

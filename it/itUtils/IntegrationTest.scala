@@ -22,6 +22,8 @@ import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
+import models.cis.AllCISDeductions
+import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
 import models.employment.{AllEmploymentData, EmploymentData, EmploymentFinancialData, EmploymentSource, HmrcEmploymentSource, Pay}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -34,8 +36,6 @@ import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents, Request, R
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
 import services.AuthService
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
@@ -51,7 +51,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   val inYearAction = new InYearAction
 
   implicit val actorSystem: ActorSystem = ActorSystem()
-  
+
   val startUrl = s"http://localhost:$port/update-and-submit-income-tax-return"
 
   implicit def wsClient: WSClient = app.injector.instanceOf[WSClient]
@@ -71,6 +71,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.cisEnabled" -> "true",
     "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"
@@ -87,6 +88,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "false",
     "feature-switch.giftAidEnabled" -> "false",
     "feature-switch.employmentEnabled" -> "false",
+    "feature-switch.cisEnabled" -> "false",
     "feature-switch.crystallisationEnabled" -> "false",
     "metrics.enabled" -> "false"
   )
@@ -104,6 +106,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.cisEnabled" -> "true",
     "metrics.enabled" -> "false"
   )
 
@@ -122,6 +125,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.giftAidReleased" -> "false",
     "feature-switch.employmentEnabled" -> "true",
     "feature-switch.employmentReleased" -> "false",
+    "feature-switch.cisEnabled" -> "true",
+    "feature-switch.cisReleased" -> "false",
 
     "metrics.enabled" -> "false"
   )
@@ -138,6 +143,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "false",
     "feature-switch.giftAidEnabled" -> "false",
     "feature-switch.employmentEnabled" -> "false",
+    "feature-switch.cisEnabled" -> "false",
     "feature-switch.crystallisationEnabled" -> "false",
     "metrics.enabled" -> "false",
     "taxYearErrorFeatureSwitch" -> "false"
@@ -154,6 +160,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.cisEnabled" -> "true",
     "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
     "taxYearErrorFeatureSwitch" -> "false"
@@ -212,7 +219,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     .withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A").withHeaders("X-Session-ID" -> sessionId)
   val fakeRequestAgentNoMtditid: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession("ClientNino" -> "AA123456A")
   val fakeRequestAgentNoNino: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession("ClientMTDID" -> "1234567890")
-  
+
   implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
@@ -265,7 +272,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     dividends = dividendsModel,
     interest = interestsModel,
     giftAid = Some(giftAidModel),
-    employment = Some(employmentsModel)
+    employment = Some(employmentsModel),
+    cis = Some(allCISDeductions)
   )
 
   lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
@@ -303,6 +311,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     customerEmploymentData = Seq(),
     customerExpenses = None
   )
+  private val allCISDeductions = AllCISDeductions(None, None)
   val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
     nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
     currentYear = Some(1234.56),

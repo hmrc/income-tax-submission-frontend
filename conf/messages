@@ -10,6 +10,7 @@ common.dividends = Dividends
 common.interest = Interest
 common.donationsToCharity = Donations to charity
 common.employment = PAYE employment
+common.cis = Construction Industry Scheme deductions
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
 common.return.button.individual = Back to your Income Tax Return
