@@ -93,6 +93,9 @@ class MockAppConfig extends AppConfig with MockFactory {
 
   override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
 
+  override def viewAndChangeViewInYearEstimateUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview"
+  override def viewAndChangeViewInYearEstimateUrlAgent: String =  "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"
+
   override val calculationBaseUrl: String = "/calculation"
   override val nrsProxyBaseUrl: String = "/nrs"
 

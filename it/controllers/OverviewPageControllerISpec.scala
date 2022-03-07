@@ -68,6 +68,13 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     def viewEstimateLink(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/calculate"
 
+    def viewAndChangeLinkInYear(isAgent: Boolean): String = if (isAgent) {
+      "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"
+    }
+    else {
+      "http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview"
+    }
+
     def viewAndChangeLink(isAgent: Boolean): String = if (isAgent) {
       "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
     }
@@ -382,7 +389,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
-          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
 
         }
 
@@ -439,7 +446,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
-          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
         }
 
         "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
@@ -498,7 +505,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, cisStatusSelector)
             }
 
-            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
 
           }
         }
@@ -558,7 +565,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
-          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
 
         }
 
@@ -620,7 +627,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, cisStatusSelector)
             }
 
-            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLink(user.isAgent)))
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
+
           }
         }
       }
