@@ -22,7 +22,7 @@ import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
-import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
+import models.employment.{AllEmploymentData, EmploymentData, EmploymentFinancialData, EmploymentSource, HmrcEmploymentSource, Pay}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
@@ -272,7 +272,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   lazy val interestsModel: Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
   lazy val employmentsModel: AllEmploymentData = AllEmploymentData(
     hmrcEmploymentData = Seq(
-      EmploymentSource(
+      HmrcEmploymentSource(
         employmentId = "001",
         employerName = "maggie",
         employerRef = Some("223/AB12399"),
@@ -281,17 +281,22 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         cessationDate = Some("2020-03-11"),
         dateIgnored = Some("2020-04-04T01:01:01Z"),
         submittedOn = Some("2020-01-04T05:01:01Z"),
-        employmentData = Some(EmploymentData(
-          submittedOn = ("2020-02-12"),
-          employmentSequenceNumber = Some("123456789999"),
-          companyDirector = Some(true),
-          closeCompany = Some(false),
-          directorshipCeasedDate = Some("2020-02-12"),
-          occPen = Some(false),
-          disguisedRemuneration = Some(false),
-          pay = Some(Pay(Some(34234.15), Some(6782.92), Some("CALENDAR MONTHLY"), Some("2020-04-23"), Some(32), Some(2)))
-        )),
-        None
+        hmrcEmploymentFinancialData = Some(
+          EmploymentFinancialData(
+            employmentData = Some(EmploymentData(
+              submittedOn = ("2020-02-12"),
+              employmentSequenceNumber = Some("123456789999"),
+              companyDirector = Some(true),
+              closeCompany = Some(false),
+              directorshipCeasedDate = Some("2020-02-12"),
+              occPen = Some(false),
+              disguisedRemuneration = Some(false),
+              pay = Some(Pay(Some(34234.15), Some(6782.92), Some("CALENDAR MONTHLY"), Some("2020-04-23"), Some(32), Some(2)))
+            )),
+            None
+          )
+        ),
+        customerEmploymentFinancialData = None
       )
     ),
     hmrcExpenses = None,
