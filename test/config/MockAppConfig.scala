@@ -19,7 +19,6 @@ package config
 import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class MockAppConfig extends AppConfig with MockFactory {
 
@@ -107,6 +106,11 @@ class MockAppConfig extends AppConfig with MockFactory {
   override def employmentFEUrl(taxYear: Int): String = ???
 
   override def addEmploymentUrl(taxYear: Int): String = ???
+
+  override val cisIncomeTaxSubmissionBaseUrl: String = "/cis-tax"
+  override val cisIncomeTaxSubmissionUrl: String = "/cis-income"
+
+  override def cisFEUrl(taxYear: Int): String = ???
 
   override val vcBaseUrl: String = "/view-and-change"
 

@@ -46,15 +46,8 @@
             <h2 class="app-task-list__section">@heading</h2>
                 <ol style="padding-left:0;" class="app-task-list__items">
                     <li>
-
-                    @if(isAgent){
-                    <p class="govuk-body">@messages("overview.paragraph.1.agent")</p>
-                    <p class="govuk-body">@messages("overview.paragraph.2")</p>
-
-                    } else {
-                        <p class="govuk-body">@messages("overview.paragraph.1.individual")</p>
+                        <p class="govuk-body">@messages(s"overview.paragraph.1.${if(isAgent) "agent" else "individual"}")</p>
                         <p class="govuk-body">@messages("overview.paragraph.2")</p>
-                    }
                     </li>
 
                     @if(isInYear){
@@ -123,6 +116,20 @@
                 </li>
             }
 
+            @if(appConfig.cisReleased){
+                <li class="app-task-list__item">
+                    <span class="app-task-list__task-name">
+                        @if(appConfig.cisEnabled && (incomeSources.cis.isDefined || !isInYear)){
+                            <a class="govuk-link" id="cis_link" href="@appConfig.cisFEUrl(taxYear)">
+                                @messages("common.cis")
+                            </a>
+                        } else {
+                            @messages("common.cis")
+                        }
+                    </span>
+                    @statusTag(incomeSources.cis.isDefined, appConfig.cisEnabled, isInYear)
+                </li>
+            }
         </ol>
 
         @if(!appConfig.crystallisationEnabled){

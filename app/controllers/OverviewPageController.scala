@@ -32,19 +32,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverviewPageController @Inject()(
-                                        appConfig: AppConfig,
-                                        implicit val mcc: MessagesControllerComponents,
-                                        implicit val ec: ExecutionContext,
-                                        inYearAction: InYearAction,
-                                        incomeSourcesService: IncomeSourcesService,
-                                        liabilityCalculationService: LiabilityCalculationService,
-                                        overviewPageView: OverviewPageView,
-                                        authorisedAction: AuthorisedAction,
-                                        errorHandler: ErrorHandler,
-                                        auditService: AuditService) extends FrontendController(mcc) with I18nSupport {
-
-  implicit val config: AppConfig = appConfig
+class OverviewPageController @Inject()(inYearAction: InYearAction,
+                                       incomeSourcesService: IncomeSourcesService,
+                                       liabilityCalculationService: LiabilityCalculationService,
+                                       overviewPageView: OverviewPageView,
+                                       authorisedAction: AuthorisedAction,
+                                       errorHandler: ErrorHandler,
+                                       auditService: AuditService)
+                                      (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     val isInYear: Boolean = inYearAction.inYear(taxYear)

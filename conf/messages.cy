@@ -10,6 +10,7 @@ common.dividends = Difidendau
 common.interest = Llog
 common.donationsToCharity = Rhoddion i elusennau
 common.employment = Cyflogaeth TWE
+common.cis = Didyniadau Cynllun y Diwydiant Adeiladu
 common.underMaintenance = Wrthi’n cynnal a chadw’r safle
 common.govUk = GOV.UK/CYMRAEG
 common.return.button.individual = Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm

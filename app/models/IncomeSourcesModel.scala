@@ -16,16 +16,16 @@
 
 package models
 
+import models.cis.AllCISDeductions
 import models.employment.AllEmploymentData
 import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
                               interest: Option[Seq[InterestModel]] = None,
                               giftAid: Option[GiftAidModel] = None,
-                              employment: Option[AllEmploymentData] = None)
+                              employment: Option[AllEmploymentData] = None,
+                              cis: Option[AllCISDeductions] = None)
 
 object IncomeSourcesModel {
   implicit val formats: OFormat[IncomeSourcesModel] = Json.format[IncomeSourcesModel]
 }
-
-
