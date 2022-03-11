@@ -165,7 +165,7 @@
 @updateTaxCalculationInYear = {
     @if(appConfig.crystallisationEnabled && isInYear) {
             @govUkButton(Button(
-                href = if(isAgent) {Some(appConfig.viewAndChangeViewUrlAgent)} else {Some(appConfig.viewAndChangeViewUrl)},
+                href = if(isAgent) {Some(appConfig.viewAndChangeViewInYearEstimateUrlAgent)} else {Some(appConfig.viewAndChangeViewInYearEstimateUrl)},
                 attributes = Map("id" -> "updateTaxCalculation"),
                 preventDoubleClick = true,
                 content = Text(messages("overview.updateTaxCalculation")),

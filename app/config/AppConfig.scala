@@ -58,8 +58,10 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
 
   lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeUrl)
   def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view"
+  def viewAndChangeViewInYearEstimateUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-overview"
   def viewAndChangeEnterUtrUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
   def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+  def viewAndChangeViewInYearEstimateUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/tax-overview"
   def viewAndChangePaymentsOwedUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/payments-owed"
   def viewAndChangePaymentsOwedAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/payments-owed"
   def viewAndChangeNextUpdatesUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/obligations"
@@ -179,8 +181,10 @@ trait AppConfig {
 
   val vcBaseUrl: String
   def viewAndChangeViewUrl: String
+  def viewAndChangeViewInYearEstimateUrl: String
   def viewAndChangeEnterUtrUrl: String
   def viewAndChangeViewUrlAgent: String
+  def viewAndChangeViewInYearEstimateUrlAgent: String
   def viewAndChangePaymentsOwedUrl: String
   def viewAndChangePaymentsOwedAgentUrl: String
   def viewAndChangeNextUpdatesUrl: String
