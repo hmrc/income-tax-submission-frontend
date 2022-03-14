@@ -67,8 +67,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val summaryRow1Key: String = "Name"
     val summaryRow2Key: String = "Unique Tax Reference (UTR)"
     val summaryRow3Key: String = "Date submitted"
-    val nextStepsPrint: String = "Print this page"
-    val printLink: String = ""
 
     val summaryRow1KeyWelsh: String = "Enw"
     val summaryRow2KeyWelsh: String = "Cyfeirnod Unigryw y Trethdalwr (UTR)"
@@ -150,7 +148,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val nextStepsP1TextSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val nextStepsP2LinkSelector = "#amount_owed_link"
     val nextStepsP4TextSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
-    val printLinkSelector = "#print_link"
   }
 
   import ExpectedResults._
@@ -199,7 +196,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
         textOnPageCheck(nextStepsP1, nextStepsP1TextSelector)
         linkCheck(nextStepsP2, nextStepsP2LinkSelector, nextStepsP2Link)
         textOnPageCheck(nextStepsP4, nextStepsP4TextSelector)
-        linkCheck(nextStepsPrint, printLinkSelector, printLink)
       }
 
     }
@@ -240,7 +236,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
         textOnPageCheck(nextStepsP1Welsh, nextStepsP1TextSelector)
         linkCheck(nextStepsP2Welsh, nextStepsP2LinkSelector, nextStepsP2Link)
         textOnPageCheck(nextStepsP4Welsh, nextStepsP4TextSelector)
-        linkCheck(nextStepsPrintWelsh, printLinkSelector, printLink)
       }
     }
   }
@@ -286,7 +281,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
         textOnPageCheck(nextStepsP1, nextStepsP1TextSelector)
         linkCheck(nextStepsP2, nextStepsP2LinkSelector, nextStepsP2Link)
         textOnPageCheck(nextStepsP4, nextStepsP4TextSelector)
-        linkCheck(nextStepsPrint, printLinkSelector, printLink)
       }
 
     }
@@ -329,7 +323,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
         textOnPageCheck(nextStepsP1Welsh, nextStepsP1TextSelector)
         linkCheck(nextStepsP2Welsh, nextStepsP2LinkSelector, nextStepsP2Link)
         textOnPageCheck(nextStepsP4Welsh, nextStepsP4TextSelector)
-        linkCheck(nextStepsPrintWelsh, printLinkSelector, printLink)
       }
     }
   }
