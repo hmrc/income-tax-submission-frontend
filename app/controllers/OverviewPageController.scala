@@ -16,7 +16,7 @@
 
 package controllers
 
-import audit.{AuditService, IntentToCrystalliseDetail}
+import audit.{AuditService, CreateInYearTaxEstimate, IntentToCrystalliseDetail}
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
@@ -80,5 +80,19 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
         }
       case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, taxYear)
     }
+  }
+
+  def inYearEstimate(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+
+    val userTypeString = if (user.isAgent) "agent" else "individual"
+    auditService.sendAudit(CreateInYearTaxEstimate(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
+
+    Future.successful(
+      if (user.isAgent) {
+        Redirect(appConfig.viewAndChangeViewInYearEstimateUrlAgent)
+      } else {
+        Redirect(appConfig.viewAndChangeViewInYearEstimateUrl)
+      }
+    )
   }
 }
