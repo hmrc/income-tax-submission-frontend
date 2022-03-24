@@ -164,13 +164,12 @@
 
 @updateTaxCalculationInYear = {
     @if(appConfig.crystallisationEnabled && isInYear) {
-            @govUkButton(Button(
-                href = if(isAgent) {Some(appConfig.viewAndChangeViewInYearEstimateUrlAgent)} else {Some(appConfig.viewAndChangeViewInYearEstimateUrl)},
-                attributes = Map("id" -> "updateTaxCalculation"),
-                preventDoubleClick = true,
-                content = Text(messages("overview.updateTaxCalculation")),
-                classes = "govuk-button"
-            ))
+        @formWithCSRF(action = controllers.routes.OverviewPageController.inYearEstimate(taxYear)) {
+            @button(
+                alternativeText = messages("overview.updateTaxCalculation"),
+                alternativeId = Some("updateTaxCalculation")
+            )
+        }
     }
 }
 

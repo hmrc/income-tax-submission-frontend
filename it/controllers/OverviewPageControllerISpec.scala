@@ -243,6 +243,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val fillInTheSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(2)"
     val goToYourIncomeTaxReturnSelector = "#main-content > div > div > ol > li:nth-child(1) > p"
     val updateTaxCalculationSelector = "#updateTaxCalculation"
+    val updateTaxCalculationFormSelector = "#main-content > div > div > ol > form"
   }
 
   private val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/view"
@@ -389,7 +390,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
-          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
+          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
         }
 
@@ -446,7 +448,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
-          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
+          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
         }
 
         "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
@@ -505,7 +508,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, cisStatusSelector)
             }
 
-            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
+            formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
           }
         }
@@ -565,7 +569,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
-          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
+          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+          buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
         }
 
@@ -627,7 +632,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, cisStatusSelector)
             }
 
-            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, Some(Links.viewAndChangeLinkInYear(user.isAgent)))
+            formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
           }
         }
@@ -971,6 +977,41 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
       }
     }
+  }
+  "Hitting the inYear estimate endpoint" when {
+
+    userScenarios.filterNot(_.isWelsh).foreach { user =>
+
+      def authUser(): StubMapping = if (!user.isAgent) authoriseIndividual() else authoriseAgent()
+
+      s"as an ${if (user.isAgent) "agent" else "individual"}" should {
+
+        "return a redirect" which {
+          lazy val request = FakeRequest(controllers.routes.OverviewPageController.inYearEstimate(taxYear)).withSession(
+            SessionValues.CLIENT_MTDITID -> "1234567890",
+            SessionValues.CLIENT_NINO -> "AA123456A",
+            SessionValues.TAX_YEAR -> "2022"
+          ).withHeaders("X-Session-ID" -> sessionId)
+
+          lazy val result: Future[Result] = {
+            authUser()
+            route(appWithSourcesTurnedOff, request).get
+          }
+
+          "has a status of SEE_OTHER" in {
+            status(result) shouldBe SEE_OTHER
+          }
+
+          s"has a redirect to the view and change ${if (user.isAgent) "agent" else "individual"} page" in {
+            val expectedUrl = if (user.isAgent) {"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"}
+            else {"http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview"}
+
+            await(result).header.headers("Location") shouldBe expectedUrl
+          }
+        }
+      }
+    }
+
   }
 
   def stubIncomeSources: StubMapping = stubGet("/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=2022", OK,

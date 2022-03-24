@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+package audit
 
-@this(govukButton : GovukButton)
+import play.api.libs.json.{Json, OFormat}
 
-@(alternativeText: String = "startPage.continue", classes: Option[String] = None, alternativeId: Option[String] = None)(implicit messages: Messages)
+case class CreateInYearTaxEstimate(taxYear: Int, userType: String, nino: String, mtditid: String) {
+  private def name = "CreateInYearTaxEstimate"
+  def toAuditModel: AuditModel[CreateInYearTaxEstimate] =  AuditModel[CreateInYearTaxEstimate](name, name, this)
+}
 
-@govukButton(Button(
-    attributes = Map("id" -> alternativeId.getOrElse("continue")),
-    preventDoubleClick = true,
-    content = Text(messages(alternativeText)),
-    classes = classes.getOrElse("")
-))
+object CreateInYearTaxEstimate {
+  implicit val format: OFormat[CreateInYearTaxEstimate] = Json.format[CreateInYearTaxEstimate]
+}
