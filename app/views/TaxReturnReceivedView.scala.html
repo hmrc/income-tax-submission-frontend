@@ -78,7 +78,7 @@
 
     </div>
 }
-@layout(pageTitle = messages(s"taxReturnReceived.title.${if(isAgent) "agent" else "individual"}"), taxYear = Some(taxYear), isAgent = isAgent, showBreadcrumbs = false)(mainHTML)
+@layout(pageTitle = messages("taxReturnReceived.panel.heading") + " " + messages(s"taxReturnReceived.title.${if(isAgent) "agent" else "individual"}"), taxYear = Some(taxYear), isAgent = isAgent, showBreadcrumbs = false)(mainHTML)
 
 @{
 // $COVERAGE-OFF$
