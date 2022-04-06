@@ -23,9 +23,6 @@ import itUtils.IntegrationTest
 import play.api.http.Status.SEE_OTHER
 import play.api.test.Helpers.{status, stubMessagesControllerComponents}
 import services.AuthService
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
-
-import scala.concurrent.Future
 
 class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
 
@@ -37,11 +34,7 @@ class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
     app.injector.instanceOf[AuthorisedAction],
     scala.concurrent.ExecutionContext.Implicits.global)
 
-  val individualHandoffReason = "individual"
-  val individualConfidenceLevel = 50
-  val organisationHandoffReason = "organisation"
-  val organisationConfidenceLevel = 200
-  val minimumConfidenceLevel = 200
+  private val callBackTaxYear: Int = taxYear + 2
 
   "IVUpliftController" should {
 
@@ -73,16 +66,16 @@ class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
         
         lazy val response2 = {
           authoriseIndividual()
-          controller.callback()(fakeRequest.withSession("TAX_YEAR" -> "2024"))
+          controller.callback()(fakeRequest.withSession("TAX_YEAR" -> s"$callBackTaxYear"))
         }
 
         "return status code 303" in {
           status(response) shouldBe SEE_OTHER
-          await(response).header.headers shouldBe Map("Location" -> "/update-and-submit-income-tax-return/2022/start")
+          await(response).header.headers shouldBe Map("Location" -> s"/update-and-submit-income-tax-return/$taxYear/start")
         }
         "return status code 303 when there is a tax year in session" in {
           status(response2) shouldBe SEE_OTHER
-          await(response2).header.headers shouldBe Map("Location" -> "/update-and-submit-income-tax-return/2024/start")
+          await(response2).header.headers shouldBe Map("Location" -> s"/update-and-submit-income-tax-return/$callBackTaxYear/start")
         }
       }
     }

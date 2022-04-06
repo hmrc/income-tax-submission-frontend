@@ -16,10 +16,8 @@
 
 package controllers
 
-import audit.AuditService
 import common.SessionValues
-import config.{AppConfig, ErrorHandler}
-import controllers.predicates.AuthorisedAction
+import config.AppConfig
 import helpers.PlaySessionCookieBaker
 import itUtils.{IntegrationTest, ViewHelpers}
 import models.{APIErrorBodyModel, DeclarationModel}
@@ -30,44 +28,25 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{CONFLICT, NO_CONTENT, OK, SEE_OTHER, UNPROCESSABLE_ENTITY, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
-import services.{DeclareCrystallisationService, NrsService}
-import views.html.DeclarationPageView
 
 import scala.concurrent.Future
 
 class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
-  def controller: DeclarationPageController = new DeclarationPageController(
-    app.injector.instanceOf[DeclareCrystallisationService],
-    app.injector.instanceOf[NrsService],
-    frontendAppConfig,
-    mcc,
-    scala.concurrent.ExecutionContext.Implicits.global,
-    app.injector.instanceOf[DeclarationPageView],
-    app.injector.instanceOf[AuthorisedAction],
-    app.injector.instanceOf[ErrorHandler],
-    app.injector.instanceOf[AuditService]
-  )
+  private val nino: String = "AA012345A"
+  private val mtditid: String = "1234567890"
 
-  val nino: String = "AA012345A"
-  val mtditid: String = "1234567890"
+  private val crystallisationUrl: String = s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/string/declare-crystallisation"
 
-  val crystallisationUrl: String = "/income-tax-calculation/income-tax/nino/AA123456A/taxYear/2022/string/declare-crystallisation"
-
-  trait SpecificExpectedResults {
-    val taxYear: Int = 2022
-    val taxYearMinusOne: Int = taxYear - 1
-  }
-
-  object ExpectedResults extends SpecificExpectedResults {
+  object ExpectedResults{
 
     val heading: String = "Declaration"
-    val subheading: String = "6 April " + taxYearMinusOne + " to " + "5 April " + taxYear
+    val subheading: String = "6 April " + taxYearEOY + " to " + "5 April " + taxYear
 
     val agreeButton: String = "Agree and submit"
 
     val headingWelsh: String = "Datganiad"
-    val subheadingWelsh: String = "6 Ebrill " + taxYearMinusOne + " i " + "5 Ebrill " + taxYear
+    val subheadingWelsh: String = "6 Ebrill " + taxYearEOY + " i " + "5 Ebrill " + taxYear
 
     val agreeButtonWelsh: String = "Cytuno a chyflwyno"
 
@@ -105,7 +84,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       " ac wynebu erlyniad os byddaf yn rhoi gwybodaeth anwir."
   }
 
-  object AgentExpectedResults extends SpecificExpectedResults {
+  object AgentExpectedResults{
 
     val agentSummaryData: DeclarationModel = DeclarationModel(
       "Joan Agent", 940.40, "EW62340", 231, 132, 321

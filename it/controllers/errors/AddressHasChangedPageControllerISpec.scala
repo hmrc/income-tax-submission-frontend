@@ -32,14 +32,12 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  val taxYear = 2021
-
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
     val addressHasChangedSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val submitYourReturnSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
     val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYearEOY/view"
   }
 
   object ExpectedResults {
@@ -70,12 +68,12 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
 
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/address-changed"
+  private def urlPath(taxYear: Int = taxYearEOY) = s"/update-and-submit-income-tax-return/$taxYear/address-changed"
 
   "Rendering the address change error page in English" should {
     import ExpectedResults._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)

@@ -33,8 +33,6 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  val taxYear = 2021
-
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
     val youNeedToProvideSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
@@ -49,7 +47,7 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
     val youNeedToProvideTextAgent = "You need to provide at least one update before you can submit your client’s Income Tax Return."
     val incomeTaxReturnButtonTextIndividual = "Back to your Income Tax Return"
     val incomeTaxReturnButtonTextAgent = "Back to Income Tax Return"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYearEOY/view"
   }
 
   object ExpectedResultsWelsh {
@@ -59,17 +57,17 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
     val youNeedToProvideTextAgent = "Mae angen i chi roi o leiaf un diweddariad cyn i chi allu cyflwyno Ffurflen Dreth Incwm eich cleient."
     val incomeTaxReturnButtonTextIndividual = "Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm"
     val incomeTaxReturnButtonTextAgent = "Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYearEOY/view"
   }
 
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/no-updates-provided"
+  private def urlPath(taxYear: Int = taxYearEOY) = s"/update-and-submit-income-tax-return/$taxYear/no-updates-provided"
 
   "Rendering the no updates provided error page in English" should {
     import ExpectedResults._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
@@ -137,7 +135,7 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
   "Rendering the no updates provided error page in Welsh" should {
     import ExpectedResultsWelsh._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)

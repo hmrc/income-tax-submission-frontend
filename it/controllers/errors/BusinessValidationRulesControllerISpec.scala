@@ -33,7 +33,6 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  val taxYear: Int = 2021
 
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
@@ -49,7 +48,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
     val checkYourIncomeTaxReturnIndividual = "Check your Income Tax Return and submit it again."
     val incomeTaxReturnButtonTextIndividual = "Back to your Income Tax Return"
     val incomeTaxReturnButtonTextAgent = "Back to Income Tax Return"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYearEOY/view"
   }
 
   object ExpectedResultsWelsh {
@@ -59,18 +58,18 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
     val checkYourIncomeTaxReturnIndividual = "Ewch ati i wirio’ch Ffurflen Dreth ar gyfer Treth Incwm a’i chyflwyno eto."
     val incomeTaxReturnButtonTextIndividual = "Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm"
     val incomeTaxReturnButtonTextAgent = "Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYearEOY/view"
   }
 
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/problem-with-updates"
+  private def urlPath(taxYear: Int = taxYearEOY) = s"/update-and-submit-income-tax-return/$taxYear/problem-with-updates"
 
   "Rendering the business validation rules page in English" should {
 
     import ExpectedResults._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
 
@@ -120,7 +119,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
   "Rendering the business validation rules page in Welsh" should {
     import ExpectedResultsWelsh._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)

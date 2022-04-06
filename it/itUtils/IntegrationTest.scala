@@ -23,8 +23,8 @@ import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
 import models.cis.AllCISDeductions
-import models.employment.{AllEmploymentData, EmploymentData, EmploymentSource, Pay}
-import models.employment.{AllEmploymentData, EmploymentData, EmploymentFinancialData, EmploymentSource, HmrcEmploymentSource, Pay}
+import models.employment._
+import org.joda.time.DateTime
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
@@ -47,6 +47,13 @@ import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
 trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll
   with BeforeAndAfterEach with DefaultAwaitTimeout with OptionValues {
 
+  private val month = DateTime.now().monthOfYear().get()
+  private val dayOfMonth = DateTime.now().dayOfMonth().get()
+
+  val taxYear: Int = if (month >= 4 && dayOfMonth > 5) DateTime.now().year().get() + 1 else DateTime.now().year().get()
+  val taxYearEOY: Int = taxYear - 1
+  val taxYearEndOfYearMinusOne: Int = taxYearEOY -1
+
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   val inYearAction = new InYearAction
 
@@ -59,6 +66,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
   def config: Map[String, String] = Map(
+    "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
@@ -78,6 +86,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   )
 
   def sourcesTurnedOffConfig: Map[String, String] = Map(
+    "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
@@ -94,6 +103,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   )
 
   def taxYearFeatureSwitchOffConfig: Map[String, String] = Map(
+    "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
@@ -111,6 +121,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   )
 
   def unreleasedIncomeSourcesConfig: Map[String, String] = Map(
+    "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
@@ -133,6 +144,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
 
   def sourcesTurnedOffConfigEndOfYear: Map[String, String] = Map(
+    "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
@@ -150,6 +162,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   )
 
   def sourcesTurnedOnConfigEndOfYear: Map[String, String] = Map(
+    "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
@@ -292,7 +305,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         hmrcEmploymentFinancialData = Some(
           EmploymentFinancialData(
             employmentData = Some(EmploymentData(
-              submittedOn = ("2020-02-12"),
+              submittedOn = "2020-02-12",
               employmentSequenceNumber = Some("123456789999"),
               companyDirector = Some(true),
               closeCompany = Some(false),

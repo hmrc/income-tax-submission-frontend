@@ -16,43 +16,25 @@
 
 package config
 
-import akka.pattern.FutureRef
 import itUtils.IntegrationTest
 import play.api.http.Status._
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import views.html.errors._
-import play.api.http.Status._
-import play.api.test.ResultExtractors
-import play.api.http.HeaderNames.LOCATION
-import play.api.test.Helpers.{defaultAwaitTimeout, header}
 
-import scala.concurrent.Future
-
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ErrorHandlerISpec extends IntegrationTest {
 
-  val serviceUnavailable: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
-  val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
-  val notFoundPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
-
-  val noUpdatesProvidedPage: NoUpdatesProvidedPage = app.injector.instanceOf[NoUpdatesProvidedPage]
-  val returnTaxYearExistsView: ReturnTaxYearExistsView = app.injector.instanceOf[ReturnTaxYearExistsView]
-
-  val addressHasChangedPage: AddressHasChangedPage = app.injector.instanceOf[AddressHasChangedPage]
-  val taxReturnPreviouslyUpdatedView: TaxReturnPreviouslyUpdatedView = app.injector.instanceOf[TaxReturnPreviouslyUpdatedView]
-  val noValidIncomeSourcesView: NoValidIncomeSourcesView = app.injector.instanceOf[NoValidIncomeSourcesView]
-  val businessValidationRulesView: BusinessValidationRulesView = app.injector.instanceOf[BusinessValidationRulesView]
+  private val serviceUnavailable: ServiceUnavailablePage = app.injector.instanceOf[ServiceUnavailablePage]
+  private val internalServerErrorPage: InternalServerErrorPage = app.injector.instanceOf[InternalServerErrorPage]
+  private val notFoundPage: NotFoundPage = app.injector.instanceOf[NotFoundPage]
 
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
 
   val errorHandler = new ErrorHandler(messagesApi, internalServerErrorPage, notFoundPage, serviceUnavailable)
 
-  val taxYear: Int = 2022
-  
   ".handleError" should {
 
     "return a 503 page for service unavailable" in {

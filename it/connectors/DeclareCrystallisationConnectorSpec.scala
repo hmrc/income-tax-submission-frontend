@@ -23,14 +23,12 @@ import play.mvc.Http.Status._
 
 class DeclareCrystallisationConnectorSpec extends IntegrationTest {
 
-  lazy val connector: DeclareCrystallisationConnector = app.injector.instanceOf[DeclareCrystallisationConnector]
+  private lazy val connector: DeclareCrystallisationConnector = app.injector.instanceOf[DeclareCrystallisationConnector]
 
-  val nino: String = "123456789"
-  val taxYear: Int = 1999
-  val mtditid: String = "968501689"
-  val calculationId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
+  private val nino: String = "123456789"
+  private val calculationId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
 
-  val declareUrl: String = s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation"
+  private val declareUrl: String = s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/$calculationId/declare-crystallisation"
 
   ".DeclareCrystallisationConnector" should {
 
@@ -39,7 +37,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
 
       stubPost(declareUrl, NO_CONTENT, "")
 
-      val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
+      val result = await(connector.postDeclareCrystallisation(nino, taxYearEOY, calculationId))
 
       result shouldBe expectedResult
     }
@@ -49,7 +47,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
 
       stubPost(declareUrl, INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
 
-      val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
+      val result = await(connector.postDeclareCrystallisation(nino, taxYearEOY, calculationId))
 
       result shouldBe Left(expectedResult)
     }
@@ -58,7 +56,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
 
       stubPost(declareUrl, SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
 
-      val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
+      val result = await(connector.postDeclareCrystallisation(nino, taxYearEOY, calculationId))
 
       result shouldBe Left(expectedResult)
     }
@@ -68,7 +66,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
 
       stubPost(declareUrl, NOT_FOUND, expectedResult.toJson.toString())
 
-      val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
+      val result = await(connector.postDeclareCrystallisation(nino, taxYearEOY, calculationId))
 
       result shouldBe Left(expectedResult)
     }
@@ -78,7 +76,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
 
       stubPost(declareUrl, CONFLICT, expectedResult.toJson.toString())
 
-      val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
+      val result = await(connector.postDeclareCrystallisation(nino, taxYearEOY, calculationId))
 
       result shouldBe Left(expectedResult)
     }
@@ -87,7 +85,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
 
       stubPost(declareUrl, BAD_REQUEST, expectedResult.toJson.toString())
 
-      val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
+      val result = await(connector.postDeclareCrystallisation(nino, taxYearEOY, calculationId))
 
       result shouldBe Left(expectedResult)
     }
@@ -96,7 +94,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
 
       stubPost(declareUrl, GONE, expectedResult.toJson.toString())
 
-      val result = await(connector.postDeclareCrystallisation(nino, taxYear, calculationId))
+      val result = await(connector.postDeclareCrystallisation(nino, taxYearEOY, calculationId))
 
       result shouldBe Left(expectedResult)
     }

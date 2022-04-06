@@ -16,25 +16,19 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.http.HttpHeader
 import itUtils.IntegrationTest
 import models.{APIErrorBodyModel, APIErrorModel, NrsSubmissionModel}
 import play.mvc.Http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 class NrsConnectorSpec extends IntegrationTest {
 
-  lazy val connector: NrsConnector = app.injector.instanceOf[NrsConnector]
+  private lazy val connector: NrsConnector = app.injector.instanceOf[NrsConnector]
 
-  val nino: String = "AA123456A"
-  val taxYear: Int = 2019
-  val mtditid: String = "1234567890"
+  private val nino: String = "AA123456A"
 
-  val nrsSubmissionModel: NrsSubmissionModel = NrsSubmissionModel("1sfg34gh-87b9-4d4a-a296-72w2gdg8357a")
-  val expectedHeaders = Seq(new HttpHeader("mtditid", mtditid))
-  val response: String = "1sfg34gh-87b9-4d4a-a296-72w2gdg8357a"
+  private val nrsSubmissionModel: NrsSubmissionModel = NrsSubmissionModel("1sfg34gh-87b9-4d4a-a296-72w2gdg8357a")
 
-  val url: String = s"/income-tax-nrs-proxy/$nino/itsa-crystallisation"
+  private val url: String = s"/income-tax-nrs-proxy/$nino/itsa-crystallisation"
 
   ".NrsConnector" should {
 

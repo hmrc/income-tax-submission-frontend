@@ -32,8 +32,6 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  val taxYear = 2021
-
   object Selectors {
     val headingSelector = "#main-content > div > div > header > h1"
     val p1TextSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
@@ -49,7 +47,7 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
     val youMustResubmitTextAgent = "You must submit your client’s Income Tax Return again."
     val incomeTaxReturnButtonTextIndividual = "Back to your Income Tax Return"
     val incomeTaxReturnButtonTextAgent = "Back to Income Tax Return"
-    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
+    val incomeTaxReturnButtonLink = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYearEOY/view"
   }
 
   object ExpectedResultsWelsh {
@@ -66,11 +64,11 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
   import ExpectedResults._
   import Selectors._
 
-  private def urlPath(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/income-tax-return-updated"
+  private def urlPath(taxYear: Int = taxYearEOY) = s"/update-and-submit-income-tax-return/$taxYear/income-tax-return-updated"
 
   "Rendering the tax return previously updated page in English" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
@@ -137,7 +135,7 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
 
   "Rendering the tax return previously updated page in Welsh" should {
     import ExpectedResultsWelsh._
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)

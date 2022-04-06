@@ -19,18 +19,16 @@ package controllers.errors
 import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.http.{HeaderNames, Status}
+import play.api.http.HeaderNames
+import play.api.http.Status._
 import play.api.libs.ws.WSResponse
 
-class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers with Status {
-
-  lazy val taxYear: Int = 2022
-  lazy val lastTaxYear: Int = 2021
+class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers{
 
   object ExpectedResults {
     val pageTitleText = "Page not found"
     val pageHeadingText = "Page not found"
-    val specificTaxYearText = s"You can only enter information for the $lastTaxYear to $taxYear tax year."
+    val specificTaxYearText = s"You can only enter information for the $taxYearEOY to $taxYear tax year."
     val checkWebAddressText = "Check that you’ve entered the correct web address."
     val selfAssessmentEnquiriesText: String = "If the website address is correct or you selected a link or button, " +
       "you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
@@ -39,7 +37,7 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val pageTitleTextWelsh = "Heb ddod o hyd i’r dudalen"
     val pageHeadingTextWelsh = "Heb ddod o hyd i’r dudalen"
-    val specificTaxYearWelsh = s"Gallwch ond nodi gwybodaeth ar gyfer blwyddyn dreth $lastTaxYear i $taxYear."
+    val specificTaxYearWelsh = s"Gallwch ond nodi gwybodaeth ar gyfer blwyddyn dreth $taxYearEOY i $taxYear."
     val checkWebAddressTextWelsh = "Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir."
     val selfAssessmentEnquiriesWelsh: String = "Os yw’r cyfeiriad gwe yn gywir neu os ydych wedi dewis cysylltiad neu fotwm, " +
       "gallwch wneud y canlynol: Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd) i siarad â rhywun am eich Treth Incwm."
