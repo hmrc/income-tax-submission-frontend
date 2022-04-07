@@ -19,8 +19,9 @@ package config
 import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
+import utils.TaxYearHelper
 
-class MockAppConfig extends AppConfig with MockFactory {
+class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val signInContinueUrl: String = "/signInContinue"
   override lazy val signInUrl: String = "/signIn"
@@ -78,6 +79,8 @@ class MockAppConfig extends AppConfig with MockFactory {
   override lazy val employmentEnabled: Boolean = false
 
   override lazy val employmentReleased: Boolean = true
+
+  override lazy val employmentEOYEnabled: Boolean = true
 
   override lazy val giftAidEnabled: Boolean = false
 
@@ -148,7 +151,7 @@ class MockAppConfig extends AppConfig with MockFactory {
   override def routeToSwitchLanguage: String => Call =
     (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
 
-  override val excludedIncomeSources: Seq[String] = Seq()
+  override def excludedIncomeSources(taxYear: Int): Seq[String] = Seq()
   override val testOnly_authLoginUrl: String = "/auth-login"
 }
 

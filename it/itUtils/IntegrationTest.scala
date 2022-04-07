@@ -36,6 +36,7 @@ import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents, Request, R
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
 import services.AuthService
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
@@ -79,6 +80,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.employmentEOYEnabled" -> "true",
     "feature-switch.cisEnabled" -> "true",
     "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
@@ -99,6 +101,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.employmentEOYEnabled" -> "true",
     "feature-switch.cisEnabled" -> "true",
     "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
@@ -119,6 +122,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "false",
     "feature-switch.giftAidEnabled" -> "false",
     "feature-switch.employmentEnabled" -> "false",
+    "feature-switch.employmentEOYEnabled" -> "false",
     "feature-switch.cisEnabled" -> "false",
     "feature-switch.crystallisationEnabled" -> "false",
     "metrics.enabled" -> "false"
@@ -138,6 +142,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.employmentEOYEnabled" -> "true",
     "feature-switch.cisEnabled" -> "true",
     "metrics.enabled" -> "false"
   )
@@ -177,6 +182,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "false",
     "feature-switch.giftAidEnabled" -> "false",
     "feature-switch.employmentEnabled" -> "false",
+    "feature-switch.employmentEOYEnabled" -> "false",
     "feature-switch.cisEnabled" -> "false",
     "feature-switch.crystallisationEnabled" -> "false",
     "metrics.enabled" -> "false",
@@ -195,6 +201,26 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.interestEnabled" -> "true",
     "feature-switch.giftAidEnabled" -> "true",
     "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.employmentEOYEnabled" -> "true",
+    "feature-switch.cisEnabled" -> "true",
+    "feature-switch.crystallisationEnabled" -> "true",
+    "metrics.enabled" -> "false",
+    "taxYearErrorFeatureSwitch" -> "false"
+  )
+
+  def employmentEOYFeatureOffConfig: Map[String, String] = Map(
+    "defaultTaxYear" -> taxYear.toString,
+    "auditing.enabled" -> "false",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.interestEnabled" -> "true",
+    "feature-switch.giftAidEnabled" -> "true",
+    "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.employmentEOYEnabled" -> "false",
     "feature-switch.cisEnabled" -> "true",
     "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
@@ -230,6 +256,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   lazy val unreleasedIncomeSources: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(unreleasedIncomeSourcesConfig)
+    .build
+
+  lazy val appWithEmploymentEOYEnabledOff: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(employmentEOYFeatureOffConfig)
     .build
 
   lazy val appWithInvalidEncryptionKey: Application = new GuiceApplicationBuilder()
@@ -293,7 +324,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   )
 
   //noinspection ScalaStyle
-  def mockIVCredentials(affinityGroup: AffinityGroup, confidenceLevel: Int) = {
+  def mockIVCredentials(affinityGroup: AffinityGroup, confidenceLevel: Int): Future[Some[AffinityGroup] ~ ConfidenceLevel] = {
     val confidenceLevelResponse = confidenceLevel match {
       case 500 => ConfidenceLevel.L500
       case 200 => ConfidenceLevel.L200
