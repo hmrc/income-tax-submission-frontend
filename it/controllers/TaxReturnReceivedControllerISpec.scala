@@ -18,7 +18,6 @@ package controllers
 
 import common.SessionValues
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
 import helpers.PlaySessionCookieBaker
 import itUtils.{IntegrationTest, ViewHelpers}
 import models.TaxReturnReceivedModel
@@ -31,7 +30,6 @@ import play.api.test.Helpers.{OK, SEE_OTHER, status, writeableOf_AnyContentAsEmp
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utils.ImplicitDateFormatter
-import views.html.TaxReturnReceivedView
 
 import java.time.LocalDate
 import java.util.Locale
@@ -47,21 +45,9 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     ))
   }
 
-  def controller: TaxReturnReceivedController = new TaxReturnReceivedController(
-    app.injector.instanceOf[AuthorisedAction],
-    app.injector.instanceOf[TaxReturnReceivedView],
-    app.injector.instanceOf[LanguageUtils],
-    frontendAppConfig,
-    mcc,
-    scala.concurrent.ExecutionContext.Implicits.global
-  )
-
-  val timeStamp: LocalDate = LocalDate.now()
-  val nino: String = "AA012345A"
-  val mtditid: String = "1234567890"
-
-  val taxYear: Int = 2022
-  val taxYearMinusOne: Int = taxYear - 1
+  private val timeStamp: LocalDate = LocalDate.now()
+  private val nino: String = "AA012345A"
+  private val mtditid: String = "1234567890"
 
   object ExpectedResults {
     val summaryRow1Key: String = "Name"
@@ -86,7 +72,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val summaryRow3Value: String = timeStamp.toLongDate(toMessages("EN"))
 
     val panelHeading: String = "Confirmation:"
-    val panelSubheading: String = s"We’ve received your Income Tax Return for $taxYearMinusOne to $taxYear"
+    val panelSubheading: String = s"We’ve received your Income Tax Return for $taxYearEOY to $taxYear"
 
     val nextStepsP1: String = "Find out what you owe and how to pay."
     val nextStepsP2: String = "what you owe and how to pay."
@@ -95,7 +81,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val nextStepsP4: String = "If you need to contact us about your Income Tax Return, tell us your UTR."
 
     val panelHeadingWelsh: String = "Cadarnhad:"
-    val panelSubheadingWelsh: String = s"Rydym wedi cael eich Ffurflen Dreth Incwm ar gyfer $taxYearMinusOne i $taxYear"
+    val panelSubheadingWelsh: String = s"Rydym wedi cael eich Ffurflen Dreth Incwm ar gyfer $taxYearEOY i $taxYear"
     val summaryRow1ValueWelsh: String = "John Individual"
     val summaryRow2ValueWelsh: String = "IN12345"
     val summaryRow3ValueWelsh: String = timeStamp.toLongDate(toMessages("CY"))
@@ -116,7 +102,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val summaryRow3Value: String = timeStamp.toLongDate(toMessages("EN"))
 
     val panelHeading = "Confirmation:"
-    val panelSubheading = s"We’ve received your client’s Income Tax Return for $taxYearMinusOne to $taxYear"
+    val panelSubheading = s"We’ve received your client’s Income Tax Return for $taxYearEOY to $taxYear"
 
     val nextStepsP1: String = "Find out what your client owes and how to pay."
     val nextStepsP2: String = "what your client owes and how to pay."
@@ -125,7 +111,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     val nextStepsP4: String = "If you need to contact us about your client’s Income Tax Return, tell us their UTR."
 
     val panelHeadingWelsh = "Cadarnhad:"
-    val panelSubheadingWelsh = s"Rydym wedi cael Ffurflen Dreth Incwm eich cleient ar gyfer $taxYearMinusOne i $taxYear"
+    val panelSubheadingWelsh = s"Rydym wedi cael Ffurflen Dreth Incwm eich cleient ar gyfer $taxYearEOY i $taxYear"
 
     val summaryRow1ValueWelsh: String = "Jane Agent"
     val summaryRow2ValueWelsh: String = "AG98765"

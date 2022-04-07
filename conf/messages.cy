@@ -147,7 +147,7 @@ ivFailurePage.li3 = nid oeddem yn gallu paru’ch manylion â’r hyn sydd ar ei
 error.individual-unauthorised.2 = gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 error-unauthorised.p3 = cyn i chi allu bwrw golwg ar y dudalen hon.
 
-error.tax-year.paragraph1 = Gallwch ond nodi gwybodaeth ar gyfer blwyddyn dreth 2021 i 2022.
+error.tax-year.paragraph1 = Gallwch ond nodi gwybodaeth ar gyfer blwyddyn dreth {0} i {1}.
 error.tax-year.paragraph2 = Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
 
 error.unauthorised.title = Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn

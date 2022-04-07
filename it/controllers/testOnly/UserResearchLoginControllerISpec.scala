@@ -88,7 +88,7 @@ class UserResearchLoginControllerISpec extends IntegrationTest with ViewHelpers 
         }
 
         "has a redirect URL to the start page" in {
-          result.headers("Location").head shouldBe controllers.routes.StartPageController.show(2022).url
+          result.headers("Location").head shouldBe controllers.routes.StartPageController.show(taxYear).url
         }
       }
 

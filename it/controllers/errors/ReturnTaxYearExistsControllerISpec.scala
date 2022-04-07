@@ -22,8 +22,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.{HeaderNames, Status}
 import play.api.mvc.Result
-import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers.{status, writeableOf_AnyContentAsEmpty}
+import play.api.test.{FakeRequest, Helpers}
 
 import scala.concurrent.Future
 
@@ -31,18 +31,15 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  lazy val taxYear: Int = 2021
-  lazy val lastTaxYear: Int = 2020
-
   object ExpectedResults {
     lazy val expectedTitleText: String = "We already have an Income Tax Return for that tax year"
     lazy val expectedHeadingText: String = "We already have an Income Tax Return for that tax year"
-    lazy val expectedP1Text: String = s"We have an Income Tax Return for the $lastTaxYear to $taxYear tax year."
+    lazy val expectedP1Text: String = s"We have an Income Tax Return for the $taxYearEndOfYearMinusOne to $taxYearEOY tax year."
     lazy val expectedP2TextIndividual: String = "You can go to your Income Tax account to see your Income Tax Returns."
     lazy val expectedP2TextAgent: String = "You can go to your client’s Income Tax account to see their Income Tax Returns."
     lazy val expectedReturnToTaxAccountButtonTextIndividual: String = "Go to your Income Tax account"
     lazy val expectedReturnToTaxAccountButtonTextAgent: String = "Go to Income Tax account"
-    lazy val expectedReturnToTaxAccountButtonLink: String = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
+    lazy val expectedReturnToTaxAccountButtonLink: String = s"http://localhost:9302/update-and-submit-income-tax-return/$taxYearEOY/view"
     lazy val expectedSignOutButtonText: String = "Sign out"
     lazy val expectedSignOutButtonLinkIndividual: String = "/update-and-submit-income-tax-return/sign-out?isAgent=false"
     lazy val expectedSignOutButtonLinkAgent: String = "/update-and-submit-income-tax-return/sign-out?isAgent=true"
@@ -51,7 +48,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   object ExpectedResultsWelsh {
     lazy val expectedTitleTextWelsh: String = "Rydym eisoes â Ffurflen Dreth Incwm ar gyfer y flwyddyn dreth honno"
     lazy val expectedHeadingTextWelsh: String = "Rydym eisoes â Ffurflen Dreth Incwm ar gyfer y flwyddyn dreth honno"
-    lazy val expectedP1TextWelsh: String = s"Mae gennym Ffurflen Dreth Incwm ar gyfer y flwyddyn dreth $lastTaxYear i $taxYear."
+    lazy val expectedP1TextWelsh: String = s"Mae gennym Ffurflen Dreth Incwm ar gyfer y flwyddyn dreth $taxYearEndOfYearMinusOne i $taxYearEOY."
     lazy val expectedP2TextIndividualWelsh: String = "Gallwch fynd i’ch cyfrif Treth Incwm i weld eich Ffurflenni Treth Incwm."
     lazy val expectedP2TextAgentWelsh: String = "Gallwch fynd i gyfrif Treth Incwm eich cleient i weld ei Ffurflenni Dreth Incwm."
     lazy val expectedReturnToTaxAccountButtonTextIndividualWelsh: String = "Ewch i’ch cyfrif Treth Incwm"
@@ -70,10 +67,10 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   import ExpectedResults._
   import Selectors._
 
-  private def pageUrl(taxYear: Int = taxYear) = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
+  private def pageUrl(taxYear: Int = taxYearEOY) = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
 
   "when the language is set to ENGLISH, the page" should {
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
 
     "as an individual user, with a previously submitted return to that tax year, the page" should {
 
@@ -145,7 +142,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   "when the language is set to WELSH" should {
     import ExpectedResultsWelsh._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "as an individual user, with a previously submitted return to that tax year, the page" should {
       "return the page" which {

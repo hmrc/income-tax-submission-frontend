@@ -47,7 +47,6 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
   )
 
   object CommonExpectedResults {
-    val taxYear = 2022
     val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
     val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
     val vcBreadcrumb = "Income Tax"
@@ -70,8 +69,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     val bullet2DividendsFromUKTextWelsh = "difidendau gan gwmnïau, ymddiriedolaethau unedol a chwmnïau buddsoddi penagored yn y DU"
     val bullet3DonationsToCharityText = "donations to charity"
     val bullet3DonationsToCharityTextWelsh = "rhoddion i elusennau"
-    val viewEmploymentInformationText = "You can view PAYE employment information, but you cannot update it until 6 April 2022."
-    val viewEmploymentInformationTextWelsh = "Gallwch fwrw golwg dros wybodaeth am gyflogaeth TWE, ond ni allwch ei diweddaru tan 6 Ebrill 2022."
+    val viewEmploymentInformationText = s"You can view PAYE employment information, but you cannot update it until 6 April $taxYear."
+    val viewEmploymentInformationTextWelsh = s"Gallwch fwrw golwg dros wybodaeth am gyflogaeth TWE, ond ni allwch ei diweddaru tan 6 Ebrill $taxYear."
     val toUpdateIncomeText = "Use your software package to update anything not on the list."
     val toUpdateIncomeTextWelsh = "Defnyddiwch eich pecyn meddalwedd i ddiweddaru unrhyw beth nad yw’n ymddangos ar y rhestr."
     val continueButtonText = "Continue"
@@ -293,7 +292,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
         lazy val result: Future[Result] = {
           wireMockServer.resetAll()
           authoriseIndividual()
-          controller.submit(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> "2022"))
+          controller.submit(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> taxYear.toString))
         }
 
         "has a result of SEE_OTHER(303)" in {
