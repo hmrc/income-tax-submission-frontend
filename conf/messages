@@ -66,6 +66,7 @@ overview.crystallisation.heading.EOY.individual = Check and submit your Income T
 overview.crystallisation.heading.EOY.agent = Check and submit your client’s Income Tax Return
 
 overview.notStarted = Not started
+overview.todo = To Do
 overview.updated = Updated
 overview.cannotUpdate = Cannot update
 overview.updateTaxCalculation = Update tax calculation

@@ -108,8 +108,6 @@ class MockAppConfig extends AppConfig with MockFactory {
 
   override def employmentFEUrl(taxYear: Int): String = ???
 
-  override def addEmploymentUrl(taxYear: Int): String = ???
-
   override val cisIncomeTaxSubmissionBaseUrl: String = "/cis-tax"
   override val cisIncomeTaxSubmissionUrl: String = "/cis-income"
 

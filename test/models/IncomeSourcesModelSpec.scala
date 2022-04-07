@@ -16,6 +16,7 @@
 
 package models
 
+import models.employment.{AllEmploymentData, EmploymentData, EmploymentFinancialData, HmrcEmploymentSource, Pay}
 import play.api.libs.json.{JsObject, Json}
 import utils.UnitTest
 
@@ -74,6 +75,57 @@ class IncomeSourcesModelSpec extends UnitTest {
     "parse from Json" in {
       jsonModel.as[IncomeSourcesModel]
     }
-  }
 
+    "excludeNotRelevantEmploymentData" when {
+
+      def model(ignored: Boolean, occPen: Boolean): IncomeSourcesModel = IncomeSourcesModel(None,None,None,Some(
+        AllEmploymentData(
+          hmrcEmploymentData = Seq(
+            HmrcEmploymentSource(
+              employmentId = "001",
+              employerName = "maggie",
+              employerRef = Some("223/AB12399"),
+              payrollId = Some("123456789999"),
+              startDate = Some("2019-04-21"),
+              cessationDate = Some("2020-03-11"),
+              dateIgnored = if(ignored) Some("2020-01-04T05:01:01Z") else None,
+              submittedOn = Some("2020-01-04T05:01:01Z"),
+              hmrcEmploymentFinancialData = Some(
+                EmploymentFinancialData(
+                  employmentData = Some(EmploymentData(
+                    submittedOn = ("2020-02-12"),
+                    employmentSequenceNumber = Some("123456789999"),
+                    companyDirector = Some(true),
+                    closeCompany = Some(false),
+                    directorshipCeasedDate = Some("2020-02-12"),
+                    occPen = Some(occPen),
+                    disguisedRemuneration = Some(false),
+                    pay = Some(Pay(Some(34234.15), Some(6782.92), Some("CALENDAR MONTHLY"), Some("2020-04-23"), Some(32), Some(2)))
+                  )),
+                  None
+                )
+              ),
+              customerEmploymentFinancialData = None
+            )
+          ),
+          hmrcExpenses = None,
+          customerEmploymentData = Seq(),
+          customerExpenses = None
+        )
+      ))
+
+      "there is no data to exclude" in {
+        model(false,false).excludeNotRelevantEmploymentData shouldBe model(false, false)
+      }
+      "there is ignored data to exclude" in {
+        model(true,false).excludeNotRelevantEmploymentData shouldBe IncomeSourcesModel(None,None,None,None)
+      }
+      "there is occPen data to exclude" in {
+        model(false,true).excludeNotRelevantEmploymentData shouldBe IncomeSourcesModel(None,None,None,None)
+      }
+      "there is ignored occPen data to exclude" in {
+        model(true,true).excludeNotRelevantEmploymentData shouldBe IncomeSourcesModel(None,None,None,None)
+      }
+    }
+  }
 }

@@ -21,7 +21,7 @@
 @this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag)
 @(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int, isInYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean = false) = {
+@statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false) = {
     <span class="hmrc-status-tag">
         @govukTag(Tag(
             content = Text(if(enabledCondition){
@@ -29,6 +29,8 @@
                     messages("overview.updated")
                 } else if(cannotUpdateCondition) {
                     messages("overview.cannotUpdate")
+                } else if(isMandatorySection) {
+                    messages("overview.todo")
                 } else {
                     messages("overview.notStarted")
                 }
@@ -105,14 +107,14 @@
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
                         @if(appConfig.employmentEnabled && (incomeSources.employment.isDefined || !isInYear)){
-                            <a class="govuk-link" id="employment_link" href="@if(incomeSources.employment.isDefined){@appConfig.employmentFEUrl(taxYear)} else{@appConfig.addEmploymentUrl(taxYear)}">
+                            <a class="govuk-link" id="employment_link" href="@appConfig.employmentFEUrl(taxYear)">
                                 @messages("common.employment")
                             </a>
                         } else {
                             @messages("common.employment")
                         }
                     </span>
-                    @statusTag(incomeSources.employment.isDefined, appConfig.employmentEnabled, isInYear)
+                    @statusTag(incomeSources.employment.isDefined, appConfig.employmentEnabled, isInYear, true)
                 </li>
             }
 
