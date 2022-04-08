@@ -42,124 +42,85 @@
     </span>
 }
 
-@taskWithActionList(heading: String, caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
-
-    <li>
-            <h2 class="app-task-list__section">@heading</h2>
-                <ol style="padding-left:0;" class="app-task-list__items">
-                    <li>
-                        <p class="govuk-body">@messages(s"overview.paragraph.1.${if(isAgent) "agent" else "individual"}")</p>
-                        <p class="govuk-body">@messages("overview.paragraph.2")</p>
-                    </li>
-
-                    @if(isInYear){
-                        <li>
-                            @govukInsetText(InsetText(
-                            content = Text( messages(s"overview.insertText.${if(isAgent) "agent" else "individual"}", taxYear.toString))
-                            ))
-                        </li>
-                    }
-
-            <li class="app-task-list__item"></li>
-                <li class="app-task-list__item">
-                    <span class="app-task-list__task-name">
-                        @if(appConfig.interestEnabled){
-                            <a class="govuk-link" id="interest_link" href=@if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))){ @{appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)}}else{@{appConfig.personalIncomeTaxInterestUrl(taxYear)}}>
-                                @messages("common.interest")
-                            </a>
-                        } else {
-                            @messages("common.interest")
-                        }
-                    </span>
-                    @statusTag(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)), appConfig.interestEnabled)
-                </li>
-
-                <li class="app-task-list__item">
-                    <span class="app-task-list__task-name">
-                        @if(appConfig.dividendsEnabled){
-                            <a class="govuk-link" id="dividends_link" href=@if(incomeSources.dividends.isEmpty){ @{appConfig.personalIncomeTaxDividendsUrl(taxYear)}}else{ @{appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)}}>
-                                @messages("common.dividends")
-                            </a>
-                        } else {
-                            @messages("common.dividends")
-                        }
-                    </span>
-                    @statusTag(incomeSources.dividends.isDefined, appConfig.dividendsEnabled)
-                </li>
-
-            @if(appConfig.giftAidReleased){
-
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    @if(appConfig.giftAidEnabled){
-                    <a class="govuk-link" id="giftAid_link" href=@if(incomeSources.giftAid.isEmpty){ @{appConfig.personalIncomeTaxGiftAidUrl(taxYear)}} else {@{appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)}}>
-                        @messages("common.donationsToCharity")
-                    </a>
-                    } else {
-                        @messages("common.donationsToCharity")
-                    }
-                </span>
-                @statusTag(incomeSources.giftAid.isDefined, appConfig.giftAidEnabled)
-            </li>
-            }
-
-            @if(appConfig.employmentReleased){
-                <li class="app-task-list__item">
-                    <span class="app-task-list__task-name">
-                        @if(appConfig.employmentEnabled && (incomeSources.employment.isDefined || !isInYear)){
-                            <a class="govuk-link" id="employment_link" href="@appConfig.employmentFEUrl(taxYear)">
-                                @messages("common.employment")
-                            </a>
-                        } else {
-                            @messages("common.employment")
-                        }
-                    </span>
-                    @statusTag(incomeSources.employment.isDefined, appConfig.employmentEnabled, isInYear, true)
-                </li>
-            }
-
-            @if(appConfig.cisReleased){
-                <li class="app-task-list__item">
-                    <span class="app-task-list__task-name">
-                        @if(appConfig.cisEnabled && (incomeSources.cis.isDefined || !isInYear)){
-                            <a class="govuk-link" id="cis_link" href="@appConfig.cisFEUrl(taxYear)">
-                                @messages("common.cis")
-                            </a>
-                        } else {
-                            @messages("common.cis")
-                        }
-                    </span>
-                    @statusTag(incomeSources.cis.isDefined, appConfig.cisEnabled, isInYear)
-                </li>
-            }
-        </ol>
-
-        @if(!appConfig.crystallisationEnabled){
-            <p class="govuk-body govuk-!-margin-bottom-8">@messages(s"overview.paragraph.3.${if(isAgent) "agent" else "individual"}")
-                <a class="govuk-link" id="calculation_link" href="@if(isAgent) {@appConfig.viewAndChangeViewUrlAgent} else {@appConfig.viewAndChangeViewUrl}">
-                    @messages("overview.paragraph.4")
+@taskListItem(enabled: Boolean, linkId: String, taskNameKey: String, href: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, additionalShowLinkCheck: Boolean = true) = {
+    <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+            @if(enabled && additionalShowLinkCheck){
+                <a class="govuk-link" id="@linkId" href="@href">
+                    @messages(taskNameKey)
                 </a>
-                @messages(s"overview.paragraph.5.${if(isAgent) "agent" else "individual"}")
-            </p>
-        }
+            } else {
+                @messages(taskNameKey)
+            }
+        </span>
+        @statusTag(statusTagUpdatedCondition, enabled, cannotUpdateCondition, isMandatorySection)
     </li>
+}
+    
+@taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
+    <ol style="padding-left:0;" class="app-task-list__items">
+        @taskListItem(
+            appConfig.interestEnabled,
+            "interest_link",
+            "common.interest",
+            if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)} else {appConfig.personalIncomeTaxInterestUrl(taxYear)},
+            incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
+        )
+        
+        @taskListItem(
+            appConfig.dividendsEnabled,
+            "dividends_link",
+            "common.dividends",
+            if(incomeSources.dividends.isEmpty) {appConfig.personalIncomeTaxDividendsUrl(taxYear)} else {appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)},
+            incomeSources.dividends.isDefined
+        )
+
+        @if(appConfig.giftAidReleased){
+            @taskListItem(
+                appConfig.giftAidEnabled,
+                "giftAid_link",
+                "common.donationsToCharity",
+                if(incomeSources.giftAid.isEmpty) {appConfig.personalIncomeTaxGiftAidUrl(taxYear)} else {appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)},
+                incomeSources.giftAid.isDefined
+            )
+        }
+
+        @if(appConfig.employmentReleased){
+            @taskListItem(
+                appConfig.employmentEnabled,
+                "employment_link",
+                "common.employment",
+                appConfig.employmentFEUrl(taxYear),
+                incomeSources.employment.isDefined,
+                isInYear,
+                isMandatorySection = true,
+                additionalShowLinkCheck = incomeSources.employment.isDefined || !isInYear,
+            )
+        }
+
+        @if(appConfig.cisReleased){
+            @taskListItem(
+                appConfig.cisEnabled,
+                "cis_link",
+                "common.cis",
+                appConfig.cisFEUrl(taxYear),
+                incomeSources.cis.isDefined,
+                isInYear,
+                additionalShowLinkCheck = incomeSources.cis.isDefined || !isInYear
+            )
+        }
+    </ol>
 }
 
 
 
 @checkSubmitIncomeTaxReturn(captionEOY: String, headingEOY: String) = {
         @if(!isInYear)  {
-        <li>
-            <h2 class="app-task-list__section"> @headingEOY </h2>
-                <ul style="padding-left:0;" class="app-task-list__items">
-                    <li class="govuk-body">@captionEOY</li>
-                    <li>
-                        @formWithCSRF(action = controllers.routes.OverviewPageController.finalCalculation(taxYear)) {
-                            @button()
-                        }
-                    </li>
-                </ul>
-        </li>
+            <h2 class="govuk-heading-m" id="heading-checkAndSubmit"> @headingEOY </h2>
+            <p class="govuk-body" id="p-submitText">@captionEOY</p>
+            @formWithCSRF(action = controllers.routes.OverviewPageController.finalCalculation(taxYear)) {
+                @button()
+            }
         }
 
 }
@@ -175,20 +136,42 @@
     }
 }
 
+@affinityText = @{
+    if(isAgent) "agent" else "individual"
+}
+    
 @overview = {
-            @heading(messages(s"common.yourIncomeTaxReturn.${if(isAgent) "agent" else "individual"}"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
+    @heading(messages(s"common.yourIncomeTaxReturn.$affinityText"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
 
-            <ol class="app-task-list">
-                @if(isAgent) {
-                @taskWithActionList(messages("overview.agent.task1.heading"), messages("overview.task1.caption"), None, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))
-                @checkSubmitIncomeTaxReturn(messages("overview.crystallisation.paragraph.agent"), messages(s"overview.crystallisation.heading.EOY.agent"))
-                @updateTaxCalculationInYear
-                } else {
-                @taskWithActionList(messages("overview.individual.task1.heading"), messages("overview.task1.caption"), Some(1), incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.individual"))
-                @checkSubmitIncomeTaxReturn(messages("overview.crystallisation.paragraph.individual"), messages(s"overview.crystallisation.heading.EOY.individual"))
-                @updateTaxCalculationInYear
-                }
-            </ol>
+    <h2 class="govuk-heading-m" id="heading-tasklist">@messages(s"overview.$affinityText.task1.heading")</h2>
+
+    <p class="govuk-body">@messages(s"overview.paragraph.1.${if(isAgent) "agent" else "individual"}")</p>
+    <p class="govuk-body">@messages("overview.paragraph.2")</p>
+
+    @if(isInYear){
+        @govukInsetText(InsetText(
+            content = Text( messages(s"overview.insertText.${if(isAgent) "agent" else "individual"}", taxYear.toString))
+        ))
+    }
+    
+    @if(isAgent) {
+        @taskWithActionList(messages("overview.task1.caption"), None, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))
+    } else {
+        @taskWithActionList(messages("overview.task1.caption"), Some(1), incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.individual"))
+    }
+
+    @if(!appConfig.crystallisationEnabled){
+        <p class="govuk-body govuk-!-margin-bottom-8" id="p-gotoAccountDetails">
+            @messages(s"overview.paragraph.3.$affinityText")
+            <a class="govuk-link" id="calculation_link" href="@if(isAgent) {@appConfig.viewAndChangeViewUrlAgent} else {@appConfig.viewAndChangeViewUrl}">
+                @messages("overview.paragraph.4")
+            </a>
+            @messages(s"overview.paragraph.5.$affinityText")
+        </p>
+    }
+    
+    @checkSubmitIncomeTaxReturn(messages(s"overview.crystallisation.paragraph.$affinityText"), messages(s"overview.crystallisation.heading.EOY.$affinityText"))
+    @updateTaxCalculationInYear
 
 
 }
