@@ -66,6 +66,7 @@ overview.crystallisation.heading.EOY.individual = Diweddaru a chyflwyno’ch Ffu
 overview.crystallisation.heading.EOY.agent = Gwiriwch a chyflwynwch Ffurflen Dreth Incwm eich cleient
 
 overview.notStarted = Heb ddechrau
+overview.todo = I’w gwneud
 overview.updated = Wedi diweddaru
 overview.cannotUpdate = Methu diweddaru
 overview.updateTaxCalculation = Diweddaru cyfrifiad treth

@@ -17,15 +17,63 @@
 package models
 
 import models.cis.AllCISDeductions
-import models.employment.AllEmploymentData
+import models.employment.{AllEmploymentData, EmploymentSource, HmrcEmploymentSource}
 import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
                               interest: Option[Seq[InterestModel]] = None,
                               giftAid: Option[GiftAidModel] = None,
                               employment: Option[AllEmploymentData] = None,
-                              cis: Option[AllCISDeductions] = None)
+                              cis: Option[AllCISDeductions] = None){
+
+  def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
+
+    val employmentData: Option[AllEmploymentData] = this.employment.map(
+      allEmploymentData => allEmploymentData.copy(
+        hmrcEmploymentData = excludeIgnoredHmrcEmployment(excludeHmrcPensionIncome(allEmploymentData.hmrcEmploymentData)),
+        customerEmploymentData = excludeCustomerPensionIncome(allEmploymentData.customerEmploymentData)
+      )
+    )
+
+    val hasData: Boolean = employmentData.exists { data =>
+      data.customerEmploymentData.nonEmpty || data.hmrcEmploymentData.nonEmpty || data.customerExpenses.nonEmpty || data.hmrcExpenses.nonEmpty
+    }
+
+    this.copy(employment = if(hasData) employmentData else None)
+  }
+
+  private def excludeHmrcPensionIncome(employmentSources: Seq[HmrcEmploymentSource]): Seq[HmrcEmploymentSource] = {
+    employmentSources.filterNot {
+      _employment =>
+        _employment.hmrcEmploymentFinancialData.exists {
+          employmentData =>
+            employmentData.employmentData.exists {
+              employmentData =>
+                employmentData.occPen.contains(true)
+            }
+        }
+    }
+  }
+
+  private def excludeIgnoredHmrcEmployment(employmentSources: Seq[HmrcEmploymentSource]): Seq[HmrcEmploymentSource] = {
+    employmentSources.filterNot {
+      _employment =>
+        _employment.dateIgnored.isDefined
+    }
+  }
+
+  private def excludeCustomerPensionIncome(employmentSources: Seq[EmploymentSource]): Seq[EmploymentSource] = {
+    employmentSources.filterNot {
+      _employment =>
+        _employment.employmentData.exists {
+          employmentData =>
+            employmentData.occPen.contains(true)
+        }
+    }
+  }
+}
 
 object IncomeSourcesModel {
   implicit val formats: OFormat[IncomeSourcesModel] = Json.format[IncomeSourcesModel]
 }
+

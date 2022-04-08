@@ -57,8 +57,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     def employmentLink(taxYear: Int = taxYear): String = s"http://localhost:9317/update-and-submit-income-tax-return/employment-income/$taxYear/employment-summary"
 
-    def newEmploymentLink(taxYear: Int = taxYear): String = s"http://localhost:9317/update-and-submit-income-tax-return/employment-income/$taxYear/add-employment"
-
     def cisLink(taxYear: Int = taxYear): String = s"http://localhost:9338/update-and-submit-income-tax-return/construction-industry-scheme-deductions/$taxYear/summary"
 
     def viewEstimateLink(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/calculate"
@@ -147,6 +145,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     val updatedText: String
     val notStartedText: String
+    val todoText: String
     val underMaintenance: String
     val cannotUpdateText: String
     val dividendsLinkText: String
@@ -168,6 +167,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 April $taxYearMinusOne to 5 April $taxYear"
 
     val updatedText = "Updated"
+    val todoText = "To do"
     val notStartedText = "Not started"
     val underMaintenance = "Under maintenance"
     val cannotUpdateText = "Cannot update"
@@ -190,6 +190,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     def caption(taxYearMinusOne: Int, taxYear: Int): String = s"6 Ebrill $taxYearMinusOne i 5 Ebrill $taxYear"
 
     val updatedText = "Wedi diweddaru"
+    val todoText = "I’w gwneud"
     val notStartedText = "Heb ddechrau"
     val underMaintenance = "Wrthi’n cynnal a chadw’r safle"
     val cannotUpdateText = "Methu diweddaru"
@@ -761,7 +762,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +
-          "the status tag 'Not Started' when user is in a previous year" when {
+          "the status tag 'To do' when user is in a previous year" when {
           val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
           val previousYearUrl = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
           val taxYearMinusTwo = taxYearEOY - 1
@@ -802,8 +803,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           "has an employment section " which {
-            linkCheck(employmentLinkText, employmentLinkSelector, newEmploymentLink(taxYearEOY))
-            textOnPageCheck(notStartedText, employmentStatusSelectorEndOfYear)
+            linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
+            textOnPageCheck(todoText, employmentStatusSelectorEndOfYear)
           }
 
           "has a cis section " which {
