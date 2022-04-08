@@ -44,11 +44,8 @@
 
     <li>
             <h2 class="app-task-list__section">@heading</h2>
-                <ol style="padding-left:0;" class="app-task-list__items">
-                    <li>
-                        <p class="govuk-body">@messages(s"overview.paragraph.1.${if(isAgent) "agent" else "individual"}")</p>
-                        <p class="govuk-body">@messages("overview.paragraph.2")</p>
-                    </li>
+                <p class="govuk-body">@messages(s"overview.paragraph.1.${if(isAgent) "agent" else "individual"}")</p>
+                <p class="govuk-body">@messages("overview.paragraph.2")</p>
 
                     @if(isInYear){
                         <li>
@@ -58,7 +55,7 @@
                         </li>
                     }
 
-            <li class="app-task-list__item"></li>
+            <ol style="padding-left:0;" class="app-task-list__items govuk-!-margin-top-7">
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
                         @if(appConfig.interestEnabled){
@@ -130,7 +127,6 @@
                     @statusTag(incomeSources.cis.isDefined, appConfig.cisEnabled, isInYear)
                 </li>
             }
-        </ol>
 
         @if(!appConfig.crystallisationEnabled){
             <p class="govuk-body govuk-!-margin-bottom-8">@messages(s"overview.paragraph.3.${if(isAgent) "agent" else "individual"}")
@@ -140,6 +136,7 @@
                 @messages(s"overview.paragraph.5.${if(isAgent) "agent" else "individual"}")
             </p>
         }
+        </ol>
     </li>
 }
 
@@ -149,14 +146,14 @@
         @if(!isInYear)  {
         <li>
             <h2 class="app-task-list__section"> @headingEOY </h2>
-                <ul style="padding-left:0;" class="app-task-list__items">
-                    <li class="govuk-body">@captionEOY</li>
-                    <li>
+                <div style="padding-left:0;" class="app-task-list__items">
+                    <p class="govuk-body">@captionEOY</p>
+                    <p>
                         @formWithCSRF(action = controllers.routes.OverviewPageController.finalCalculation(taxYear)) {
                             @button()
                         }
-                    </li>
-                </ul>
+                    </p>
+                </div>
         </li>
         }
 
