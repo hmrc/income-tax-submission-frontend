@@ -45,7 +45,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
         payrollId = Some("1234567890"),
         startDate = Some("2020-01-01"),
         cessationDate = Some("2020-01-01"),
-        dateIgnored = Some("2020-01-01T10:00:38Z"),
+        dateIgnored = None,
         submittedOn = None,
         hmrcEmploymentFinancialData = Some(
           EmploymentFinancialData(

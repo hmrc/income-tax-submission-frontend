@@ -25,6 +25,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Inject
 
+//scalastyle:off
 class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppConfig {
   private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
   def defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
@@ -50,7 +51,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val employmentIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxEmploymentFrontendUrl)
   lazy val employmentIncomeTaxSubmissionUrl: String =s"$employmentIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/employment-income"
   def employmentFEUrl(taxYear: Int): String = s"$employmentIncomeTaxSubmissionUrl/$taxYear/employment-summary"
-  def addEmploymentUrl(taxYear: Int): String = s"$employmentIncomeTaxSubmissionUrl/$taxYear/add-employment"
 
   lazy val cisIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCisFrontendUrl)
   lazy val cisIncomeTaxSubmissionUrl: String =s"$cisIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/construction-industry-scheme-deductions"
@@ -173,7 +173,6 @@ trait AppConfig {
   val employmentIncomeTaxSubmissionBaseUrl: String
   val employmentIncomeTaxSubmissionUrl: String
   def employmentFEUrl(taxYear: Int): String
-  def addEmploymentUrl(taxYear: Int): String
 
   val cisIncomeTaxSubmissionBaseUrl: String
   val cisIncomeTaxSubmissionUrl: String

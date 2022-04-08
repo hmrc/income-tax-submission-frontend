@@ -33,7 +33,7 @@ object IncomeSourcesHttpParser extends APIParser {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
           jsonErrors => badSuccessJsonFromAPI,
-          parsedModel => Right(parsedModel)
+          parsedModel => Right(parsedModel.excludeNotRelevantEmploymentData)
         )
         case NO_CONTENT => Right(IncomeSourcesModel())
         case NOT_FOUND =>

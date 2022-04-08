@@ -300,7 +300,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         payrollId = Some("123456789999"),
         startDate = Some("2019-04-21"),
         cessationDate = Some("2020-03-11"),
-        dateIgnored = Some("2020-04-04T01:01:01Z"),
+        dateIgnored = None,
         submittedOn = Some("2020-01-04T05:01:01Z"),
         hmrcEmploymentFinancialData = Some(
           EmploymentFinancialData(
