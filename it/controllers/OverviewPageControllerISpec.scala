@@ -36,7 +36,9 @@ import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
 import java.util.UUID
+import scala.collection.generic.IdleSignalling.tag
 import scala.concurrent.Future
+import scala.reflect.internal.util.NoSourceFile.content
 
 class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
@@ -206,40 +208,37 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   object Selectors {
+    private def sectionNameSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.app-task-list__task-name"
+    private def statusTagSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.hmrc-status-tag"
+    
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
     val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
     val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3)"
     val captionSelector = "#main-content > div > div > header > p"
     val headerSelector = "#main-content > div > div > header > h1"
-    val updateYourIncomeTaxReturnSubheadingSelector = "#main-content > div > div > ol > li:nth-child(1) > h2"
-    val inYearInsertTextSelector = "#main-content > div > div > ol > li > ol > li:nth-child(2) > div"
+    val updateYourIncomeTaxReturnSubheadingSelector = "#heading-tasklist"
+    val inYearInsetTextSelector = "#main-content > div > div > div.govuk-inset-text"
     val interestLinkSelector = "#interest_link"
-    val interestStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
+    val interestStatusSelector: String = statusTagSelector(1)
     val dividendsLinkSelector = "#dividends_link"
-    val dividendsStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
-    val employmentSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.app-task-list__task-name"
-    val cisSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(8) > span.app-task-list__task-name"
+    val dividendsStatusSelector: String = statusTagSelector(2)
     val giftAidLinkSelector = "#giftAid_link"
-    val giftAidStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
+    val giftAidStatusSelector: String = statusTagSelector(3)
+    val employmentSelector: String = sectionNameSelector(4)
     val employmentLinkSelector = "#employment_link"
-    val employmentStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
+    val employmentStatusSelector: String = statusTagSelector(4)
+    val cisSelector: String = sectionNameSelector(5)
     val cisLinkSelector = "#cis_link"
-    val cisStatusSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(8) > span.hmrc-status-tag"
+    val cisStatusSelector: String = statusTagSelector(5)
     val viewEstimateSelector = "#calculation_link"
-    val submitReturnEOYSelector = "#main-content > div > div > ol > li:nth-child(2) > h2"
-    val submitReturnTextEOYSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > li.govuk-body"
+    val submitReturnEOYSelector = "#heading-checkAndSubmit"
+    val submitReturnTextEOYSelector = "#p-submitText"
     val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > li.govuk-body"
-    val interestStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(3) > span.hmrc-status-tag"
-    val dividendsStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(4) > span.hmrc-status-tag"
-    val giftAidStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(5) > span.hmrc-status-tag"
-    val employmentStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(6) > span.hmrc-status-tag"
-    val cisStatusSelectorEndOfYear = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(7) > span.hmrc-status-tag"
-    val endOfYearContinueButtonSelector = "#main-content > div > div > ol > li:nth-child(2) > ul > li:nth-child(2) > form"
-    val ifWeHaveInformationSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(1)"
-    val fillInTheSectionsSelector = "#main-content > div > div > ol > li:nth-child(1) > ol > li:nth-child(1) > p:nth-child(2)"
-    val goToYourIncomeTaxReturnSelector = "#main-content > div > div > ol > li:nth-child(1) > p"
+    val ifWeHaveInformationSelector = "#main-content > div > div > p:nth-child(3)"
+    val fillInTheSectionsSelector = "#main-content > div > div > p:nth-child(4)"
+    val goToYourIncomeTaxReturnSelector = "#p-gotoAccountDetails"
     val updateTaxCalculationSelector = "#updateTaxCalculation"
-    val updateTaxCalculationFormSelector = "#main-content > div > div > ol > form"
+    val formSelector = "#main-content > div > div > form"
   }
 
   private val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/view"
@@ -310,7 +309,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
 
           "have a dividends section that says under maintenance" which {
             textOnPageCheck(underMaintenance, dividendsStatusSelector)
@@ -359,7 +358,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYear))
@@ -386,7 +385,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
-          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
         }
@@ -417,7 +416,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -444,7 +443,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
-          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
         }
 
@@ -477,7 +476,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
             textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
             textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
+            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
 
             "has a dividends section" which {
               linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -504,7 +503,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, cisStatusSelector)
             }
 
-            formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+            formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
           }
@@ -538,7 +537,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
+          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -565,7 +564,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
-          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+          formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
         }
@@ -601,7 +600,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
             textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
             textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsertTextSelector)
+            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
 
             "has a dividends section" which {
               linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -628,7 +627,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, cisStatusSelector)
             }
 
-            formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, updateTaxCalculationFormSelector)
+            formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
           }
@@ -676,23 +675,23 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
 
           "have a dividends section that says under maintenance" which {
-            textOnPageCheck(underMaintenance, dividendsStatusSelectorEndOfYear)
+            textOnPageCheck(underMaintenance, dividendsStatusSelector)
           }
 
           "have an interest section that says under maintenance" which {
-            textOnPageCheck(underMaintenance, interestStatusSelectorEndOfYear)
+            textOnPageCheck(underMaintenance, interestStatusSelector)
           }
 
           "have an employment section that says under maintenance" which {
-            textOnPageCheck(underMaintenance, employmentStatusSelectorEndOfYear)
+            textOnPageCheck(underMaintenance, employmentStatusSelector)
           }
 
           "have a cis section that says under maintenance" which {
-            textOnPageCheck(underMaintenance, cisStatusSelectorEndOfYear)
+            textOnPageCheck(underMaintenance, cisStatusSelector)
           }
 
           "has a donations to charity section" which {
-            textOnPageCheck(underMaintenance, giftAidStatusSelectorEndOfYear)
+            textOnPageCheck(underMaintenance, giftAidStatusSelector)
           }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
@@ -700,7 +699,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
-          formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+          formPostLinkCheck(endOfYearContinueLink, formSelector)
         }
 
         "render an overview page with prior data" when {
@@ -733,32 +732,32 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYearEOY))
-            textOnPageCheck(updatedText, dividendsStatusSelectorEndOfYear)
+            textOnPageCheck(updatedText, dividendsStatusSelector)
           }
 
           "has an interest section" which {
             linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData(taxYearEOY))
-            textOnPageCheck(updatedText, interestStatusSelectorEndOfYear)
+            textOnPageCheck(updatedText, interestStatusSelector)
           }
 
           "has an employment section" which {
             linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
-            textOnPageCheck(updatedText, employmentStatusSelectorEndOfYear)
+            textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
           "has a cis section" which {
             linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYearEOY))
-            textOnPageCheck(updatedText, cisStatusSelectorEndOfYear)
+            textOnPageCheck(updatedText, cisStatusSelector)
           }
 
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYearEOY))
-            textOnPageCheck(updatedText, giftAidStatusSelectorEndOfYear)
+            textOnPageCheck(updatedText, giftAidStatusSelector)
           }
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
-          formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+          formPostLinkCheck(endOfYearContinueLink, formSelector)
         }
 
         "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +
@@ -794,32 +793,32 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYearEOY))
-            textOnPageCheck(notStartedText, dividendsStatusSelectorEndOfYear)
+            textOnPageCheck(notStartedText, dividendsStatusSelector)
           }
 
           "has an interest section" which {
             linkCheck(interestsLinkText, interestLinkSelector, interestsLink(taxYearEOY))
-            textOnPageCheck(notStartedText, interestStatusSelectorEndOfYear)
+            textOnPageCheck(notStartedText, interestStatusSelector)
           }
 
           "has an employment section " which {
             linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
-            textOnPageCheck(todoText, employmentStatusSelectorEndOfYear)
+            textOnPageCheck(todoText, employmentStatusSelector)
           }
 
           "has a cis section " which {
             linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYearEOY))
-            textOnPageCheck(notStartedText, cisStatusSelectorEndOfYear)
+            textOnPageCheck(notStartedText, cisStatusSelector)
           }
 
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearEOY))
-            textOnPageCheck(notStartedText, giftAidStatusSelectorEndOfYear)
+            textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
-          formPostLinkCheck(endOfYearContinueLink, endOfYearContinueButtonSelector)
+          formPostLinkCheck(endOfYearContinueLink, formSelector)
         }
       }
     }
