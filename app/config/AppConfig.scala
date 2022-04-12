@@ -24,6 +24,7 @@ import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Inject
+import scala.concurrent.duration.Duration
 
 //scalastyle:off
 class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppConfig {
@@ -147,7 +148,12 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
     ).filter(!_._2).map(_._1)
   }
 
+  lazy val useEncryption: Boolean = servicesConfig.getBoolean("useEncryption")
+  lazy val encryptionKey: String = servicesConfig.getString("mongodb.encryption.key")
+  def mongoTTL: Long = Duration(servicesConfig.getString("mongodb.timeToLive")).toDays.toInt
+
   lazy val testOnly_authLoginUrl: String = servicesConfig.getString("microservice.services.auth-login-api.url")
+
 }
 
 @ImplementedBy(classOf[FrontendAppConfig])
@@ -237,6 +243,9 @@ trait AppConfig {
 
   val excludedIncomeSources: Seq[String]
 
+  val useEncryption: Boolean
+  val encryptionKey: String
+  def mongoTTL: Long
   //Test Only
   val testOnly_authLoginUrl: String
 }
