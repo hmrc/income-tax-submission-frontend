@@ -82,7 +82,29 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.cisEnabled" -> "true",
     "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
-    "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"
+    "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
+    "useEncryption" -> "true"
+  )
+
+  def invalidEncryptionKeyConfig: Map[String, String] = Map(
+    "auditing.enabled" -> "false",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.income-tax-nrs-proxy.url" -> s"http://$wiremockHost:$wiremockPort",
+    "microservice.services.auth.host" -> wiremockHost,
+    "microservice.services.auth.port" -> wiremockPort.toString,
+    "microservice.services.auth-login-api.url" -> s"http://$wiremockHost:$wiremockPort",
+    "feature-switch.dividendsEnabled" -> "true",
+    "feature-switch.interestEnabled" -> "true",
+    "feature-switch.giftAidEnabled" -> "true",
+    "feature-switch.employmentEnabled" -> "true",
+    "feature-switch.cisEnabled" -> "true",
+    "feature-switch.crystallisationEnabled" -> "true",
+    "metrics.enabled" -> "false",
+    "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
+    "useEncryption" -> "true",
+    "mongodb.encryption.key" -> "key"
   )
 
   def sourcesTurnedOffConfig: Map[String, String] = Map(
@@ -208,6 +230,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   lazy val unreleasedIncomeSources: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(unreleasedIncomeSourcesConfig)
+    .build
+
+  lazy val appWithInvalidEncryptionKey: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(invalidEncryptionKeyConfig)
     .build
 
 

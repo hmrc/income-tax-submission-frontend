@@ -140,6 +140,11 @@ class MockAppConfig extends AppConfig with MockFactory {
     "cymraeg" -> Lang("cy")
   )
 
+
+  override val useEncryption: Boolean = true
+  override val encryptionKey: String = "1234556"
+  override def mongoTTL: Long = 2555
+
   override def routeToSwitchLanguage: String => Call =
     (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
 
@@ -149,4 +154,8 @@ class MockAppConfig extends AppConfig with MockFactory {
 
 class MockAppConfigTaxYearFeatureOff extends MockAppConfig {
   override lazy val taxYearErrorFeature: Boolean = false
+}
+
+class MockAppConfigEncyrptionOff extends MockAppConfig {
+  override val useEncryption: Boolean = false
 }
