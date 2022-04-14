@@ -22,12 +22,13 @@ import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import utils.TaxYearHelper
 
 import javax.inject.Inject
 import scala.concurrent.duration.Duration
 
 //scalastyle:off
-class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppConfig {
+class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppConfig with TaxYearHelper {
   private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
   def defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
   private lazy val signInContinueBaseUrl: String = servicesConfig.getString(ConfigKeys.signInContinueUrl)
@@ -133,17 +134,19 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val giftAidReleased: Boolean = servicesConfig.getBoolean("feature-switch.giftAidReleased")
   lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
   lazy val employmentReleased: Boolean = servicesConfig.getBoolean("feature-switch.employmentReleased")
+  lazy val employmentEOYEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEOYEnabled")
   lazy val cisEnabled: Boolean = servicesConfig.getBoolean("feature-switch.cisEnabled")
   lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
   lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
   lazy val crystallisationEnabled: Boolean = servicesConfig.getBoolean("feature-switch.crystallisationEnabled")
 
-  lazy val excludedIncomeSources: Seq[String] = {
+  def excludedIncomeSources(inputTaxYear: Int): Seq[String] = {
+    val employmentFeatureEnabled: (String, Boolean) = if(inputTaxYear != taxYear) (EMPLOYMENT, employmentEOYEnabled) else (EMPLOYMENT, employmentEnabled)
     Seq(
       (DIVIDENDS, dividendsEnabled),
       (INTEREST, interestEnabled),
       (GIFT_AID, giftAidEnabled),
-      (EMPLOYMENT, employmentEnabled),
+      employmentFeatureEnabled,
       (CIS, cisEnabled)
     ).filter(!_._2).map(_._1)
   }
@@ -236,12 +239,13 @@ trait AppConfig {
   val giftAidReleased: Boolean
   val employmentEnabled: Boolean
   val employmentReleased: Boolean
+  val employmentEOYEnabled: Boolean
   val cisEnabled: Boolean
   val cisReleased: Boolean
   val nrsEnabled: Boolean
   val crystallisationEnabled: Boolean
 
-  val excludedIncomeSources: Seq[String]
+  def excludedIncomeSources(taxYear: Int): Seq[String]
 
   val useEncryption: Boolean
   val encryptionKey: String

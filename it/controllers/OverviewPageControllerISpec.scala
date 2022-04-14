@@ -36,9 +36,7 @@ import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
 import java.util.UUID
-import scala.collection.generic.IdleSignalling.tag
 import scala.concurrent.Future
-import scala.reflect.internal.util.NoSourceFile.content
 
 class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
@@ -804,6 +802,67 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           "has an employment section " which {
             linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
             textOnPageCheck(todoText, employmentStatusSelector)
+          }
+
+          "has a cis section " which {
+            linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYearEOY))
+            textOnPageCheck(notStartedText, cisStatusSelector)
+          }
+
+          "has a donations to charity section" which {
+            linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearEOY))
+            textOnPageCheck(notStartedText, giftAidStatusSelector)
+          }
+
+          textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
+          textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
+          formPostLinkCheck(endOfYearContinueLink, formSelector)
+        }
+
+        "render the overview page EOY with 'Started' status tags for each section and 'Cannot Update' for the employment section" +
+          "when employmentEOYEnabled feature switch is false" when {
+          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+          val previousYearUrl = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
+          val taxYearMinusTwo = taxYearEOY - 1
+          val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
+
+          lazy val result: Future[Result] = {
+            authoriseAgentOrIndividual(user.isAgent)
+            stubIncomeSources(incomeSourcesModel)
+            route(appWithEmploymentEOYEnabledOff, request, user.isWelsh).get
+          }
+
+          implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+          "returns status of OK(200)" in {
+            status(result) shouldBe OK
+          }
+
+          welshToggleCheck(welshTest(user.isWelsh))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
+          linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYearEOY))
+          textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+          titleCheck(specific.headingExpected, user.isWelsh)
+          h1Check(specific.headingExpected, "xl")
+          textOnPageCheck(caption(taxYearMinusTwo, taxYearEOY), captionSelector)
+          textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
+          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+
+          "has a dividends section" which {
+            linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, dividendsStatusSelector)
+          }
+
+          "has an interest section" which {
+            linkCheck(interestsLinkText, interestLinkSelector, interestsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, interestStatusSelector)
+          }
+
+          "has an employment section " which {
+            textOnPageCheck(employmentLinkText, employmentSelector)
+            textOnPageCheck(cannotUpdateText, employmentStatusSelector)
           }
 
           "has a cis section " which {

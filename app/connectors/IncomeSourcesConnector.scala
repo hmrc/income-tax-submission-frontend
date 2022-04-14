@@ -29,13 +29,13 @@ class IncomeSourcesConnector @Inject()(val http: HttpClient,
 
   def getIncomeSources(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] = {
     val incomeSourcesUrl: String = config.incomeTaxSubmissionUrl + s"/nino/$nino/sources?taxYear=$taxYear"
-    http.GET[IncomeSourcesResponse](incomeSourcesUrl)(IncomeSourcesHttpReads, hcWithExcludedIncomeSources, ec)
+    http.GET[IncomeSourcesResponse](incomeSourcesUrl)(IncomeSourcesHttpReads, hcWithExcludedIncomeSources(taxYear), ec)
   }
 
-  private[connectors] def hcWithExcludedIncomeSources(implicit hc: HeaderCarrier): HeaderCarrier = {
+  private[connectors] def hcWithExcludedIncomeSources(taxYear: Int)(implicit hc: HeaderCarrier): HeaderCarrier = {
 
-    if (config.excludedIncomeSources.nonEmpty) {
-      hc.withExtraHeaders("excluded-income-sources" -> config.excludedIncomeSources.mkString(","))
+    if (config.excludedIncomeSources(taxYear).nonEmpty) {
+      hc.withExtraHeaders("excluded-income-sources" -> config.excludedIncomeSources(taxYear).mkString(","))
     } else {
       hc
     }

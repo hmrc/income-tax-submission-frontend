@@ -92,9 +92,9 @@
                 "common.employment",
                 appConfig.employmentFEUrl(taxYear),
                 incomeSources.employment.isDefined,
-                isInYear,
+                (isInYear || !appConfig.employmentEOYEnabled),
                 isMandatorySection = true,
-                additionalShowLinkCheck = incomeSources.employment.isDefined || !isInYear,
+                additionalShowLinkCheck = ((incomeSources.employment.isDefined && isInYear) || (appConfig.employmentEOYEnabled && !isInYear)),
             )
         }
 
