@@ -20,6 +20,8 @@ common.returnToIncomeTaxAccount.button.individual = Ewch i’ch cyfrif Treth Inc
 common.returnToIncomeTaxAccount.button.agent = Yn ôl i gyfrif Treth Incwm
 common.back = Yn ôl
 
+notificationBanner.important = Pwysig
+
 betaBar.beta = beta
 betaBar.banner.message.1 = Gwasanaeth newydd yw hwn – bydd eich
 betaBar.banner.message.2 = adborth
@@ -54,9 +56,13 @@ overview.crystallisation.warning.agent = Defnyddiwch eich pecyn meddalwedd i ddi
 overview.crystallisation.paragraph.individual = Os ydych wedi gorffen diweddaru eich Ffurflen Dreth Incwm, gallwch barhau a gweld eich cyfrifiad treth terfynol. Gallwch wirio eich cyfrifiad ac yna fe allwch gyflwyno eich Ffurflen Dreth Incwm.
 overview.crystallisation.paragraph.agent = Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, gallwch barhau a gweld eu cyfrifiad treth terfynol. Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm.
 
-overview.paragraph.1.individual = Os oes gennym wybodaeth am eich incwm a didyniadau, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un.
-overview.paragraph.1.agent = Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un.
-overview.paragraph.2 = Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon.
+overview.notificationBanner.individual = Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch.
+overview.notificationBanner.agent = Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano.
+overview.notificationBannerPlural.individual = Rydym wedi ychwanegu {0} adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch.
+overview.notificationBannerPlural.agent = Rydym wedi ychwanegu {0} adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano.
+overview.paragraph.1 = Gwiriwch bob adran – mae’n bosibl y bydd rhaid i chi newid yr wybodaeth rydym wedi’i hychwanegu ar eich rhan.
+overview.addSections.individual = Ychwanegu adrannau at eich Ffurflen Dreth Incwm
+overview.addSections.agent = Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient
 overview.paragraph.3.individual = Ewch i’ch
 overview.paragraph.3.agent = Ewch i’r canlynol ar ran eich cleient
 overview.paragraph.4 = Cyfrif Treth Incwm

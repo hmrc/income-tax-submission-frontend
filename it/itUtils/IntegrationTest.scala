@@ -21,6 +21,11 @@ import common.SessionValues
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
+import models.CisBuilder.aCis
+import models.DividendsBuilder.aDividends
+import models.EmploymentBuilder.aEmployment
+import models.GiftAidBuilder.aGiftAid
+import models.InterestBuilder.aInterest
 import models._
 import models.cis.AllCISDeductions
 import models.employment._
@@ -32,7 +37,7 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.{HeaderNames, Writeable}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
 import services.AuthService
@@ -54,6 +59,10 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   val taxYear: Int = if (month >= 4 && dayOfMonth > 5) DateTime.now().year().get() + 1 else DateTime.now().year().get()
   val taxYearEOY: Int = taxYear - 1
   val taxYearEndOfYearMinusOne: Int = taxYearEOY -1
+
+  val nino = "AA123456A"
+  val mtditid = "1234567890"
+  val affinityGroup = "Individual"
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   val inYearAction = new InYearAction
@@ -125,7 +134,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.employmentEOYEnabled" -> "false",
     "feature-switch.cisEnabled" -> "false",
     "feature-switch.crystallisationEnabled" -> "false",
-    "metrics.enabled" -> "false"
+    "metrics.enabled" -> "false",
+    "useEncryption" -> "true",
   )
 
   def taxYearFeatureSwitchOffConfig: Map[String, String] = Map(
@@ -144,7 +154,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.employmentEnabled" -> "true",
     "feature-switch.employmentEOYEnabled" -> "true",
     "feature-switch.cisEnabled" -> "true",
-    "metrics.enabled" -> "false"
+    "metrics.enabled" -> "false",
+    "useEncryption" -> "true",
   )
 
   def unreleasedIncomeSourcesConfig: Map[String, String] = Map(
@@ -165,6 +176,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.employmentReleased" -> "false",
     "feature-switch.cisEnabled" -> "true",
     "feature-switch.cisReleased" -> "false",
+    "useEncryption" -> "true",
 
     "metrics.enabled" -> "false"
   )
@@ -186,7 +198,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.cisEnabled" -> "false",
     "feature-switch.crystallisationEnabled" -> "false",
     "metrics.enabled" -> "false",
-    "taxYearErrorFeatureSwitch" -> "false"
+    "taxYearErrorFeatureSwitch" -> "false",
+    "useEncryption" -> "true",
   )
 
   def sourcesTurnedOnConfigEndOfYear: Map[String, String] = Map(
@@ -224,7 +237,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.cisEnabled" -> "true",
     "feature-switch.crystallisationEnabled" -> "true",
     "metrics.enabled" -> "false",
-    "taxYearErrorFeatureSwitch" -> "false"
+    "taxYearErrorFeatureSwitch" -> "false",
+    "useEncryption" -> "true",
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -283,8 +297,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     super.afterAll()
   }
 
+  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+
   val sessionId: String = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
-  implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
+  implicit lazy val user: User[AnyContent] = new User[AnyContent](mtditid, None, nino, sessionId)(FakeRequest().withHeaders("X-Session-ID" -> sessionId))
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
   val fallBackSessionIdFakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("sessionId" -> sessionId)
   val fakeRequestAgent: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
     .withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A").withHeaders("X-Session-ID" -> sessionId)
@@ -340,68 +357,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   }
 
   lazy val incomeSourcesModel: IncomeSourcesModel = IncomeSourcesModel(
-    dividends = dividendsModel,
-    interest = interestsModel,
-    giftAid = Some(giftAidModel),
-    employment = Some(employmentsModel),
-    cis = Some(allCISDeductions)
-  )
-
-  lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
-  lazy val interestsModel: Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
-  lazy val employmentsModel: AllEmploymentData = AllEmploymentData(
-    hmrcEmploymentData = Seq(
-      HmrcEmploymentSource(
-        employmentId = "001",
-        employerName = "maggie",
-        employerRef = Some("223/AB12399"),
-        payrollId = Some("123456789999"),
-        startDate = Some("2019-04-21"),
-        cessationDate = Some("2020-03-11"),
-        dateIgnored = None,
-        submittedOn = Some("2020-01-04T05:01:01Z"),
-        hmrcEmploymentFinancialData = Some(
-          EmploymentFinancialData(
-            employmentData = Some(EmploymentData(
-              submittedOn = "2020-02-12",
-              employmentSequenceNumber = Some("123456789999"),
-              companyDirector = Some(true),
-              closeCompany = Some(false),
-              directorshipCeasedDate = Some("2020-02-12"),
-              occPen = Some(false),
-              disguisedRemuneration = Some(false),
-              pay = Some(Pay(Some(34234.15), Some(6782.92), Some("CALENDAR MONTHLY"), Some("2020-04-23"), Some(32), Some(2)))
-            )),
-            None
-          )
-        ),
-        customerEmploymentFinancialData = None
-      )
-    ),
-    hmrcExpenses = None,
-    customerEmploymentData = Seq(),
-    customerExpenses = None
-  )
-  private val allCISDeductions = AllCISDeductions(None, None)
-  val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
-    nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
-    currentYear = Some(1234.56),
-    oneOffCurrentYear = Some(1234.56),
-    currentYearTreatedAsPreviousYear = Some(1234.56),
-    nextYearTreatedAsCurrentYear = Some(1234.56),
-    nonUkCharities = Some(1234.56),
-  ))
-
-  val giftsModel: Option[GiftsModel] = Some(GiftsModel(
-    investmentsNonUkCharitiesCharityNames = Some(List("charity 1", "charity 2")),
-    landAndBuildings = Some(10.21),
-    sharesOrSecurities = Some(10.21),
-    investmentsNonUkCharities = Some(1234.56)
-  ))
-
-  val giftAidModel: GiftAidModel = GiftAidModel(
-    giftAidPaymentsModel,
-    giftsModel
+    dividends = Some(aDividends),
+    interest = Some(Seq(aInterest)),
+    giftAid = Some(aGiftAid),
+    employment = Some(aEmployment),
+    cis = Some(aCis)
   )
 
   def playSessionCookies(taxYear: Int): String = PlaySessionCookieBaker.bakeSessionCookie(Map(

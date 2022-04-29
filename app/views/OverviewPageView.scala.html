@@ -17,9 +17,13 @@
 @import views.html.headerFooterTemplate.Layout
 @import views.html.templates.helpers.Heading
 @import views.html.templates.helpers.Button
+@import views.html.templates.helpers.NotificationBanner
+@import views.html.templates.helpers.Link
+@import views.html.templates.helpers.InsertText
+@import common.IncomeSources._
 
-@this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag)
-@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int, isInYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag, notificationBanner: NotificationBanner, link: Link, insertText: InsertText)
+@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int, isInYear: Boolean, tailoring: Seq[String], tailoringUpdateCount: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false) = {
     <span class="hmrc-status-tag">
@@ -58,58 +62,81 @@
 }
     
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
-    <ol style="padding-left:0;" class="app-task-list__items">
-        @taskListItem(
-            appConfig.interestEnabled,
-            "interest_link",
-            "common.interest",
-            if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)} else {appConfig.personalIncomeTaxInterestUrl(taxYear)},
-            incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
-        )
-        
-        @taskListItem(
-            appConfig.dividendsEnabled,
-            "dividends_link",
-            "common.dividends",
-            if(incomeSources.dividends.isEmpty) {appConfig.personalIncomeTaxDividendsUrl(taxYear)} else {appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)},
-            incomeSources.dividends.isDefined
-        )
+    <ol style="padding-left:0;" class="app-task-list__items  govuk-!-padding-bottom-2">
+        @if(tailoring.contains(INTEREST)){
+            @taskListItem(
+                appConfig.interestEnabled,
+                "interest_link",
+                "common.interest",
+                if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)} else {appConfig.personalIncomeTaxInterestUrl(taxYear)},
+                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
+            )
+        }
+        @if(tailoring.contains(DIVIDENDS)){
+            @taskListItem(
+                appConfig.dividendsEnabled,
+                "dividends_link",
+                "common.dividends",
+                if(incomeSources.dividends.isEmpty) {appConfig.personalIncomeTaxDividendsUrl(taxYear)} else {appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)},
+                incomeSources.dividends.isDefined
+            )
+        }
 
         @if(appConfig.giftAidReleased){
-            @taskListItem(
-                appConfig.giftAidEnabled,
-                "giftAid_link",
-                "common.donationsToCharity",
-                if(incomeSources.giftAid.isEmpty) {appConfig.personalIncomeTaxGiftAidUrl(taxYear)} else {appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)},
-                incomeSources.giftAid.isDefined
-            )
+            @if(tailoring.contains(GIFT_AID)){
+                @taskListItem(
+                    appConfig.giftAidEnabled,
+                    "giftAid_link",
+                    "common.donationsToCharity",
+                    if(incomeSources.giftAid.isEmpty) {appConfig.personalIncomeTaxGiftAidUrl(taxYear)} else {appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)},
+                    incomeSources.giftAid.isDefined
+                )
+            }
         }
 
         @if(appConfig.employmentReleased){
-            @taskListItem(
-                appConfig.employmentEnabled,
-                "employment_link",
-                "common.employment",
-                appConfig.employmentFEUrl(taxYear),
-                incomeSources.employment.isDefined,
-                (isInYear || !appConfig.employmentEOYEnabled),
-                isMandatorySection = true,
-                additionalShowLinkCheck = ((incomeSources.employment.isDefined && isInYear) || (appConfig.employmentEOYEnabled && !isInYear)),
-            )
+            @if(tailoring.contains(EMPLOYMENT)){
+                @taskListItem(
+                    appConfig.employmentEnabled,
+                    "employment_link",
+                    "common.employment",
+                    appConfig.employmentFEUrl(taxYear),
+                    incomeSources.employment.isDefined,
+                    (isInYear || !appConfig.employmentEOYEnabled),
+                    isMandatorySection = true,
+                    additionalShowLinkCheck = ((incomeSources.employment.isDefined && isInYear) || (appConfig.employmentEOYEnabled && !isInYear)),
+                )
+            }
         }
 
         @if(appConfig.cisReleased){
-            @taskListItem(
-                appConfig.cisEnabled,
-                "cis_link",
-                "common.cis",
-                appConfig.cisFEUrl(taxYear),
-                incomeSources.cis.isDefined,
-                isInYear,
-                additionalShowLinkCheck = incomeSources.cis.isDefined || !isInYear
-            )
+            @if(tailoring.contains(CIS)){
+                @taskListItem(
+                    appConfig.cisEnabled,
+                    "cis_link",
+                    "common.cis",
+                    appConfig.cisFEUrl(taxYear),
+                    incomeSources.cis.isDefined,
+                    isInYear,
+                    additionalShowLinkCheck = incomeSources.cis.isDefined || !isInYear
+                )
+            }
         }
+<!--        @if(tailoring.isEmpty){-->
+<!--            <li class="app-task-list__item">-->
+<!--                <span class="app-task-list__task-name">-->
+<!--                    @insertText(s"overview.insertText.${if(isAgent) "agent" else "individual"}")-->
+<!--                </span>-->
+<!--            </li>-->
+<!--        }-->
+        <li class="govuk-!-margin-top-4">
+            <span class="app-task-list__task-name">
+                @link("", s"overview.addSections.${if(isAgent) "agent" else "individual"}", Some("addSectionsLink"))
+            </span>
+        </li>
     </ol>
+
+
 }
 
 
@@ -139,20 +166,24 @@
 @affinityText = @{
     if(isAgent) "agent" else "individual"
 }
-    
+
+@TailoringNotificationBanner = @{
+    if(tailoringUpdateCount==1){
+        notificationBanner(messages(s"overview.notificationBanner.${if(isAgent) "agent" else "individual"}", tailoringUpdateCount.toString()))
+    }
+    else if(tailoringUpdateCount>1){
+        notificationBanner(messages(s"overview.notificationBannerPlural.${if(isAgent) "agent" else "individual"}", tailoringUpdateCount.toString()))
+    }
+}
+
 @overview = {
     @heading(messages(s"common.yourIncomeTaxReturn.$affinityText"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
 
+    @TailoringNotificationBanner
+
     <h2 class="govuk-heading-m" id="heading-tasklist">@messages(s"overview.$affinityText.task1.heading")</h2>
 
-    <p class="govuk-body">@messages(s"overview.paragraph.1.${if(isAgent) "agent" else "individual"}")</p>
-    <p class="govuk-body">@messages("overview.paragraph.2")</p>
-
-    @if(isInYear){
-        @govukInsetText(InsetText(
-            content = Text( messages(s"overview.insertText.${if(isAgent) "agent" else "individual"}", taxYear.toString))
-        ))
-    }
+    <p class="govuk-body" id="p-checkSections">@messages("overview.paragraph.1")</p>
     
     @if(isAgent) {
         @taskWithActionList(messages("overview.task1.caption"), None, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))

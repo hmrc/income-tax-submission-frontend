@@ -22,11 +22,14 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import controllers.routes.OverviewPageController
+import models.{IncomeSourcesModel, User}
+import models.mongo.TailoringUserDataModel
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{IncomeSourcesService, LiabilityCalculationService}
+import services.{IncomeSourcesService, LiabilityCalculationService, TailoringSessionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
+import common.IncomeSources._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class OverviewPageController @Inject()(inYearAction: InYearAction,
                                        incomeSourcesService: IncomeSourcesService,
                                        liabilityCalculationService: LiabilityCalculationService,
+                                       tailoringService: TailoringSessionService,
                                        overviewPageView: OverviewPageView,
                                        authorisedAction: AuthorisedAction,
                                        errorHandler: ErrorHandler,
@@ -42,28 +46,52 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
                                       (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
+  //scalastyle:off
+  def updateTailoringWithIncomeSources(tailoring: Seq[String], incomeSources: IncomeSourcesModel): Seq[String] = {
+    var newTailoring: Seq[String] = tailoring
+    if (incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) && !newTailoring.contains(INTEREST))  newTailoring = newTailoring :+ INTEREST
+    if (incomeSources.dividends.isDefined && !newTailoring.contains(DIVIDENDS)) newTailoring = newTailoring :+ DIVIDENDS
+    if (incomeSources.giftAid.isDefined && !newTailoring.contains(GIFT_AID)) newTailoring = newTailoring :+ GIFT_AID
+    if (incomeSources.employment.isDefined && !newTailoring.contains(EMPLOYMENT)) newTailoring = newTailoring :+ EMPLOYMENT
+    if (incomeSources.cis.isDefined && !newTailoring.contains(CIS)) newTailoring = newTailoring :+ CIS
+    newTailoring
+  }
+  //scalastyle:on
+
+  def handleTailoring(taxYear: Int, isInYear: Boolean)(implicit user: User[_]): Future[Result] = {
+    tailoringService.getSessionData(taxYear).flatMap {
+      case Right(tailoringData) =>
+        val currentTailoring = tailoringData.getOrElse(TailoringUserDataModel(user.nino, taxYear, Seq[String]())).tailoring
+        incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
+          case Right(incomeSources) =>
+            val newTailoring = updateTailoringWithIncomeSources(currentTailoring, incomeSources)
+            val tailoringUpdateCount: Int = (currentTailoring.size - newTailoring.size) * -1
+            if (tailoringData.isDefined) {
+              tailoringService.updateSessionData(newTailoring, taxYear)(InternalServerError(errorHandler.internalServerErrorTemplate))(
+                Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear, isInYear, newTailoring, tailoringUpdateCount)))
+            } else {
+              tailoringService.createSessionData(newTailoring, taxYear)(InternalServerError(errorHandler.internalServerErrorTemplate))(
+                Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear, isInYear, newTailoring, tailoringUpdateCount)))
+            }
+          case Left(error) => Future.successful(errorHandler.handleError(error.status))
+        }
+      case Left(error) => Future.successful(errorHandler.handleError(INTERNAL_SERVER_ERROR))
+    }
+  }
+
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     val isInYear: Boolean = inYearAction.inYear(taxYear)
-
     if (isInYear) {
-      incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
-        case Right(incomeSources) =>
-          Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear, isInYear))
-        case Left(error) => errorHandler.handleError(error.status)
-      }
+      handleTailoring(taxYear, isInYear)
     } else {
       Future.successful(Redirect(OverviewPageController.showCrystallisation(taxYear)))
     }
   }
 
-  def showCrystallisation(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-
-    incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
-      case Right(incomeSources) =>
-        Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), taxYear, isInYear = false))
-      case Left(error) => errorHandler.handleError(error.status)
+  def showCrystallisation(taxYear: Int): Action[AnyContent] =
+    (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
+      handleTailoring(taxYear, false)
     }
-  }
 
   def finalCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
 

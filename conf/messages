@@ -20,6 +20,8 @@ common.returnToIncomeTaxAccount.button.individual = Go to your Income Tax accoun
 common.returnToIncomeTaxAccount.button.agent = Go to Income Tax account
 common.back = Back
 
+notificationBanner.important = Important
+
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
 betaBar.banner.message.2 = feedback
@@ -46,17 +48,20 @@ overview.task1.caption = Fill in the sections you need to update.
 overview.agent.task2.caption.noUpdate = Provide at least one update before you can view your client’s tax calculation to date.
 overview.task3.heading = Submit return
 
-overview.insertText.agent = You cannot submit your client’s Income Tax Return until 6 April {0}.
-overview.insertText.individual = You cannot submit your Income Tax Return until 6 April {0}.
-
 overview.crystallisation.warning.individual = Use your software package to update parts of your Income Tax Return that are not on this list.
 overview.crystallisation.warning.agent = Use your software package to update parts of your client’s Income Tax Return that are not on this list.
 overview.crystallisation.paragraph.individual = If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. You can check your calculation and then submit your Income Tax Return.
 overview.crystallisation.paragraph.agent = If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation. You can check their calculation and then submit their Income Tax Return.
 
-overview.paragraph.1.individual = If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one.
-overview.paragraph.1.agent = If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one.
-overview.paragraph.2 = Fill in the sections you need to update. Use your software package to update items that are not on this list.
+overview.notificationBanner.individual = We have added a section to your return, based on the information we already hold about you.
+overview.notificationBanner.agent = We have added a section to your client’s return, based on the information we already hold about them.
+overview.notificationBannerPlural.individual = We have added {0} sections to your return, based on the information we already hold about you.
+overview.notificationBannerPlural.agent = We have added {0} sections to your client’s return, based on the information we already hold about them.
+overview.paragraph.1 = Check every section, you may need to change the information that we have added for you.
+overview.addSections.individual = Add sections to your Income Tax Return
+overview.addSections.agent = Add sections to your client’s Income Tax Return
+overview.insertText.individual = There are no more sections that can be added to your Income Tax Return.
+overview.insertText.agent = There are no more sections that can be added to your client’s Income Tax Return.
 overview.paragraph.3.individual = Go to your
 overview.paragraph.3.agent = Go to your client’s
 overview.paragraph.4 = Income Tax Account

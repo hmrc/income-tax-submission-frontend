@@ -18,10 +18,11 @@ package controllers
 
 import audit.AuditService
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import common.IncomeSources._
 import common.SessionValues
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
-import itUtils.{IntegrationTest, ViewHelpers}
+import itUtils.{IntegrationTest, TailoringDatabaseHelper, ViewHelpers}
 import models.{IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -31,14 +32,16 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
-import services.{IncomeSourcesService, LiabilityCalculationService}
+import services.{IncomeSourcesService, LiabilityCalculationService, TailoringSessionService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
 import java.util.UUID
 import scala.concurrent.Future
 
-class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
+class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with TailoringDatabaseHelper {
+
+  val tailoringComplete = Seq(INTEREST, DIVIDENDS, GIFT_AID, EMPLOYMENT, CIS)
 
   object Links {
     def startPageBreadcrumbUrl(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/start"
@@ -85,10 +88,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val submitReturnHeaderEOY = "Check and submit your Income Tax Return"
     val submitReturnText: String = "If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. " +
       "You can check your calculation and then submit your Income Tax Return."
-    val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
     val goToYourIncomeTax = "Go to your Income Tax Account to find out more about your current tax position."
+    val addSections = "Add sections to your Income Tax Return"
+    val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
+    val notificationBannerPlural = "We have added 5 sections to your return, based on the information we already hold about you."
 
-    def inYearInsertText(taxYear: Int): String = s"You cannot submit your Income Tax Return until 6 April $taxYear."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -97,10 +101,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val submitReturnHeaderEOY = "Check and submit your client’s Income Tax Return"
     val submitReturnText: String = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation." +
       " You can check their calculation and then submit their Income Tax Return."
-    val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
     val goToYourIncomeTax = "Go to your client’s Income Tax Account to find out more about their current tax position."
+    val addSections = "Add sections to your client’s Income Tax Return"
+    val notificationBanner =  "We have added a section to your client’s return, based on the information we already hold about them."
+    val notificationBannerPlural = "We have added 5 sections to your client’s return, based on the information we already hold about them."
 
-    def inYearInsertText(taxYear: Int): String = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -108,10 +113,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val updateIncomeTaxReturnText = "Diweddarwch eich Ffurflen Dreth Incwm"
     val submitReturnHeaderEOY = "Diweddaru a chyflwyno’ch Ffurflen Dreth Incwm"
     val submitReturnText: String = "Os ydych wedi gorffen diweddaru eich Ffurflen Dreth Incwm, gallwch barhau a gweld eich cyfrifiad treth terfynol. Gallwch wirio eich cyfrifiad ac yna fe allwch gyflwyno eich Ffurflen Dreth Incwm."
-    val ifWeHaveInfo = "Os oes gennym wybodaeth am eich incwm a didyniadau, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
     val goToYourIncomeTax = "Ewch i’ch Cyfrif Treth Incwm i wybod mwy am eich sefyllfa dreth bresennol."
-
-    def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm tan 6 Ebrill $taxYear."
+    val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
+    val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 5 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -119,10 +124,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val updateIncomeTaxReturnText = "Diweddarwch Ffurflen Dreth Incwm eich cleient"
     val submitReturnHeaderEOY = "Gwiriwch a chyflwynwch Ffurflen Dreth Incwm eich cleient"
     val submitReturnText: String = "Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, gallwch barhau a gweld eu cyfrifiad treth terfynol. Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm."
-    val ifWeHaveInfo = "Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
     val goToYourIncomeTax = "Ewch i’r canlynol ar ran eich cleient Cyfrif Treth Incwm i wybod mwy am ei sefyllfa dreth bresennol."
+    val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
+    val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 5 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
 
-    def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm eich cleient tan 6 Ebrill $taxYear."
   }
 
   trait SpecificExpectedResults {
@@ -130,10 +136,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val updateIncomeTaxReturnText: String
     val submitReturnHeaderEOY: String
     val submitReturnText: String
-    val ifWeHaveInfo: String
     val goToYourIncomeTax: String
+    val addSections: String
+    val notificationBanner: String
+    val notificationBannerPlural: String
 
-    def inYearInsertText(taxYear: Int): String
   }
 
   trait CommonExpectedResults {
@@ -154,9 +161,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val cisLinkText: String
     val giftAidLinkText: String
     val continue: String
-    val fillInTheSections: String
     val incomeTaxAccountLink: String
     val updateTaxCalculation: String
+    val checkSectionsText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -177,9 +184,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val cisLinkText = "Construction Industry Scheme deductions"
     val giftAidLinkText = "Donations to charity"
     val continue = "continue"
-    val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
     val incomeTaxAccountLink = "Income Tax Account"
     val updateTaxCalculation = "Update tax calculation"
+    val checkSectionsText = "Check every section, you may need to change the information that we have added for you."
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -200,15 +207,15 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val cisLinkText = "Didyniadau Cynllun y Diwydiant Adeiladu"
     val giftAidLinkText = "Rhoddion i elusennau"
     val continue = "continue"
-    val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
     val updateTaxCalculation = "Diweddaru cyfrifiad treth"
+    val checkSectionsText = "Gwiriwch bob adran – mae’n bosibl y bydd rhaid i chi newid yr wybodaeth rydym wedi’i hychwanegu ar eich rhan."
   }
 
   object Selectors {
     private def sectionNameSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.app-task-list__task-name"
-    private def statusTagSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.hmrc-status-tag"
-    
+    def statusTagSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.hmrc-status-tag"
+
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
     val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
     val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3)"
@@ -231,16 +238,16 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val viewEstimateSelector = "#calculation_link"
     val submitReturnEOYSelector = "#heading-checkAndSubmit"
     val submitReturnTextEOYSelector = "#p-submitText"
-    val youWillBeAbleSelector = "#main-content > div > div > ol > li:nth-child(4) > ul > li.govuk-body"
-    val ifWeHaveInformationSelector = "#main-content > div > div > p:nth-child(3)"
-    val fillInTheSectionsSelector = "#main-content > div > div > p:nth-child(4)"
+    val checkSectionsSelector = "#p-checkSections"
+    val addSectionsSelector = "#addSectionsLink"
     val goToYourIncomeTaxReturnSelector = "#p-gotoAccountDetails"
     val updateTaxCalculationSelector = "#updateTaxCalculation"
     val formSelector = "#main-content > div > div > form"
+    val notificationBannerSelector = "#main-content > div > div > div.govuk-notification-banner > div.govuk-notification-banner__content > p"
   }
 
-  private val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/view"
-  private val urlPathEndOfYear = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
+  val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/view"
+  val urlPathEndOfYear = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -248,6 +255,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     inYearAction,
     app.injector.instanceOf[IncomeSourcesService],
     app.injector.instanceOf[LiabilityCalculationService],
+    app.injector.instanceOf[TailoringSessionService],
     app.injector.instanceOf[OverviewPageView],
     app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[ErrorHandler],
@@ -283,8 +291,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         "render an overview page with all sections showing status tag 'under maintenance' when feature switch is false" when {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
           lazy val result: Future[Result] = {
+            dropTailoringDB()
+            insertData(tailoringComplete, taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             route(appWithSourcesTurnedOff, request, user.isWelsh).get
           }
@@ -305,9 +314,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
+          textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
           "have a dividends section that says under maintenance" which {
             textOnPageCheck(underMaintenance, dividendsStatusSelector)
@@ -324,6 +331,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           "have a cis section that says under maintenance" which {
             textOnPageCheck(underMaintenance, cisStatusSelector)
           }
+          "have a add sections link " which {
+            linkCheck(specific.addSections, addSectionsSelector, "")
+          }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
           linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
@@ -334,6 +344,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            dropTailoringDB()
+            insertData(tailoringComplete, taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None))
             route(app, request, user.isWelsh).get
@@ -354,9 +366,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
+          textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYear))
@@ -383,6 +393,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
+          "have a add sections link " which {
+            linkCheck(specific.addSections, addSectionsSelector, "")
+          }
+
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
@@ -392,6 +406,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            dropTailoringDB()
+            insertData(tailoringComplete, taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel.copy(interest = None))
             route(app, request, user.isWelsh).get
@@ -412,9 +428,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
+          textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -441,6 +455,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
+          "have a add sections link " which {
+            linkCheck(specific.addSections, addSectionsSelector, "")
+          }
+
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
         }
@@ -452,6 +470,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
             lazy val result: Future[Result] = {
+              dropTailoringDB()
+              insertData(tailoringComplete, taxYear)
               authoriseAgentOrIndividual(user.isAgent)
               stubIncomeSources(incomeSources)
               route(app, request, user.isWelsh).get
@@ -472,9 +492,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             h1Check(specific.headingExpected, "xl")
             textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-            textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-            textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
+            textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
             "has a dividends section" which {
               linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -501,11 +519,16 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               textOnPageCheck(updatedText, cisStatusSelector)
             }
 
+            "have a add sections link " which {
+              linkCheck(specific.addSections, addSectionsSelector, "")
+            }
+
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
           }
         }
+
 
         "interest income source is defined and the untaxed and taxed accounts do not have amounts" which {
           val incomeSources = incomeSourcesModel.copy(interest = Some(Seq(InterestModel("TestName", "TestSource", None, None))))
@@ -513,6 +536,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            dropTailoringDB()
+            insertData(tailoringComplete, taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSources)
             route(app, request, user.isWelsh).get
@@ -533,9 +558,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-          textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
+          textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -562,6 +585,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
+          "have a add sections link " which {
+            linkCheck(specific.addSections, addSectionsSelector, "")
+          }
+
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
@@ -576,6 +603,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
             lazy val result: Future[Result] = {
+              dropTailoringDB()
+              insertData(tailoringComplete, taxYear)
               authoriseAgentOrIndividual(user.isAgent)
               stubIncomeSources(incomeSources)
               route(app, request, user.isWelsh).get
@@ -596,9 +625,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             h1Check(specific.headingExpected, "xl")
             textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-            textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-            textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
-            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
+            textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
             "has a dividends section" which {
               linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
@@ -623,6 +650,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             "has a cis section" which {
               linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
               textOnPageCheck(updatedText, cisStatusSelector)
+            }
+
+            "have a add sections link " which {
+              linkCheck(specific.addSections, addSectionsSelector, "")
             }
 
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
@@ -650,6 +681,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            dropTailoringDB()
+            insertData(tailoringComplete, taxYearEOY)
             authoriseAgentOrIndividual(user.isAgent)
             route(appWithSourcesTurnedOffEndOfYear, request, user.isWelsh).get
           }
@@ -668,9 +701,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEOY), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
+          textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
           "have a dividends section that says under maintenance" which {
             textOnPageCheck(underMaintenance, dividendsStatusSelector)
@@ -692,6 +724,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(underMaintenance, giftAidStatusSelector)
           }
 
+          "have a add sections link " which {
+            linkCheck(specific.addSections, addSectionsSelector, "")
+          }
+
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
           linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
 
@@ -704,6 +740,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            dropTailoringDB()
+            insertData(tailoringComplete, taxYearEOY)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSourcesEndOfYear
             route(appWithSourcesTurnedOnEndOfYear, request, user.isWelsh).get
@@ -723,9 +761,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEOY), captionSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
+          textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
 
           "has a dividends section" which {
@@ -753,6 +790,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             textOnPageCheck(updatedText, giftAidStatusSelector)
           }
 
+          "have a add sections link " which {
+            linkCheck(specific.addSections, addSectionsSelector, "")
+          }
+
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
           formPostLinkCheck(endOfYearContinueLink, formSelector)
@@ -766,6 +807,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
 
           lazy val result: Future[Result] = {
+            dropTailoringDB()
+            insertData(tailoringComplete, taxYearEOY)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel)
             route(appWithTaxYearErrorOff, request, user.isWelsh).get
@@ -786,8 +829,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusTwo, taxYearEOY), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+          textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYearEOY))
@@ -812,6 +854,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearEOY))
             textOnPageCheck(notStartedText, giftAidStatusSelector)
+          }
+
+          "have a add sections link " which {
+            linkCheck(specific.addSections, addSectionsSelector, "")
           }
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
@@ -847,8 +893,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           h1Check(specific.headingExpected, "xl")
           textOnPageCheck(caption(taxYearMinusTwo, taxYearEOY), captionSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
-          textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
-          textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
 
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLink(taxYearEOY))
@@ -1068,71 +1112,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   }
 
-  def stubIncomeSources: StubMapping = stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", OK,
-    """{
-      |	"dividends": {
-      |		"ukDividends": 69.99,
-      |		"otherUkDividends": 63.99
-      |	},
-      |	"interest": [{
-      |		"accountName": "BANK",
-      |		"incomeSourceId": "12345678908765432",
-      |		"taxedUkInterest": 44.66,
-      |		"untaxedUkInterest": 66.44
-      |	}],
-      | "giftAid" : {
-      |    "gifts":{
-      |       "landAndBuildings": 100
-      |    }
-      | },
-      | "employment": {
-      |   "hmrcEmploymentData": [
-      |     {
-      |       "employmentId": "1",
-      |       "employerName": "name"
-      |     }
-      |   ],
-      |   "customerEmploymentData": [
-      |     {
-      |       "employmentId": "2",
-      |       "employerName": "name"
-      |     }
-      |   ]
-      | }
-      |}""".stripMargin)
+  def stubIncomeSources: StubMapping =
+    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", OK, Json.toJson(incomeSourcesModel).toString)
 
-  def stubIncomeSourcesEndOfYear: StubMapping = stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYearEOY", OK,
-    """{
-      |	"dividends": {
-      |		"ukDividends": 69.99,
-      |		"otherUkDividends": 63.99
-      |	},
-      |	"interest": [{
-      |		"accountName": "BANK",
-      |		"incomeSourceId": "12345678908765432",
-      |		"taxedUkInterest": 44.66,
-      |		"untaxedUkInterest": 66.44
-      |	}],
-      | "giftAid" : {
-      |    "gifts":{
-      |       "landAndBuildings": 100
-      |    }
-      | },
-      | "employment": {
-      |   "hmrcEmploymentData": [
-      |     {
-      |       "employmentId": "1",
-      |       "employerName": "name"
-      |     }
-      |   ],
-      |   "customerEmploymentData": [
-      |     {
-      |       "employmentId": "2",
-      |       "employerName": "name"
-      |     }
-      |   ]
-      | },
-      | "cis": {
-      | }
-      |}""".stripMargin)
+  def stubIncomeSourcesEndOfYear: StubMapping =
+    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYearEOY", OK, Json.toJson(incomeSourcesModel).toString)
 }

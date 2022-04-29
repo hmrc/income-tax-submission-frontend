@@ -46,8 +46,6 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
   }
 
   private val timeStamp: LocalDate = LocalDate.now()
-  private val nino: String = "AA012345A"
-  private val mtditid: String = "1234567890"
 
   object ExpectedResults {
     val summaryRow1Key: String = "Name"
