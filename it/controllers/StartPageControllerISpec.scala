@@ -19,7 +19,7 @@ package controllers
 import audit.AuditService
 import common.SessionValues
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -41,7 +41,19 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     app.injector.instanceOf[AuthService],
     app.injector.instanceOf[StartPageView],
     app.injector.instanceOf[AuditService],
+    app.injector.instanceOf[InYearAction],
     frontendAppConfig,
+    mcc,
+    scala.concurrent.ExecutionContext.Implicits.global
+  )
+
+  def controllerWithoutSL: StartPageController = new StartPageController(
+    app.injector.instanceOf[AuthorisedAction],
+    app.injector.instanceOf[AuthService],
+    app.injector.instanceOf[StartPageView],
+    app.injector.instanceOf[AuditService],
+    app.injector.instanceOf[InYearAction],
+    customApp(studentLoansEnabled = false).injector.instanceOf[AppConfig],
     mcc,
     scala.concurrent.ExecutionContext.Implicits.global
   )
@@ -61,18 +73,26 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     val captionWelsh = s"6 Ebrill ${taxYear - 1} i 5 Ebrill $taxYear"
     val useThisServiceText = "Use this service to update and submit an Income Tax Return."
     val useThisServiceTextWelsh = "Defnyddiwch y gwasanaeth hwn i ddiweddaru a chyflwyno Ffurflen Dreth Incwm."
-    val newServiceText = "This is a new service. At the moment you can only update information about:"
+    val inYearText = s"You can view employment information but cannot use this service to update it until 6 April $taxYear."
+    val inYearWelshText = s"Gallwch fwrw golwg dros wybodaeth am gyflogaeth ond ni allwch ddefnyddio’r gwasanaeth hwn i’w diweddaru tan 6 Ebrill $taxYear."
     val newServiceTextWelsh = "Mae hwn yn wasanaeth newydd. Ar hyn o bryd, gallwch ond diweddaru gwybodaeth am y canlynol:"
-    val bullet1UkInterestPaidText = "UK interest"
-    val bullet1UkInterestPaidTextWelsh = "llog y DU"
-    val bullet2DividendsFromUKText = "dividends from UK-based companies, unit trusts and open-ended investment companies"
-    val bullet2DividendsFromUKTextWelsh = "difidendau gan gwmnïau, ymddiriedolaethau unedol a chwmnïau buddsoddi penagored yn y DU"
-    val bullet3DonationsToCharityText = "donations to charity"
-    val bullet3DonationsToCharityTextWelsh = "rhoddion i elusennau"
-    val viewEmploymentInformationText = s"You can view PAYE employment information, but you cannot update it until 6 April $taxYear."
-    val viewEmploymentInformationTextWelsh = s"Gallwch fwrw golwg dros wybodaeth am gyflogaeth TWE, ond ni allwch ei diweddaru tan 6 Ebrill $taxYear."
-    val toUpdateIncomeText = "Use your software package to update anything not on the list."
-    val toUpdateIncomeTextWelsh = "Defnyddiwch eich pecyn meddalwedd i ddiweddaru unrhyw beth nad yw’n ymddangos ar y rhestr."
+    val interestBullet = "UK interest"
+    val interestBulletWelsh = "llog y DU"
+    val dividendsBullet = "dividends from UK-based companies"
+    val dividendsBulletWelsh = "difidendau o gwmnïau sydd wedi’u lleoli yn y DU"
+    val employmentBullet = "PAYE employment"
+    val employmentBulletWelsh = "cyflogaeth TWE"
+    val employmentSLBullet = "PAYE employment (including student loans)"
+    val employmentSLBulletWelsh = "cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)"
+    val charityBullet = "donations to charity"
+    val charityBulletWelsh = "cyfraniadau at elusennau"
+    val softwarePackageText = s"To update your self-employment and property income, you must use your software package."
+    val softwarePackageAgentText = s"To update your client’s self-employment and property income, you must use your software package."
+    val softwarePackageWelshText = s"I ddiweddaru’ch incwm o hunangyflogaeth a’ch incwm o eiddo, mae’n rhaid i chi ddefnyddio’ch pecyn meddalwedd."
+    val softwarePackageWelshAgentText = s"I ddiweddaru incwm o hunangyflogaeth ac incwm o eiddo ar gyfer eich cleient," +
+      s" mae’n rhaid i chi ddefnyddio’ch pecyn meddalwedd."
+    val onlyUpdateText = "You can only update information about:"
+    val onlyUpdateTextWelsh = "Gallwch ddiweddaru gwybodaeth am y canlynol yn unig:"
     val continueButtonText = "Continue"
     val continueButtonTextWelsh = "Welsh"
     val continueButtonHref = s"/update-and-submit-income-tax-return/$taxYear/start"
@@ -86,11 +106,12 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     val caption = "#main-content > div > div > header > p"
     val p1 = "#main-content > div > div > div:nth-child(2) > p:nth-child(1)"
     val p2 = "#main-content > div > div > div:nth-child(2) > p:nth-child(2)"
+    val p3 = "#main-content > div > div > div:nth-child(2) > p:nth-child(3)"
+    val p4 = "#main-content > div > div > div:nth-child(2) > p:nth-child(4)"
     val bullet1 = "#main-content > div > div > ul > li:nth-child(1)"
     val bullet2 = "#main-content > div > div > ul > li:nth-child(2)"
     val bullet3 = "#main-content > div > div > ul > li:nth-child(3)"
-    val p3 = "#main-content > div > div > div:nth-child(4) > p:nth-child(1)"
-    val p4 =  "#main-content > div > div > div:nth-child(4) > p:nth-child(2)"
+    val bullet4 = "#main-content > div > div > ul > li:nth-child(4)"
     val continueButton = "#main-content > div > div > form"
   }
 
@@ -123,13 +144,48 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       h1Check(pageHeadingText, "xl")
       textOnPageCheck(caption, Selectors.caption)
       textOnPageCheck(useThisServiceText, Selectors.p1)
-      textOnPageCheck(newServiceText, Selectors.p2)
-      textOnPageCheck(bullet1UkInterestPaidText, Selectors.bullet1)
-      textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
-      textOnPageCheck(bullet3DonationsToCharityText, Selectors.bullet3)
-      textOnPageCheck(viewEmploymentInformationText, Selectors.p3)
-      textOnPageCheck(toUpdateIncomeText, Selectors.p4)
+      textOnPageCheck(inYearText, Selectors.p2)
+      textOnPageCheck(dividendsBullet, Selectors.bullet1)
+      textOnPageCheck(charityBullet, Selectors.bullet2)
+      textOnPageCheck(employmentSLBullet, Selectors.bullet3)
+      textOnPageCheck(interestBullet, Selectors.bullet4)
+      textOnPageCheck(softwarePackageText, Selectors.p3)
+      textOnPageCheck(onlyUpdateText, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
+    }
+
+    "render correctly when the user is an individual and student loans is off" should {
+
+      lazy val result: Future[Result] = {
+        authoriseIndividual()
+        controllerWithoutSL.show(taxYear)(fakeRequest)
+      }
+
+      implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+      "returns status of OK(200)" in {
+        status(result) shouldBe OK
+      }
+
+      welshToggleCheck("English")
+      textOnPageCheck(employmentBullet, Selectors.bullet3)
+    }
+    "render correctly when the user is an individual and student loans is off and is in welsh" should {
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+
+      lazy val result: Future[Result] = {
+        authoriseIndividual()
+        controllerWithoutSL.show(taxYear)(fakeRequest.withHeaders(headers: _*))
+      }
+
+      implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+      "returns status of OK(200)" in {
+        status(result) shouldBe OK
+      }
+
+      welshToggleCheck("Welsh")
+      textOnPageCheck(employmentBulletWelsh, Selectors.bullet3)
     }
 
     "render correctly when the user is an agent" should {
@@ -154,12 +210,13 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       h1Check(pageHeadingText, "xl")
       textOnPageCheck(caption, Selectors.caption)
       textOnPageCheck(useThisServiceText, Selectors.p1)
-      textOnPageCheck(newServiceText, Selectors.p2)
-      textOnPageCheck(bullet1UkInterestPaidText, Selectors.bullet1)
-      textOnPageCheck(bullet2DividendsFromUKText, Selectors.bullet2)
-      textOnPageCheck(bullet3DonationsToCharityText, Selectors.bullet3)
-      textOnPageCheck(viewEmploymentInformationText, Selectors.p3)
-      textOnPageCheck(toUpdateIncomeText, Selectors.p4)
+      textOnPageCheck(inYearText, Selectors.p2)
+      textOnPageCheck(dividendsBullet, Selectors.bullet1)
+      textOnPageCheck(charityBullet, Selectors.bullet2)
+      textOnPageCheck(employmentSLBullet, Selectors.bullet3)
+      textOnPageCheck(interestBullet, Selectors.bullet4)
+      textOnPageCheck(softwarePackageAgentText, Selectors.p3)
+      textOnPageCheck(onlyUpdateText, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
   }
@@ -188,12 +245,13 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       h1Check(pageHeadingTextWelsh, "xl")
       textOnPageCheck(captionWelsh, Selectors.caption)
       textOnPageCheck(useThisServiceTextWelsh, Selectors.p1)
-      textOnPageCheck(newServiceTextWelsh, Selectors.p2)
-      textOnPageCheck(bullet1UkInterestPaidTextWelsh, Selectors.bullet1)
-      textOnPageCheck(bullet2DividendsFromUKTextWelsh, Selectors.bullet2)
-      textOnPageCheck(bullet3DonationsToCharityTextWelsh, Selectors.bullet3)
-      textOnPageCheck(viewEmploymentInformationTextWelsh, Selectors.p3)
-      textOnPageCheck(toUpdateIncomeTextWelsh, Selectors.p4)
+      textOnPageCheck(inYearWelshText, Selectors.p2)
+      textOnPageCheck(dividendsBulletWelsh, Selectors.bullet1)
+      textOnPageCheck(charityBulletWelsh, Selectors.bullet2)
+      textOnPageCheck(employmentSLBulletWelsh, Selectors.bullet3)
+      textOnPageCheck(interestBulletWelsh, Selectors.bullet4)
+      textOnPageCheck(softwarePackageWelshText, Selectors.p3)
+      textOnPageCheck(onlyUpdateTextWelsh, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
@@ -219,12 +277,13 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       h1Check(pageHeadingTextWelsh, "xl")
       textOnPageCheck(captionWelsh, Selectors.caption)
       textOnPageCheck(useThisServiceTextWelsh, Selectors.p1)
-      textOnPageCheck(newServiceTextWelsh, Selectors.p2)
-      textOnPageCheck(bullet1UkInterestPaidTextWelsh, Selectors.bullet1)
-      textOnPageCheck(bullet2DividendsFromUKTextWelsh, Selectors.bullet2)
-      textOnPageCheck(bullet3DonationsToCharityTextWelsh, Selectors.bullet3)
-      textOnPageCheck(viewEmploymentInformationTextWelsh, Selectors.p3)
-      textOnPageCheck(toUpdateIncomeTextWelsh, Selectors.p4)
+      textOnPageCheck(inYearWelshText, Selectors.p2)
+      textOnPageCheck(dividendsBulletWelsh, Selectors.bullet1)
+      textOnPageCheck(charityBulletWelsh, Selectors.bullet2)
+      textOnPageCheck(employmentSLBulletWelsh, Selectors.bullet3)
+      textOnPageCheck(interestBulletWelsh, Selectors.bullet4)
+      textOnPageCheck(softwarePackageWelshAgentText, Selectors.p3)
+      textOnPageCheck(onlyUpdateTextWelsh, Selectors.p4)
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
   }

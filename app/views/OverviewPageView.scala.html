@@ -89,7 +89,7 @@
             @taskListItem(
                 appConfig.employmentEnabled,
                 "employment_link",
-                "common.employment",
+                if(appConfig.studentLoansEnabled)"common.employmentSL"else"common.employment",
                 appConfig.employmentFEUrl(taxYear),
                 incomeSources.employment.isDefined,
                 (isInYear || !appConfig.employmentEOYEnabled),

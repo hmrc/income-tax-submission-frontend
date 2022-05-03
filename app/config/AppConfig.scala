@@ -133,6 +133,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val giftAidEnabled: Boolean = servicesConfig.getBoolean("feature-switch.giftAidEnabled")
   lazy val giftAidReleased: Boolean = servicesConfig.getBoolean("feature-switch.giftAidReleased")
   lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
+  lazy val studentLoansEnabled: Boolean = servicesConfig.getBoolean("feature-switch.studentLoansEnabled")
   lazy val employmentReleased: Boolean = servicesConfig.getBoolean("feature-switch.employmentReleased")
   lazy val employmentEOYEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEOYEnabled")
   lazy val cisEnabled: Boolean = servicesConfig.getBoolean("feature-switch.cisEnabled")
@@ -237,6 +238,7 @@ trait AppConfig {
   val interestEnabled: Boolean
   val giftAidEnabled: Boolean
   val giftAidReleased: Boolean
+  val studentLoansEnabled: Boolean
   val employmentEnabled: Boolean
   val employmentReleased: Boolean
   val employmentEOYEnabled: Boolean

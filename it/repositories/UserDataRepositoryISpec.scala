@@ -40,7 +40,9 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
 
   val tailoringRepo: TailoringUserDataRepository = app.injector.instanceOf[TailoringUserDataRepository]
 
-  val tailoringInvalidRepo: TailoringUserDataRepository = appWithInvalidEncryptionKey.injector.instanceOf[TailoringUserDataRepository]
+  val tailoringInvalidRepo: TailoringUserDataRepository = customApp(
+    invalidEncryptionKey = true
+  ).injector.instanceOf[TailoringUserDataRepository]
 
   private def count: Long = await(tailoringRepo.collection.countDocuments().toFuture())
 

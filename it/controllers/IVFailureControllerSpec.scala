@@ -45,7 +45,16 @@ class IVFailureControllerSpec extends IntegrationTest with ViewHelpers {
 
         def request(id: Option[String]): FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", controllers.routes.IVFailureController.show(id).url)
         def result(id: Option[String] = Some("68948af0-5d8b-4de9-b070-0650d12fda74")): Future[Result] = {
-          route(appWithSourcesTurnedOff, request(id)).get
+          route(customApp(
+            dividendsEnabled = false,
+            interestEnabled = false,
+            giftAidEnabled = false,
+            employmentEnabled = false,
+            studentLoansEnabled = false,
+            employmentEOYEnabled = false,
+            cisEnabled = false,
+            crystallisationEnabled = false
+          ), request(id)).get
         }
         
         "return status code OK" in {

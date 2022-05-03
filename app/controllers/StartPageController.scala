@@ -19,7 +19,7 @@ package controllers
 import audit.{AuditService, EnterUpdateAndSubmissionServiceAuditDetail}
 import common.SessionValues
 import config.AppConfig
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -37,6 +37,7 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
                                     authService: AuthService,
                                     val startPageView: StartPageView,
                                     auditService: AuditService,
+                                    inYearAction: InYearAction,
                                     implicit val appConfig: AppConfig,
                                     implicit val mcc: MessagesControllerComponents,
                                     implicit val ec: ExecutionContext
@@ -44,7 +45,7 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
     implicit user =>
-      Ok(startPageView(isAgent = user.isAgent, taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
+      Ok(startPageView(isAgent = user.isAgent, taxYear, inYearAction.inYear(taxYear))).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
   }
 
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
