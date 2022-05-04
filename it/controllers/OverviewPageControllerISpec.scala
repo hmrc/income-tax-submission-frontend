@@ -150,6 +150,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val cannotUpdateText: String
     val dividendsLinkText: String
     val interestsLinkText: String
+    val employmentSLLinkText: String
     val employmentLinkText: String
     val cisLinkText: String
     val giftAidLinkText: String
@@ -173,7 +174,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val cannotUpdateText = "Cannot update"
     val dividendsLinkText = "Dividends"
     val interestsLinkText = "Interest"
-    val employmentLinkText = "PAYE employment (including student loans)"
+    val employmentLinkText = "PAYE employment"
+    val employmentSLLinkText = "PAYE employment (including student loans)"
     val cisLinkText = "Construction Industry Scheme deductions"
     val giftAidLinkText = "Donations to charity"
     val continue = "continue"
@@ -196,7 +198,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val cannotUpdateText = "Methu diweddaru"
     val dividendsLinkText = "Difidendau"
     val interestsLinkText = "Llog"
-    val employmentLinkText = "Cyflogaeth TWE gan gynnwys Benthyciadau Myfyriwr"
+    val employmentLinkText = "Cyflogaeth TWE"
+    val employmentSLLinkText = "Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)"
     val cisLinkText = "Didyniadau Cynllun y Diwydiant Adeiladu"
     val giftAidLinkText = "Rhoddion i elusennau"
     val continue = "continue"
@@ -208,7 +211,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   object Selectors {
     private def sectionNameSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.app-task-list__task-name"
     private def statusTagSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.hmrc-status-tag"
-    
+
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
     val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
     val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3)"
@@ -286,7 +289,16 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
-            route(appWithSourcesTurnedOff, request, user.isWelsh).get
+            route(customApp(
+              dividendsEnabled = false,
+              interestEnabled = false,
+              giftAidEnabled = false,
+              employmentEnabled = false,
+              studentLoansEnabled = false,
+              employmentEOYEnabled = false,
+              cisEnabled = false,
+              crystallisationEnabled = false
+            ), request, user.isWelsh).get
           }
 
 
@@ -329,6 +341,27 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
+        "render an overview page with all sections showing employment text when student loans feature switch is false" when {
+          val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+
+          lazy val result: Future[Result] = {
+            authoriseAgentOrIndividual(user.isAgent)
+            route(customApp(
+              studentLoansEnabled = false
+            ), request, user.isWelsh).get
+          }
+
+          implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+          "returns status of OK(200)" in {
+            status(result) shouldBe OK
+          }
+
+          textOnPageCheck(employmentLinkText, employmentSelector)
+          welshToggleCheck(welshTest(user.isWelsh))
+
+        }
+
         "render overview page with 'Not Started' status tags when there is no prior data, the employment section with" +
           "the status tag 'cannot update' user in the current taxYear and all feature switches are turned on" when {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
@@ -369,7 +402,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           "has an employment section " which {
-            textOnPageCheck(employmentLinkText, employmentSelector)
+            textOnPageCheck(employmentSLLinkText, employmentSelector)
             textOnPageCheck(cannotUpdateText, employmentStatusSelector)
           }
 
@@ -432,7 +465,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           "has an employment section" which {
-            linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYear))
+            linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYear))
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
@@ -492,7 +525,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             }
 
             "has an employment section" which {
-              linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYear))
+              linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYear))
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
@@ -553,7 +586,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           "has an employment section" which {
-            linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYear))
+            linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYear))
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
@@ -616,7 +649,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             }
 
             "has an employment section" which {
-              linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYear))
+              linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYear))
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
@@ -651,7 +684,16 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
-            route(appWithSourcesTurnedOffEndOfYear, request, user.isWelsh).get
+            route(customApp(
+              dividendsEnabled = false,
+              interestEnabled = false,
+              giftAidEnabled = false,
+              employmentEnabled = false,
+              studentLoansEnabled = false,
+              employmentEOYEnabled = false,
+              cisEnabled = false,
+              crystallisationEnabled = false
+            ), request, user.isWelsh).get
           }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -706,7 +748,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSourcesEndOfYear
-            route(appWithSourcesTurnedOnEndOfYear, request, user.isWelsh).get
+            route(customApp(), request, user.isWelsh).get
           }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -739,7 +781,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           "has an employment section" which {
-            linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
+            linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
@@ -768,7 +810,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel)
-            route(appWithTaxYearErrorOff, request, user.isWelsh).get
+            route(customApp(), request, user.isWelsh).get
           }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -800,7 +842,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           "has an employment section " which {
-            linkCheck(employmentLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
+            linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
             textOnPageCheck(todoText, employmentStatusSelector)
           }
 
@@ -829,7 +871,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel)
-            route(appWithEmploymentEOYEnabledOff, request, user.isWelsh).get
+            route(customApp(employmentEOYEnabled = false), request, user.isWelsh).get
           }
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -861,7 +903,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           "has an employment section " which {
-            textOnPageCheck(employmentLinkText, employmentSelector)
+            textOnPageCheck(employmentSLLinkText, employmentSelector)
             textOnPageCheck(cannotUpdateText, employmentStatusSelector)
           }
 
@@ -904,7 +946,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         val result = {
           authoriseIndividual()
-          sourcesTurnedOffConfigEndOfYear
           await(controller.show(taxYearEOY)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYearEOY", SessionKeys.sessionId -> "sessionId-0101010101")))
         }
 
@@ -989,7 +1030,16 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           lazy val result: Future[Result] = {
             authUser()
             stubLiabilityCalculation(Some(LiabilityCalculationIdModel(calcId)))
-            route(appWithSourcesTurnedOff, request).get
+            route(customApp(
+              dividendsEnabled = false,
+              interestEnabled = false,
+              giftAidEnabled = false,
+              employmentEnabled = false,
+              studentLoansEnabled = false,
+              employmentEOYEnabled = false,
+              cisEnabled = false,
+              crystallisationEnabled = false
+            ), request).get
           }
 
           "has a status of SEE_OTHER" in {
@@ -997,8 +1047,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           s"has a redirect to the view and change ${if (user.isAgent) "agent" else "individual"} page" in {
-            val expectedUrl = if (user.isAgent) s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview/calculate"
-            else s"http://localhost:9081/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview/calculate"
+            val expectedUrl = if (user.isAgent){
+              s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview/calculate"
+            } else {
+              s"http://localhost:9081/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview/calculate"
+            }
 
             await(result).header.headers("Location") shouldBe expectedUrl
           }
@@ -1019,7 +1072,16 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         lazy val result: Future[Result] = {
           authoriseIndividual()
           stubLiabilityCalculation(None, SERVICE_UNAVAILABLE)
-          route(appWithSourcesTurnedOff, request).get
+          route(customApp(
+            dividendsEnabled = false,
+            interestEnabled = false,
+            giftAidEnabled = false,
+            employmentEnabled = false,
+            studentLoansEnabled = false,
+            employmentEOYEnabled = false,
+            cisEnabled = false,
+            crystallisationEnabled = false
+          ), request).get
         }
 
         "has the status SERVICE_AVAILABLE (503)" in {
@@ -1049,7 +1111,16 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           lazy val result: Future[Result] = {
             authUser()
-            route(appWithSourcesTurnedOff, request).get
+            route(customApp(
+              dividendsEnabled = false,
+              interestEnabled = false,
+              giftAidEnabled = false,
+              employmentEnabled = false,
+              studentLoansEnabled = false,
+              employmentEOYEnabled = false,
+              cisEnabled = false,
+              crystallisationEnabled = false
+            ), request).get
           }
 
           "has a status of SEE_OTHER" in {

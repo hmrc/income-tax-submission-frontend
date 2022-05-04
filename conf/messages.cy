@@ -9,7 +9,8 @@ common.help.getHelpWithThisPage = Help gyda’r dudalen hon
 common.dividends = Difidendau
 common.interest = Llog
 common.donationsToCharity = Rhoddion i elusennau
-common.employment = Cyflogaeth TWE gan gynnwys Benthyciadau Myfyriwr
+common.employment = Cyflogaeth TWE
+common.employmentSL = Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)
 common.cis = Didyniadau Cynllun y Diwydiant Adeiladu
 common.underMaintenance = Wrthi’n cynnal a chadw’r safle
 common.govUk = GOV.UK/CYMRAEG
@@ -30,14 +31,22 @@ common.yourIncomeTaxReturn.individual = Eich Ffurflen Dreth Incwm
 common.yourIncomeTaxReturn.agent = Ffurflen Dreth Incwm eich cleient
 
 common.caption = 6 Ebrill {0} i 5 Ebrill {1}
-startPage1 = Defnyddiwch y gwasanaeth hwn i ddiweddaru a chyflwyno Ffurflen Dreth Incwm.
-startPage2 = Mae hwn yn wasanaeth newydd. Ar hyn o bryd, gallwch ond diweddaru gwybodaeth am y canlynol:
+startPage.useThisService = Defnyddiwch y gwasanaeth hwn i ddiweddaru a chyflwyno Ffurflen Dreth Incwm.
+startPage.onlyViewInYear = Gallwch fwrw golwg dros wybodaeth am gyflogaeth ond ni allwch ddefnyddio’r gwasanaeth hwn i’w diweddaru tan 6 Ebrill {0}.
+startPage.useSoftwarePackage.individual = I ddiweddaru’ch incwm o hunangyflogaeth a’ch incwm o eiddo, mae’n rhaid i chi ddefnyddio’ch pecyn meddalwedd.
+startPage.useSoftwarePackage.agent = I ddiweddaru incwm o hunangyflogaeth ac incwm o eiddo ar gyfer eich cleient, mae’n rhaid i chi ddefnyddio’ch pecyn meddalwedd.
+startPage.onlyUpdateInfo = Gallwch ddiweddaru gwybodaeth am y canlynol yn unig:
 startPage.interestBullet = llog y DU
-startPage.dividendsBullet = difidendau gan gwmnïau, ymddiriedolaethau unedol a chwmnïau buddsoddi penagored yn y DU
-startPage.charityBullet = rhoddion i elusennau
-startPage.paragraph.1 = Gallwch fwrw golwg dros wybodaeth am gyflogaeth TWE, ond ni allwch ei diweddaru tan 6 Ebrill {0}.
-startPage.paragraph.2 = Defnyddiwch eich pecyn meddalwedd i ddiweddaru unrhyw beth nad yw’n ymddangos ar y rhestr.
+startPage.dividendsBullet = difidendau o gwmnïau sydd wedi’u lleoli yn y DU
+startPage.charityBullet = cyfraniadau at elusennau
+startPage.employmentBullet = cyflogaeth TWE
+startPage.employmentSLBullet = cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)
 startPage.continue = Yn eich blaen
+
+#TODO USE WHEN SECTIONS ADDED TO START PAGE
+startPage.cisBullet = didyniadau Cynllun y Diwydiant Adeiladu
+startPage.pensionsBullet = pensiynau
+startPage.stateBenefitsBullet = buddiannau’r Wladwriaeth
 
 overview.individual.task1.heading = Diweddarwch eich Ffurflen Dreth Incwm
 overview.agent.task1.heading = Diweddarwch Ffurflen Dreth Incwm eich cleient

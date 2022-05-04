@@ -16,6 +16,8 @@
 
 package itUtils
 
+import java.time.LocalDate
+
 import akka.actor.ActorSystem
 import common.SessionValues
 import config.AppConfig
@@ -24,7 +26,6 @@ import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
 import models.cis.AllCISDeductions
 import models.employment._
-import org.joda.time.DateTime
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
@@ -48,10 +49,11 @@ import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
 trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterAll
   with BeforeAndAfterEach with DefaultAwaitTimeout with OptionValues {
 
-  private val month = DateTime.now().monthOfYear().get()
-  private val dayOfMonth = DateTime.now().dayOfMonth().get()
+  private val dateNow: LocalDate = LocalDate.now()
+  private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")
 
-  val taxYear: Int = if (month >= 4 && dayOfMonth > 5) DateTime.now().year().get() + 1 else DateTime.now().year().get()
+  val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
+
   val taxYearEOY: Int = taxYear - 1
   val taxYearEndOfYearMinusOne: Int = taxYearEOY -1
 
@@ -66,9 +68,22 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
   def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
-  def config: Map[String, String] = Map(
+  //scalastyle:off
+  def config(useEncryption: Boolean = true,
+             invalidEncryptionKey: Boolean = false,
+             dividendsEnabled: Boolean = true,
+             interestEnabled: Boolean = true,
+             giftAidEnabled: Boolean = true,
+             studentLoansEnabled: Boolean = true,
+             employmentEnabled: Boolean = true,
+             employmentEOYEnabled: Boolean = true,
+             cisEnabled: Boolean = true,
+             crystallisationEnabled: Boolean = true,
+             taxYearErrorFeatureSwitch: Boolean = false
+            ): Map[String, String] = Map(
     "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
+    "taxYearErrorFeatureSwitch" -> taxYearErrorFeatureSwitch.toString,
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
     "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
@@ -76,198 +91,52 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "microservice.services.auth.host" -> wiremockHost,
     "microservice.services.auth.port" -> wiremockPort.toString,
     "microservice.services.auth-login-api.url" -> s"http://$wiremockHost:$wiremockPort",
-    "feature-switch.dividendsEnabled" -> "true",
-    "feature-switch.interestEnabled" -> "true",
-    "feature-switch.giftAidEnabled" -> "true",
-    "feature-switch.employmentEnabled" -> "true",
-    "feature-switch.employmentEOYEnabled" -> "true",
-    "feature-switch.cisEnabled" -> "true",
-    "feature-switch.crystallisationEnabled" -> "true",
+    "feature-switch.dividendsEnabled" -> dividendsEnabled.toString,
+    "feature-switch.interestEnabled" -> interestEnabled.toString,
+    "feature-switch.giftAidEnabled" -> giftAidEnabled.toString,
+    "feature-switch.studentLoansEnabled" -> studentLoansEnabled.toString,
+    "feature-switch.employmentEnabled" -> employmentEnabled.toString,
+    "feature-switch.employmentEOYEnabled" -> employmentEOYEnabled.toString,
+    "feature-switch.cisEnabled" -> cisEnabled.toString,
+    "feature-switch.crystallisationEnabled" -> crystallisationEnabled.toString,
     "metrics.enabled" -> "false",
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
-    "useEncryption" -> "true"
-  )
-
-  def invalidEncryptionKeyConfig: Map[String, String] = Map(
-    "auditing.enabled" -> "false",
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.income-tax-nrs-proxy.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.auth.host" -> wiremockHost,
-    "microservice.services.auth.port" -> wiremockPort.toString,
-    "microservice.services.auth-login-api.url" -> s"http://$wiremockHost:$wiremockPort",
-    "feature-switch.dividendsEnabled" -> "true",
-    "feature-switch.interestEnabled" -> "true",
-    "feature-switch.giftAidEnabled" -> "true",
-    "feature-switch.employmentEnabled" -> "true",
-    "feature-switch.employmentEOYEnabled" -> "true",
-    "feature-switch.cisEnabled" -> "true",
-    "feature-switch.crystallisationEnabled" -> "true",
-    "metrics.enabled" -> "false",
-    "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
-    "useEncryption" -> "true",
-    "mongodb.encryption.key" -> "key"
-  )
-
-  def sourcesTurnedOffConfig: Map[String, String] = Map(
-    "defaultTaxYear" -> taxYear.toString,
-    "auditing.enabled" -> "false",
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.auth.host" -> wiremockHost,
-    "microservice.services.auth.port" -> wiremockPort.toString,
-    "feature-switch.dividendsEnabled" -> "false",
-    "feature-switch.interestEnabled" -> "false",
-    "feature-switch.giftAidEnabled" -> "false",
-    "feature-switch.employmentEnabled" -> "false",
-    "feature-switch.employmentEOYEnabled" -> "false",
-    "feature-switch.cisEnabled" -> "false",
-    "feature-switch.crystallisationEnabled" -> "false",
-    "metrics.enabled" -> "false"
-  )
-
-  def taxYearFeatureSwitchOffConfig: Map[String, String] = Map(
-    "defaultTaxYear" -> taxYear.toString,
-    "auditing.enabled" -> "false",
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.auth.host" -> wiremockHost,
-    "microservice.services.auth.port" -> wiremockPort.toString,
-    "taxYearErrorFeatureSwitch" -> "false",
-    "feature-switch.dividendsEnabled" -> "true",
-    "feature-switch.dividendsEnabled" -> "true",
-    "feature-switch.interestEnabled" -> "true",
-    "feature-switch.giftAidEnabled" -> "true",
-    "feature-switch.employmentEnabled" -> "true",
-    "feature-switch.employmentEOYEnabled" -> "true",
-    "feature-switch.cisEnabled" -> "true",
-    "metrics.enabled" -> "false"
-  )
-
-  def unreleasedIncomeSourcesConfig: Map[String, String] = Map(
-    "defaultTaxYear" -> taxYear.toString,
-    "auditing.enabled" -> "false",
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.auth.host" -> wiremockHost,
-    "microservice.services.auth.port" -> wiremockPort.toString,
-    "taxYearErrorFeatureSwitch" -> "false",
-    "feature-switch.dividendsEnabled" -> "true",
-    "feature-switch.dividendsEnabled" -> "true",
-    "feature-switch.interestEnabled" -> "true",
-    "feature-switch.giftAidEnabled" -> "true",
-    "feature-switch.giftAidReleased" -> "false",
-    "feature-switch.employmentEnabled" -> "true",
-    "feature-switch.employmentReleased" -> "false",
-    "feature-switch.cisEnabled" -> "true",
-    "feature-switch.cisReleased" -> "false",
-
-    "metrics.enabled" -> "false"
-  )
-
-
-  def sourcesTurnedOffConfigEndOfYear: Map[String, String] = Map(
-    "defaultTaxYear" -> taxYear.toString,
-    "auditing.enabled" -> "false",
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.auth.host" -> wiremockHost,
-    "microservice.services.auth.port" -> wiremockPort.toString,
-    "feature-switch.dividendsEnabled" -> "false",
-    "feature-switch.interestEnabled" -> "false",
-    "feature-switch.giftAidEnabled" -> "false",
-    "feature-switch.employmentEnabled" -> "false",
-    "feature-switch.employmentEOYEnabled" -> "false",
-    "feature-switch.cisEnabled" -> "false",
-    "feature-switch.crystallisationEnabled" -> "false",
-    "metrics.enabled" -> "false",
-    "taxYearErrorFeatureSwitch" -> "false"
-  )
-
-  def sourcesTurnedOnConfigEndOfYear: Map[String, String] = Map(
-    "defaultTaxYear" -> taxYear.toString,
-    "auditing.enabled" -> "false",
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.auth.host" -> wiremockHost,
-    "microservice.services.auth.port" -> wiremockPort.toString,
-    "feature-switch.dividendsEnabled" -> "true",
-    "feature-switch.interestEnabled" -> "true",
-    "feature-switch.giftAidEnabled" -> "true",
-    "feature-switch.employmentEnabled" -> "true",
-    "feature-switch.employmentEOYEnabled" -> "true",
-    "feature-switch.cisEnabled" -> "true",
-    "feature-switch.crystallisationEnabled" -> "true",
-    "metrics.enabled" -> "false",
-    "taxYearErrorFeatureSwitch" -> "false"
-  )
-
-  def employmentEOYFeatureOffConfig: Map[String, String] = Map(
-    "defaultTaxYear" -> taxYear.toString,
-    "auditing.enabled" -> "false",
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
-    "microservice.services.auth.host" -> wiremockHost,
-    "microservice.services.auth.port" -> wiremockPort.toString,
-    "feature-switch.dividendsEnabled" -> "true",
-    "feature-switch.interestEnabled" -> "true",
-    "feature-switch.giftAidEnabled" -> "true",
-    "feature-switch.employmentEnabled" -> "true",
-    "feature-switch.employmentEOYEnabled" -> "false",
-    "feature-switch.cisEnabled" -> "true",
-    "feature-switch.crystallisationEnabled" -> "true",
-    "metrics.enabled" -> "false",
-    "taxYearErrorFeatureSwitch" -> "false"
+    "useEncryption" -> useEncryption.toString,
+    "mongodb.encryption.key" -> (if(invalidEncryptionKey){"key"}else{"QmFyMTIzNDVCYXIxMjM0NQ=="})
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
-    .configure(config)
+    .configure(config())
     .build
 
-  lazy val appWithSourcesTurnedOff: Application = new GuiceApplicationBuilder()
+  def customApp(useEncryption: Boolean = true,
+                invalidEncryptionKey: Boolean = false,
+                dividendsEnabled: Boolean = true,
+                interestEnabled: Boolean = true,
+                giftAidEnabled: Boolean = true,
+                studentLoansEnabled: Boolean = true,
+                employmentEnabled: Boolean = true,
+                employmentEOYEnabled: Boolean = true,
+                cisEnabled: Boolean = true,
+                crystallisationEnabled: Boolean = true,
+                taxYearErrorFeatureSwitch: Boolean = false): Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
-    .configure(sourcesTurnedOffConfig)
-    .build
-
-  lazy val appWithSourcesTurnedOffEndOfYear: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .configure(sourcesTurnedOffConfigEndOfYear)
-    .build
-
-  lazy val appWithSourcesTurnedOnEndOfYear: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .configure(sourcesTurnedOnConfigEndOfYear)
-    .build
-
-  lazy val appWithTaxYearErrorOff: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .configure(taxYearFeatureSwitchOffConfig)
-    .build
-
-
-  lazy val unreleasedIncomeSources: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .configure(unreleasedIncomeSourcesConfig)
-    .build
-
-  lazy val appWithEmploymentEOYEnabledOff: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .configure(employmentEOYFeatureOffConfig)
-    .build
-
-  lazy val appWithInvalidEncryptionKey: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .configure(invalidEncryptionKeyConfig)
-    .build
-
+    .configure(
+      config(
+      useEncryption,
+      invalidEncryptionKey,
+      dividendsEnabled,
+      interestEnabled,
+      giftAidEnabled,
+      studentLoansEnabled,
+      employmentEnabled,
+      employmentEOYEnabled,
+      cisEnabled,
+      crystallisationEnabled,
+      taxYearErrorFeatureSwitch)
+    ).build
+  //scalastyle:on
 
   override protected def beforeEach(): Unit = {
     resetWiremock()

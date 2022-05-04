@@ -76,6 +76,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val interestEnabled: Boolean = false
 
+  override lazy val studentLoansEnabled: Boolean = true
+
   override lazy val employmentEnabled: Boolean = false
 
   override lazy val employmentReleased: Boolean = true
@@ -159,6 +161,6 @@ class MockAppConfigTaxYearFeatureOff extends MockAppConfig {
   override lazy val taxYearErrorFeature: Boolean = false
 }
 
-class MockAppConfigEncyrptionOff extends MockAppConfig {
+class MockAppConfigEncryptionOff extends MockAppConfig {
   override val useEncryption: Boolean = false
 }

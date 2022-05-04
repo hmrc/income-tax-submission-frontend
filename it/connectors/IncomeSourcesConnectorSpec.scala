@@ -25,7 +25,16 @@ import play.mvc.Http.Status._
 class IncomeSourcesConnectorSpec extends IntegrationTest {
 
   private lazy val connector: IncomeSourcesConnector = app.injector.instanceOf[IncomeSourcesConnector]
-  private lazy val connectorWithSourcesTurnedOff: IncomeSourcesConnector = appWithSourcesTurnedOff.injector.instanceOf[IncomeSourcesConnector]
+  private lazy val connectorWithSourcesTurnedOff: IncomeSourcesConnector = customApp(
+    dividendsEnabled = false,
+    interestEnabled = false,
+    giftAidEnabled = false,
+    employmentEnabled = false,
+    studentLoansEnabled = false,
+    employmentEOYEnabled = false,
+    cisEnabled = false,
+    crystallisationEnabled = false
+  ).injector.instanceOf[IncomeSourcesConnector]
 
   private val nino: String = "123456789"
   private val dividendResult = Some(DividendsModel(Some(500.0), Some(600.0)))

@@ -41,8 +41,7 @@ class InYearAction @Inject()(implicit val appConfig: AppConfig) {
 
     if(isNowBefore) {
       logger.info(s"[InYearAction][inYear] Income pages for this request will be in year")
-    }
-    else {
+    } else {
       logger.info(s"[InYearAction][inYear] Income pages for this request will be for end of year")
     }
 

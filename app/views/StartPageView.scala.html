@@ -20,28 +20,24 @@
 
 @this(layout: Layout, heading: Heading, formWithCSRF: FormWithCSRF, govUkButton: GovukButton)
 
-@(isAgent: Boolean, taxYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(isAgent: Boolean, taxYear: Int, inYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainHTML = {
-        @heading(messages("service.name"), messages("common.caption", (taxYear -1).toString, taxYear.toString))
+    @heading(messages("service.name"), messages("common.caption", (taxYear -1).toString, taxYear.toString))
 
-        <div class="govuk-body">
-            <p>@messages("startPage1")</p>
-            <p>@messages("startPage2")</p>
-        </div>
+    <div class="govuk-body">
+        <p>@messages("startPage.useThisService")</p>
+        @if(inYear){<p>@messages("startPage.onlyViewInYear", taxYear.toString)</p>}
+        <p>@messages(s"startPage.useSoftwarePackage.${if(isAgent)"agent"else"individual"}")</p>
+        <p>@messages("startPage.onlyUpdateInfo")</p>
+    </div>
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("startPage.interestBullet")</li>
-            <li>@messages("startPage.dividendsBullet")</li>
-            <li>@messages("startPage.charityBullet")</li>
-        </ul>
-
-        <div class="govuk-body">
-            @if(appConfig.employmentReleased){
-            <p>@messages("startPage.paragraph.1", taxYear.toString)</p>
-            }
-            <p>@messages("startPage.paragraph.2")</p>
-        </div>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("startPage.dividendsBullet")</li>
+        <li>@messages("startPage.charityBullet")</li>
+        <li>@messages(s"startPage.employment${if(appConfig.studentLoansEnabled)"SL"else""}Bullet")</li>
+        <li>@messages("startPage.interestBullet")</li>
+    </ul>
 
     @formWithCSRF(action = controllers.routes.StartPageController.submit(taxYear)) {
         @govUkButton(Button(
