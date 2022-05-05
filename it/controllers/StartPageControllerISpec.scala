@@ -61,8 +61,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
   object CommonExpectedResults {
     val vcAgentBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
     val vcBreadcrumbUrl = "http://localhost:9081/report-quarterly/income-and-expenses/view"
-    val vcBreadcrumb = "Income Tax"
-    val vcBreadcrumbWelsh = "Treth Incwm"
+    val vcBreadcrumb = "Income Tax Account"
+    val vcBreadcrumbWelsh = "Cyfrif Treth Incwm"
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
     val startPageBreadcrumbWelsh = "Diweddaru a chyflwyno Ffurflen Dreth Incwm"
     val pageTitleText = "Update and submit an Income Tax Return"

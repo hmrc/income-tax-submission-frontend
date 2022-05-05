@@ -26,7 +26,7 @@ betaBar.banner.message.1 = This is a new service – your
 betaBar.banner.message.2 = feedback
 betaBar.banner.message.3 = will help us to improve it.
 
-breadcrumb.incomeTaxAccount = Income Tax
+common.incomeTaxAccount = Income Tax Account
 common.yourIncomeTaxReturn.individual = Your Income Tax Return
 common.yourIncomeTaxReturn.agent = Your client’s Income Tax Return
 
@@ -68,7 +68,6 @@ overview.paragraph.1.agent = If we have information about your client’s income
 overview.paragraph.2 = Fill in the sections you need to update. Use your software package to update items that are not on this list.
 overview.paragraph.3.individual = Go to your
 overview.paragraph.3.agent = Go to your client’s
-overview.paragraph.4 = Income Tax Account
 overview.paragraph.5.individual = to find out more about your current tax position.
 overview.paragraph.5.agent = to find out more about their current tax position.
 overview.crystallisation.heading.EOY.individual = Check and submit your Income Tax Return

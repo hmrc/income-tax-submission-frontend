@@ -161,7 +161,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    val vcBreadcrumb = "Income Tax"
+    val vcBreadcrumb = "Income Tax Account"
     val startPageBreadcrumb = "Update and submit an Income Tax Return"
     val overviewBreadcrumb = "Your Income Tax Return"
 
@@ -185,7 +185,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    val vcBreadcrumb = "Treth Incwm"
+    val vcBreadcrumb = "Cyfrif Treth Incwm"
     val startPageBreadcrumb = "Diweddaru a chyflwyno Ffurflen Dreth Incwm"
     val overviewBreadcrumb = "Eich Ffurflen Dreth Incwm"
 
@@ -336,9 +336,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           "have a cis section that says under maintenance" which {
             textOnPageCheck(underMaintenance, cisStatusSelector)
           }
+          "have a estimate link" which {
+            linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
+          }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
         }
 
         "render an overview page with all sections showing employment text when student loans feature switch is false" when {
@@ -735,7 +737,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
-          linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
+
+          "have a estimate link" which {
+            linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
+          }
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)

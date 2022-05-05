@@ -26,7 +26,7 @@ betaBar.banner.message.1 = Gwasanaeth newydd yw hwn – bydd eich
 betaBar.banner.message.2 = adborth
 betaBar.banner.message.3 = yn ein helpu i’w wella.
 
-breadcrumb.incomeTaxAccount = Treth Incwm
+common.incomeTaxAccount = Cyfrif Treth Incwm
 common.yourIncomeTaxReturn.individual = Eich Ffurflen Dreth Incwm
 common.yourIncomeTaxReturn.agent = Ffurflen Dreth Incwm eich cleient
 
@@ -68,7 +68,6 @@ overview.paragraph.1.agent = Os oes gennym wybodaeth am incwm a didyniadau eich 
 overview.paragraph.2 = Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon.
 overview.paragraph.3.individual = Ewch i’ch
 overview.paragraph.3.agent = Ewch i’r canlynol ar ran eich cleient
-overview.paragraph.4 = Cyfrif Treth Incwm
 overview.paragraph.5.individual = i wybod mwy am eich sefyllfa dreth bresennol.
 overview.paragraph.5.agent = i wybod mwy am ei sefyllfa dreth bresennol.
 overview.crystallisation.heading.EOY.individual = Diweddaru a chyflwyno’ch Ffurflen Dreth Incwm
