@@ -1,0 +1,133 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.headerFooterTemplate.Layout
+@import views.html.templates.helpers.Heading
+@import views.html.templates.helpers.Button
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import forms.AddSectionsForm.AddSectionsQuestionModel
+
+@this(layout: Layout, heading: Heading, button: Button, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukCheckboxes : GovukCheckboxes)
+
+@(taxYear: Int, isAgent: Boolean, form: Form[AddSectionsQuestionModel], journeys: Seq[String], incomeSources: IncomeSourcesModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+
+@checkboxItem(incomeSource: String, hintText: String, journey: String, item: Int) = {
+<div class="govuk-checkboxes__item">
+    <input class="govuk-checkboxes__input" id="@journey" name="addSections[]" type="checkbox" value="@journey">
+    <label class="govuk-label govuk-checkboxes__label" for="@journey" aria-describedby="@journey-item-hint">
+        @messages(incomeSource)
+    </label>
+    <div id="@journey-item-hint" class="govuk-hint govuk-checkboxes__hint">
+        @messages(hintText)
+    </div>
+</div>
+
+}
+
+@affinityText = @{
+    if(isAgent) "agent" else "individual"
+}
+
+
+@contentHtml = {
+    @heading(messages(s"addSections.title.$affinityText"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
+
+    @formWithCSRF(action = controllers.routes.AddSectionsToIncomeTaxReturnController.submit(taxYear)) {
+
+
+    @if(journeys.isEmpty || incomeSources.hasDataForEachIncomeSource){
+
+        <div class="govuk-inset-text">
+            <p>@messages(s"addSections.noMoreSections.$affinityText")</p>
+        </div>
+
+        } else {
+
+        <div class="govuk-body">
+            <p>@messages(s"addSections.p1.$affinityText")</p>
+        </div>
+
+        <div class="govuk-hint">
+            <p>@messages("addSections.hint")</p>
+        </div>
+
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+            @if(journeys.contains("cis") && incomeSources.cis.isEmpty) {
+                @checkboxItem(
+                    messages("common.cis"),
+                    "",
+                    "cis",
+                    item = 1
+                )
+            }
+
+            @if(journeys.contains("dividends") && incomeSources.dividends.isEmpty) {
+                @checkboxItem(
+                    messages("common.dividends"),
+                    "addSections.hintText.dividends",
+                    "dividends",
+                    item = 2
+                )
+            }
+
+            @if(journeys.contains("gift-aid") && incomeSources.giftAid.isEmpty) {
+                @checkboxItem(
+                    messages("common.donationsToCharity"),
+                    "addSections.hintText.donationsToCharity",
+                    "gift-aid",
+                    item = 3
+                )
+            }
+
+            @if(journeys.contains("interest") && incomeSources.interest.isEmpty) {
+                @checkboxItem(
+                    messages("common.interest"),
+                    "addSections.hintText.interest",
+                    "interest",
+                    item = 4
+                )
+            }
+
+            @if(journeys.contains("employment") && incomeSources.employment.isEmpty) {
+                @checkboxItem(
+                    messages("common.employment"),
+                    "addSections.hintText.employment",
+                    "employment",
+                    item = 5
+                )
+            }
+        </div>
+
+    }
+
+        <div class="govuk-body">
+            <p>@messages(s"addSections.p2.$affinityText")</p>
+        </div>
+
+
+
+        @button(alternativeText = "common.saveAndContinue", classes = Some("govuk-!-margin-top-6"))
+    }
+}
+
+
+@layout(pageTitle = messages(s"addSections.title.$affinityText"))(contentHtml)
+
+@{
+// $COVERAGE-OFF$
+}

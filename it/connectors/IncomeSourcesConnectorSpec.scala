@@ -36,7 +36,6 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
     crystallisationEnabled = false
   ).injector.instanceOf[IncomeSourcesConnector]
 
-  private val nino: String = "123456789"
   private val dividendResult = Some(DividendsModel(Some(500.0), Some(600.0)))
   private val interestResult = Some(Seq(InterestModel("account", "1234567890", Some(500.0), Some(500.0))))
 

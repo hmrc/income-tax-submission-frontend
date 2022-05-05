@@ -25,8 +25,6 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
   lazy val connector: LiabilityCalculationConnector = app.injector.instanceOf[LiabilityCalculationConnector]
 
-  val nino: String = "123456789"
-  val mtditid: String = "968501689"
 
 
   ".LiabilityCalculationConnector" should {

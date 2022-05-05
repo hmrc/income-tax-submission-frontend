@@ -15,6 +15,8 @@ POST        /:taxYear/final-calculation                     controllers.Overview
 POST        /:taxYear/inYear-estimate                       controllers.OverviewPageController.inYearEstimate(taxYear: Int)
 GET         /:taxYear/declaration                           controllers.DeclarationPageController.show(taxYear:Int)
 POST        /:taxYear/declaration                           controllers.DeclarationPageController.submit(taxYear: Int)
+GET         /:taxYear/add-sections                          controllers.AddSectionsToIncomeTaxReturnController.show(taxYear: Int)
+POST        /:taxYear/add-sections                          controllers.AddSectionsToIncomeTaxReturnController.submit(taxYear: Int)
 
 GET         /:taxYear/income-tax-return-received            controllers.TaxReturnReceivedController.show(taxYear: Int)
 

@@ -31,12 +31,6 @@ import scala.concurrent.ExecutionContext
 
 class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with DefaultAwaitTimeout {
 
-  val nino = "AA123456A"
-  val mtditid = "1234567890"
-  val affinityGroup = "Individual"
-
-  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
-  implicit lazy val user: User[AnyContent] = new User[AnyContent](mtditid, None, nino, sessionId)(FakeRequest())
 
   val tailoringRepo: TailoringUserDataRepository = app.injector.instanceOf[TailoringUserDataRepository]
 

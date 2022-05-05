@@ -31,8 +31,7 @@ import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import scala.concurrent.Future
 
 class AuthorisedActionSpec extends IntegrationTest {
-  
-  val nino = "AA123456A"
+
   lazy val auth: AuthorisedAction = app.injector.instanceOf[AuthorisedAction]
 
   ".enrolmentGetIdentifierValue" should {

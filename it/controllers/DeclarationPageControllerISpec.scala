@@ -33,8 +33,6 @@ import scala.concurrent.Future
 
 class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
-  private val nino: String = "AA012345A"
-  private val mtditid: String = "1234567890"
 
   private val crystallisationUrl: String = s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/string/declare-crystallisation"
 

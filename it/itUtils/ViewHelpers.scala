@@ -147,6 +147,15 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers with WireMockHelper =>
     }
   }
 
+  def inputFieldValueCheck(name: String, selector: String, value: String)(implicit document: () => Document): Unit = {
+    s"'$selector' has a name of '$name'" in {
+      document().select(selector).attr("name") shouldBe name
+    }
+    s"'$selector' has a value of '$value'" in {
+      document().select(selector).attr("value") shouldBe value
+    }
+  }
+
   def errorSummaryCheck(text: String, href: String)(implicit document: () => Document): Unit = {
     "contains an error summary" in {
       elementExist(".govuk-error-summary")
