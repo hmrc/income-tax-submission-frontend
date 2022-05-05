@@ -24,7 +24,6 @@ class NrsConnectorSpec extends IntegrationTest {
 
   private lazy val connector: NrsConnector = app.injector.instanceOf[NrsConnector]
 
-
   private val nrsSubmissionModel: NrsSubmissionModel = NrsSubmissionModel("1sfg34gh-87b9-4d4a-a296-72w2gdg8357a")
 
   private val url: String = s"/income-tax-nrs-proxy/$nino/itsa-crystallisation"

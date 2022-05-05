@@ -23,6 +23,11 @@ import common.SessionValues
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
+import models.CisBuilder.aCis
+import models.DividendsBuilder.aDividends
+import models.EmploymentBuilder.aEmployment
+import models.GiftAidBuilder.aGiftAid
+import models.InterestBuilder.aInterest
 import models._
 import models.cis.AllCISDeductions
 import models.employment._
@@ -216,68 +221,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   }
 
   lazy val incomeSourcesModel: IncomeSourcesModel = IncomeSourcesModel(
-    dividends = dividendsModel,
-    interest = interestsModel,
-    giftAid = Some(giftAidModel),
-    employment = Some(employmentsModel),
-    cis = Some(allCISDeductions)
-  )
-
-  lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
-  lazy val interestsModel: Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
-  lazy val employmentsModel: AllEmploymentData = AllEmploymentData(
-    hmrcEmploymentData = Seq(
-      HmrcEmploymentSource(
-        employmentId = "001",
-        employerName = "maggie",
-        employerRef = Some("223/AB12399"),
-        payrollId = Some("123456789999"),
-        startDate = Some("2019-04-21"),
-        cessationDate = Some("2020-03-11"),
-        dateIgnored = None,
-        submittedOn = Some("2020-01-04T05:01:01Z"),
-        hmrcEmploymentFinancialData = Some(
-          EmploymentFinancialData(
-            employmentData = Some(EmploymentData(
-              submittedOn = "2020-02-12",
-              employmentSequenceNumber = Some("123456789999"),
-              companyDirector = Some(true),
-              closeCompany = Some(false),
-              directorshipCeasedDate = Some("2020-02-12"),
-              occPen = Some(false),
-              disguisedRemuneration = Some(false),
-              pay = Some(Pay(Some(34234.15), Some(6782.92), Some("CALENDAR MONTHLY"), Some("2020-04-23"), Some(32), Some(2)))
-            )),
-            None
-          )
-        ),
-        customerEmploymentFinancialData = None
-      )
-    ),
-    hmrcExpenses = None,
-    customerEmploymentData = Seq(),
-    customerExpenses = None
-  )
-  private val allCISDeductions = AllCISDeductions(None, None)
-  val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
-    nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
-    currentYear = Some(1234.56),
-    oneOffCurrentYear = Some(1234.56),
-    currentYearTreatedAsPreviousYear = Some(1234.56),
-    nextYearTreatedAsCurrentYear = Some(1234.56),
-    nonUkCharities = Some(1234.56),
-  ))
-
-  val giftsModel: Option[GiftsModel] = Some(GiftsModel(
-    investmentsNonUkCharitiesCharityNames = Some(List("charity 1", "charity 2")),
-    landAndBuildings = Some(10.21),
-    sharesOrSecurities = Some(10.21),
-    investmentsNonUkCharities = Some(1234.56)
-  ))
-
-  val giftAidModel: GiftAidModel = GiftAidModel(
-    giftAidPaymentsModel,
-    giftsModel
+    dividends = Some(aDividends),
+    interest = Some(Seq(aInterest)),
+    giftAid = Some(aGiftAid),
+    employment = Some(aEmployment),
+    cis = Some(aCis)
   )
 
   def playSessionCookies(taxYear: Int): String = PlaySessionCookieBaker.bakeSessionCookie(Map(

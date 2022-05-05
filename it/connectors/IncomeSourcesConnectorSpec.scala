@@ -17,6 +17,10 @@
 package connectors
 
 import itUtils.IntegrationTest
+import models.DividendsBuilder.aDividends
+import models.EmploymentBuilder.aEmployment
+import models.GiftAidBuilder.aGiftAid
+import models.InterestBuilder.aInterest
 import models._
 import models.employment._
 import play.api.libs.json.Json
@@ -36,119 +40,12 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
     crystallisationEnabled = false
   ).injector.instanceOf[IncomeSourcesConnector]
 
-  private val dividendResult = Some(DividendsModel(Some(500.0), Some(600.0)))
-  private val interestResult = Some(Seq(InterestModel("account", "1234567890", Some(500.0), Some(500.0))))
+  private val dividendResult = Some(aDividends)
+  private val interestResult = Some(Seq(aInterest))
 
-  private val giftAidResult: Option[GiftAidModel] = Some(GiftAidModel(
-    giftAidPaymentsModel,
-    giftsModel
-  ))
+  private val giftAidResult: Option[GiftAidModel] = Some(aGiftAid)
 
-  val employment: Option[AllEmploymentData] = Some(AllEmploymentData(
-    Seq(
-      HmrcEmploymentSource(
-        employmentId = "00000000-0000-0000-1111-000000000000",
-        employerRef = Some("666/66666"),
-        employerName = "Business",
-        payrollId = Some("1234567890"),
-        startDate = Some("2020-01-01"),
-        cessationDate = Some("2020-01-01"),
-        dateIgnored = None,
-        submittedOn = None,
-        hmrcEmploymentFinancialData = Some(
-          EmploymentFinancialData(
-            employmentData = Some(EmploymentData(
-              "2020-01-04T05:01:01Z",
-              employmentSequenceNumber = Some("1002"),
-              companyDirector = Some(false),
-              closeCompany = Some(true),
-              directorshipCeasedDate = Some("2020-02-12"),
-              occPen = Some(false),
-              disguisedRemuneration = Some(false),
-              pay = Some(Pay(
-                taxablePayToDate = Some(34234.15),
-                totalTaxToDate = Some(6782.92),
-                payFrequency = Some("CALENDAR MONTHLY"),
-                paymentDate = Some("2020-04-23"),
-                taxWeekNo = Some(32),
-                taxMonthNo = Some(2)
-              ))
-            )),
-            employmentBenefits = Some(
-              EmploymentBenefits(
-                "2020-01-04T05:01:01Z",
-                benefits = Some(Benefits(
-                  Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100),
-                  Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100),
-                  Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100)
-                ))
-              )
-            )
-          )
-        ),
-        customerEmploymentFinancialData = None
-      )
-    ),
-    hmrcExpenses = Some(
-      EmploymentExpenses(
-        Some("2020-01-04T05:01:01Z"),
-        totalExpenses = Some(800),
-        expenses = Some(Expenses(
-          Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100)
-        ))
-      )
-    ),
-    Seq(
-      EmploymentSource(
-        employmentId = "00000000-0000-0000-2222-000000000000",
-        employerRef = Some("666/66666"),
-        employerName = "Business",
-        payrollId = Some("1234567890"),
-        startDate = Some("2020-01-01"),
-        cessationDate = Some("2020-01-01"),
-        dateIgnored = None,
-        submittedOn = Some("2020-01-01T10:00:38Z"),
-        employmentData = Some(
-          EmploymentData(
-            "2020-01-04T05:01:01Z",
-            employmentSequenceNumber = Some("1002"),
-            companyDirector = Some(false),
-            closeCompany = Some(true),
-            directorshipCeasedDate = Some("2020-02-12"),
-            occPen = Some(false),
-            disguisedRemuneration = Some(false),
-            pay = Some(Pay(
-              taxablePayToDate = Some(34234.15),
-              totalTaxToDate = Some(6782.92),
-              payFrequency = Some("CALENDAR MONTHLY"),
-              paymentDate = Some("2020-04-23"),
-              taxWeekNo = Some(32),
-              taxMonthNo = Some(2)
-            ))
-          )
-        ),
-        employmentBenefits = Some(
-          EmploymentBenefits(
-            "2020-01-04T05:01:01Z",
-            benefits = Some(Benefits(
-              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100),
-              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100),
-              Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100)
-            ))
-          )
-        )
-      )
-    ),
-    customerExpenses = Some(
-      EmploymentExpenses(
-        Some("2020-01-04T05:01:01Z"),
-        totalExpenses = Some(800),
-        expenses = Some(Expenses(
-          Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100), Some(100)
-        ))
-      )
-    )
-  ))
+  val employment: Option[AllEmploymentData] = Some(aEmployment)
 
   ".IncomeSourcesConnector" should {
     "return a IncomeSourcesModel" when {
