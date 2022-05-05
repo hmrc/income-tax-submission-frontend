@@ -71,6 +71,7 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
         }
     }
   }
+  val hasDataForEachIncomeSource: Boolean = dividends.nonEmpty && interest.nonEmpty && giftAid.nonEmpty && employment.nonEmpty && cis.nonEmpty
 }
 
 object IncomeSourcesModel {

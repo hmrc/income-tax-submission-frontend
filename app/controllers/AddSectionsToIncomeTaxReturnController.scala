@@ -1,0 +1,92 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers
+
+import com.google.inject.Inject
+import config.{AppConfig, ErrorHandler}
+import controllers.predicates.AuthorisedAction
+import controllers.predicates.TaxYearAction.taxYearAction
+import forms.AddSectionsForm
+import forms.AddSectionsForm.addSectionsForm
+import play.api.i18n.I18nSupport
+import play.api.mvc._
+import services.{IncomeSourcesService, TailoringSessionService}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.html.AddSectionsToIncomeTaxReturnView
+import common.IncomeSources._
+
+import scala.concurrent.{ExecutionContext, Future}
+
+class AddSectionsToIncomeTaxReturnController @Inject()(
+                                                        authorisedAction: AuthorisedAction,
+                                                        errorHandler: ErrorHandler,
+                                                        view: AddSectionsToIncomeTaxReturnView,
+                                                        incomeSourcesService: IncomeSourcesService,
+                                                        tailoringSessionService: TailoringSessionService,
+                                                        implicit val appConfig: AppConfig,
+                                                        implicit val ec: ExecutionContext,
+                                                        implicit val mcc: MessagesControllerComponents
+                                                      ) extends FrontendController(mcc) with I18nSupport {
+
+  val allJourneys: Seq[String] = Seq(INTEREST, DIVIDENDS, GIFT_AID, EMPLOYMENT, CIS)
+
+  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
+    implicit user =>
+      incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
+        case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        case Right(incomeSources) =>
+          tailoringSessionService.getSessionData(taxYear).flatMap {
+            case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+            case Right(value) => value.fold(
+              Future.successful(Ok(view(taxYear, user.isAgent, AddSectionsForm.addSectionsForm(incomeSources), allJourneys, incomeSources)))
+            )(
+              tailoringData =>
+                Future.successful(Ok(view(taxYear, user.isAgent, AddSectionsForm.addSectionsForm(incomeSources),
+                  allJourneys.filter(!tailoringData.tailoring.contains(_)), incomeSources)))
+
+            )
+          }
+      }
+  }
+
+  def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
+    implicit user =>
+      incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
+        case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        case Right(incomeSources) => addSectionsForm(incomeSources).bindFromRequest().fold({
+          form =>
+            Future.successful(Ok(view(taxYear, user.isAgent, form, allJourneys, incomeSources)))
+        }, {
+          result =>
+            tailoringSessionService.getSessionData(taxYear).flatMap {
+              case Right(data) =>
+                data.map(_.tailoring).fold {
+                  tailoringSessionService.createSessionData(result.addSections, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
+                    Redirect(controllers.routes.OverviewPageController.show(taxYear)))
+                } {
+                  currentData =>
+                    var newData: Seq[String] = currentData
+                    result.addSections.foreach(journey => if (!currentData.contains(journey)) newData = newData :+ journey)
+                    tailoringSessionService.updateSessionData(newData, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
+                      Redirect(controllers.routes.OverviewPageController.show(taxYear)))
+                }
+              case Left(_) => Future.successful(Redirect(controllers.routes.OverviewPageController.show(taxYear)))
+            }
+        })
+      }
+  }
+}

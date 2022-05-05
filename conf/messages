@@ -20,6 +20,7 @@ common.signout.button = Sign out
 common.returnToIncomeTaxAccount.button.individual = Go to your Income Tax account
 common.returnToIncomeTaxAccount.button.agent = Go to Income Tax account
 common.back = Back
+common.saveAndContinue = Save and continue
 
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
@@ -104,6 +105,20 @@ taxReturnReceived.nextSteps.bullet2.agent = view your client’s final Income Ta
 taxReturnReceived.nextSteps.p4.individual = If you need to contact us about your Income Tax Return, tell us your UTR.
 taxReturnReceived.nextSteps.p4.agent = If you need to contact us about your client’s Income Tax Return, tell us their UTR.
 taxReturnReceived.print = Print this page
+
+addSections.title.individual = Add sections to your Income Tax Return
+addSections.title.agent = Add sections to your client’s Income Tax Return
+addSections.hint = Select all the sections you want to add.
+addSections.p1.individual = You can add or remove these sections any time before you submit your Income Tax Return.
+addSections.p1.agent = You can add or remove these sections any time before you submit your client’s Income Tax Return.
+addSections.p2.individual = Use your software package to update sections that are not on your return or this list, for example income from property.
+addSections.p2.agent = Use your software package to update sections that are not on your client’s return or this list, for example income from property.
+addSections.noMoreSections.individual = There are no more sections that can be added to your Income Tax Return.
+addSections.noMoreSections.agent = There are no more sections that can be added to your client’s Income Tax Return.
+addSections.hintText.dividends = from UK trusts, unit trusts and open-ended investment companies
+addSections.hintText.interest = including taxed and untaxed UK interest from banks, building societies, trust funds and life annuity payments
+addSections.hintText.donationsToCharity = including donations to overseas charities and donations of land, property, shares and securities
+addSections.hintText.employment = including employment benefits, expenses and student loan repayments
 
 userResearch.acknowledgement.title = Making Tax Digital for Income Tax
 userResearch.acknowledgement.p1 = Making Tax Digital for Income Tax is the new way of reporting your earnings to HMRC. Instead of completing a Self Assessment return, you’ll use software of your choice (like Rhino, Xero or Quickbooks) to keep digital records and send Income Tax updates. 

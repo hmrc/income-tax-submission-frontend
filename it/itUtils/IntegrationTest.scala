@@ -33,7 +33,7 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.{HeaderNames, Writeable}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
 import services.AuthService
@@ -56,6 +56,10 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
   val taxYearEOY: Int = taxYear - 1
   val taxYearEndOfYearMinusOne: Int = taxYearEOY -1
+
+  val nino = "AA123456A"
+  val mtditid = "1234567890"
+  val affinityGroup = "Individual"
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   val inYearAction = new InYearAction
@@ -152,8 +156,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     super.afterAll()
   }
 
+  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+
   val sessionId: String = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
-  implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
+  implicit lazy val user: User[AnyContent] = new User[AnyContent](mtditid, None, nino, sessionId)(FakeRequest().withHeaders("X-Session-ID" -> sessionId))
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
   val fallBackSessionIdFakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("sessionId" -> sessionId)
   val fakeRequestAgent: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
     .withSession("ClientMTDID" -> "1234567890", "ClientNino" -> "AA123456A").withHeaders("X-Session-ID" -> sessionId)

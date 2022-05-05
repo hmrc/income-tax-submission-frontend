@@ -20,6 +20,7 @@ common.signout.button = Allgofnodi
 common.returnToIncomeTaxAccount.button.individual = Ewch i’ch cyfrif Treth Incwm
 common.returnToIncomeTaxAccount.button.agent = Yn ôl i gyfrif Treth Incwm
 common.back = Yn ôl
+common.saveAndContinue = Cadw ac yn eich blaen
 
 betaBar.beta = beta
 betaBar.banner.message.1 = Gwasanaeth newydd yw hwn – bydd eich
@@ -104,6 +105,20 @@ taxReturnReceived.nextSteps.bullet2.agent = gweld cyfrifiad Treth Incwm ac Yswir
 taxReturnReceived.nextSteps.p4.individual = Os oes angen i chi gysylltu â ni am eich Ffurflen Dreth Incwm, rhowch eich UTR i ni.
 taxReturnReceived.nextSteps.p4.agent = Os oes angen i chi gysylltu â ni am Ffurflen Dreth Incwm eich cleient rhowch ei UTR i ni.
 taxReturnReceived.print = Argraffu’r dudalen hon
+
+addSections.title.individual = Ychwanegu adrannau at eich Ffurflen Dreth Incwm
+addSections.title.agent = Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient
+addSections.hint = Dewiswch yr holl adrannau rydych am eu hychwanegu.
+addSections.p1.individual = Gallwch ychwanegu neu dynnu’r adrannau hyn unrhyw bryd cyn i chi gyflwyno’ch Ffurflen Dreth Incwm.
+addSections.p1.agent = Gallwch ychwanegu neu dynnu’r adrannau hyn unrhyw bryd cyn i chi gyflwyno Ffurflen Dreth Incwm eich cleient.
+addSections.p2.individual = Defnyddiwch eich pecyn meddalwedd i ddiweddaru adrannau nad ydynt ar eich Ffurflen Dreth nac ar y rhestr hon, er enghraifft, incwm oeiddo.
+addSections.p2.agent = Defnyddiwch eich pecyn meddalwedd i ddiweddaru adrannau nad ydynt ar Ffurflen Dreth eich cleient nac ar y rhestr hon, er enghraifft, incwm o eiddo.
+addSections.noMoreSections.individual = Nid oes rhagor o adrannau y gellir eu hychwanegu at eich Ffurflen Treth Incwm.
+addSections.noMoreSections.agent = Nid oes rhagor o adrannau y gellir eu hychwanegu at Ffurflen Dreth Incwm eich cleient.
+addSections.hintText.dividends = gan ymddiriedolaethau yn y DU, ymddiriedolaethau unedol a chwmnïau buddsoddi penagored
+addSections.hintText.interest = gan gynnwys llog y DU wedi’i drethu a heb ei drethu a geir gan faciau, cymdeithasau adeiladu a thrwy gronfeydd ymddiriedolaeth a thaliadau blwydd-dal bywyd
+addSections.hintText.donationsToCharity = gan gynnwys rhoddion i elusennau tramor a rhoddion o dir, eiddo, cyfranddaliadau a gwarannau
+addSections.hintText.employment = gan gynnwys buddiannau cyflogaeth, treuliau ac ad-daliadau benthyciad myfyriwr
 
 userResearch.acknowledgement.title = Making Tax Digital for Income Tax
 userResearch.acknowledgement.p1 = Making Tax Digital for Income Tax is the new way of reporting your earnings to HMRC. Instead of completing a Self Assessment return, you’ll use software of your choice (like Rhino, Xero or Quickbooks) to keep digital records and send Income Tax updates. 
