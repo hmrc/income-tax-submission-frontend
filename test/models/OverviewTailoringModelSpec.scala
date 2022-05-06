@@ -46,7 +46,7 @@ class OverviewTailoringModelSpec extends UnitTest {
   )
   
   "the number of sources match the number of income source fields" in {
-    sources.length shouldBe classOf[IncomeSourcesModel].getDeclaredFields.length
+    sources.length shouldBe classOf[IncomeSourcesModel].getConstructors.head.getParameterCount
   }
   
   sources.map { data =>

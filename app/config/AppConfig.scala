@@ -140,6 +140,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
   lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
   lazy val crystallisationEnabled: Boolean = servicesConfig.getBoolean("feature-switch.crystallisationEnabled")
+  lazy val tailoringEnabled: Boolean = servicesConfig.getBoolean("feature-switch.tailoringEnabled")
 
   def excludedIncomeSources(inputTaxYear: Int): Seq[String] = {
     val employmentFeatureEnabled: (String, Boolean) = if(inputTaxYear != taxYear) (EMPLOYMENT, employmentEOYEnabled) else (EMPLOYMENT, employmentEnabled)
@@ -246,6 +247,7 @@ trait AppConfig {
   val cisReleased: Boolean
   val nrsEnabled: Boolean
   val crystallisationEnabled: Boolean
+  val tailoringEnabled: Boolean
 
   def excludedIncomeSources(taxYear: Int): Seq[String]
 

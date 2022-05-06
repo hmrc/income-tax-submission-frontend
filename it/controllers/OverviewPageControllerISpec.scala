@@ -29,7 +29,7 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.mvc.{AnyContent, Result}
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import repositories.TailoringUserDataRepository
@@ -270,7 +270,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   
   private lazy val repo: TailoringUserDataRepository = app.injector.instanceOf[TailoringUserDataRepository]
 
-  private implicit val mtdUser: User[AnyContentAsEmpty.type] = User("1234567890", None, "AA123456A", "1234567890")
+  private implicit val mtdUser: User[AnyContent] = User("1234567890", None, "AA123456A", "1234567890")
   
   private def cleanDatabase(taxYear: Int) = {
     await(repo.clear(taxYear))
@@ -302,7 +302,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     JourneyData("dividends", user.commonExpectedResults.dividendsLinkText),
     JourneyData("gift-aid", user.commonExpectedResults.giftAidLinkText),
     JourneyData("cis", user.commonExpectedResults.cisLinkText),
-    JourneyData("employment", user.commonExpectedResults.employmentLinkText)
+    JourneyData("employment", user.commonExpectedResults.employmentSLLinkText)
   )
 
   val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -718,6 +718,32 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
         }
         
+        "display all rows" when {
+          
+          "there are no activated journeys in the db and the tailoring feature switch is off" which {
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+            
+            lazy val result = {
+              cleanDatabase(taxYear)
+              authoriseAgentOrIndividual(user.isAgent)
+              route(app, request, user.isWelsh).get
+            }
+            
+            implicit val document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+            
+            "has a status of OK(200)" in {
+              status(result) shouldBe OK
+            }
+            
+            textOnPageCheck(user.commonExpectedResults.interestsLinkText, interestLinkSelector)
+            textOnPageCheck(user.commonExpectedResults.dividendsLinkText, dividendsLinkSelector)
+            textOnPageCheck(user.commonExpectedResults.giftAidLinkText, giftAidLinkSelector)
+            textOnPageCheck(user.commonExpectedResults.cisLinkText, cisSelector)
+            textOnPageCheck(user.commonExpectedResults.employmentSLLinkText, employmentSelector)
+          }
+          
+        }
+        
         "only display the relevant row" when {
           journeys(user).foreach { journey =>
             s"the journey is for '${journey.tailoringKey}'" which {
@@ -727,7 +753,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
                 cleanDatabase(taxYear)
                 insertJourneys(false, journey.tailoringKey)
                 authoriseAgentOrIndividual(user.isAgent)
-                route(app, request, user.isWelsh).get
+                route(customApp(tailoringEnabled = true), request, user.isWelsh).get
               }
               
               implicit val document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))

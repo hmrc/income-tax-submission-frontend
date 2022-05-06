@@ -43,7 +43,7 @@
 }
 
 @taskListItem(show: Boolean, enabled: Boolean, linkId: String, taskNameKey: String, href: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, additionalShowLinkCheck: Boolean = true) = {
-    @if(show) {
+    @if(!appConfig.tailoringEnabled || show) {
         <li class="app-task-list__item">
             <span class="app-task-list__task-name">
             @if(enabled && additionalShowLinkCheck) {
