@@ -44,15 +44,13 @@ class TaxReturnReceivedController @Inject()(val authorisedAction: AuthorisedActi
 
   lazy val logger: Logger = Logger.apply(this.getClass)
 
-  val timeStamp: LocalDate = LocalDate.now()
-
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).apply { implicit user =>
 
     val summaryDataReceived: Option[TaxReturnReceivedModel] = getSessionData[TaxReturnReceivedModel](SessionValues.SUMMARY_DATA)
 
     summaryDataReceived match {
       case Some(summaryData) =>
-        Ok(taxReturnReceivedView(summaryData, user.isAgent, taxYear, timeStamp.toLongDate))
+        Ok(taxReturnReceivedView(summaryData, user.isAgent, taxYear, LocalDate.now.toLongDate))
       case _ =>
         logger.info("[TaxReturnReceivedController][show] No Tax Return Submission Data in session, routing user to Overview page.")
         Redirect(routes.OverviewPageController.show(taxYear))
