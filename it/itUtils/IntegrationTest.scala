@@ -244,7 +244,6 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
               companyDirector = Some(true),
               closeCompany = Some(false),
               directorshipCeasedDate = Some("2020-02-12"),
-              occPen = Some(false),
               disguisedRemuneration = Some(false),
               pay = Some(Pay(Some(34234.15), Some(6782.92), Some("CALENDAR MONTHLY"), Some("2020-04-23"), Some(32), Some(2)))
             )),
