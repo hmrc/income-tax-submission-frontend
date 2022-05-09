@@ -78,7 +78,7 @@ class IncomeSourcesModelSpec extends UnitTest {
 
     "excludeNotRelevantEmploymentData" when {
 
-      def model(ignored: Boolean, occPen: Boolean): IncomeSourcesModel = IncomeSourcesModel(None,None,None,Some(
+      def model(ignored: Boolean): IncomeSourcesModel = IncomeSourcesModel(None,None,None,Some(
         AllEmploymentData(
           hmrcEmploymentData = Seq(
             HmrcEmploymentSource(
@@ -98,7 +98,6 @@ class IncomeSourcesModelSpec extends UnitTest {
                     companyDirector = Some(true),
                     closeCompany = Some(false),
                     directorshipCeasedDate = Some("2020-02-12"),
-                    occPen = Some(occPen),
                     disguisedRemuneration = Some(false),
                     pay = Some(Pay(Some(34234.15), Some(6782.92), Some("CALENDAR MONTHLY"), Some("2020-04-23"), Some(32), Some(2)))
                   )),
@@ -115,16 +114,10 @@ class IncomeSourcesModelSpec extends UnitTest {
       ))
 
       "there is no data to exclude" in {
-        model(ignored = false,occPen = false).excludeNotRelevantEmploymentData shouldBe model(ignored = false, occPen = false)
+        model(ignored = false).excludeNotRelevantEmploymentData shouldBe model(ignored = false)
       }
       "there is ignored data to exclude" in {
-        model(ignored = true,occPen = false).excludeNotRelevantEmploymentData shouldBe IncomeSourcesModel(None,None,None,None)
-      }
-      "there is occPen data to exclude" in {
-        model(ignored = false,occPen = true).excludeNotRelevantEmploymentData shouldBe IncomeSourcesModel(None,None,None,None)
-      }
-      "there is ignored occPen data to exclude" in {
-        model(ignored = true,occPen = true).excludeNotRelevantEmploymentData shouldBe IncomeSourcesModel(None,None,None,None)
+        model(ignored = true).excludeNotRelevantEmploymentData shouldBe IncomeSourcesModel(None,None,None,None)
       }
     }
   }

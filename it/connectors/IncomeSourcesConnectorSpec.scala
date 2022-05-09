@@ -63,7 +63,6 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
               companyDirector = Some(false),
               closeCompany = Some(true),
               directorshipCeasedDate = Some("2020-02-12"),
-              occPen = Some(false),
               disguisedRemuneration = Some(false),
               pay = Some(Pay(
                 taxablePayToDate = Some(34234.15),
@@ -115,7 +114,6 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
             companyDirector = Some(false),
             closeCompany = Some(true),
             directorshipCeasedDate = Some("2020-02-12"),
-            occPen = Some(false),
             disguisedRemuneration = Some(false),
             pay = Some(Pay(
               taxablePayToDate = Some(34234.15),

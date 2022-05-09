@@ -17,7 +17,7 @@
 package models
 
 import models.cis.AllCISDeductions
-import models.employment.{AllEmploymentData, EmploymentSource, HmrcEmploymentSource}
+import models.employment.{AllEmploymentData, HmrcEmploymentSource}
 import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
@@ -30,8 +30,7 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
 
     val employmentData: Option[AllEmploymentData] = this.employment.map(
       allEmploymentData => allEmploymentData.copy(
-        hmrcEmploymentData = excludeIgnoredHmrcEmployment(excludeHmrcPensionIncome(allEmploymentData.hmrcEmploymentData)),
-        customerEmploymentData = excludeCustomerPensionIncome(allEmploymentData.customerEmploymentData)
+        hmrcEmploymentData = excludeIgnoredHmrcEmployment(allEmploymentData.hmrcEmploymentData)
       )
     )
 
@@ -42,19 +41,6 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
     this.copy(employment = if(hasData) employmentData else None)
   }
 
-  private def excludeHmrcPensionIncome(employmentSources: Seq[HmrcEmploymentSource]): Seq[HmrcEmploymentSource] = {
-    employmentSources.filterNot {
-      _employment =>
-        _employment.hmrcEmploymentFinancialData.exists {
-          employmentData =>
-            employmentData.employmentData.exists {
-              employmentData =>
-                employmentData.occPen.contains(true)
-            }
-        }
-    }
-  }
-
   private def excludeIgnoredHmrcEmployment(employmentSources: Seq[HmrcEmploymentSource]): Seq[HmrcEmploymentSource] = {
     employmentSources.filterNot {
       _employment =>
@@ -62,15 +48,6 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
     }
   }
 
-  private def excludeCustomerPensionIncome(employmentSources: Seq[EmploymentSource]): Seq[EmploymentSource] = {
-    employmentSources.filterNot {
-      _employment =>
-        _employment.employmentData.exists {
-          employmentData =>
-            employmentData.occPen.contains(true)
-        }
-    }
-  }
   val hasDataForEachIncomeSource: Boolean = dividends.nonEmpty && interest.nonEmpty && giftAid.nonEmpty && employment.nonEmpty && cis.nonEmpty
 }
 
