@@ -31,7 +31,7 @@ class OverviewTailoringModelSpec extends UnitTest {
   private val emptyIncomeSources: IncomeSourcesModel = IncomeSourcesModel(None, None, None, None, None)
   private val populatedIncomeSources: IncomeSourcesModel = IncomeSourcesModel(
     Some(DividendsModel()),
-    Some(Seq(InterestModel("Mah Swamp", "1234567890", None, None))),
+    Some(Seq(InterestModel("Mah Swamp", "1234567890", Some(500), Some(500)))),
     Some(GiftAidModel()),
     Some(AllEmploymentData(Seq(), None, Seq(), None)),
     Some(AllCISDeductions(None, None))

@@ -17,14 +17,13 @@
 package itUtils
 
 import java.time.LocalDate
-
 import akka.actor.ActorSystem
 import common.SessionValues
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
-import models.cis.AllCISDeductions
+import models.cis.{AllCISDeductions, CISDeductions, CISSource, PeriodData}
 import models.employment._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -269,7 +268,70 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     customerEmploymentData = Seq(),
     customerExpenses = None
   )
-  private val allCISDeductions = AllCISDeductions(None, None)
+  val cisSource: CISSource = CISSource(
+    Some(400),Some(400),Some(400),Seq(
+      CISDeductions(
+        s"${2020-1}-04-06",
+        s"${2020}-04-05",
+        Some("Contractor 1"),
+        "111/11111",
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Seq(
+          PeriodData(
+            s"${2020-1}-04-06",
+            s"${2020-1}-05-05",
+            Some(100.00),
+            Some(100.00),
+            Some(100.00),
+            "2022-05-11T16:38:57.489Z",
+            None,
+            "contractor"
+          ),PeriodData(
+            s"${2020-1}-05-06",
+            s"${2020-1}-06-05",
+            Some(100.00),
+            Some(100.00),
+            Some(100.00),
+            "2022-05-11T16:38:57.489Z",
+            None,
+            "contractor"
+          )
+        )
+      ),CISDeductions(
+        s"${2020-1}-04-06",
+        s"${2020}-04-05",
+        Some("Contractor 2"),
+        "222/11111",
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Seq(
+          PeriodData(
+            s"${2020-1}-04-06",
+            s"${2020-1}-05-05",
+            Some(100.00),
+            Some(100.00),
+            Some(100.00),
+            "2022-05-11T16:38:57.489Z",
+            None,
+            "contractor"
+          ),PeriodData(
+            s"${2020-1}-05-06",
+            s"${2020-1}-06-05",
+            Some(100.00),
+            Some(100.00),
+            Some(100.00),
+            "2022-05-11T16:38:57.489Z",
+            None,
+            "contractor"
+          )
+        )
+      )
+    ))
+
+  private val allCISDeductions = AllCISDeductions(Some(cisSource), Some(cisSource))
   val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
     nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
     currentYear = Some(1234.56),

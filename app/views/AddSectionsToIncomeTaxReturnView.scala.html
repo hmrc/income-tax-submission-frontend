@@ -94,7 +94,7 @@
                 )
             }
 
-            @if(journeys.contains("interest") && incomeSources.interest.isEmpty) {
+            @if(journeys.contains("interest") && !incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
                 @checkboxItem(
                     messages("common.interest"),
                     "addSections.hintText.interest",
