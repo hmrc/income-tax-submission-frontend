@@ -96,6 +96,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val crystallisationEnabled: Boolean = false
 
+  override lazy val tailoringEnabled: Boolean = true
+
   override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
 
   override def viewAndChangeViewInYearEstimateUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview"

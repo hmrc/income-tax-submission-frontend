@@ -22,15 +22,17 @@ import common.SessionValues
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, ViewHelpers}
-import models.{IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
+import models.mongo.{DatabaseError, TailoringUserDataModel}
+import models.{IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel, User}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Result}
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
+import repositories.TailoringUserDataRepository
 import services.{IncomeSourcesService, LiabilityCalculationService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
@@ -251,6 +253,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     inYearAction,
     app.injector.instanceOf[IncomeSourcesService],
     app.injector.instanceOf[LiabilityCalculationService],
+    app.injector.instanceOf[TailoringUserDataRepository],
     app.injector.instanceOf[OverviewPageView],
     app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[ErrorHandler],
@@ -264,6 +267,43 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
   def stubLiabilityCalculation(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
     stubGet(s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
   }
+  
+  private lazy val repo: TailoringUserDataRepository = app.injector.instanceOf[TailoringUserDataRepository]
+
+  private implicit val mtdUser: User[AnyContent] = User("1234567890", None, "AA123456A", "1234567890")
+  
+  private def cleanDatabase(taxYear: Int) = {
+    await(repo.clear(taxYear))
+    await(repo.ensureIndexes)
+  }
+  
+  private def insertJourneys(endOfYear: Boolean, journeys: String*): Either[DatabaseError, Boolean] = {
+    await(repo.create(TailoringUserDataModel(
+      "AA123456A",
+      if (endOfYear) taxYearEOY else taxYear,
+      journeys
+    )))
+  }
+  
+  private def insertAllJourneys(endOfYear: Boolean = false) = {
+    insertJourneys(
+      endOfYear,
+      "dividends",
+      "interest",
+      "gift-aid",
+      "employment",
+      "cis"
+    )
+  }
+
+  case class JourneyData(tailoringKey: String, expectedText: String)
+  def journeys(user: UserScenario[CommonExpectedResults, SpecificExpectedResults]) = Seq(
+    JourneyData("interest", user.commonExpectedResults.interestsLinkText),
+    JourneyData("dividends", user.commonExpectedResults.dividendsLinkText),
+    JourneyData("gift-aid", user.commonExpectedResults.giftAidLinkText),
+    JourneyData("cis", user.commonExpectedResults.cisLinkText),
+    JourneyData("employment", user.commonExpectedResults.employmentSLLinkText)
+  )
 
   val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
     UserScenario(isWelsh = false, isAgent = false, CommonExpectedEN, Some(ExpectedIndividualEN)),
@@ -288,6 +328,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            cleanDatabase(taxYear)
+            insertAllJourneys()
             authoriseAgentOrIndividual(user.isAgent)
             route(customApp(
               dividendsEnabled = false,
@@ -369,6 +411,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            cleanDatabase(taxYear)
+            insertAllJourneys()
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None))
             route(app, request, user.isWelsh).get
@@ -427,6 +471,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            cleanDatabase(taxYear)
+            insertAllJourneys()
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel.copy(interest = None))
             route(app, request, user.isWelsh).get
@@ -487,6 +533,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
             lazy val result: Future[Result] = {
+              cleanDatabase(taxYear)
+              insertAllJourneys()
               authoriseAgentOrIndividual(user.isAgent)
               stubIncomeSources(incomeSources)
               route(app, request, user.isWelsh).get
@@ -548,6 +596,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            cleanDatabase(taxYear)
+            insertAllJourneys()
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSources)
             route(app, request, user.isWelsh).get
@@ -611,6 +661,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
             lazy val result: Future[Result] = {
+              cleanDatabase(taxYear)
+              insertAllJourneys()
               authoriseAgentOrIndividual(user.isAgent)
               stubIncomeSources(incomeSources)
               route(app, request, user.isWelsh).get
@@ -665,6 +717,56 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           }
         }
+        
+        "display all rows" when {
+          
+          "there are no activated journeys in the db and the tailoring feature switch is off" which {
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+            
+            lazy val result = {
+              cleanDatabase(taxYear)
+              authoriseAgentOrIndividual(user.isAgent)
+              route(app, request, user.isWelsh).get
+            }
+            
+            implicit val document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+            
+            "has a status of OK(200)" in {
+              status(result) shouldBe OK
+            }
+            
+            textOnPageCheck(user.commonExpectedResults.interestsLinkText, interestLinkSelector)
+            textOnPageCheck(user.commonExpectedResults.dividendsLinkText, dividendsLinkSelector)
+            textOnPageCheck(user.commonExpectedResults.giftAidLinkText, giftAidLinkSelector)
+            textOnPageCheck(user.commonExpectedResults.cisLinkText, cisSelector)
+            textOnPageCheck(user.commonExpectedResults.employmentSLLinkText, employmentSelector)
+          }
+          
+        }
+        
+        "only display the relevant row" when {
+          journeys(user).foreach { journey =>
+            s"the journey is for '${journey.tailoringKey}'" which {
+              val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+
+              lazy val result: Future[Result] = {
+                cleanDatabase(taxYear)
+                insertJourneys(false, journey.tailoringKey)
+                authoriseAgentOrIndividual(user.isAgent)
+                route(customApp(tailoringEnabled = true), request, user.isWelsh).get
+              }
+              
+              implicit val document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+              
+              "has a status of OK(200)" in {
+                status(result) shouldBe OK
+              }
+              
+              textOnPageCheck(journey.expectedText, ".app-task-list__task-name")
+            }
+          }
+          
+        }
       }
     }
   }
@@ -685,6 +787,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            cleanDatabase(taxYearEOY)
+            insertAllJourneys(endOfYear = true)
             authoriseAgentOrIndividual(user.isAgent)
             route(customApp(
               dividendsEnabled = false,
@@ -751,6 +855,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
 
           lazy val result: Future[Result] = {
+            cleanDatabase(taxYearEOY)
+            insertAllJourneys(endOfYear = true)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSourcesEndOfYear
             route(customApp(), request, user.isWelsh).get
@@ -813,6 +919,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
 
           lazy val result: Future[Result] = {
+            cleanDatabase(taxYearEOY)
+            insertAllJourneys(endOfYear = true)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel)
             route(customApp(), request, user.isWelsh).get
@@ -874,6 +982,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
 
           lazy val result: Future[Result] = {
+            cleanDatabase(taxYearEOY)
+            insertAllJourneys(endOfYear = true)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel)
             route(customApp(employmentEOYEnabled = false), request, user.isWelsh).get

@@ -55,7 +55,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
 
   val taxYearEOY: Int = taxYear - 1
-  val taxYearEndOfYearMinusOne: Int = taxYearEOY -1
+  val taxYearEndOfYearMinusOne: Int = taxYearEOY - 1
 
   val nino = "AA123456A"
   val mtditid = "1234567890"
@@ -83,7 +83,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
              employmentEOYEnabled: Boolean = true,
              cisEnabled: Boolean = true,
              crystallisationEnabled: Boolean = true,
-             taxYearErrorFeatureSwitch: Boolean = false
+             taxYearErrorFeatureSwitch: Boolean = false,
+             tailoringEnabled: Boolean = false
             ): Map[String, String] = Map(
     "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
@@ -103,10 +104,15 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.employmentEOYEnabled" -> employmentEOYEnabled.toString,
     "feature-switch.cisEnabled" -> cisEnabled.toString,
     "feature-switch.crystallisationEnabled" -> crystallisationEnabled.toString,
+    "feature-switch.tailoringEnabled" -> tailoringEnabled.toString,
     "metrics.enabled" -> "false",
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
     "useEncryption" -> useEncryption.toString,
-    "mongodb.encryption.key" -> (if(invalidEncryptionKey){"key"}else{"QmFyMTIzNDVCYXIxMjM0NQ=="})
+    "mongodb.encryption.key" -> (if (invalidEncryptionKey) {
+      "key"
+    } else {
+      "QmFyMTIzNDVCYXIxMjM0NQ=="
+    })
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -114,32 +120,38 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     .configure(config())
     .build
 
-  def customApp(useEncryption: Boolean = true,
-                invalidEncryptionKey: Boolean = false,
-                dividendsEnabled: Boolean = true,
-                interestEnabled: Boolean = true,
-                giftAidEnabled: Boolean = true,
-                studentLoansEnabled: Boolean = true,
-                employmentEnabled: Boolean = true,
-                employmentEOYEnabled: Boolean = true,
-                cisEnabled: Boolean = true,
-                crystallisationEnabled: Boolean = true,
-                taxYearErrorFeatureSwitch: Boolean = false): Application = new GuiceApplicationBuilder()
+  def customApp(
+                 useEncryption: Boolean = true,
+                 invalidEncryptionKey: Boolean = false,
+                 dividendsEnabled: Boolean = true,
+                 interestEnabled: Boolean = true,
+                 giftAidEnabled: Boolean = true,
+                 studentLoansEnabled: Boolean = true,
+                 employmentEnabled: Boolean = true,
+                 employmentEOYEnabled: Boolean = true,
+                 cisEnabled: Boolean = true,
+                 crystallisationEnabled: Boolean = true,
+                 taxYearErrorFeatureSwitch: Boolean = false,
+                 tailoringEnabled: Boolean = false
+               ): Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(
       config(
-      useEncryption,
-      invalidEncryptionKey,
-      dividendsEnabled,
-      interestEnabled,
-      giftAidEnabled,
-      studentLoansEnabled,
-      employmentEnabled,
-      employmentEOYEnabled,
-      cisEnabled,
-      crystallisationEnabled,
-      taxYearErrorFeatureSwitch)
+        useEncryption,
+        invalidEncryptionKey,
+        dividendsEnabled,
+        interestEnabled,
+        giftAidEnabled,
+        studentLoansEnabled,
+        employmentEnabled,
+        employmentEOYEnabled,
+        cisEnabled,
+        crystallisationEnabled,
+        taxYearErrorFeatureSwitch,
+        tailoringEnabled
+      )
     ).build
+
   //scalastyle:on
 
   override protected def beforeEach(): Unit = {

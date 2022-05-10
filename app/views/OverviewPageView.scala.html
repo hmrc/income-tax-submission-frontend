@@ -19,7 +19,7 @@
 @import views.html.templates.helpers.Button
 
 @this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag)
-@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], taxYear: Int, isInYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], tailoring: OverviewTailoringModel, taxYear: Int, isInYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false) = {
     <span class="hmrc-status-tag">
@@ -42,24 +42,27 @@
     </span>
 }
 
-@taskListItem(enabled: Boolean, linkId: String, taskNameKey: String, href: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, additionalShowLinkCheck: Boolean = true) = {
-    <li class="app-task-list__item">
-        <span class="app-task-list__task-name">
-            @if(enabled && additionalShowLinkCheck){
+@taskListItem(show: Boolean, enabled: Boolean, linkId: String, taskNameKey: String, href: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, additionalShowLinkCheck: Boolean = true) = {
+    @if(!appConfig.tailoringEnabled || show) {
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+            @if(enabled && additionalShowLinkCheck) {
                 <a class="govuk-link" id="@linkId" href="@href">
-                    @messages(taskNameKey)
+                @messages(taskNameKey)
                 </a>
             } else {
                 @messages(taskNameKey)
             }
-        </span>
-        @statusTag(statusTagUpdatedCondition, enabled, cannotUpdateCondition, isMandatorySection)
-    </li>
+            </span>
+            @statusTag(statusTagUpdatedCondition, enabled, cannotUpdateCondition, isMandatorySection)
+        </li>
+    }
 }
     
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <ol style="padding-left:0;" class="app-task-list__items">
         @taskListItem(
+            tailoring.hasInterest,
             appConfig.interestEnabled,
             "interest_link",
             "common.interest",
@@ -68,6 +71,7 @@
         )
         
         @taskListItem(
+            tailoring.hasDividends,
             appConfig.dividendsEnabled,
             "dividends_link",
             "common.dividends",
@@ -75,40 +79,37 @@
             incomeSources.dividends.isDefined
         )
 
-        @if(appConfig.giftAidReleased){
-            @taskListItem(
-                appConfig.giftAidEnabled,
-                "giftAid_link",
-                "common.donationsToCharity",
-                if(incomeSources.giftAid.isEmpty) {appConfig.personalIncomeTaxGiftAidUrl(taxYear)} else {appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)},
-                incomeSources.giftAid.isDefined
-            )
-        }
+        @taskListItem(
+            appConfig.giftAidReleased && tailoring.hasGiftAid,
+            appConfig.giftAidEnabled,
+            "giftAid_link",
+            "common.donationsToCharity",
+            if(incomeSources.giftAid.isEmpty) {appConfig.personalIncomeTaxGiftAidUrl(taxYear)} else {appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)},
+            incomeSources.giftAid.isDefined
+        )
 
-        @if(appConfig.employmentReleased){
-            @taskListItem(
-                appConfig.employmentEnabled,
-                "employment_link",
-                if(appConfig.studentLoansEnabled)"common.employmentSL"else"common.employment",
-                appConfig.employmentFEUrl(taxYear),
-                incomeSources.employment.isDefined,
-                (isInYear || !appConfig.employmentEOYEnabled),
-                isMandatorySection = true,
-                additionalShowLinkCheck = ((incomeSources.employment.isDefined && isInYear) || (appConfig.employmentEOYEnabled && !isInYear)),
-            )
-        }
+        @taskListItem(
+            appConfig.employmentReleased && tailoring.hasEmployment,
+            appConfig.employmentEnabled,
+            "employment_link",
+            if(appConfig.studentLoansEnabled)"common.employmentSL"else"common.employment",
+            appConfig.employmentFEUrl(taxYear),
+            incomeSources.employment.isDefined,
+            (isInYear || !appConfig.employmentEOYEnabled),
+            isMandatorySection = true,
+            additionalShowLinkCheck = ((incomeSources.employment.isDefined && isInYear) || (appConfig.employmentEOYEnabled && !isInYear)),
+        )
 
-        @if(appConfig.cisReleased){
-            @taskListItem(
-                appConfig.cisEnabled,
-                "cis_link",
-                "common.cis",
-                appConfig.cisFEUrl(taxYear),
-                incomeSources.cis.isDefined,
-                isInYear,
-                additionalShowLinkCheck = incomeSources.cis.isDefined || !isInYear
-            )
-        }
+        @taskListItem(
+            appConfig.cisReleased && tailoring.hasCis,
+            appConfig.cisEnabled,
+            "cis_link",
+            "common.cis",
+            appConfig.cisFEUrl(taxYear),
+            incomeSources.cis.isDefined,
+            isInYear,
+            additionalShowLinkCheck = incomeSources.cis.isDefined || !isInYear
+        )
     </ol>
 }
 
