@@ -22,6 +22,8 @@ common.returnToIncomeTaxAccount.button.agent = Yn ôl i gyfrif Treth Incwm
 common.back = Yn ôl
 common.saveAndContinue = Cadw ac yn eich blaen
 
+notificationBanner.important = Pwysig
+
 betaBar.beta = beta
 betaBar.banner.message.1 = Gwasanaeth newydd yw hwn – bydd eich
 betaBar.banner.message.2 = adborth
@@ -71,6 +73,13 @@ overview.paragraph.3.individual = Ewch i’ch
 overview.paragraph.3.agent = Ewch i’r canlynol ar ran eich cleient
 overview.paragraph.5.individual = i wybod mwy am eich sefyllfa dreth bresennol.
 overview.paragraph.5.agent = i wybod mwy am ei sefyllfa dreth bresennol.
+overview.notificationBanner.individual = Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch.
+overview.notificationBanner.agent = Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano.
+overview.notificationBannerPlural.individual = Rydym wedi ychwanegu {0} adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch.
+overview.notificationBannerPlural.agent = Rydym wedi ychwanegu {0} adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano.
+overview.tailoring = Gwiriwch bob adran – mae’n bosibl y bydd rhaid i chi newid yr wybodaeth rydym wedi’i hychwanegu ar eich rhan.
+overview.tailoring.insertText.individual = Nid oes unrhyw adrannau wedi’u hychwanegu at eich Ffurflen Dreth Incwm
+overview.tailoring.insertText.agent = Nid oes unrhyw adrannau wedi’u hychwanegu at Ffurflen Dreth Incwm eich cleient
 overview.crystallisation.heading.EOY.individual = Diweddaru a chyflwyno’ch Ffurflen Dreth Incwm
 overview.crystallisation.heading.EOY.agent = Gwiriwch a chyflwynwch Ffurflen Dreth Incwm eich cleient
 

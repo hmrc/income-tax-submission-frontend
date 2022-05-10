@@ -79,6 +79,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     val endOfYearContinueLink = s"/update-and-submit-income-tax-return/$taxYearEOY/final-calculation"
 
+    def addSectionsLink(taxYear: Int): String = s"/update-and-submit-income-tax-return/$taxYear/add-sections"
+
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
@@ -91,6 +93,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val goToYourIncomeTax = "Go to your Income Tax Account to find out more about your current tax position."
 
     def inYearInsertText(taxYear: Int): String = s"You cannot submit your Income Tax Return until 6 April $taxYear."
+    val addSections = "Add sections to your Income Tax Return"
+    val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
+    val notificationBannerPlural = "We have added 5 sections to your return, based on the information we already hold about you."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -103,6 +108,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val goToYourIncomeTax = "Go to your client’s Income Tax Account to find out more about their current tax position."
 
     def inYearInsertText(taxYear: Int): String = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
+    val addSections = "Add sections to your client’s Income Tax Return"
+    val notificationBanner =  "We have added a section to your client’s return, based on the information we already hold about them."
+    val notificationBannerPlural = "We have added 5 sections to your client’s return, based on the information we already hold about them."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -114,6 +122,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val goToYourIncomeTax = "Ewch i’ch Cyfrif Treth Incwm i wybod mwy am eich sefyllfa dreth bresennol."
 
     def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm tan 6 Ebrill $taxYear."
+    val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
+    val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 5 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -125,6 +136,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val goToYourIncomeTax = "Ewch i’r canlynol ar ran eich cleient Cyfrif Treth Incwm i wybod mwy am ei sefyllfa dreth bresennol."
 
     def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm eich cleient tan 6 Ebrill $taxYear."
+    val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
+    val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 5 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
   }
 
   trait SpecificExpectedResults {
@@ -136,6 +150,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val goToYourIncomeTax: String
 
     def inYearInsertText(taxYear: Int): String
+    val addSections: String
+    val notificationBanner: String
+    val notificationBannerPlural: String
   }
 
   trait CommonExpectedResults {
@@ -160,6 +177,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val fillInTheSections: String
     val incomeTaxAccountLink: String
     val updateTaxCalculation: String
+    val checkSectionsText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -184,6 +202,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
     val incomeTaxAccountLink = "Income Tax Account"
     val updateTaxCalculation = "Update tax calculation"
+    val checkSectionsText = "Check every section, you may need to change the information that we have added for you."
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -208,10 +227,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
     val updateTaxCalculation = "Diweddaru cyfrifiad treth"
+    val checkSectionsText = "Gwiriwch bob adran – mae’n bosibl y bydd rhaid i chi newid yr wybodaeth rydym wedi’i hychwanegu ar eich rhan."
   }
 
   object Selectors {
-    private def sectionNameSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.app-task-list__task-name"
+    def sectionNameSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.app-task-list__task-name"
     private def statusTagSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.hmrc-status-tag"
 
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
@@ -242,6 +262,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     val goToYourIncomeTaxReturnSelector = "#p-gotoAccountDetails"
     val updateTaxCalculationSelector = "#updateTaxCalculation"
     val formSelector = "#main-content > div > div > form"
+    val checkSectionsSelector = "#p-checkSections"
+    val addSectionsSelector = "#addSectionsLink"
+    val notificationBannerSelector = "#main-content > div > div > div.govuk-notification-banner > div.govuk-notification-banner__content > p"
   }
 
   private val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/view"
@@ -296,13 +319,13 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     )
   }
 
-  case class JourneyData(tailoringKey: String, expectedText: String)
+  case class JourneyData(tailoringKey: String, expectedText: String, incomeSourcesModel: IncomeSourcesModel)
   def journeys(user: UserScenario[CommonExpectedResults, SpecificExpectedResults]) = Seq(
-    JourneyData("interest", user.commonExpectedResults.interestsLinkText),
-    JourneyData("dividends", user.commonExpectedResults.dividendsLinkText),
-    JourneyData("gift-aid", user.commonExpectedResults.giftAidLinkText),
-    JourneyData("cis", user.commonExpectedResults.cisLinkText),
-    JourneyData("employment", user.commonExpectedResults.employmentSLLinkText)
+    JourneyData("interest", user.commonExpectedResults.interestsLinkText, IncomeSourcesModel(interest = incomeSourcesModel.interest)),
+    JourneyData("dividends", user.commonExpectedResults.dividendsLinkText, IncomeSourcesModel(dividends = incomeSourcesModel.dividends)),
+    JourneyData("gift-aid", user.commonExpectedResults.giftAidLinkText, IncomeSourcesModel(giftAid = incomeSourcesModel.giftAid)),
+    JourneyData("cis", user.commonExpectedResults.cisLinkText, IncomeSourcesModel(cis = incomeSourcesModel.cis)),
+    JourneyData("employment", user.commonExpectedResults.employmentSLLinkText, IncomeSourcesModel(employment = incomeSourcesModel.employment))
   )
 
   val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -717,6 +740,67 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           }
         }
+        "have all journeys with a plural notification banner" when {
+
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+
+            lazy val result: Future[Result] = {
+              cleanDatabase(taxYear)
+              authoriseAgentOrIndividual(user.isAgent)
+              stubIncomeSources(incomeSourcesModel)
+              route(customApp(tailoringEnabled = true), request, user.isWelsh).get
+            }
+
+            implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+            "returns status of OK(200)" in {
+              status(result) shouldBe OK
+            }
+
+            welshToggleCheck(welshTest(user.isWelsh))
+            linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
+            linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
+            textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+            titleCheck(specific.headingExpected, user.isWelsh)
+            h1Check(specific.headingExpected, "xl")
+            textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+            textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
+            textOnPageCheck(checkSectionsText, checkSectionsSelector)
+            textOnPageCheck(specific.notificationBannerPlural, notificationBannerSelector)
+
+            "has a dividends section" which {
+              linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
+              textOnPageCheck(updatedText, dividendsStatusSelector)
+            }
+
+            "has an interest section with status of 'Updated'" which {
+              linkCheck(interestsLinkText, interestLinkSelector, interestsLinkWithPriorData(taxYear))
+              textOnPageCheck(updatedText, interestStatusSelector)
+            }
+
+            "has a donations to charity section" which {
+              linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
+              textOnPageCheck(updatedText, giftAidStatusSelector)
+            }
+
+            "has an employment section" which {
+              linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYear))
+              textOnPageCheck(updatedText, employmentStatusSelector)
+            }
+
+            "has a cis section" which {
+              linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
+              textOnPageCheck(updatedText, cisStatusSelector)
+            }
+
+            "have a add sections link " which {
+              linkCheck(specific.addSections, addSectionsSelector, Links.addSectionsLink(taxYear))
+            }
+
+            formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
+        }
         
         "display all rows" when {
           
@@ -761,11 +845,37 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
               "has a status of OK(200)" in {
                 status(result) shouldBe OK
               }
-              
-              textOnPageCheck(journey.expectedText, ".app-task-list__task-name")
+
+              textOnPageCheck(checkSectionsText, checkSectionsSelector)
+
+              textOnPageCheck(journey.expectedText, sectionNameSelector(1))
+              textOnPageCheck(specific.addSections, sectionNameSelector(2))
             }
           }
-          
+        }
+        "only display the relevant row with priorData and display singular notificationBannner" when {
+          journeys(user).foreach { journey =>
+            s"the journey is for '${journey.tailoringKey}' priorData Only" which {
+              val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+
+              lazy val result: Future[Result] = {
+                cleanDatabase(taxYear)
+                stubIncomeSources(journey.incomeSourcesModel)
+                authoriseAgentOrIndividual(user.isAgent)
+                route(customApp(tailoringEnabled = true), request, user.isWelsh).get
+              }
+
+              implicit val document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+              "has a status of OK(200)" in {
+                status(result) shouldBe OK
+              }
+
+              textOnPageCheck(specific.notificationBanner, notificationBannerSelector)
+              textOnPageCheck(journey.expectedText, sectionNameSelector(1))
+              textOnPageCheck(specific.addSections, sectionNameSelector(2))
+            }
+          }
         }
       }
     }
@@ -1254,71 +1364,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   }
 
-  def stubIncomeSources: StubMapping = stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", OK,
-    """{
-      |	"dividends": {
-      |		"ukDividends": 69.99,
-      |		"otherUkDividends": 63.99
-      |	},
-      |	"interest": [{
-      |		"accountName": "BANK",
-      |		"incomeSourceId": "12345678908765432",
-      |		"taxedUkInterest": 44.66,
-      |		"untaxedUkInterest": 66.44
-      |	}],
-      | "giftAid" : {
-      |    "gifts":{
-      |       "landAndBuildings": 100
-      |    }
-      | },
-      | "employment": {
-      |   "hmrcEmploymentData": [
-      |     {
-      |       "employmentId": "1",
-      |       "employerName": "name"
-      |     }
-      |   ],
-      |   "customerEmploymentData": [
-      |     {
-      |       "employmentId": "2",
-      |       "employerName": "name"
-      |     }
-      |   ]
-      | }
-      |}""".stripMargin)
+  def stubIncomeSources: StubMapping =
+    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", OK, Json.toJson(incomeSourcesModel).toString)
 
-  def stubIncomeSourcesEndOfYear: StubMapping = stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYearEOY", OK,
-    """{
-      |	"dividends": {
-      |		"ukDividends": 69.99,
-      |		"otherUkDividends": 63.99
-      |	},
-      |	"interest": [{
-      |		"accountName": "BANK",
-      |		"incomeSourceId": "12345678908765432",
-      |		"taxedUkInterest": 44.66,
-      |		"untaxedUkInterest": 66.44
-      |	}],
-      | "giftAid" : {
-      |    "gifts":{
-      |       "landAndBuildings": 100
-      |    }
-      | },
-      | "employment": {
-      |   "hmrcEmploymentData": [
-      |     {
-      |       "employmentId": "1",
-      |       "employerName": "name"
-      |     }
-      |   ],
-      |   "customerEmploymentData": [
-      |     {
-      |       "employmentId": "2",
-      |       "employerName": "name"
-      |     }
-      |   ]
-      | },
-      | "cis": {
-      | }
-      |}""".stripMargin)
+  def stubIncomeSourcesEndOfYear: StubMapping =
+    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYearEOY", OK, Json.toJson(incomeSourcesModel).toString)
+
+
 }

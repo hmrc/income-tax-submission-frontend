@@ -35,7 +35,7 @@ object AddSectionsForm {
     //scalastyle:off
     def apply(addSections: Seq[String], incomeSources: IncomeSourcesModel): AddSectionsQuestionModel = {
       var newTailoring: Seq[String] = addSections
-      if (incomeSources.interest.isDefined && !newTailoring.contains(INTEREST)) newTailoring = newTailoring :+ INTEREST
+      if (incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) && !newTailoring.contains(INTEREST)) newTailoring = newTailoring :+ INTEREST
       if (incomeSources.dividends.isDefined && !newTailoring.contains(DIVIDENDS)) newTailoring = newTailoring :+ DIVIDENDS
       if (incomeSources.giftAid.isDefined && !newTailoring.contains(GIFT_AID)) newTailoring = newTailoring :+ GIFT_AID
       if (incomeSources.employment.isDefined && !newTailoring.contains(EMPLOYMENT)) newTailoring = newTailoring :+ EMPLOYMENT

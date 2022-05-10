@@ -17,9 +17,16 @@
 package models
 
 case class OverviewTailoringModel(tailoring: Seq[String], incomeSources: IncomeSourcesModel) {
+  private def bool2int(b:Boolean) = if (b) 1 else 0
+
   val hasDividends: Boolean = tailoring.contains("dividends") || incomeSources.dividends.nonEmpty
-  val hasInterest: Boolean = tailoring.contains("interest") || incomeSources.interest.nonEmpty
+  val hasInterest: Boolean = tailoring.contains("interest") || incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
   val hasGiftAid: Boolean = tailoring.contains("gift-aid") || incomeSources.giftAid.nonEmpty
   val hasEmployment: Boolean = tailoring.contains("employment") || incomeSources.employment.nonEmpty
   val hasCis: Boolean = tailoring.contains("cis") || incomeSources.cis.nonEmpty
+
+  val allJourneys: List[Boolean] = List(hasDividends, hasInterest, hasGiftAid, hasEmployment, hasCis)
+
+  val sourceCount: Int =
+    (tailoring.size - (bool2int(hasDividends) + bool2int(hasInterest) + bool2int(hasGiftAid) + bool2int(hasEmployment) + bool2int(hasCis))) * -1
 }

@@ -22,6 +22,8 @@ common.returnToIncomeTaxAccount.button.agent = Go to Income Tax account
 common.back = Back
 common.saveAndContinue = Save and continue
 
+notificationBanner.important = Important
+
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
 betaBar.banner.message.2 = feedback
@@ -71,6 +73,15 @@ overview.paragraph.3.individual = Go to your
 overview.paragraph.3.agent = Go to your client’s
 overview.paragraph.5.individual = to find out more about your current tax position.
 overview.paragraph.5.agent = to find out more about their current tax position.
+overview.notificationBanner.individual = We have added a section to your return, based on the information we already hold about you.
+overview.notificationBanner.agent = We have added a section to your client’s return, based on the information we already hold about them.
+overview.notificationBannerPlural.individual = We have added {0} sections to your return, based on the information we already hold about you.
+overview.notificationBannerPlural.agent = We have added {0} sections to your client’s return, based on the information we already hold about them.
+overview.tailoring = Check every section, you may need to change the information that we have added for you.
+overview.addSections.individual = Add sections to your Income Tax Return
+overview.addSections.agent = Add sections to your client’s Income Tax Return
+overview.tailoring.insertText.individual = No sections have been added to your Income Tax Return
+overview.tailoring.insertText.agent = No sections have been added to your client’s Income Tax Return
 overview.crystallisation.heading.EOY.individual = Check and submit your Income Tax Return
 overview.crystallisation.heading.EOY.agent = Check and submit your client’s Income Tax Return
 
