@@ -70,7 +70,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   private def pageUrl(taxYear: Int = taxYearEOY) = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
 
   "when the language is set to ENGLISH, the page" should {
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "as an individual user, with a previously submitted return to that tax year, the page" should {
 
@@ -121,7 +121,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   }
   "Attempting to Render the Other trying to Submit error page in year" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "fail to render and return a redirect that" should {
       val request = FakeRequest("GET", pageUrl(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
@@ -142,7 +142,7 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   "when the language is set to WELSH" should {
     import ExpectedResultsWelsh._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "as an individual user, with a previously submitted return to that tax year, the page" should {
       "return the page" which {

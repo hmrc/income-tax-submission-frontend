@@ -67,7 +67,7 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
   "Rendering the no updates provided error page in English" should {
     import ExpectedResults._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
@@ -115,7 +115,7 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
   }
   "Attempting to Render the no updates provided error page in year" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "fail to render and return a redirect that" should {
       val request = FakeRequest("GET", urlPath(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
@@ -135,7 +135,7 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
   "Rendering the no updates provided error page in Welsh" should {
     import ExpectedResultsWelsh._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)

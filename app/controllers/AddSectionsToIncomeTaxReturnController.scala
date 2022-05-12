@@ -24,7 +24,7 @@ import forms.AddSectionsForm
 import forms.AddSectionsForm.addSectionsForm
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{IncomeSourcesService, TailoringSessionService}
+import services.{IncomeSourcesService, TailoringSessionService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.AddSectionsToIncomeTaxReturnView
 import common.IncomeSources._
@@ -33,10 +33,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddSectionsToIncomeTaxReturnController @Inject()(
                                                         authorisedAction: AuthorisedAction,
-                                                        errorHandler: ErrorHandler,
                                                         view: AddSectionsToIncomeTaxReturnView,
                                                         incomeSourcesService: IncomeSourcesService,
                                                         tailoringSessionService: TailoringSessionService,
+                                                        implicit val validTaxYearListService: ValidTaxYearListService,
+                                                        implicit val errorHandler: ErrorHandler,
                                                         implicit val appConfig: AppConfig,
                                                         implicit val ec: ExecutionContext,
                                                         implicit val mcc: MessagesControllerComponents

@@ -18,8 +18,8 @@ package controllers
 
 import audit.AuditService
 import common.SessionValues
-import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
+import config.{AppConfig, ErrorHandler}
 import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -27,7 +27,7 @@ import play.api.http.HeaderNames
 import play.api.mvc.Result
 import play.api.test.Helpers.{OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
-import services.AuthService
+import services.{AuthService, ValidTaxYearListService}
 import views.html.StartPageView
 
 import scala.concurrent.Future
@@ -44,7 +44,9 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     app.injector.instanceOf[InYearAction],
     frontendAppConfig,
     mcc,
-    scala.concurrent.ExecutionContext.Implicits.global
+    scala.concurrent.ExecutionContext.Implicits.global,
+    app.injector.instanceOf[ValidTaxYearListService],
+    app.injector.instanceOf[ErrorHandler]
   )
 
   def controllerWithoutSL: StartPageController = new StartPageController(
@@ -55,7 +57,9 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     app.injector.instanceOf[InYearAction],
     customApp(studentLoansEnabled = false).injector.instanceOf[AppConfig],
     mcc,
-    scala.concurrent.ExecutionContext.Implicits.global
+    scala.concurrent.ExecutionContext.Implicits.global,
+    app.injector.instanceOf[ValidTaxYearListService],
+    app.injector.instanceOf[ErrorHandler]
   )
 
   object CommonExpectedResults {
@@ -121,7 +125,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   "Rendering the start page in English" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
@@ -158,7 +162,10 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
-        controllerWithoutSL.show(taxYear)(fakeRequest)
+        controllerWithoutSL.show(taxYear)(fakeRequest.withSession(
+          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+        ))
       }
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -170,12 +177,16 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       welshToggleCheck("English")
       textOnPageCheck(employmentBullet, Selectors.bullet3)
     }
+
     "render correctly when the user is an individual and student loans is off and is in welsh" should {
-      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
-        controllerWithoutSL.show(taxYear)(fakeRequest.withHeaders(headers: _*))
+        controllerWithoutSL.show(taxYear)(fakeRequest.withHeaders(headers: _*).withSession(
+          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+        ))
       }
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -222,7 +233,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   "Rendering the start page in Welsh" should {
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
@@ -295,7 +306,9 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYear)(fakeRequest))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
+          ))
         }
 
         result.header.status shouldBe OK
@@ -308,7 +321,9 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       "the confidence level is too low" which {
         lazy val result = {
           unauthorisedIndividualInsufficientConfidenceLevel()
-          await(controller.show(taxYear)(fakeRequest))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
+          ))
         }
 
         "has a status of SEE_OTHER (303)" in {
@@ -327,7 +342,9 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       "it contains the wrong credentials" which {
         lazy val result = {
           unauthorisedIndividualWrongCredentials()
-          await(controller.show(taxYear)(fakeRequest))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
+          ))
         }
 
         "has a status of SEE_OTHER (303)" in {
@@ -351,7 +368,10 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
         lazy val result: Future[Result] = {
           wireMockServer.resetAll()
           authoriseIndividual()
-          controller.submit(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> taxYear.toString))
+          controller.submit(taxYear)(fakeRequest.withSession(
+            SessionValues.TAX_YEAR -> taxYear.toString,
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+          ))
         }
 
         "has a result of SEE_OTHER(303)" in {

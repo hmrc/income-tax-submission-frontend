@@ -14,17 +14,27 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object SessionValues {
-  val CLIENT_MTDITID = "ClientMTDID"
-  val CLIENT_NINO = "ClientNino"
+import play.api.libs.json.{JsObject, Json}
+import utils.UnitTest
 
-  val CALCULATION_ID = "calculationId"
+class ValidTaxYearListModelSpec extends UnitTest {
 
-  val TAX_YEAR = "TAX_YEAR"
+  val model: ValidTaxYearListModel = ValidTaxYearListModel(Seq(2020, 2021, 2022, 2023))
+  val jsonModel: JsObject = Json.obj(
+    "taxYears" -> (2020, 2021, 2022, 2023)
+  )
 
-  val SUMMARY_DATA = "summaryData"
+  "ValidTaxYearListModelSpec" should {
 
-  val VALID_TAX_YEARS = "validTaxYears"
+    "parse to Json" in {
+      Json.toJson(model) shouldBe jsonModel
+    }
+
+    "parse from Json" in {
+      jsonModel.as[ValidTaxYearListModel]
+    }
+  }
+
 }

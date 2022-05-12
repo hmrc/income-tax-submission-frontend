@@ -19,14 +19,18 @@
 
 @this(heading: Heading, layout: Layout)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(firstClientTaxYear: Int, latestClientTaxYear: Int, singleValidTaxYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = messages("errors.404.heading")) {
 
 @heading(messages("errors.404.heading"))
 
 <div class="govuk-body">
-    <p>@messages("error.tax-year.paragraph1", (appConfig.defaultTaxYear -1).toString, appConfig.defaultTaxYear.toString)</p>
+    @if(singleValidTaxYear)  {
+    <p>@messages("error.tax-year.paragraph1.single")</p>
+    } else {
+    <p>@messages("error.tax-year.paragraph1", firstClientTaxYear.toString, latestClientTaxYear.toString)</p>
+    }
     <p>@messages("error.tax-year.paragraph2")</p>
     <p>
         @messages("errors.404.p3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment" class="govuk-link" id= "govuk-income-tax-link" target="_blank" >@messages("errors.XXX.p7")</a> @messages("errors.XXX.p8a")

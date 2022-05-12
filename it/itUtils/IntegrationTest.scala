@@ -52,13 +52,15 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")
 
   val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
-
   val taxYearEOY: Int = taxYear - 1
   val taxYearEndOfYearMinusOne: Int = taxYearEOY - 1
 
   val nino = "AA123456A"
   val mtditid = "1234567890"
   val affinityGroup = "Individual"
+
+  val validTaxYearList: Seq[Int] = Seq(taxYearEndOfYearMinusOne, taxYearEOY, taxYear)
+  val singleValidTaxYear: Seq[Int] = Seq(taxYearEndOfYearMinusOne)
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   val inYearAction = new InYearAction
@@ -353,8 +355,9 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     giftsModel
   )
 
-  def playSessionCookies(taxYear: Int): String = PlaySessionCookieBaker.bakeSessionCookie(Map(
+  def playSessionCookies(taxYear: Int, validTaxYears:Seq[Int]): String = PlaySessionCookieBaker.bakeSessionCookie(Map(
     SessionValues.TAX_YEAR -> taxYear.toString,
+    SessionValues.VALID_TAX_YEARS -> validTaxYears.mkString(","),
     SessionKeys.sessionId -> sessionId,
     SessionValues.CLIENT_NINO -> "AA123456A",
     SessionValues.CLIENT_MTDITID -> "1234567890"

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package common
+package services
 
-object SessionValues {
-  val CLIENT_MTDITID = "ClientMTDID"
-  val CLIENT_NINO = "ClientNino"
+import connectors.ValidTaxYearListConnector
+import connectors.httpParsers.ValidTaxYearListHttpParser.ValidTaxYearListResponse
+import uk.gov.hmrc.http.HeaderCarrier
 
-  val CALCULATION_ID = "calculationId"
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
-  val TAX_YEAR = "TAX_YEAR"
+@Singleton
+class ValidTaxYearListService @Inject()(validTaxYearListConnector: ValidTaxYearListConnector) {
 
-  val SUMMARY_DATA = "summaryData"
+  def getValidTaxYearList(nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[ValidTaxYearListResponse] = {
+    validTaxYearListConnector.getValidTaxYearList(nino)(hc.withExtraHeaders("mtditid" -> mtditid))
+  }
 
-  val VALID_TAX_YEARS = "validTaxYears"
 }

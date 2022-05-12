@@ -68,7 +68,7 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
 
   "Rendering the tax return previously updated page in English" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
@@ -116,10 +116,10 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
   }
   "Attempting to Render the tax return previously error page in year" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "fail to render and return a redirect that" should {
-      val request = FakeRequest("GET", urlPath(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
+      val request = FakeRequest("GET", urlPath(taxYear)).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
@@ -135,7 +135,7 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
 
   "Rendering the tax return previously updated page in Welsh" should {
     import ExpectedResultsWelsh._
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)

@@ -17,14 +17,16 @@
 package controllers
 
 import common.SessionValues
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
 import controllers.predicates.TaxYearAction.taxYearAction
+
 import javax.inject.{Inject, Singleton}
 import models.TaxReturnReceivedModel
 import play.api.i18n.I18nSupport
 import play.api.Logger
 import play.api.mvc._
+import services.ValidTaxYearListService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.TaxReturnReceivedView
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -39,7 +41,9 @@ class TaxReturnReceivedController @Inject()(val authorisedAction: AuthorisedActi
                                             val languageUtils: LanguageUtils,
                                             implicit val appConfig: AppConfig,
                                             implicit val mcc: MessagesControllerComponents,
-                                            implicit val ec: ExecutionContext) extends FrontendController(mcc)
+                                            implicit val ec: ExecutionContext,
+                                            implicit val validTaxYearListService: ValidTaxYearListService,
+                                            implicit val errorHandler: ErrorHandler) extends FrontendController(mcc)
   with I18nSupport with SessionDataHelper with ImplicitDateFormatter {
 
   lazy val logger: Logger = Logger.apply(this.getClass)

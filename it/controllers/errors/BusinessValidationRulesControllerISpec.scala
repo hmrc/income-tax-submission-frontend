@@ -69,7 +69,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
 
     import ExpectedResults._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
 
@@ -119,7 +119,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
   "Rendering the business validation rules page in Welsh" should {
     import ExpectedResultsWelsh._
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
@@ -167,7 +167,7 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
 
   "Attempting to render the business validation rules error page in year" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "fail to render and return a redirect that" should {
       val request = FakeRequest("GET", urlPath(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
