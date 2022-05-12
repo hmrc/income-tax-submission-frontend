@@ -63,8 +63,6 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     val expectedTaxReturnExistsUrl: String = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
 
     val expectedAddressChangedUrl: String = s"/update-and-submit-income-tax-return/$taxYear/address-changed"
-
-
   }
 
   object IndividualExpectedResults {
@@ -117,7 +115,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the language is specified as English and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -149,7 +148,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the language is specified as Welsh and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
@@ -186,6 +186,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
 
@@ -220,7 +221,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       "the calc id is missing" which {
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
           SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-          SessionValues.TAX_YEAR -> taxYear.toString
+          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
         ))
         val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
 
@@ -247,6 +249,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       "the summary data is missing" which {
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
           SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
           SessionValues.CALCULATION_ID -> "string"
         ))
         val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -281,6 +284,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CLIENT_NINO -> nino,
         SessionValues.CLIENT_MTDITID -> mtditid
       ))
@@ -315,6 +319,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CLIENT_NINO -> nino,
         SessionValues.CLIENT_MTDITID -> mtditid
       ))
@@ -352,7 +357,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "there is no Summary Data in session which" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -379,6 +385,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
 
@@ -411,6 +418,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
 
@@ -443,6 +451,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
 
@@ -475,6 +484,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
 

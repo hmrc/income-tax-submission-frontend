@@ -18,13 +18,14 @@ package controllers
 
 import audit.{AuditService, EnterUpdateAndSubmissionServiceAuditDetail}
 import common.SessionValues
-import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
+import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.AuthService
+import services.{AuthService, ValidTaxYearListService}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.StartPageView
@@ -40,7 +41,9 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
                                     inYearAction: InYearAction,
                                     implicit val appConfig: AppConfig,
                                     implicit val mcc: MessagesControllerComponents,
-                                    implicit val ec: ExecutionContext
+                                    implicit val ec: ExecutionContext,
+                                    implicit val validTaxYearListService: ValidTaxYearListService,
+                                    implicit val errorHandler: ErrorHandler
                                    ) extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {

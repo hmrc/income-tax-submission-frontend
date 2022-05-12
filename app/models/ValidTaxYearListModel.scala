@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object SessionValues {
-  val CLIENT_MTDITID = "ClientMTDID"
-  val CLIENT_NINO = "ClientNino"
+import play.api.libs.json.{Json, OFormat}
 
-  val CALCULATION_ID = "calculationId"
+case class ValidTaxYearListModel(taxYears: Seq[Int])
 
-  val TAX_YEAR = "TAX_YEAR"
-
-  val SUMMARY_DATA = "summaryData"
-
-  val VALID_TAX_YEARS = "validTaxYears"
+object ValidTaxYearListModel{
+  implicit val formats: OFormat[ValidTaxYearListModel] = Json.format[ValidTaxYearListModel]
 }

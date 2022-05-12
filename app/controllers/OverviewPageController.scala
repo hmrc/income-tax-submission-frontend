@@ -26,7 +26,7 @@ import models.{OverviewTailoringModel, User}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.TailoringUserDataRepository
-import services.{IncomeSourcesService, LiabilityCalculationService}
+import services.{IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
@@ -40,7 +40,8 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
                                        tailoringUserDataRepository: TailoringUserDataRepository,
                                        overviewPageView: OverviewPageView,
                                        authorisedAction: AuthorisedAction,
-                                       errorHandler: ErrorHandler,
+                                       implicit val validTaxYearListService: ValidTaxYearListService,
+                                       implicit val errorHandler: ErrorHandler,
                                        auditService: AuditService)
                                       (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {

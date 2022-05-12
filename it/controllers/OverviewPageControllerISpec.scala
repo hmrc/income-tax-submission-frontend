@@ -33,7 +33,7 @@ import play.api.mvc.{AnyContent, Result}
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import repositories.TailoringUserDataRepository
-import services.{IncomeSourcesService, LiabilityCalculationService}
+import services.{IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
@@ -279,6 +279,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
     app.injector.instanceOf[TailoringUserDataRepository],
     app.injector.instanceOf[OverviewPageView],
     app.injector.instanceOf[AuthorisedAction],
+    app.injector.instanceOf[ValidTaxYearListService],
     app.injector.instanceOf[ErrorHandler],
     app.injector.instanceOf[AuditService]
   )(frontendAppConfig, mcc, scala.concurrent.ExecutionContext.Implicits.global)
@@ -345,7 +346,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
       val specific = user.specificExpectedResults.get
 
       s"language is ${welshTest(user.isWelsh)} and request is from an ${agentTest(user.isAgent)}" should {
-        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
         "render an overview page with all sections showing status tag 'under maintenance' when feature switch is false" when {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
@@ -891,7 +892,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
       val specific = user.specificExpectedResults.get
 
       s"language is ${welshTest(user.isWelsh)} and request is from an ${agentTest(user.isAgent)}" should {
-        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
 
         "render an overview page with all sections turned off" when {
           val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
@@ -1023,7 +1024,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +
           "the status tag 'To do' when user is in a previous year" when {
-          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
           val previousYearUrl = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
           val taxYearMinusTwo = taxYearEOY - 1
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
@@ -1086,7 +1087,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         "render the overview page EOY with 'Started' status tags for each section and 'Cannot Update' for the employment section" +
           "when employmentEOYEnabled feature switch is false" when {
-          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
           val previousYearUrl = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
           val taxYearMinusTwo = taxYearEOY - 1
           val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
@@ -1157,7 +1158,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear")))
+          await(controller.show(taxYear)(fakeRequest.withSession(
+            SessionValues.TAX_YEAR -> s"$taxYear", SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
+          ))
         }
 
         result.header.status shouldBe OK
@@ -1171,7 +1174,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYearEOY)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYearEOY", SessionKeys.sessionId -> "sessionId-0101010101")))
+          await(controller.show(taxYearEOY)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYearEOY",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
+            SessionKeys.sessionId -> "sessionId-0101010101")
+          ))
         }
 
         result.header.status shouldBe SEE_OTHER
@@ -1183,7 +1189,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
-          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear", SessionKeys.sessionId -> "sessionId-0101010101")))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
+            SessionKeys.sessionId -> "sessionId-0101010101")
+          ))
         }
 
         result.header.status shouldBe OK
@@ -1196,7 +1205,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         val result = {
           stubIncomeSources
           authoriseIndividual()
-          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear")))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
+          ))
         }
 
         result.header.status shouldBe OK
@@ -1249,7 +1260,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYear)).withSession(
             SessionValues.CLIENT_MTDITID -> "1234567890",
             SessionValues.CLIENT_NINO -> "AA123456A",
-            SessionValues.TAX_YEAR -> s"$taxYear"
+            SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
           ).withHeaders("X-Session-ID" -> sessionId)
 
           lazy val result: Future[Result] = {
@@ -1291,7 +1303,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
         lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYear)).withSession(
           SessionValues.CLIENT_MTDITID -> "1234567890",
           SessionValues.CLIENT_NINO -> "AA123456A",
-          SessionValues.TAX_YEAR -> s"$taxYear"
+          SessionValues.TAX_YEAR -> s"$taxYear",
+          SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
         ).withHeaders("X-Session-ID" -> sessionId)
 
         lazy val result: Future[Result] = {
@@ -1331,7 +1344,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           lazy val request = FakeRequest(controllers.routes.OverviewPageController.inYearEstimate(taxYear)).withSession(
             SessionValues.CLIENT_MTDITID -> "1234567890",
             SessionValues.CLIENT_NINO -> "AA123456A",
-            SessionValues.TAX_YEAR -> s"$taxYear"
+            SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
           ).withHeaders("X-Session-ID" -> sessionId)
 
           lazy val result: Future[Result] = {

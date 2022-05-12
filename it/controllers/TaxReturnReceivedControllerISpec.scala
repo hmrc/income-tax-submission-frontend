@@ -147,7 +147,8 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     "the language is specified as English and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -187,7 +188,8 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
     "the language is specified as Welsh and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
@@ -231,6 +233,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CLIENT_NINO -> nino,
         SessionValues.CLIENT_MTDITID -> mtditid
       ))
@@ -273,6 +276,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CLIENT_NINO -> nino,
         SessionValues.CLIENT_MTDITID -> mtditid
       ))
@@ -315,7 +319,8 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
 
     "there is no Summary Data in session which" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")

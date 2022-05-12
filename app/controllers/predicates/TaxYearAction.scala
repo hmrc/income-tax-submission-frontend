@@ -16,21 +16,25 @@
 
 package controllers.predicates
 
-import common.SessionValues
-import common.SessionValues.TAX_YEAR
-import config.AppConfig
+import common.SessionValues.{TAX_YEAR, VALID_TAX_YEARS}
+import config.{AppConfig, ErrorHandler}
 import models.User
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
+import services.ValidTaxYearListService
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(
   implicit val appConfig: AppConfig,
-  val messagesApi: MessagesApi
+  val messagesApi: MessagesApi,
+  validTaxYearListService: ValidTaxYearListService,
+  errorHandler: ErrorHandler
 ) extends ActionRefiner[User, User] with I18nSupport {
 
   implicit val executionContext: ExecutionContext = ExecutionContext.global
@@ -39,29 +43,55 @@ class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(
   override def refine[A](request: User[A]): Future[Either[Result, User[A]]] = {
     implicit val implicitUser: User[A] = request
 
-    Future.successful(
-      if (!appConfig.taxYearErrorFeature || taxYear == appConfig.defaultTaxYear) {
-        val sameTaxYear = request.session.get(TAX_YEAR).exists(_.toInt == taxYear)
+    implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request,request.session)
 
-        if (sameTaxYear || !missingTaxYearReset) {
-          Right(request)
+    def taxYearListCheck(sessionExists: Boolean, validTaxYears: Seq[Int]) = {
+      if (!appConfig.taxYearErrorFeature || validTaxYears.contains(taxYear)) {
+        val sameTaxYear = request.session.get(TAX_YEAR).exists(_.toInt == taxYear)
+        if (sessionExists) {
+          if (sameTaxYear || !missingTaxYearReset) {
+            Right(request)
+          } else {
+            logger.info("[TaxYearAction][refine] Tax year provided is different than that in session. Redirecting to Start Page.")
+            val newSessionData = Seq(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears.mkString(","))
+            Left(Redirect(controllers.routes.StartPageController.show(taxYear).url).addingToSession(newSessionData: _*))
+          }
         } else {
-          logger.info("[TaxYearAction][refine] Tax year provided is different than that in session. Redirecting to overview.")
-          Left(
-            Redirect(controllers.routes.StartPageController.show(taxYear).url)
-              .addingToSession(TAX_YEAR -> taxYear.toString)
-          )
+          val newSessionData = Seq(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears.mkString(","))
+          Left(Redirect(controllers.routes.StartPageController.show(taxYear).url).addingToSession(newSessionData: _*))
         }
       } else {
         logger.info(s"Invalid tax year, adding default tax year to session")
-        Left(Redirect(controllers.routes.TaxYearErrorController.show)
-          .addingToSession(SessionValues.TAX_YEAR -> appConfig.defaultTaxYear.toString)(request))
+        val newSessionData = if(sessionExists){
+          Seq(TAX_YEAR -> taxYear.toString)
+        } else {
+          Seq(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears.mkString(","))
+        }
+        Left(Redirect(controllers.routes.TaxYearErrorController.show).addingToSession(newSessionData: _*)(request))
       }
-    )
+    }
+
+    val validClientTaxYears = request.session.get(VALID_TAX_YEARS)
+
+    if (validClientTaxYears.isEmpty){
+      validTaxYearListService.getValidTaxYearList(implicitUser.nino, implicitUser.mtditid).map {
+        case Left(error) => Left(errorHandler.handleError(error.status))
+        case Right(validTaxYears) =>
+          taxYearListCheck(sessionExists = false, validTaxYears.taxYears)
+      }
+    } else {
+      Future.successful(
+        taxYearListCheck(sessionExists = true, validClientTaxYears.get.split(",").toSeq.map(_.toInt))
+      )
+    }
   }
 }
 
 object TaxYearAction {
-  def taxYearAction(taxYear: Int, missingTaxYearReset: Boolean = true)(implicit appConfig: AppConfig, messages: MessagesApi): TaxYearAction =
+  def taxYearAction(taxYear: Int, missingTaxYearReset: Boolean = true)(implicit appConfig: AppConfig,
+                                                                       messages: MessagesApi,
+                                                                       validTaxYearListService: ValidTaxYearListService,
+                                                                       errorHandler: ErrorHandler
+  ): TaxYearAction =
     new TaxYearAction(taxYear, missingTaxYearReset)
 }

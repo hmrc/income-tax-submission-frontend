@@ -16,13 +16,24 @@
 
 package utils
 
-import org.joda.time.DateTime
+import common.SessionValues
+import models.User
+import java.time.LocalDate
+import play.api.libs.json.Reads
 
-trait TaxYearHelper {
+trait TaxYearHelper extends SessionDataHelper {
 
-  private val month = DateTime.now().monthOfYear().get()
-  private val dayOfMonth = DateTime.now().dayOfMonth().get()
+  private val dateNow: LocalDate = LocalDate.now()
+  private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")
 
-  val taxYear: Int = if (month >= 4 && dayOfMonth > 5) DateTime.now().year().get() + 1 else DateTime.now().year().get()
-  val taxYearEOY: Int = taxYear - 1
+  val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
+
+  def retrieveTaxYearList(implicit user: User[_], reads:Reads[String]): Seq[Int] = {
+    user.session.get(SessionValues.VALID_TAX_YEARS).getOrElse("").split(",").toSeq.map(_.toInt)
+  }
+
+  def firstClientTaxYear(implicit user: User[_], reads:Reads[String]): Int = retrieveTaxYearList.head
+  def latestClientTaxYear(implicit user: User[_], reads:Reads[String]): Int = retrieveTaxYearList.last
+
+  def singleValidTaxYear(implicit user: User[_], reads:Reads[String]): Boolean = firstClientTaxYear == latestClientTaxYear
 }

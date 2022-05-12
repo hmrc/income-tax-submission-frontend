@@ -80,7 +80,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
 
   "Rendering the No Valid Income Source error page in English" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
@@ -109,7 +109,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
 
   "Rendering the No Valid Income Source error page in English as an Agent" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "render the button with the correct url" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)
@@ -138,7 +138,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
   
   "Attempting to Render the No Valid Income Source error page in year" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear), "Csrf-Token" -> "nocheck")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(frontendAppConfig.defaultTaxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
     "fail to render and return a redirect that" should {
       val request = FakeRequest("GET", urlPath(frontendAppConfig.defaultTaxYear)).withHeaders(headers: _*)
@@ -157,7 +157,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
 
   "Rendering the tax return No Valid Income Source error page in Welsh" should {
     import ExpectedResultsWelsh._
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
+    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath()).withHeaders(headers: _*)

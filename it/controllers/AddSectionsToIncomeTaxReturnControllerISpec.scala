@@ -204,9 +204,11 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
       val specific = scenarioData.specificExpectedResults.get
 
+
+
       s"render the page for isAgent: ${scenarioData.isAgent} and isWelsh: ${scenarioData.isWelsh} content" when {
         "there are no journeys which have previously updated and no journeys in the tailoring database" which {
-          val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+          val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
           val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
@@ -240,7 +242,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
         }
 
         "there are no journeys which have been previously updated but all journeys are present in tailoring database" which {
-          val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+          val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
           val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
@@ -269,7 +271,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
             giftAid = None,
             cis = None)
 
-          val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+          val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
           val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
@@ -300,7 +302,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
         "the user has prior data for all the income sources available" which {
           val incomeSources = incomeSourcesModel
 
-          val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+          val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
           val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
@@ -329,7 +331,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     "return a INTERNAL SERVER ERROR " when {
       "getting incomeSources fails" which {
 
-        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear), "Csrf-Token" -> "nocheck")
+        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
         val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
@@ -352,7 +354,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       lazy val form = Map(s"${AddSectionsForm.addSections}[]" -> Seq("dividends"))
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -382,7 +385,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       lazy val form = Map(s"${AddSectionsForm.addSections}[]" -> Seq("dividends"))
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -413,7 +417,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       lazy val form = Map(s"${AddSectionsForm.addSections}[]" -> Seq("dividends"))
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -445,7 +450,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
         "anotherWrongValue" -> "")
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -473,7 +479,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       lazy val form = Map(s"${AddSectionsForm.addSections}[]" -> Seq("dividends"))
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.TAX_YEAR -> taxYear.toString
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")

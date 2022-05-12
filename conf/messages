@@ -185,7 +185,8 @@ user-research.login-label = User ID
 error.individual-unauthorised.2 = sign up for Making Tax Digital for Income Tax
 error-unauthorised.p3 = before you can view this page.
 
-error.tax-year.paragraph1 = You can only enter information for the {0} to {1} tax year.
+error.tax-year.paragraph1 = You can only enter information for the tax years {0} to {1}.
+error.tax-year.paragraph1.single = You can only enter information for a valid tax year.
 error.tax-year.paragraph2 = Check that you’ve entered the correct web address.
 
 error.unauthorised.title = You are not authorised to use this service

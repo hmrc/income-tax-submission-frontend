@@ -27,7 +27,7 @@ import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel, NrsSubmi
 import play.api.i18n.I18nSupport
 import play.api.Logger
 import play.api.mvc._
-import services.{DeclareCrystallisationService, NrsService}
+import services.{DeclareCrystallisationService, NrsService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationPageView
 import utils.SessionDataHelper
@@ -42,7 +42,8 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                                           implicit val ec: ExecutionContext,
                                           declarationPageView: DeclarationPageView,
                                           authorisedAction: AuthorisedAction,
-                                          errorHandler: ErrorHandler,
+                                          implicit val validTaxYearListService: ValidTaxYearListService,
+                                          implicit val errorHandler: ErrorHandler,
                                           auditService: AuditService) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
 
   lazy val logger: Logger = Logger.apply(this.getClass)

@@ -16,19 +16,26 @@
 
 package controllers.errors
 
+import common.SessionValues
+import helpers.PlaySessionCookieBaker
 import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.http.Status._
-import play.api.libs.ws.WSResponse
+import play.api.mvc.Result
+import play.api.test.Helpers.{status, writeableOf_AnyContentAsEmpty}
+import play.api.test.{FakeRequest, Helpers}
 
-class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers{
+import scala.concurrent.Future
+
+class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers {
 
   object ExpectedResults {
     val pageTitleText = "Page not found"
     val pageHeadingText = "Page not found"
-    val specificTaxYearText = s"You can only enter information for the $taxYearEOY to $taxYear tax year."
+    val specificTaxYearText = s"You can only enter information for the tax years $taxYearEndOfYearMinusOne to $taxYear."
+    val specificTaxYearTextSingle = "You can only enter information for a valid tax year."
     val checkWebAddressText = "Check that you’ve entered the correct web address."
     val selfAssessmentEnquiriesText: String = "If the website address is correct or you selected a link or button, " +
       "you can use Self Assessment: general enquiries (opens in new tab) to speak to someone about your income tax."
@@ -37,7 +44,8 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers{
 
     val pageTitleTextWelsh = "Heb ddod o hyd i’r dudalen"
     val pageHeadingTextWelsh = "Heb ddod o hyd i’r dudalen"
-    val specificTaxYearWelsh = s"Gallwch ond nodi gwybodaeth ar gyfer blwyddyn dreth $taxYearEOY i $taxYear."
+    val specificTaxYearWelsh = s"Dim ond gwybodaeth ar gyfer y blynyddoedd treth $taxYearEndOfYearMinusOne i $taxYear y gallwch ei nodi."
+    val specificTaxYearTextSingleWelsh = "Dim ond gwybodaeth ar gyfer blwyddyn dreth ddilys y gallwch ei nodi."
     val checkWebAddressTextWelsh = "Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir."
     val selfAssessmentEnquiriesWelsh: String = "Os yw’r cyfeiriad gwe yn gywir neu os ydych wedi dewis cysylltiad neu fotwm, " +
       "gallwch wneud y canlynol: Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd) i siarad â rhywun am eich Treth Incwm."
@@ -54,20 +62,29 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers{
   import ExpectedResults._
   import Selectors._
 
-  val errorPageUrl = s"http://localhost:$port/update-and-submit-income-tax-return/error/wrong-tax-year"
+  val errorPageUrl = "/update-and-submit-income-tax-return/error/wrong-tax-year"
 
   "an user calling GET" when {
     "language is set to ENGLISH" should {
-      "return a page" which {
-        lazy val result: WSResponse = {
+      "return a page with multiple tax years in session" which {
+
+        lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+        ))
+
+        val errorPageHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+        val request = FakeRequest("GET", errorPageUrl).withHeaders(errorPageHeaders: _*)
+
+        lazy val result: Future[Result] = {
           authoriseIndividual()
-          await(wsClient.url(errorPageUrl).get())
+          route(app, request).get
         }
 
-        implicit def document: () => Document = () => Jsoup.parse(result.body)
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
         "returns status of OK(200)" in {
-          result.status shouldBe OK
+          status(result) shouldBe OK
         }
 
         titleCheck(pageTitleText, isWelsh = false)
@@ -78,19 +95,53 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers{
         textOnPageCheck(checkWebAddressText, checkWebAddressSelector)
         textOnPageCheck(selfAssessmentEnquiriesText, selfAssessmentEnquiriesSelector)
       }
+
+      "return a page with a single tax year in session" which {
+
+        lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.VALID_TAX_YEARS -> singleValidTaxYear.mkString(",")
+        ))
+
+        val errorPageHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+        val request = FakeRequest("GET", errorPageUrl).withHeaders(errorPageHeaders: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(app, request).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        titleCheck(pageTitleText, isWelsh = false)
+        welshToggleCheck("English")
+        textOnPageCheck(specificTaxYearTextSingle, specificTaxYearSelector)
+      }
     }
 
     "language is set to WELSH" should {
-      "return a page" which {
-        lazy val result: WSResponse = {
+      "return a page with multiple tax years in session" which {
+        lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+        ))
+
+        val errorPageHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+        val request = FakeRequest("GET", errorPageUrl).withHeaders(errorPageHeaders: _*)
+
+        lazy val result: Future[Result] = {
           authoriseIndividual()
-          await(wsClient.url(errorPageUrl).withHttpHeaders(HeaderNames.ACCEPT_LANGUAGE -> "cy").get())
+          route(app, request, isWelsh = true).get
         }
 
-        implicit def document: () => Document = () => Jsoup.parse(result.body)
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
         "returns status of OK(200)" in {
-          result.status shouldBe 200
+          status(result) shouldBe 200
         }
 
         titleCheck(pageTitleTextWelsh, isWelsh = true)
@@ -101,6 +152,33 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers{
         textOnPageCheck(checkWebAddressTextWelsh, checkWebAddressSelector)
         textOnPageCheck(selfAssessmentEnquiriesWelsh, selfAssessmentEnquiriesSelector)
       }
+
+      "return a page with a single tax year in session" which {
+
+        lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.VALID_TAX_YEARS -> singleValidTaxYear.mkString(",")
+        ))
+
+        val errorPageHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+        val request = FakeRequest("GET", errorPageUrl).withHeaders(errorPageHeaders: _*)
+
+        lazy val result: Future[Result] = {
+          authoriseIndividual()
+          route(app, request, isWelsh = true).get
+        }
+
+        implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+        "returns status of OK(200)" in {
+          status(result) shouldBe OK
+        }
+
+        titleCheck(pageTitleTextWelsh, isWelsh = true)
+        welshToggleCheck("Welsh")
+        textOnPageCheck(specificTaxYearTextSingleWelsh, specificTaxYearSelector)
+      }
+
     }
   }
 
