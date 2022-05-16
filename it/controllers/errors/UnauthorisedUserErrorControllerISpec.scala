@@ -43,7 +43,7 @@ class UnauthorisedUserErrorControllerISpec extends IntegrationTest with ViewHelp
     lazy val goToTextWelsh = "fynd i’r"
     lazy val incomeTaxHomePageTextWelsh = "Hafan Treth Incwm (yn agor tab newydd)"
     lazy val forMoreTextWelsh = "am ragor o wybodaeth"
-    lazy val useTextWelsh = "defnyddiwch"
+    lazy val useTextWelsh = "defnyddio"
     lazy val generalEnquiriesTextWelsh = "Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)"
     lazy val toSpeakTextWelsh = "i siarad â rhywun am eich Treth Incwm"
   }

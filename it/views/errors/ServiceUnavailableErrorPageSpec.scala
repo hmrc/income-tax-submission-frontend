@@ -47,7 +47,7 @@ class ServiceUnavailableErrorPageSpec extends AnyWordSpec with Matchers with Vie
   val youWillBeAbleTextWelsh = "Byddwch yn gallu defnyddio’r gwasanaeth yn nes ymlaen."
   val youCanAlsoTextWelsh = "Gallwch hefyd wneud y canlynol:"
   val goToTheTextWelsh = "fynd i’r Hafan Treth Incwm (yn agor tab newydd) am ragor o wybodaeth"
-  val useSelfAssesTextWelsh = "defnyddiwch Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd) i siarad â rhywun am eich Treth Incwm"
+  val useSelfAssesTextWelsh = "defnyddio Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd) i siarad â rhywun am eich Treth Incwm"
   val link1TextWelsh = "Hafan Treth Incwm (yn agor tab newydd)"
   val link2TextWelsh = "Hunanasesiad: ymholiadau cyffredinol (yn agor tab newydd)"
 
