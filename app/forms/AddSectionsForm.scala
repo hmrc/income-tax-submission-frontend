@@ -23,12 +23,7 @@ import play.api.data._
 
 object AddSectionsForm {
 
-  case class AddSectionsQuestionModel(addSections: Seq[String]) {
-    val containsDividends: Boolean = !addSections.contains(DIVIDENDS)
-    val containsInterest: Boolean = !addSections.contains(INTEREST)
-    val containsCharity: Boolean = !addSections.contains(GIFT_AID)
-    val containsCis: Boolean = !addSections.contains(CIS)
-    val containsEmployment: Boolean = !addSections.contains(EMPLOYMENT)
+  case class AddSectionsQuestionModel(addSections: Seq[String], addSectionsRaw: Seq[String]) {
   }
 
   object AddSectionsQuestionModel {
@@ -40,7 +35,7 @@ object AddSectionsForm {
       if (incomeSources.giftAid.isDefined && !newTailoring.contains(GIFT_AID)) newTailoring = newTailoring :+ GIFT_AID
       if (incomeSources.employment.isDefined && !newTailoring.contains(EMPLOYMENT)) newTailoring = newTailoring :+ EMPLOYMENT
       if (incomeSources.cis.isDefined && !newTailoring.contains(CIS)) newTailoring = newTailoring :+ CIS
-      AddSectionsQuestionModel(newTailoring)
+      AddSectionsQuestionModel(newTailoring, addSections)
     }
     //scalastyle:on
   }
@@ -49,8 +44,9 @@ object AddSectionsForm {
 
   def addSectionsForm(sourcesModel: IncomeSourcesModel): Form[AddSectionsQuestionModel] = Form[AddSectionsQuestionModel](
     mapping(
+      addSections -> seq(text),
       addSections -> seq(text)
-    )(a1 => AddSectionsQuestionModel.apply(a1, sourcesModel))(AddSectionsQuestionModel.unapply)
+    )((a1, a2) => AddSectionsQuestionModel.apply(a1, sourcesModel))(AddSectionsQuestionModel.unapply)
   )
 
 }

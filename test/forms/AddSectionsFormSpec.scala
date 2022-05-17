@@ -32,21 +32,21 @@ class AddSectionsFormSpec extends UnitTest {
     "correctly validate" when {
 
       "with one input value" in {
-        val expected = AddSectionsQuestionModel(Seq("dividends"))
+        val expected = AddSectionsQuestionModel(Seq("dividends"), Seq("dividends"))
         val actual = theForm().bind(Map("addSections[0]" -> "dividends")).value
 
         actual shouldBe Some(expected)
       }
 
       "with two input values" in {
-        val expected = AddSectionsQuestionModel(Seq("cis", "gift-aid"))
+        val expected = AddSectionsQuestionModel(Seq("cis", "gift-aid"), Seq("cis", "gift-aid"))
         val actual = theForm().bind(Map("addSections[0]" -> "cis", "addSections[1]" -> "gift-aid")).value
 
         actual shouldBe Some(expected)
       }
 
       "with multiple values" in {
-        val expected = AddSectionsQuestionModel(Seq("dividends", "interest", "employment", "cis", "gift-aid"))
+        val expected = AddSectionsQuestionModel(Seq("dividends", "interest", "employment", "cis", "gift-aid"), Seq("dividends", "interest", "employment", "cis", "gift-aid"))
         val actual = theForm().bind(Map(
           "addSections[0]" -> "dividends",
           "addSections[1]" -> "interest",

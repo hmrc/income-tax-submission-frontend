@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.{AuditService, SourcesDetail, TailorAddIncomeSourcesDetail}
 import com.google.inject.Inject
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthorisedAction
@@ -28,6 +29,7 @@ import services.{IncomeSourcesService, TailoringSessionService, ValidTaxYearList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.AddSectionsToIncomeTaxReturnView
 import common.IncomeSources._
+import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,6 +40,7 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
                                                         tailoringSessionService: TailoringSessionService,
                                                         implicit val validTaxYearListService: ValidTaxYearListService,
                                                         implicit val errorHandler: ErrorHandler,
+                                                        auditService: AuditService,
                                                         implicit val appConfig: AppConfig,
                                                         implicit val ec: ExecutionContext,
                                                         implicit val mcc: MessagesControllerComponents
@@ -76,12 +79,22 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
             tailoringSessionService.getSessionData(taxYear).flatMap {
               case Right(data) =>
                 data.map(_.tailoring).fold {
+                  val auditResult = result.addSections.filter(journey => result.addSectionsRaw.contains(journey))
+                  if (auditResult.nonEmpty) {
+                    auditService.sendAudit(TailorAddIncomeSourcesDetail(
+                      user.nino, user.mtditid, if (user.isAgent) "agent" else "individual", taxYear, SourcesDetail(auditResult)).toAuditModel)
+                  }
                   tailoringSessionService.createSessionData(result.addSections, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
                     Redirect(controllers.routes.OverviewPageController.show(taxYear)))
                 } {
                   currentData =>
                     var newData: Seq[String] = currentData
                     result.addSections.foreach(journey => if (!currentData.contains(journey)) newData = newData :+ journey)
+                    if (!newData.equals(currentData)) {
+                    auditService.sendAudit(TailorAddIncomeSourcesDetail(
+                      user.nino, user.mtditid, if (user.isAgent) "agent" else "individual", taxYear,
+                      SourcesDetail(newData.filter(!currentData.contains(_)))).toAuditModel)
+                    }
                     tailoringSessionService.updateSessionData(newData, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
                       Redirect(controllers.routes.OverviewPageController.show(taxYear)))
                 }
