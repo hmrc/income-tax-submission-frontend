@@ -50,57 +50,67 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
     implicit user =>
-      incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
-        case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-        case Right(incomeSources) =>
-          tailoringSessionService.getSessionData(taxYear).flatMap {
-            case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-            case Right(value) => value.fold(
-              Future.successful(Ok(view(taxYear, user.isAgent, AddSectionsForm.addSectionsForm(incomeSources), allJourneys, incomeSources)))
-            )(
-              tailoringData =>
-                Future.successful(Ok(view(taxYear, user.isAgent, AddSectionsForm.addSectionsForm(incomeSources),
-                  allJourneys.filter(!tailoringData.tailoring.contains(_)), incomeSources)))
-
-            )
-          }
+      if(appConfig.tailoringEnabled) {
+        incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
+          case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          case Right(incomeSources) =>
+            tailoringSessionService.getSessionData(taxYear).flatMap {
+              case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+              case Right(value) => value.fold(
+                Future.successful(Ok(view(taxYear, user.isAgent, AddSectionsForm.addSectionsForm(incomeSources), allJourneys, incomeSources)))
+              )(
+                tailoringData =>
+                  Future.successful(Ok(view(taxYear, user.isAgent, AddSectionsForm.addSectionsForm(incomeSources),
+                    allJourneys.filter(!tailoringData.tailoring.contains(_)), incomeSources)))
+              )
+            }
+        }
+      }
+      else {
+        Future.successful(Redirect(controllers.routes.OverviewPageController.show(taxYear)))
       }
   }
 
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
     implicit user =>
-      incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
-        case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-        case Right(incomeSources) => addSectionsForm(incomeSources).bindFromRequest().fold({
-          form =>
-            Future.successful(Ok(view(taxYear, user.isAgent, form, allJourneys, incomeSources)))
-        }, {
-          result =>
-            tailoringSessionService.getSessionData(taxYear).flatMap {
-              case Right(data) =>
-                data.map(_.tailoring).fold {
-                  val auditResult = result.addSections.filter(journey => result.addSectionsRaw.contains(journey))
-                  if (auditResult.nonEmpty) {
-                    auditService.sendAudit(TailorAddIncomeSourcesDetail(
-                      user.nino, user.mtditid, if (user.isAgent) "agent" else "individual", taxYear, SourcesDetail(auditResult)).toAuditModel)
-                  }
-                  tailoringSessionService.createSessionData(result.addSections, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
-                    Redirect(controllers.routes.OverviewPageController.show(taxYear)))
-                } {
-                  currentData =>
-                    var newData: Seq[String] = currentData
-                    result.addSections.foreach(journey => if (!currentData.contains(journey)) newData = newData :+ journey)
-                    if (!newData.equals(currentData)) {
-                    auditService.sendAudit(TailorAddIncomeSourcesDetail(
-                      user.nino, user.mtditid, if (user.isAgent) "agent" else "individual", taxYear,
-                      SourcesDetail(newData.filter(!currentData.contains(_)))).toAuditModel)
+      if(appConfig.tailoringEnabled) {
+        val userAffinity = if (user.isAgent) "agent" else "individual"
+        incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
+          case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          case Right(incomeSources) => addSectionsForm(incomeSources).bindFromRequest().fold({
+            form =>
+              Future.successful(Ok(view(taxYear, user.isAgent, form, allJourneys, incomeSources)))
+          }, {
+            result =>
+              tailoringSessionService.getSessionData(taxYear).flatMap {
+                case Right(data) =>
+                  data.map(_.tailoring).fold {
+                    val auditResult = result.addSections.filter(journey => result.addSectionsRaw.contains(journey))
+                    if (auditResult.nonEmpty) {
+                      auditService.sendAudit(TailorAddIncomeSourcesDetail(
+                        user.nino, user.mtditid, userAffinity, taxYear, SourcesDetail(auditResult)).toAuditModel)
                     }
-                    tailoringSessionService.updateSessionData(newData, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
+                    tailoringSessionService.createSessionData(result.addSections, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
                       Redirect(controllers.routes.OverviewPageController.show(taxYear)))
-                }
-              case Left(_) => Future.successful(Redirect(controllers.routes.OverviewPageController.show(taxYear)))
-            }
-        })
+                  } {
+                    currentData =>
+                      var newData: Seq[String] = currentData
+                      result.addSections.foreach(journey => if (!currentData.contains(journey)) newData = newData :+ journey)
+                      if (!newData.equals(currentData)) {
+                        auditService.sendAudit(TailorAddIncomeSourcesDetail(
+                          user.nino, user.mtditid, userAffinity, taxYear,
+                          SourcesDetail(newData.filter(!currentData.contains(_)))).toAuditModel)
+                      }
+                      tailoringSessionService.updateSessionData(newData, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
+                        Redirect(controllers.routes.OverviewPageController.show(taxYear)))
+                  }
+                case Left(_) => Future.successful(Redirect(controllers.routes.OverviewPageController.show(taxYear)))
+              }
+          })
+        }
+      }
+      else {
+        Future.successful(Redirect(controllers.routes.OverviewPageController.show(taxYear)))
       }
   }
 }
