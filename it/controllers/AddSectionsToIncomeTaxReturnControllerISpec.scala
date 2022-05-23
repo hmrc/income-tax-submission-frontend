@@ -26,11 +26,12 @@ import models.IncomeSourcesModel
 import models.mongo.{DatabaseError, TailoringUserDataModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
+import play.api.{Application, Environment, Mode}
 import play.api.http.HeaderNames
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, SEE_OTHER}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.libs.ws.WSResponse
+import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import repositories.TailoringUserDataRepository
@@ -153,7 +154,11 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
   val invalidEncryptionApp: Application = customApp(invalidEncryptionKey = true)
 
   private lazy val tailoringRepository: TailoringUserDataRepository = app.injector.instanceOf[TailoringUserDataRepository]
-  private lazy val invalidTailoringRepository: TailoringUserDataRepository = invalidEncryptionApp.injector.instanceOf[TailoringUserDataRepository]
+
+  override implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(config(tailoringEnabled = true))
+    .build
 
 
   private def cleanDatabase(taxYear: Int) = {
@@ -203,8 +208,6 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       import scenarioData.commonExpectedResults._
 
       val specific = scenarioData.specificExpectedResults.get
-
-
 
       s"render the page for isAgent: ${scenarioData.isAgent} and isWelsh: ${scenarioData.isWelsh} content" when {
         "there are no journeys which have previously updated and no journeys in the tailoring database" which {
@@ -347,6 +350,29 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
         }
       }
     }
+    "redirect to Overview page" when {
+      "tailoring is turned off" which {
+
+        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
+
+        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+
+        lazy val result = {
+          cleanDatabase(taxYear)
+          stubIncomeInvalidSources
+          authoriseAgentOrIndividual(false)
+          route(customApp(tailoringEnabled = false), request, false).get
+        }
+
+        "returns a status of SEE_OTHER(303)" in {
+          status(result) shouldBe SEE_OTHER
+        }
+
+        "redirect url location is pointing to the overview page" in {
+          redirectUrl(result) shouldBe controllers.routes.OverviewPageController.show(taxYear).url
+        }
+      }
+    }
   }
 
   ".submit" should {
@@ -471,6 +497,36 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
       "returns a SEE_OTHER (303) result" in {
         result.status shouldBe SEE_OTHER
+      }
+
+    }
+    "redirect to the overview page when tailoring is switched off" when{
+
+      lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+      ))
+      def wsClientNoTailoring: WSClient = customApp(tailoringEnabled = false).injector.instanceOf[WSClient]
+
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+      lazy val result: WSResponse = {
+        authoriseIndividual()
+        stubPost(urlPath, OK, "{}")
+
+        await(wsClientNoTailoring
+          .url(s"http://localhost:$port" + urlPath)
+          .withHttpHeaders(headers:_*)
+          .withFollowRedirects(false)
+          .post(Map("" -> "")))
+      }
+
+      "returns a SEE_OTHER (303) result" in {
+        result.status shouldBe SEE_OTHER
+      }
+
+      "redirect url location is pointing to the overview page" in {
+        result.header(HeaderNames.LOCATION) shouldBe Some(controllers.routes.OverviewPageController.show(taxYear).url)
       }
 
     }
