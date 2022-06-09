@@ -74,28 +74,32 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
   }
 
   def showCrystallisation(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-    handleGetIncomeSources(taxYear, isInYear = false)
+    inYearAction.notInYear(taxYear)(handleGetIncomeSources(taxYear, isInYear = false))
   }
 
   def finalCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
+    inYearAction.notInYear(taxYear) {
+      liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {
+        case Right(calculationId) =>
 
-    liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {
-      case Right(calculationId) =>
+          val userTypeString = if (user.isAgent) "agent" else "individual"
+          auditService.sendAudit(IntentToCrystalliseDetail(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
 
-        val userTypeString = if (user.isAgent) "agent" else "individual"
-        auditService.sendAudit(IntentToCrystalliseDetail(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
-
-        if (user.isAgent) {
-          Redirect(appConfig.viewAndChangeFinalCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-        } else {
-          Redirect(appConfig.viewAndChangeFinalCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
-        }
-      case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, taxYear)
+          if (user.isAgent) {
+            Redirect(appConfig.viewAndChangeFinalCalculationUrlAgent(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+          } else {
+            Redirect(appConfig.viewAndChangeFinalCalculationUrl(taxYear)).addingToSession(CALCULATION_ID -> calculationId.id)
+          }
+        case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, taxYear)
+      }
     }
   }
 
   def inYearEstimate(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
 
+    val isInYear: Boolean = inYearAction.inYear(taxYear)
+
+    if (isInYear) {
     val userTypeString = if (user.isAgent) "agent" else "individual"
     auditService.sendAudit(CreateInYearTaxEstimate(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
 
@@ -106,5 +110,8 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
         Redirect(appConfig.viewAndChangeViewInYearEstimateUrl)
       }
     )
+  } else {
+      Future.successful(Redirect(OverviewPageControllerRoute.showCrystallisation(taxYear)))
+    }
   }
 }
