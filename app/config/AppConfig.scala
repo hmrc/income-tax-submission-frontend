@@ -59,24 +59,23 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def cisFEUrl(taxYear: Int): String = s"$cisIncomeTaxSubmissionUrl/$taxYear/summary"
 
   lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeUrl)
-  lazy val vcPtaNavBarOrigin: String = "?origin=PTA"
-  def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view$vcPtaNavBarOrigin"
-  def viewAndChangeViewInYearEstimateUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-overview$vcPtaNavBarOrigin"
+  def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view"
+  def viewAndChangeViewInYearEstimateUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-overview"
   def viewAndChangeEnterUtrUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
   def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/income-tax-account"
   def viewAndChangeViewInYearEstimateUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/tax-overview"
-  def viewAndChangePaymentsOwedUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/payments-owed$vcPtaNavBarOrigin"
+  def viewAndChangePaymentsOwedUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/payments-owed"
   def viewAndChangePaymentsOwedAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/payments-owed"
-  def viewAndChangeNextUpdatesUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/obligations$vcPtaNavBarOrigin"
+  def viewAndChangeNextUpdatesUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/obligations"
   def viewAndChangeNextUpdatesAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/obligations"
-  def viewAndChangeTaxYearsUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-years$vcPtaNavBarOrigin"
+  def viewAndChangeTaxYearsUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-years"
   def viewAndChangeTaxYearsAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/tax-years"
 
   def viewAndChangeFinalCalculationUrl(taxYear: Int): String = {
-    s"$vcBaseUrl/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview/calculate$vcPtaNavBarOrigin"
+    s"$vcBaseUrl/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview/calculate"
   }
   def viewAndChangeFinalCalculationUrlAgent(taxYear: Int): String = {
-    s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview/calculate$vcPtaNavBarOrigin"
+    s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview/calculate"
   }
 
   lazy private val appUrl: String = servicesConfig.getString("microservice.url")

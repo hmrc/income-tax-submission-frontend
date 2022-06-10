@@ -1,6 +1,7 @@
 
-# income-tax-submission-fronted
-This is where users can view the overall state of their income tax submission, start submitting or append an income source,
+
+# income-tax-submission-frontend
+This is where users can view the overall state of their income tax submission, tailoring their return, start submitting or append an income source,
 or submit a completed Submission.
 
 ## Running the service locally
@@ -23,14 +24,20 @@ This service runs on port: `localhost:9302`
 
 | Feature | Environments Enabled In |
 | --- | --- |
+| Welsh | Local, QA, Staging |
+| NRS | Local, QA, Staging, Production |
+| Tax Year Error | Production |
 | Dividends | Local, QA, Staging, Production |
 | Interest | Local, QA, Staging, Production |
 | GiftAid | Local, QA, Staging, Production |
-| EmploymentsEnabled | Local, QA, Staging, Production |
-| EmploymentsReleased | Local, QA, Staging, Production |
-| NRS | Local, QA, Staging, Production |
-| Tax Year Error | Production |
-| Welsh | Local, QA, Staging |
+| Student loans | Local, QA, Staging, ET |
+| EmploymentsEnabled | Local, QA, Staging, ET |
+| EmploymentsReleased | Local, QA, Staging, ET |
+| End of year employment | Local, QA, Staging, ET |
+| CISEnabled | Local, QA, Staging |
+| CISReleased | Local, QA, Staging |
+| CrystallisationEnabled | Local, QA, Staging, Production |
+| TailoringEnabled | Local |
 
 ## Auth Setup - How to enter the service
 
@@ -173,16 +180,370 @@ passing along any previously submitted data.
         }
       }
     ]
-  }
+  },
+  "pensions": [
+  {
+          "taxYear": 2023,
+          "pensionReliefs": {
+              "submittedOn": "2020-07-27T17:00:19Z",
+              "pensionReliefs": {
+                  "regularPensionContributions": 50,
+                  "oneOffPensionContributionsPaid": 170,
+                  "retirementAnnuityPayments": 180,
+                  "paymentToEmployersSchemeNoTaxRelief": 60,
+                  "overseasPensionSchemeContributions": 40
+              }
+          },
+          "pensionCharges": {
+              "submittedOn": "2020-07-27T17:00:19Z",
+              "pensionSavingsTaxCharges": {
+                  "pensionSchemeTaxReference": ["00123456RA", "00123456RB"],
+                  "lumpSumBenefitTakenInExcessOfLifetimeAllowance": {
+                      "amount": 800.02,
+                      "taxPaid": 200.02
+                  },
+                  "benefitInExcessOfLifetimeAllowance": {
+                      "amount": 800.02,
+                      "taxPaid": 200.02
+                  },
+                  "isAnnualAllowanceReduced": false,
+                  "taperedAnnualAllowance": false,
+                  "moneyPurchasedAllowance": false
+              },
+              "pensionSchemeOverseasTransfers": {
+                  "overseasSchemeProvider": [
+                {
+                      "providerName": "overseas providerName 1 qualifying scheme",
+                      "providerAddress": "overseas address 1",
+                      "providerCountryCode": "ESP",
+                      "qualifyingRecognisedOverseasPensionScheme": ["Q100000", "Q100002"]
+                  }
+                ],
+                  "transferCharge": 123.45,
+                  "transferChargeTaxPaid": 0
+              },
+              "pensionSchemeUnauthorisedPayments": {
+                  "pensionSchemeTaxReference": [
+                    "00123456RA", "00123456RB"
+                  ],
+                  "surcharge": {
+                      "amount": 124.44,
+                      "foreignTaxPaid": 123.33
+                  },
+                  "noSurcharge": {
+                      "amount": 222.44,
+                      "foreignTaxPaid": 223.33
+                  }
+              },
+              "pensionContributions": {
+                  "pensionSchemeTaxReference": [
+                  "00123456RA", "00123456RB"
+                  ],
+                  "inExcessOfTheAnnualAllowance": 150.67,
+                  "annualAllowanceTaxPaid": 178.65
+              },
+              "overseasPensionContributions": {
+                  "overseasSchemeProvider": [
+                    {
+                      "providerName": "overseas providerName 1 tax ref",
+                      "providerAddress": "overseas address 1",
+                      "providerCountryCode": "ESP",
+                      "pensionSchemeTaxReference": [
+                      "00123456RA", "00123456RB"
+                    ]
+                  }
+              ],
+                  "shortServiceRefund": 1.11,
+                  "shortServiceRefundTaxPaid": 2.22
+              }
+          },
+          "stateBenefits": {
+              "stateBenefits": {
+                  "incapacityBenefit": [
+                    {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c934",
+                      "startDate": "2019-11-13",
+                      "dateIgnored": "2019-04-11T16:22:00Z",
+                      "submittedOn": "2020-09-11T17:23:00Z",
+                      "endDate": "2020-08-23",
+                      "amount": 1212.34,
+                      "taxPaid": 22323.23
+                    }
+                  ],
+                  "statePension": {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c935",
+                      "startDate": "2018-06-03",
+                      "dateIgnored": "2018-09-09T19:23:00Z",
+                      "submittedOn": "2020-08-07T12:23:00Z",
+                      "endDate": "2020-09-13",
+                      "amount": 42323.23,
+                      "taxPaid": 2323.44
+                  },
+                  "statePensionLumpSum": {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c936",
+                      "startDate": "2019-04-23",
+                      "dateIgnored": "2019-07-08T05:23:00Z",
+                      "submittedOn": "2020-03-13T19:23:00Z",
+                      "endDate": "2020-08-13",
+                      "amount": 45454.23,
+                      "taxPaid": 45432.56
+                  },
+                  "employmentSupportAllowance": [
+                    {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c937",
+                      "startDate": "2019-09-23",
+                      "dateIgnored": "2019-09-28T10:23:00Z",
+                      "submittedOn": "2020-11-13T19:23:00Z",
+                      "endDate": "2020-08-23",
+                      "amount": 44545.43,
+                      "taxPaid": 35343.23
+                    }
+                  ],
+                  "jobSeekersAllowance": [
+                    {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c938",
+                      "startDate": "2019-09-19",
+                      "dateIgnored": "2019-08-18T13:23:00Z",
+                      "submittedOn": "2020-07-10T18:23:00Z",
+                      "endDate": "2020-09-23",
+                      "amount": 33223.12,
+                      "taxPaid": 44224.56
+                    }
+                  ],
+                  "bereavementAllowance": {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c939",
+                      "startDate": "2019-05-22",
+                      "dateIgnored": "2020-08-10T12:23:00Z",
+                      "submittedOn": "2020-09-19T19:23:00Z",
+                      "endDate": "2020-09-26",
+                      "amount": 56534.23,
+                      "taxPaid": 34343.57
+                  },
+                  "otherStateBenefits": {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c940",
+                      "startDate": "2018-09-03",
+                      "dateIgnored": "2020-01-11T15:23:00Z",
+                      "submittedOn": "2020-09-13T15:23:00Z",
+                      "endDate": "2020-06-03",
+                      "amount": 56532.45,
+                      "taxPaid": 5656.89
+                  }
+              },
+              "customerAddedStateBenefits": {
+                  "incapacityBenefit": [
+                    {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c941",
+                      "startDate": "2018-07-17",
+                      "submittedOn": "2020-11-17T19:23:00Z",
+                      "endDate": "2020-09-23",
+                      "amount": 45646.78,
+                      "taxPaid": 4544.34
+                    }
+                  ],
+                  "statePension": {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c943",
+                      "startDate": "2018-04-03",
+                      "submittedOn": "2020-06-11T10:23:00Z",
+                      "endDate": "2020-09-13",
+                      "amount": 45642.45,
+                      "taxPaid": 6764.34
+                  },
+                  "statePensionLumpSum": {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c956",
+                      "startDate": "2019-09-23",
+                      "submittedOn": "2020-06-13T05:29:00Z",
+                      "endDate": "2020-09-26",
+                      "amount": 34322.34,
+                      "taxPaid": 4564.45
+                  },
+                  "employmentSupportAllowance": [
+                    {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c988",
+                      "startDate": "2019-09-11",
+                      "submittedOn": "2020-02-10T11:20:00Z",
+                      "endDate": "2020-06-13",
+                      "amount": 45424.23,
+                      "taxPaid": 23232.34
+                    }
+                  ],
+                  "jobSeekersAllowance": [
+                    {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c990",
+                      "startDate": "2019-07-10",
+                      "submittedOn": "2020-05-13T14:23:00Z",
+                      "endDate": "2020-05-11",
+                      "amount": 34343.78,
+                      "taxPaid": 3433.56
+                    } 
+                  ],
+                  "bereavementAllowance": {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c997",
+                      "startDate": "2018-08-12",
+                      "submittedOn": "2020-02-13T11:23:00Z",
+                      "endDate": "2020-07-13",
+                      "amount": 45423.45,
+                      "taxPaid": 4543.64
+                  },
+                  "otherStateBenefits": {
+                      "benefitId": "a1e8057e-fbbc-47a8-a8b4-78d9f015c957",
+                      "startDate": "2018-01-13",
+                      "submittedOn": "2020-09-12T12:23:00Z",
+                      "endDate": "2020-08-13",
+                      "amount": 63333.33,
+                      "taxPaid": 4644.45
+                  }
+              }
+          }
+      }
+  ],
+  "cis": [
+    {
+        "taxYear": 2023,
+        "customerCISDeductions": {
+            "totalDeductionAmount": 400,
+            "totalCostOfMaterials": 400,
+            "totalGrossAmountPaid": 400,
+            "cisDeductions": [
+              {
+                "fromDate": "2021-04-06",
+                "toDate": "2022-04-05",
+                "contractorName": "Michele Lamy Paving Ltd",
+                "employerRef": "111/11111",
+                "totalDeductionAmount": 200,
+                "totalCostOfMaterials": 200,
+                "totalGrossAmountPaid": 200,
+                "periodData": [
+                  {
+                    "deductionFromDate": "2021-04-06",
+                    "deductionToDate": "2021-05-05",
+                    "deductionAmount": 100,
+                    "costOfMaterials": 100,
+                    "grossAmountPaid": 100,
+                    "submissionDate": "2022-05-11T16:38:57.489Z",
+                    "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+                    "source": "customer"
+                  }, {
+                    "deductionFromDate": "2021-05-06",
+                    "deductionToDate": "2021-06-05",
+                    "deductionAmount": 100,
+                    "costOfMaterials": 100,
+                    "grossAmountPaid": 100,
+                    "submissionDate": "2022-05-11T16:38:57.489Z",
+                    "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+                    "source": "customer"
+                  }
+                ]
+              }, {
+                "fromDate": "2021-04-06",
+                "toDate": "2022-04-05",
+                "contractorName": "Jun Takahashi Window Fitting",
+                "employerRef": "222/11111",
+                "totalDeductionAmount": 200,
+                "totalCostOfMaterials": 200,
+                "totalGrossAmountPaid": 200,
+                "periodData": [
+                  {
+                    "deductionFromDate": "2021-04-06",
+                    "deductionToDate": "2021-05-05",
+                    "deductionAmount": 100,
+                    "costOfMaterials": 100,
+                    "grossAmountPaid": 100,
+                    "submissionDate": "2022-05-11T16:38:57.489Z",
+                    "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+                    "source": "customer"
+                  }, {
+                    "deductionFromDate": "2021-05-06",
+                    "deductionToDate": "2021-06-05",
+                    "deductionAmount": 100,
+                    "costOfMaterials": 100,
+                    "grossAmountPaid": 100,
+                    "submissionDate": "2022-05-11T16:38:57.489Z",
+                    "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+                    "source": "customer"
+                  }
+                ]
+              }
+            ]
+        },
+        "contractorCISDeductions": {
+            "totalDeductionAmount": 400,
+            "totalCostOfMaterials": 400,
+            "totalGrossAmountPaid": 400,
+            "cisDeductions": [
+              {
+                "fromDate": "2021-04-06",
+                "toDate": "2022-04-05",
+                "contractorName": "Michele Lamy Paving Ltd",
+                "employerRef": "111/11111",
+                "totalDeductionAmount": 200,
+                "totalCostOfMaterials": 200,
+                "totalGrossAmountPaid": 200,
+                "periodData": [
+                  {
+                    "deductionFromDate": "2021-04-06",
+                    "deductionToDate": "2021-05-05",
+                    "deductionAmount": 100,
+                    "costOfMaterials": 100,
+                    "grossAmountPaid": 100,
+                    "submissionDate": "2022-05-11T16:38:57.489Z",
+                    "source": "contractor"
+                  }, {
+                    "deductionFromDate": "2021-05-06",
+                    "deductionToDate": "2021-06-05",
+                    "deductionAmount": 100,
+                    "costOfMaterials": 100,
+                    "grossAmountPaid": 100,
+                    "submissionDate": "2022-05-11T16:38:57.489Z",
+                    "source": "contractor"
+                  }
+                ]
+              }, {
+                "fromDate": "2021-04-06",
+                "toDate": "2022-04-05",
+                "contractorName": "Jun Takahashi Window Fitting",
+                "employerRef": "222/11111",
+                "totalDeductionAmount": 200,
+                "totalCostOfMaterials": 200,
+                "totalGrossAmountPaid": 200,
+                "periodData": [
+                  {
+                    "deductionFromDate": "2021-04-06",
+                    "deductionToDate": "2021-05-05",
+                    "deductionAmount": 100,
+                    "costOfMaterials": 100,
+                    "grossAmountPaid": 100,
+                    "submissionDate": "2022-05-11T16:38:57.489Z",
+                    "source": "contractor"
+                  }, {
+                    "deductionFromDate": "2021-05-06",
+                    "deductionToDate": "2021-06-05",
+                    "deductionAmount": 100,
+                    "costOfMaterials": 100,
+                    "grossAmountPaid": 100,
+                    "submissionDate": "2022-05-11T16:38:57.489Z",
+                    "source": "contractor"
+                  }
+                ]
+              }
+            ]
+        }
+    }
+  ]
 }
 ```
 </details>
 
-### Dividends, Interest, GiftAid
+## Dividends, Interest, GiftAid
 These journeys are a part of the Personal-Income-Tax-Submission-Frontend repository see its readMe for more.
 
-### Employments
+## Employments
 This journey is a part of the Income-Tax-Employment-Frontend repository see its readMe for more.
+
+## CIS
+This journey is a part of the Income-Tax-Cis-Frontend repository see its readMe for more.
+
+## Pensions
+This journey is a part of the Income-Tax-Pensions-Frontend repository see its readMe for more.
 
 ## Crystallisation
 It must be end of year for a user to submit for crystallisation.
@@ -199,6 +560,13 @@ Currently, the crystallisation journey and tax account in staging can only be ac
 | --- | --- |
 | AA888888A | XAIT00000888888 |
 
+## Ninos with stub data for Income Tax Submission Frontend
+
+| Nino | Income Tax Submission Frontend data | Source |
+| --- | --- | --- |
+| AA123459A | User with data for all income sources | HMRC-Held |
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
+

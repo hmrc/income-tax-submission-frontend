@@ -59,8 +59,6 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   val mtditid = "1234567890"
   val affinityGroup = "Individual"
 
-  val vcPtaNavBarOrigin = "?origin=PTA"
-
   val validTaxYearList: Seq[Int] = Seq(taxYearEndOfYearMinusOne, taxYearEOY, taxYear)
   val singleValidTaxYear: Seq[Int] = Seq(taxYearEndOfYearMinusOne)
 
