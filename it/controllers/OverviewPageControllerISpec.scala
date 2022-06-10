@@ -40,6 +40,7 @@ import views.html.OverviewPageView
 import java.util.UUID
 import scala.concurrent.Future
 
+//noinspection ScalaStyle
 class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   object Links {
@@ -67,14 +68,14 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
       "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"
     }
     else {
-      "http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview"
+      s"http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview$vcPtaNavBarOrigin"
     }
 
     def viewAndChangeLink(isAgent: Boolean): String = if (isAgent) {
       "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
     }
     else {
-      "http://localhost:9081/report-quarterly/income-and-expenses/view"
+      s"http://localhost:9081/report-quarterly/income-and-expenses/view$vcPtaNavBarOrigin"
     }
 
     val endOfYearContinueLink = s"/update-and-submit-income-tax-return/$taxYearEOY/final-calculation"
@@ -1285,9 +1286,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           s"has a redirect to the view and change ${if (user.isAgent) "agent" else "individual"} page" in {
             val expectedUrl = if (user.isAgent){
-              s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview/calculate"
+              s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview/calculate$vcPtaNavBarOrigin"
             } else {
-              s"http://localhost:9081/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview/calculate"
+              s"http://localhost:9081/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview/calculate$vcPtaNavBarOrigin"
             }
 
             await(result).header.headers("Location") shouldBe expectedUrl
@@ -1367,8 +1368,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers {
           }
 
           s"has a redirect to the view and change ${if (user.isAgent) "agent" else "individual"} page" in {
-            val expectedUrl = if (user.isAgent) {"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"}
-            else {"http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview"}
+            val expectedUrl = if (user.isAgent) {s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"}
+            else {s"http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview$vcPtaNavBarOrigin"}
 
             await(result).header.headers("Location") shouldBe expectedUrl
           }
