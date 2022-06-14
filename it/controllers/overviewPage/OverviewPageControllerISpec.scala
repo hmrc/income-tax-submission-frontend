@@ -278,6 +278,30 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
       s"language is ${welshTest(user.isWelsh)} and request is from an ${agentTest(user.isAgent)}" should {
         val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
+        "render an overview page with all the sections showing with the HREFs redirecting to the Tailoring questions" when {
+
+          "there is no prior data, and the tailoring feature switch is on" which {
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+
+            lazy val result: Future[Result] = {
+              cleanDatabase(taxYear)
+              insertAllJourneys()
+              authoriseAgentOrIndividual(user.isAgent)
+              route(customApp(tailoringEnabled = true), request, user.isWelsh).get
+            }
+
+            implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+            "has a status of OK(200)" in {
+              status(result) shouldBe OK
+            }
+
+            linkCheck(interestsLinkText, Selectors.interestLinkSelector, interestsTailoringGatewayLink(taxYear))
+            //TODO Add other journeys here
+          }
+
+        }
+
         "render an overview page with all sections showing status tag 'under maintenance' when feature switch is false" when {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
