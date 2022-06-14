@@ -24,8 +24,9 @@ case class OverviewTailoringModel(tailoring: Seq[String], incomeSources: IncomeS
   val hasGiftAid: Boolean = tailoring.contains("gift-aid") || incomeSources.giftAid.nonEmpty
   val hasEmployment: Boolean = tailoring.contains("employment") || incomeSources.employment.nonEmpty
   val hasCis: Boolean = tailoring.contains("cis") || incomeSources.cis.nonEmpty
+  val hasPensions: Boolean = tailoring.contains("pensions") || incomeSources.pensions.nonEmpty
 
-  val allJourneys: List[Boolean] = List(hasDividends, hasInterest, hasGiftAid, hasEmployment, hasCis)
+  val allJourneys: List[Boolean] = List(hasDividends, hasInterest, hasGiftAid, hasEmployment, hasCis, hasPensions)
 
   val sourceCount: Int =
     (tailoring.size - (bool2int(hasDividends) + bool2int(hasInterest) + bool2int(hasGiftAid) + bool2int(hasEmployment) + bool2int(hasCis))) * -1

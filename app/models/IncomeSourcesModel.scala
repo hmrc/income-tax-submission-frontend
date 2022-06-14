@@ -18,13 +18,15 @@ package models
 
 import models.cis.AllCISDeductions
 import models.employment.{AllEmploymentData, HmrcEmploymentSource}
+import models.pensions.Pensions
 import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
                               interest: Option[Seq[InterestModel]] = None,
                               giftAid: Option[GiftAidModel] = None,
                               employment: Option[AllEmploymentData] = None,
-                              cis: Option[AllCISDeductions] = None){
+                              cis: Option[AllCISDeductions] = None,
+                              pensions: Option[Pensions] = None){
 
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
 

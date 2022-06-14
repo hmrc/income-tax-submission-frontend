@@ -98,6 +98,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val tailoringEnabled: Boolean = true
 
+  override lazy val pensionsEnabled: Boolean = true
+
   override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
 
   override def viewAndChangeViewInYearEstimateUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview"
@@ -119,6 +121,11 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override val cisIncomeTaxSubmissionUrl: String = "/cis-income"
 
   override def cisFEUrl(taxYear: Int): String = ???
+
+  override val pensionsFrontendBaseUrl: String = "/pensions-income"
+  override val pensionsFrontendUrl: String = "/pensions"
+
+  override def pensionsSummaryUrl(taxYear: Int): String = ???
 
   override val vcBaseUrl: String = "/view-and-change"
 

@@ -103,6 +103,15 @@
         )
 
         @taskListItem(
+            tailoring.hasPensions,
+            appConfig.pensionsEnabled,
+            "pensions_link",
+            "common.pensions",
+            appConfig.pensionsSummaryUrl(taxYear),
+            incomeSources.pensions.isDefined
+        )
+
+        @taskListItem(
             appConfig.cisReleased && tailoring.hasCis,
             appConfig.cisEnabled,
             "cis_link",
