@@ -60,7 +60,19 @@
         </li>
     }
 }
-    
+
+@interestUrlRedirect(incomeSources: IncomeSourcesModel) = @{
+    if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
+        appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)
+    } else {
+        if(appConfig.tailoringEnabled) {
+            appConfig.personalIncomeTaxInterestGatewayUrl(taxYear)
+        } else {
+            appConfig.personalIncomeTaxInterestUrl(taxYear)
+        }
+    }
+}
+
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <ol style="padding-left:0;" class="app-task-list__items govuk-!-padding-bottom-1">
         @taskListItem(
@@ -68,7 +80,7 @@
             appConfig.interestEnabled,
             "interest_link",
             "common.interest",
-            if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)} else {appConfig.personalIncomeTaxInterestUrl(taxYear)},
+            interestUrlRedirect(incomeSources),
             incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
         )
         

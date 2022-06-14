@@ -157,6 +157,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override def excludedIncomeSources(taxYear: Int): Seq[String] = Seq()
   override val testOnly_authLoginUrl: String = "/auth-login"
+
+  override def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$taxYear/interest/tailoring-gateway"
 }
 
 class MockAppConfigTaxYearFeatureOff extends MockAppConfig {
