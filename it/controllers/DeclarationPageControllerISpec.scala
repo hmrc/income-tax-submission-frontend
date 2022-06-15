@@ -34,17 +34,17 @@ import scala.concurrent.Future
 class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
 
-  private val crystallisationUrl: String = s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/string/declare-crystallisation"
+  private val crystallisationUrl: String = s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYearEOY/string/declare-crystallisation"
 
   object ExpectedResults{
 
     val heading: String = "Declaration"
-    val subheading: String = "6 April " + taxYearEOY + " to " + "5 April " + taxYear
+    val subheading: String = "6 April " + taxYearEndOfYearMinusOne + " to " + "5 April " + taxYearEOY
 
     val agreeButton: String = "Agree and submit"
 
     val headingWelsh: String = "Datganiad"
-    val subheadingWelsh: String = "6 Ebrill " + taxYearEOY + " i " + "5 Ebrill " + taxYear
+    val subheadingWelsh: String = "6 Ebrill " + taxYearEndOfYearMinusOne + " i " + "5 Ebrill " + taxYearEOY
 
     val agreeButtonWelsh: String = "Cytuno a chyflwyno"
 
@@ -54,15 +54,15 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     val taxYearReturnUpdatedTitle: String = "Your Income Tax Return has been updated"
 
-    val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/update-and-submit-income-tax-return/$taxYear/view"
+    val expectedIncomeTaxSubmissionFrontendOverviewUrl: String = s"/update-and-submit-income-tax-return/$taxYearEOY/view"
 
-    val expectedNoValidIncomeSourcesUrl: String = s"/update-and-submit-income-tax-return/$taxYear/no-business-income"
+    val expectedNoValidIncomeSourcesUrl: String = s"/update-and-submit-income-tax-return/$taxYearEOY/no-business-income"
 
-    val expectedTaxReturnPreviouslyUpdatedUrl: String = s"/update-and-submit-income-tax-return/$taxYear/income-tax-return-updated"
+    val expectedTaxReturnPreviouslyUpdatedUrl: String = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-updated"
 
-    val expectedTaxReturnExistsUrl: String = s"/update-and-submit-income-tax-return/$taxYear/already-have-income-tax-return"
+    val expectedTaxReturnExistsUrl: String = s"/update-and-submit-income-tax-return/$taxYearEOY/already-have-income-tax-return"
 
-    val expectedAddressChangedUrl: String = s"/update-and-submit-income-tax-return/$taxYear/address-changed"
+    val expectedAddressChangedUrl: String = s"/update-and-submit-income-tax-return/$taxYearEOY/address-changed"
   }
 
   object IndividualExpectedResults {
@@ -105,7 +105,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
   import ExpectedResults._
   import Selectors._
 
-  private val urlPath = s"/update-and-submit-income-tax-return/$taxYear/declaration"
+  private val urlPathEOY = s"/update-and-submit-income-tax-return/$taxYearEOY/declaration"
+  private val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/declaration"
 
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -115,14 +116,14 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the language is specified as English and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
 
       "display the declaration page" which {
-        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+        val request = FakeRequest("GET", urlPathEOY).withHeaders(headers: _*)
 
         lazy val result: Future[Result] = {
           authoriseIndividual()
@@ -148,14 +149,14 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the language is specified as Welsh and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
       "display the declaration page in Welsh" which {
-        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+        val request = FakeRequest("GET", urlPathEOY).withHeaders(headers: _*)
 
         lazy val result: Future[Result] = {
           authoriseIndividual()
@@ -177,45 +178,10 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       }
     }
   }
-  
-  "/submit" should {
-    
-    "Redirect to the confirmation page" when {
-      import IndividualExpectedResults.individualSummaryData
 
-      lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
-        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
-        SessionValues.CALCULATION_ID -> "string"
-      ))
+  "/show" should {
 
-      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
-
-      "there is summary data and a calculation id in session" which {
-        lazy val result = {
-          authoriseIndividual()
-          stubPost(crystallisationUrl, NO_CONTENT, "{}")
-
-          await(wsClient
-            .url(s"http://localhost:$port" + urlPath)
-            .withHttpHeaders(headers:_*)
-            .withFollowRedirects(false)
-            .post("{}"))
-        }
-
-        "returns a status of SEE_OTHER(303)" in {
-          result.status shouldBe SEE_OTHER
-        }
-
-        "has a redirect url pointing at the confirmation page" in {
-          result.headers("Location").head shouldBe controllers.routes.TaxReturnReceivedController.show(taxYear).url
-        }
-      }
-
-    }
-    
-    "Redirect to the overview page" when {
+    "redirect back to the overview page when trying to access in year" which {
       import IndividualExpectedResults.individualSummaryData
 
       "the calc id is missing" which {
@@ -231,7 +197,44 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
           stubPost(crystallisationUrl, NO_CONTENT, "{}")
 
           await(wsClient
-            .url(s"http://localhost:$port" + urlPath)
+            .url(s"http://localhost:$port" + urlPathInYear)
+            .withHttpHeaders(headers: _*)
+            .withFollowRedirects(false)
+            .post("{}"))
+        }
+
+        "returns a status of SEE_OTHER(303)" in {
+          result.status shouldBe SEE_OTHER
+        }
+
+        "has a redirect url pointing at the confirmation page" in {
+          result.headers("Location").head shouldBe s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
+        }
+      }
+    }
+  }
+  
+  "/submit" should {
+    
+    "Redirect to the confirmation page" when {
+      import IndividualExpectedResults.individualSummaryData
+
+      lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
+        SessionValues.CALCULATION_ID -> "string"
+      ))
+
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+      "there is summary data and a calculation id in session" which {
+        lazy val result = {
+          authoriseIndividual()
+          stubPost(crystallisationUrl, NO_CONTENT, "{}")
+
+          await(wsClient
+            .url(s"http://localhost:$port" + urlPathEOY)
             .withHttpHeaders(headers:_*)
             .withFollowRedirects(false)
             .post("{}"))
@@ -242,13 +245,46 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         "has a redirect url pointing at the confirmation page" in {
-          result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYear).url
+          result.headers("Location").head shouldBe controllers.routes.TaxReturnReceivedController.show(taxYearEOY).url
+        }
+      }
+
+    }
+    
+    "Redirect to the overview page" when {
+      import IndividualExpectedResults.individualSummaryData
+
+      "the calc id is missing" which {
+        lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
+          SessionValues.TAX_YEAR -> taxYearEOY.toString,
+          SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+        ))
+        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+        lazy val result = {
+          authoriseIndividual()
+          stubPost(crystallisationUrl, NO_CONTENT, "{}")
+
+          await(wsClient
+            .url(s"http://localhost:$port" + urlPathEOY)
+            .withHttpHeaders(headers:_*)
+            .withFollowRedirects(false)
+            .post("{}"))
+        }
+
+        "returns a status of SEE_OTHER(303)" in {
+          result.status shouldBe SEE_OTHER
+        }
+
+        "has a redirect url pointing at the confirmation page" in {
+          result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYearEOY).url
         }
       }
 
       "the summary data is missing" which {
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-          SessionValues.TAX_YEAR -> taxYear.toString,
+          SessionValues.TAX_YEAR -> taxYearEOY.toString,
           SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
           SessionValues.CALCULATION_ID -> "string"
         ))
@@ -259,7 +295,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
           stubPost(crystallisationUrl, NO_CONTENT, "{}")
 
           await(wsClient
-            .url(s"http://localhost:$port" + urlPath)
+            .url(s"http://localhost:$port" + urlPathEOY)
             .withHttpHeaders(headers:_*)
             .withFollowRedirects(false)
             .post("{}"))
@@ -270,9 +306,37 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         "has a redirect url pointing at the confirmation page" in {
-          result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYear).url
+          result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYearEOY).url
         }
         
+      }
+    }
+
+    "redirect back to the overview page when in year" which {
+      lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
+        SessionValues.CALCULATION_ID -> "string"
+      ))
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+      lazy val result = {
+        authoriseIndividual()
+        stubPost(crystallisationUrl, NO_CONTENT, "{}")
+
+        await(wsClient
+          .url(s"http://localhost:$port" + urlPathInYear)
+          .withHttpHeaders(headers:_*)
+          .withFollowRedirects(false)
+          .post("{}"))
+      }
+
+      "returns a status of SEE_OTHER(303)" in {
+        result.status shouldBe SEE_OTHER
+      }
+
+      "has a redirect url to the overview page" in {
+        result.headers("Location").head shouldBe s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view"
       }
     }
   }
@@ -283,7 +347,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the language is specified as English and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CLIENT_NINO -> nino,
         SessionValues.CLIENT_MTDITID -> mtditid
@@ -292,7 +356,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
 
       "display the agent declaration page" which {
-        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+        val request = FakeRequest("GET", urlPathEOY).withHeaders(headers: _*)
 
         lazy val result: Future[Result] = {
           authoriseAgent()
@@ -318,7 +382,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the language is specified as Welsh and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CLIENT_NINO -> nino,
         SessionValues.CLIENT_MTDITID -> mtditid
@@ -327,7 +391,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
 
       "display the agent declaration page in Welsh" which {
-        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+        val request = FakeRequest("GET", urlPathEOY).withHeaders(headers: _*)
 
         lazy val result: Future[Result] = {
           authoriseAgent()
@@ -357,14 +421,14 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "there is no Summary Data in session which" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
 
       "redirect to the overview page" which {
-        val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
+        val request = FakeRequest("GET", urlPathEOY).withHeaders(headers: _*)
 
         lazy val result: Future[Result] = {
           authoriseIndividual()
@@ -384,7 +448,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the user's residency has changed" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
@@ -394,7 +458,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val returnedError = Json.toJson(APIErrorBodyModel(CONFLICT.toString, "RESIDENCY_CHANGED")).toString()
       lazy val request = {
         stubPost(crystallisationUrl, CONFLICT, returnedError)
-        FakeRequest("POST", urlPath).withHeaders(headers: _*)
+        FakeRequest("POST", urlPathEOY).withHeaders(headers: _*)
       }
 
       "redirect to the address has changed page" which {
@@ -417,7 +481,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the user's tax year return already exists" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
@@ -427,7 +491,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val returnedError = Json.toJson(APIErrorBodyModel(CONFLICT.toString, "FINAL_DECLARATION_RECEIVED")).toString()
       lazy val request = {
         stubPost(crystallisationUrl, CONFLICT, returnedError)
-        FakeRequest("POST", urlPath).withHeaders(headers: _*)
+        FakeRequest("POST", urlPathEOY).withHeaders(headers: _*)
       }
 
       "redirect to the tax year return already exists page" which {
@@ -450,7 +514,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the user's tax year return is already updated" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
@@ -460,7 +524,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val returnedError = Json.toJson(APIErrorBodyModel(CONFLICT.toString, "")).toString()
       lazy val request = {
         stubPost(crystallisationUrl, CONFLICT, returnedError)
-        FakeRequest("POST", urlPath).withHeaders(headers: _*)
+        FakeRequest("POST", urlPathEOY).withHeaders(headers: _*)
       }
 
       "redirect to the tax year return is already updated page" which {
@@ -483,7 +547,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
     "the users tax return has no valid income sources" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
-        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
       ))
@@ -493,7 +557,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val returnedError = Json.toJson(APIErrorBodyModel(UNPROCESSABLE_ENTITY.toString, "")).toString()
       lazy val request = {
         stubPost(crystallisationUrl, UNPROCESSABLE_ENTITY, returnedError)
-        FakeRequest("POST", urlPath).withHeaders(headers: _*)
+        FakeRequest("POST", urlPathEOY).withHeaders(headers: _*)
       }
 
       "redirect to the no valid income sources page" which {

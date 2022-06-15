@@ -20,7 +20,7 @@ import audit.{AuditService, DeclarationDetail, FinalDeclarationDetail}
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
-import controllers.predicates.AuthorisedAction
+import controllers.predicates.{AuthorisedAction, InYearAction}
 
 import javax.inject.{Inject, Singleton}
 import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel, NrsSubmissionModel}
@@ -41,6 +41,7 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                                           implicit val mcc: MessagesControllerComponents,
                                           implicit val ec: ExecutionContext,
                                           declarationPageView: DeclarationPageView,
+                                          inYearAction: InYearAction,
                                           authorisedAction: AuthorisedAction,
                                           implicit val validTaxYearListService: ValidTaxYearListService,
                                           implicit val errorHandler: ErrorHandler,
@@ -50,21 +51,24 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
 
   implicit val config: AppConfig = appConfig
 
-  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).apply { implicit user =>
+  def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
 
-    val summaryDataReceived: Option[DeclarationModel] = getSessionData[DeclarationModel](SUMMARY_DATA)
+    inYearAction.notInYear(taxYear) {
+      val summaryDataReceived: Option[DeclarationModel] = getSessionData[DeclarationModel](SUMMARY_DATA)
 
-    summaryDataReceived match {
-      case Some(summaryData) =>
-        Ok(declarationPageView(summaryData, user.isAgent, taxYear))
-      case _ =>
-        logger.info("[DeclarationPageController][show] No Tax Return Submission Data in session, routing user to Overview page.")
-        Redirect(routes.OverviewPageController.show(taxYear))
+      summaryDataReceived match {
+        case Some(summaryData) =>
+          Future.successful(Ok(declarationPageView(summaryData, user.isAgent, taxYear)))
+        case _ =>
+          logger.info("[DeclarationPageController][show] No Tax Return Submission Data in session, routing user to Overview page.")
+          Future.successful(Redirect(routes.OverviewPageController.show(taxYear)))
+      }
     }
   }
 
-  def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
-    implicit user =>
+  def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
+
+    inYearAction.notInYear(taxYear) {
       val optionalCalculationId: Option[String] = user.session.get(CALCULATION_ID)
       val optionalSummaryDataReceived: Option[DeclarationModel] = getSessionData[DeclarationModel](SUMMARY_DATA)
 
@@ -73,7 +77,7 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
           declareCrystallisationService.postDeclareCrystallisation(user.nino, taxYear, calculationId, user.mtditid).map {
             case Right(_) =>
               auditService.sendAudit(FinalDeclarationDetail(
-                taxYear, if(user.isAgent) "agent" else "individual", user.nino, user.mtditid,
+                taxYear, if (user.isAgent) "agent" else "individual", user.nino, user.mtditid,
                 DeclarationDetail(
                   summaryDataReceived.income,
                   summaryDataReceived.allowancesAndDeductions,
@@ -84,7 +88,7 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
 
               val nrsSubmissionModelCalcId: NrsSubmissionModel = NrsSubmissionModel(calculationId = calculationId)
 
-              if(appConfig.nrsEnabled) {
+              if (appConfig.nrsEnabled) {
                 nrsService.submit(user.nino, nrsSubmissionModelCalcId, user.mtditid)
               }
 
@@ -100,5 +104,6 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
           logger.info("[DeclarationPageController][submit] No Calculation ID in session, routing user to Overview page.")
           Future.successful(Redirect(routes.OverviewPageController.show(taxYear)))
       }
+    }
   }
 }
