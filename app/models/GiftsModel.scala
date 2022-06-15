@@ -23,7 +23,9 @@ case class GiftsModel (
                         landAndBuildings: Option[BigDecimal] = None,
                         sharesOrSecurities: Option[BigDecimal] = None,
                         investmentsNonUkCharities: Option[BigDecimal] = None
-                      )
+                      ){
+  val hasNonZeroData: Boolean = landAndBuildings.exists(_ != 0) || sharesOrSecurities.exists(_ != 0)|| investmentsNonUkCharities.exists(_ != 0)
+}
 
 object GiftsModel {
   implicit val format: OFormat[GiftsModel] = Json.format[GiftsModel]

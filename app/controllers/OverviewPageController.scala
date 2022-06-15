@@ -17,17 +17,19 @@
 package controllers
 
 import audit.{AuditService, CreateInYearTaxEstimate, IntentToCrystalliseDetail}
+import common.IncomeSources._
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
-import models.mongo.TailoringUserDataModel
-import models.{OverviewTailoringModel, User}
+import models.mongo.ExclusionUserDataModel
+import models.{IncomeSourcesModel, OverviewTailoringModel, User}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import repositories.TailoringUserDataRepository
+import repositories.{ExclusionUserDataRepository, TailoringUserDataRepository}
 import services.{IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.ShaHashHelper
 import views.html.OverviewPageView
 
 import javax.inject.{Inject, Singleton}
@@ -40,11 +42,12 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
                                        tailoringUserDataRepository: TailoringUserDataRepository,
                                        overviewPageView: OverviewPageView,
                                        authorisedAction: AuthorisedAction,
+                                       exclusionUserDataRepository: ExclusionUserDataRepository,
                                        implicit val validTaxYearListService: ValidTaxYearListService,
                                        implicit val errorHandler: ErrorHandler,
                                        auditService: AuditService)
                                       (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport with ShaHashHelper {
 
   private lazy val OverviewPageControllerRoute: ReverseOverviewPageController = controllers.routes.OverviewPageController
 
@@ -53,6 +56,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
       case Right(sessionData) =>
         incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
           case Right(incomeSources) =>
+            handleExclusion(taxYear, incomeSources)
             val tailoringSources = sessionData.map(_.tailoring).getOrElse(Seq.empty[String])
             val overviewTailoringData = OverviewTailoringModel(tailoringSources, incomeSources)
             Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), overviewTailoringData, taxYear, isInYear))
@@ -63,9 +67,38 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     }
   }
 
+  def handleExclusion(taxYear: Int, incomeSourcesModel: IncomeSourcesModel)(implicit user: User[_]): Unit = {
+    val dividendsRemove = incomeSourcesModel.dividends.exists(dividends => dividends.hasNonZeroData)
+    val giftAidRemove = incomeSourcesModel.giftAid.exists(giftAid => giftAid.hasNonZeroData)
+    val interestRemove = incomeSourcesModel.interest.exists(interests => interests.exists(_.hasNonZeroData))
+    val employmentRemove = incomeSourcesModel.employment.nonEmpty
+    val cisRemove = incomeSourcesModel.cis.nonEmpty
+
+    exclusionUserDataRepository.find(taxYear).map {
+      case Right(value) =>
+        val giftAidHash = incomeSourcesModel.giftAid.exists { data =>  value.map(_.exclusionModel.filter(_.journey == GIFT_AID).head)
+          .exists(_.hash.exists(_ != sha256Hash(data.toString)))
+        }
+        val interestHash = incomeSourcesModel.interest.exists { data =>  value.map(_.exclusionModel.filter(_.journey == INTEREST).head)
+          .exists(_.hash.exists(_ != sha256Hash(data.toString)))
+        }
+
+        val newExclude: Seq[String] = Seq((dividendsRemove, DIVIDENDS),
+          (cisRemove, CIS),
+          (employmentRemove, EMPLOYMENT),
+          (giftAidRemove || giftAidHash, GIFT_AID),
+          (interestRemove || interestHash, INTEREST)
+        ).filter(_._1).map(_._2)
+
+        value.map(_.exclusionModel.filter(data => !newExclude.contains(data.journey))).map { newData =>
+          exclusionUserDataRepository.update(ExclusionUserDataModel(user.nino, taxYear,
+            newData))
+        }
+    }
+  }
+
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     val isInYear: Boolean = inYearAction.inYear(taxYear)
-
     if (isInYear) {
       handleGetIncomeSources(taxYear, isInYear = true)
     } else {

@@ -17,19 +17,16 @@
 package models
 
 import play.api.libs.json.{Json, OFormat}
+import utils.EncryptedValue
 
-case class InterestModel(
-                          accountName: String,
-                          incomeSourceId: String,
-                          taxedUkInterest: Option[BigDecimal],
-                          untaxedUkInterest: Option[BigDecimal]
-                        ) {
+case class ExcludeJourneyModel(journey: String, hash: Option[String])
 
-  val hasAmounts: Boolean = taxedUkInterest.isDefined || untaxedUkInterest.isDefined
-
-  val hasNonZeroData: Boolean = taxedUkInterest.exists(_ != 0) || untaxedUkInterest.exists(_ != 0)
+object ExcludeJourneyModel {
+  implicit val formats: OFormat[ExcludeJourneyModel] = Json.format[ExcludeJourneyModel]
 }
 
-object InterestModel {
-  implicit val formats: OFormat[InterestModel] = Json.format[InterestModel]
+case class EncryptedExcludeJourneyModel(journey: EncryptedValue, hash: Option[EncryptedValue])
+
+object EncryptedExcludeJourneyModel {
+  implicit val formats: OFormat[EncryptedExcludeJourneyModel] = Json.format[EncryptedExcludeJourneyModel]
 }

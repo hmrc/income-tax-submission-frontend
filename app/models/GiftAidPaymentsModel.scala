@@ -25,7 +25,10 @@ case class GiftAidPaymentsModel (
                                   currentYearTreatedAsPreviousYear: Option[BigDecimal] = None,
                                   nextYearTreatedAsCurrentYear: Option[BigDecimal] = None,
                                   nonUkCharities: Option[BigDecimal] = None
-                                )
+                                ){
+  val hasNonZeroData: Boolean = currentYear.exists(_ != 0) || oneOffCurrentYear.exists(_ != 0)|| currentYearTreatedAsPreviousYear.exists(_ != 0) ||
+      nextYearTreatedAsCurrentYear.exists(_ != 0) || nonUkCharities.exists(_ != 0)
+}
 
 object GiftAidPaymentsModel {
   implicit val format: OFormat[GiftAidPaymentsModel] = Json.format[GiftAidPaymentsModel]

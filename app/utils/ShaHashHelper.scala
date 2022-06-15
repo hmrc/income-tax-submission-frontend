@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import play.api.libs.json.{Json, OFormat}
+trait ShaHashHelper {
 
-case class GiftAidModel (
-                          giftAidPayments: Option[GiftAidPaymentsModel] = None,
-                          gifts: Option[GiftsModel] = None
-                        ){
-  val hasNonZeroData: Boolean = giftAidPayments.exists(_.hasNonZeroData) || gifts.exists(_.hasNonZeroData)
-
-}
-
-object GiftAidModel {
-  implicit val formats: OFormat[GiftAidModel] = Json.format[GiftAidModel]
+  def sha256Hash(text: String) : String = String.format("%064x", new java.math.BigInteger(1,
+    java.security.MessageDigest.getInstance("SHA-256").digest(text.getBytes("UTF-8"))))
 }

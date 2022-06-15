@@ -49,4 +49,6 @@ GET         /:taxYear/no-updates-provided                   controllers.errors.N
 
 GET         /:taxYear/problem-with-updates                  controllers.errors.BusinessValidationRulesController.show(taxYear: Int)
 
+POST        /:taxYear/exclude-journey                       controllers.ExcludeJourneyController.excludeJourney(taxYear: Int)
+
 GET         /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)

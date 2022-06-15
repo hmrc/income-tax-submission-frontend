@@ -17,7 +17,8 @@
 package services
 
 import config.AppConfig
-import models.mongo.{EncryptedTailoringUserDataModel, TailoringUserDataModel, TextAndKey}
+import models.mongo._
+import models.{EncryptedExcludeJourneyModel, ExcludeJourneyModel}
 import utils.SecureGCMCipher
 
 import javax.inject.Inject
@@ -43,6 +44,43 @@ class EncryptionService @Inject()(encryptionService: SecureGCMCipher, appConfig:
       taxYear = encryptedTailoringUserDataModel.taxYear,
       tailoring = encryptedTailoringUserDataModel.tailoring.map(x => encryptionService.decrypt[String](x.value, x.nonce)),
       lastUpdated = encryptedTailoringUserDataModel.lastUpdated
+    )
+  }
+
+  def encryptExclusionUserData(exclusionUserDataModel: ExclusionUserDataModel): EncryptedExclusionUserDataModel = {
+    implicit val textAndKey: TextAndKey = TextAndKey(exclusionUserDataModel.nino, appConfig.encryptionKey)
+
+    EncryptedExclusionUserDataModel(
+      nino = exclusionUserDataModel.nino,
+      taxYear = exclusionUserDataModel.taxYear,
+      exclusionModel = exclusionUserDataModel.exclusionModel.map(encryptExcludeJourneyModel),
+      lastUpdated = exclusionUserDataModel.lastUpdated
+    )
+  }
+
+  def decryptExclusionUserData(encryptedExclusionUserDataModel: EncryptedExclusionUserDataModel): ExclusionUserDataModel = {
+    implicit val textAndKey: TextAndKey = TextAndKey(encryptedExclusionUserDataModel.nino, appConfig.encryptionKey)
+
+    ExclusionUserDataModel(
+      nino = encryptedExclusionUserDataModel.nino,
+      taxYear = encryptedExclusionUserDataModel.taxYear,
+      exclusionModel = encryptedExclusionUserDataModel.exclusionModel.map(decryptExcludeJourneyModel),
+      lastUpdated = encryptedExclusionUserDataModel.lastUpdated
+    )
+  }
+
+  private def encryptExcludeJourneyModel(model: ExcludeJourneyModel)
+                                     (implicit textAndKey: TextAndKey): EncryptedExcludeJourneyModel ={
+    EncryptedExcludeJourneyModel(
+      encryptionService.encrypt[String](model.journey),
+      model.hash.map(x => encryptionService.encrypt[String](x))
+    )
+  }
+  private def decryptExcludeJourneyModel(model: EncryptedExcludeJourneyModel)
+                                     (implicit textAndKey: TextAndKey): ExcludeJourneyModel ={
+    ExcludeJourneyModel(
+      encryptionService.decrypt[String](model.journey.value, model.journey.nonce),
+      model.hash.map(x => encryptionService.decrypt[String](x.value, x.nonce))
     )
   }
 }

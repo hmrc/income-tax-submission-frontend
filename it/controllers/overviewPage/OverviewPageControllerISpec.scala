@@ -31,7 +31,7 @@ import play.api.http.Status._
 import play.api.mvc.Result
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
-import repositories.TailoringUserDataRepository
+import repositories.{ExclusionUserDataRepository, TailoringUserDataRepository}
 import services.{IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
@@ -243,6 +243,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     app.injector.instanceOf[TailoringUserDataRepository],
     app.injector.instanceOf[OverviewPageView],
     app.injector.instanceOf[AuthorisedAction],
+    app.injector.instanceOf[ExclusionUserDataRepository],
     app.injector.instanceOf[ValidTaxYearListService],
     app.injector.instanceOf[ErrorHandler],
     app.injector.instanceOf[AuditService]
