@@ -85,6 +85,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
              employmentEnabled: Boolean = true,
              employmentEOYEnabled: Boolean = true,
              cisEnabled: Boolean = true,
+             pensionsEnabled: Boolean = true,
              crystallisationEnabled: Boolean = true,
              taxYearErrorFeatureSwitch: Boolean = false,
              tailoringEnabled: Boolean = false
@@ -106,6 +107,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.employmentEnabled" -> employmentEnabled.toString,
     "feature-switch.employmentEOYEnabled" -> employmentEOYEnabled.toString,
     "feature-switch.cisEnabled" -> cisEnabled.toString,
+    "feature-switch.pensionsEnabled" -> pensionsEnabled.toString,
     "feature-switch.crystallisationEnabled" -> crystallisationEnabled.toString,
     "feature-switch.tailoringEnabled" -> tailoringEnabled.toString,
     "metrics.enabled" -> "false",
@@ -133,6 +135,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
                  employmentEnabled: Boolean = true,
                  employmentEOYEnabled: Boolean = true,
                  cisEnabled: Boolean = true,
+                 pensionsEnabled: Boolean = true,
                  crystallisationEnabled: Boolean = true,
                  taxYearErrorFeatureSwitch: Boolean = false,
                  tailoringEnabled: Boolean = false
@@ -149,6 +152,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         employmentEnabled,
         employmentEOYEnabled,
         cisEnabled,
+        pensionsEnabled,
         crystallisationEnabled,
         taxYearErrorFeatureSwitch,
         tailoringEnabled

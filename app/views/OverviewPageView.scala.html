@@ -103,15 +103,6 @@
         )
 
         @taskListItem(
-            tailoring.hasPensions,
-            appConfig.pensionsEnabled,
-            "pensions_link",
-            "common.pensions",
-            appConfig.pensionsSummaryUrl(taxYear),
-            incomeSources.pensions.isDefined
-        )
-
-        @taskListItem(
             appConfig.cisReleased && tailoring.hasCis,
             appConfig.cisEnabled,
             "cis_link",
@@ -120,6 +111,15 @@
             incomeSources.cis.isDefined,
             isInYear,
             additionalShowLinkCheck = incomeSources.cis.isDefined || !isInYear
+        )
+
+        @taskListItem(
+            tailoring.hasPensions,
+            appConfig.pensionsEnabled,
+            "pensions_link",
+            "common.pensions",
+            appConfig.pensionsSummaryUrl(taxYear),
+            incomeSources.pensions.isDefined
         )
         @if(appConfig.tailoringEnabled){
             @if(!tailoring.allJourneys.contains(true)){

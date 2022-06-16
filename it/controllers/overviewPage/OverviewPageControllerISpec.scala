@@ -136,6 +136,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val employmentLinkText: String
     val cisLinkText: String
     val giftAidLinkText: String
+    val pensionsLinkText: String
     val continue: String
     val fillInTheSections: String
     val incomeTaxAccountLink: String
@@ -161,6 +162,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val employmentSLLinkText = "PAYE employment (including student loans)"
     val cisLinkText = "Construction Industry Scheme deductions"
     val giftAidLinkText = "Donations to charity"
+    val pensionsLinkText = "Pensions"
     val continue = "continue"
     val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
     val incomeTaxAccountLink = "Income Tax Account"
@@ -186,6 +188,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val employmentSLLinkText = "Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)"
     val cisLinkText = "Didyniadau Cynllun y Diwydiant Adeiladu"
     val giftAidLinkText = "Rhoddion i elusennau"
+    val pensionsLinkText = "Pensiynau"
     val continue = "continue"
     val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
@@ -217,6 +220,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val cisSelector: String = sectionNameSelector(5)
     val cisLinkSelector = "#cis_link"
     val cisStatusSelector: String = statusTagSelector(5)
+
+    val pensionsSelector: String = sectionNameSelector(6)
+    val pensionsLinkSelector = "#pensions_link"
+    val pensionsStatusSelector: String = statusTagSelector(6)
+
     val viewEstimateSelector = "#calculation_link"
     val submitReturnEOYSelector = "#heading-checkAndSubmit"
     val submitReturnTextEOYSelector = "#p-submitText"
@@ -293,6 +301,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               studentLoansEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,
+              pensionsEnabled = false,
               crystallisationEnabled = false
             ), request, user.isWelsh).get
           }
@@ -331,6 +340,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
           "have a cis section that says under maintenance" which {
             textOnPageCheck(underMaintenance, cisStatusSelector)
+          }
+          "have a pensions section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, pensionsStatusSelector)
           }
           "have a estimate link" which {
             linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
@@ -409,6 +421,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a cis section " which {
             textOnPageCheck(cisLinkText, cisSelector)
             textOnPageCheck(cannotUpdateText, cisStatusSelector)
+          }
+
+          "has a pensions section " which {
+            textOnPageCheck(pensionsLinkText, pensionsSelector)
+            textOnPageCheck(notStartedText, pensionsStatusSelector)
           }
 
           "has a donations to charity section" which {
