@@ -114,7 +114,7 @@
         )
 
         @taskListItem(
-            tailoring.hasPensions,
+            appConfig.pensionsReleased && tailoring.hasPensions,
             appConfig.pensionsEnabled,
             "pensions_link",
             "common.pensions",
