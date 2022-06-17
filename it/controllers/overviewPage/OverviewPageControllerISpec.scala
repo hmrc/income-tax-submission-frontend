@@ -380,7 +380,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             cleanDatabase(taxYear)
             insertAllJourneys()
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None))
             route(app, request, user.isWelsh).get
           }
 
@@ -493,6 +493,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
+          "has a pensions section" which {
+            linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
+            textOnPageCheck(updatedText, pensionsStatusSelector)
+          }
+
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
         }
@@ -553,6 +558,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             "has a cis section" which {
               linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
               textOnPageCheck(updatedText, cisStatusSelector)
+            }
+
+            "has a pensions section" which {
+              linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
+              textOnPageCheck(updatedText, pensionsStatusSelector)
             }
 
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
@@ -616,6 +626,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a cis section" which {
             linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
             textOnPageCheck(updatedText, cisStatusSelector)
+          }
+
+          "has a pensions section" which {
+            linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
+            textOnPageCheck(updatedText, pensionsStatusSelector)
           }
 
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
@@ -683,6 +698,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, cisStatusSelector)
             }
 
+            "has a pensions section" which {
+              linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
+              textOnPageCheck(updatedText, pensionsStatusSelector)
+            }
+
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
 
@@ -742,6 +762,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
+          "has a pensions section" which {
+            linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
+            textOnPageCheck(updatedText, pensionsStatusSelector)
+          }
+
           "have a add sections link " which {
             linkCheck(specific.addSections, addSectionsSelector, Links.addSectionsLink(taxYear))
           }
@@ -771,6 +796,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(user.commonExpectedResults.dividendsLinkText, dividendsLinkSelector)
             textOnPageCheck(user.commonExpectedResults.giftAidLinkText, giftAidLinkSelector)
             textOnPageCheck(user.commonExpectedResults.cisLinkText, cisSelector)
+            textOnPageCheck(user.commonExpectedResults.pensionsLinkText, pensionsSelector)
             textOnPageCheck(user.commonExpectedResults.employmentSLLinkText, employmentSelector)
           }
 
@@ -806,6 +832,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               studentLoansEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,
+              pensionsEnabled = false,
               crystallisationEnabled = false
             ), request, user.isWelsh).get
           }
@@ -842,6 +869,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           "have a cis section that says under maintenance" which {
             textOnPageCheck(underMaintenance, cisStatusSelector)
+          }
+
+          "have a pensions section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, pensionsStatusSelector)
           }
 
           "has a donations to charity section" which {
@@ -909,6 +940,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, cisStatusSelector)
           }
 
+          "has a pensions section" which {
+            linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYearEOY))
+            textOnPageCheck(updatedText, pensionsStatusSelector)
+          }
+
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYearEOY))
             textOnPageCheck(updatedText, giftAidStatusSelector)
@@ -972,6 +1008,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(notStartedText, cisStatusSelector)
           }
 
+          "has a pensions section " which {
+            linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, pensionsStatusSelector)
+          }
+
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearEOY))
             textOnPageCheck(notStartedText, giftAidStatusSelector)
@@ -1033,6 +1074,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a cis section " which {
             linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYearEOY))
             textOnPageCheck(notStartedText, cisStatusSelector)
+          }
+
+          "has a pensions section " which {
+            linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, pensionsStatusSelector)
           }
 
           "has a donations to charity section" which {
@@ -1232,6 +1278,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             studentLoansEnabled = false,
             employmentEOYEnabled = false,
             cisEnabled = false,
+            pensionsEnabled = false,
             crystallisationEnabled = false
           ), request).get
         }
@@ -1272,6 +1319,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               studentLoansEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,
+              pensionsEnabled = false,
               crystallisationEnabled = false
             ), request).get
           }
@@ -1310,6 +1358,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               studentLoansEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,
+              pensionsEnabled = false,
               crystallisationEnabled = false
             ), request).get
           }
