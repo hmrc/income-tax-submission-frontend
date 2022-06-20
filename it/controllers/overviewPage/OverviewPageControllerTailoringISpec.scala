@@ -257,6 +257,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
             lazy val result: Future[Result] = {
               cleanDatabase(taxYear)
               insertJourneys(false, journey.tailoringKey)
+              stubGetExcludedCall(taxYear)
               authoriseAgentOrIndividual(user.isAgent)
               route(customApp(tailoringEnabled = true), request, user.isWelsh).get
             }
@@ -282,6 +283,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
             lazy val result: Future[Result] = {
               cleanDatabase(taxYear)
               stubIncomeSources(journey.incomeSourcesModel)
+              stubGetExcludedCall(taxYear)
               authoriseAgentOrIndividual(user.isAgent)
               route(customApp(tailoringEnabled = true), request, user.isWelsh).get
             }

@@ -18,12 +18,13 @@ package controllers.overviewPage
 
 import audit.AuditService
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import common.IncomeSources.INTEREST
 import common.SessionValues
 import config.{AppConfig, ErrorHandler}
 import controllers.OverviewPageController
 import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, OverviewPageHelpers, ViewHelpers}
-import models.{IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
+import models.{ExcludeJourneyModel, IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
@@ -32,7 +33,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import repositories.{ExclusionUserDataRepository, TailoringUserDataRepository}
-import services.{IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
+import services.{ExcludedJourneysService, IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
 import uk.gov.hmrc.http.SessionKeys
 import views.html.OverviewPageView
 
@@ -246,7 +247,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     app.injector.instanceOf[ExclusionUserDataRepository],
     app.injector.instanceOf[ValidTaxYearListService],
     app.injector.instanceOf[ErrorHandler],
-    app.injector.instanceOf[AuditService]
+    app.injector.instanceOf[AuditService],
+    app.injector.instanceOf[ExcludedJourneysService]
   )(frontendAppConfig, mcc, scala.concurrent.ExecutionContext.Implicits.global)
 
 
@@ -288,6 +290,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               cleanDatabase(taxYear)
               insertAllJourneys()
               authoriseAgentOrIndividual(user.isAgent)
+              stubGetExcludedCall(taxYear, Seq(
+                ExcludeJourneyModel(INTEREST, Some("hash"))
+              ))
               route(customApp(tailoringEnabled = true), request, user.isWelsh).get
             }
 
@@ -309,6 +314,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             insertAllJourneys()
+            stubGetExcludedCall(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             route(customApp(
               dividendsEnabled = false,
@@ -369,6 +375,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
+            stubGetExcludedCall(taxYear)
             route(customApp(
               studentLoansEnabled = false
             ), request, user.isWelsh).get
@@ -392,6 +399,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             insertAllJourneys()
+            stubGetExcludedCall(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None))
             route(app, request, user.isWelsh).get
@@ -452,6 +460,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             insertAllJourneys()
+            stubGetExcludedCall(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel.copy(interest = None))
             route(app, request, user.isWelsh).get
@@ -514,6 +523,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             lazy val result: Future[Result] = {
               cleanDatabase(taxYear)
               insertAllJourneys()
+              stubGetExcludedCall(taxYear)
               authoriseAgentOrIndividual(user.isAgent)
               stubIncomeSources(incomeSources)
               route(app, request, user.isWelsh).get
@@ -577,6 +587,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             insertAllJourneys()
+            stubGetExcludedCall(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSources)
             route(app, request, user.isWelsh).get
@@ -642,6 +653,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             lazy val result: Future[Result] = {
               cleanDatabase(taxYear)
               insertAllJourneys()
+              stubGetExcludedCall(taxYear)
               authoriseAgentOrIndividual(user.isAgent)
               stubIncomeSources(incomeSources)
               route(app, request, user.isWelsh).get
@@ -703,6 +715,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
+            stubGetExcludedCall(taxYear)
             stubIncomeSources(incomeSourcesModel)
             route(customApp(tailoringEnabled = true), request, user.isWelsh).get
           }
@@ -765,6 +778,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
             lazy val result = {
               cleanDatabase(taxYear)
+              stubGetExcludedCall(taxYear)
               authoriseAgentOrIndividual(user.isAgent)
               route(app, request, user.isWelsh).get
             }
@@ -805,6 +819,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYearEOY)
             insertAllJourneys(endOfYear = true)
+            stubGetExcludedCall(taxYearEOY)
             authoriseAgentOrIndividual(user.isAgent)
             route(customApp(
               dividendsEnabled = false,
@@ -873,6 +888,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYearEOY)
             insertAllJourneys(endOfYear = true)
+            stubGetExcludedCall(taxYearEOY)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSourcesEndOfYear
             route(customApp(), request, user.isWelsh).get
@@ -937,6 +953,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYearEOY)
             insertAllJourneys(endOfYear = true)
+            stubGetExcludedCall(taxYearEOY)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel)
             route(customApp(), request, user.isWelsh).get
@@ -1000,6 +1017,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYearEOY)
             insertAllJourneys(endOfYear = true)
+            stubGetExcludedCall(taxYearEOY)
             authoriseAgentOrIndividual(user.isAgent)
             stubIncomeSources(incomeSourcesModel)
             route(customApp(employmentEOYEnabled = false), request, user.isWelsh).get
@@ -1063,6 +1081,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
+          stubGetExcludedCall(taxYear)
           await(controller.show(taxYear)(fakeRequest.withSession(
             SessionValues.TAX_YEAR -> s"$taxYear", SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
           ))
@@ -1079,6 +1098,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
         val result = {
           authoriseIndividual()
+          stubGetExcludedCall(taxYear)
           await(controller.show(taxYearEOY)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYearEOY",
             SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
             SessionKeys.sessionId -> "sessionId-0101010101")
@@ -1094,6 +1114,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
+          stubGetExcludedCall(taxYear)
           await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
             SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
             SessionKeys.sessionId -> "sessionId-0101010101")
@@ -1110,6 +1131,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
         val result = {
           stubIncomeSources
           authoriseIndividual()
+          stubGetExcludedCall(taxYear)
           await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
             SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
           ))
@@ -1124,6 +1146,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
       "the confidence level is too low" in {
         val result = {
           stubIncomeSources
+          stubGetExcludedCall(taxYear)
           unauthorisedIndividualInsufficientConfidenceLevel()
           await(controller.show(taxYear)(fakeRequest))
         }

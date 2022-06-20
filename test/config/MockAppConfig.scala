@@ -21,6 +21,7 @@ import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
 import utils.TaxYearHelper
 
+//noinspection ScalaStyle
 class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val signInContinueUrl: String = "/signInContinue"
@@ -159,6 +160,10 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override val testOnly_authLoginUrl: String = "/auth-login"
 
   override def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$taxYear/interest/tailoring-gateway"
+
+  override def getExcludedJourneysUrl(taxYear: Int): String = "/get-excluded"
+
+  override def clearExcludedJourneysUrl(taxYear: Int): String = "/clear-excluded"
 }
 
 class MockAppConfigTaxYearFeatureOff extends MockAppConfig {

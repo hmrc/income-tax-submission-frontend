@@ -24,6 +24,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.http.{HttpHeader, HttpHeaders}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
+import models.{ExcludeJourneyModel, GetExcludedJourneysResponseModel}
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
@@ -203,6 +204,12 @@ trait WireMockHelper {
     stubPost(authoriseUri, UNAUTHORIZED, Json.prettyPrint(
       successfulAuthResponse(Some(AffinityGroup.Agent), Some(ConfidenceLevel.L200), Seq(asAgentEnrolment, mtditEnrolment): _*)
     ))
+  }
+
+  def stubGetExcludedCall(taxYear: Int, returnedJourneys: Seq[ExcludeJourneyModel] = Seq()): StubMapping = {
+    stubGet(s"/income-tax-submission-service/excluded-journeys/$taxYear", OK, Json.obj(
+      "journeys" -> returnedJourneys
+    ).toString())
   }
 
   def verifyAuditPost(): Unit = {

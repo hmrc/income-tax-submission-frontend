@@ -51,6 +51,9 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
 
+  def getExcludedJourneysUrl(taxYear: Int): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/excluded-journeys/$taxYear"
+  def clearExcludedJourneysUrl(taxYear: Int): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/clear-excluded-journeys/$taxYear"
+
   lazy val employmentIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxEmploymentFrontendUrl)
   lazy val employmentIncomeTaxSubmissionUrl: String =s"$employmentIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/employment-income"
   def employmentFEUrl(taxYear: Int): String = s"$employmentIncomeTaxSubmissionUrl/$taxYear/employment-summary"
@@ -183,6 +186,9 @@ trait AppConfig {
   def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
+
+  def getExcludedJourneysUrl(taxYear: Int): String
+  def clearExcludedJourneysUrl(taxYear: Int): String
 
   val employmentIncomeTaxSubmissionBaseUrl: String
   val employmentIncomeTaxSubmissionUrl: String
