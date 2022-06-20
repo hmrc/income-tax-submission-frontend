@@ -47,8 +47,12 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-income-from-dividends"
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-interest"
   def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
+  def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/interest-from-UK"
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
+
+  def getExcludedJourneysUrl(taxYear: Int): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/excluded-journeys/$taxYear"
+  def clearExcludedJourneysUrl(taxYear: Int): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/clear-excluded-journeys/$taxYear"
 
   lazy val employmentIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxEmploymentFrontendUrl)
   lazy val employmentIncomeTaxSubmissionUrl: String =s"$employmentIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/employment-income"
@@ -179,8 +183,12 @@ trait AppConfig {
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxInterestUrl(taxYear: Int): String
+  def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
+
+  def getExcludedJourneysUrl(taxYear: Int): String
+  def clearExcludedJourneysUrl(taxYear: Int): String
 
   val employmentIncomeTaxSubmissionBaseUrl: String
   val employmentIncomeTaxSubmissionUrl: String

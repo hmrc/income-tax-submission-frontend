@@ -90,6 +90,7 @@ overview.todo = To do
 overview.updated = Updated
 overview.cannotUpdate = Cannot update
 overview.updateTaxCalculation = Update tax calculation
+overview.excluded = Excluded
 
 declaration.title = Declaration
 declaration.p1.individual = I declare that the information and self-assessment I have filed are (taken together) correct and complete to the best of my knowledge. I understand that I may have to pay financial penalties and face prosecution if I give false information.

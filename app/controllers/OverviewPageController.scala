@@ -20,14 +20,16 @@ import audit.{AuditService, CreateInYearTaxEstimate, IntentToCrystalliseDetail}
 import common.IncomeSources._
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
+import connectors.ExcludedJourneysConnector
 import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import models.mongo.ExclusionUserDataModel
-import models.{IncomeSourcesModel, OverviewTailoringModel, User}
+import models.{ClearExcludedJourneysRequestModel, IncomeSourcesModel, OverviewTailoringModel, User}
+import play.api.data
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.{ExclusionUserDataRepository, TailoringUserDataRepository}
-import services.{IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
+import services.{ExcludedJourneysService, IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ShaHashHelper
 import views.html.OverviewPageView
@@ -45,7 +47,8 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
                                        exclusionUserDataRepository: ExclusionUserDataRepository,
                                        implicit val validTaxYearListService: ValidTaxYearListService,
                                        implicit val errorHandler: ErrorHandler,
-                                       auditService: AuditService)
+                                       auditService: AuditService,
+                                       excludedJourneysService: ExcludedJourneysService)
                                       (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with ShaHashHelper {
 
@@ -54,33 +57,41 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
   def handleGetIncomeSources(taxYear: Int, isInYear: Boolean)(implicit user: User[_]): Future[Result] = {
     tailoringUserDataRepository.find(taxYear).flatMap {
       case Right(sessionData) =>
-        incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).map {
+        incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
           case Right(incomeSources) =>
-            handleExclusion(taxYear, incomeSources)
-            val tailoringSources = sessionData.map(_.tailoring).getOrElse(Seq.empty[String])
-            val overviewTailoringData = OverviewTailoringModel(tailoringSources, incomeSources)
-            Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), overviewTailoringData, taxYear, isInYear))
-          case Left(error) => errorHandler.handleError(error.status)
+            handleExclusion(taxYear, incomeSources).map { excludedJourneys =>
+              val tailoringSources = sessionData.map(_.tailoring).getOrElse(Seq.empty[String])
+              val overviewTailoringData = OverviewTailoringModel(tailoringSources, incomeSources)
+              Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), overviewTailoringData, taxYear, isInYear, excludedJourneys))
+            }
+          case Left(error) => Future.successful(errorHandler.handleError(error.status))
         }
       case Left(_) =>
         Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
     }
   }
 
-  def handleExclusion(taxYear: Int, incomeSourcesModel: IncomeSourcesModel)(implicit user: User[_]): Unit = {
+  def handleExclusion(taxYear: Int, incomeSourcesModel: IncomeSourcesModel)(implicit user: User[_]): Future[Seq[String]] = {
     val dividendsRemove = incomeSourcesModel.dividends.exists(dividends => dividends.hasNonZeroData)
     val giftAidRemove = incomeSourcesModel.giftAid.exists(giftAid => giftAid.hasNonZeroData)
     val interestRemove = incomeSourcesModel.interest.exists(interests => interests.exists(_.hasNonZeroData))
     val employmentRemove = incomeSourcesModel.employment.nonEmpty
     val cisRemove = incomeSourcesModel.cis.nonEmpty
 
-    exclusionUserDataRepository.find(taxYear).map {
-      case Right(value) =>
-        val giftAidHash = incomeSourcesModel.giftAid.exists { data =>  value.map(_.exclusionModel.filter(_.journey == GIFT_AID).head)
-          .exists(_.hash.exists(_ != sha256Hash(data.toString)))
+    excludedJourneysService.getExcludedJourneys(taxYear, user.mtditid).map {
+      case Right(data) =>
+        val giftAidHash = incomeSourcesModel.giftAid.exists { model =>
+          val nonUkCharitiesCharityNames = model.giftAidPayments.flatMap(_.nonUkCharitiesCharityNames).getOrElse(Seq.empty)
+          val investmentsNonUkCharitiesCharityNames = model.gifts.flatMap(_.investmentsNonUkCharitiesCharityNames).getOrElse(Seq.empty)
+          val giftAidAccounts = (nonUkCharitiesCharityNames ++ investmentsNonUkCharitiesCharityNames).sorted
+
+          data.journeys.find(_.journey == GIFT_AID).exists(_.hash.exists(_ != sha256Hash(giftAidAccounts.mkString(","))))
         }
-        val interestHash = incomeSourcesModel.interest.exists { data =>  value.map(_.exclusionModel.filter(_.journey == INTEREST).head)
-          .exists(_.hash.exists(_ != sha256Hash(data.toString)))
+
+        val interestHash = incomeSourcesModel.interest.exists { model =>
+          val interestAccounts = model.map(_.accountName).sorted
+
+          data.journeys.find(_.journey == INTEREST).exists(_.hash.exists(_ != sha256Hash(interestAccounts.mkString(","))))
         }
 
         val newExclude: Seq[String] = Seq((dividendsRemove, DIVIDENDS),
@@ -90,10 +101,10 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
           (interestRemove || interestHash, INTEREST)
         ).filter(_._1).map(_._2)
 
-        value.map(_.exclusionModel.filter(data => !newExclude.contains(data.journey))).map { newData =>
-          exclusionUserDataRepository.update(ExclusionUserDataModel(user.nino, taxYear,
-            newData))
-        }
+        val newData = data.journeys.filter(excludedModels => newExclude.contains(excludedModels.journey)).map(_.journey)
+        excludedJourneysService.clearExcludedJourneys(taxYear, user.mtditid, ClearExcludedJourneysRequestModel(newData))
+
+        data.journeys.map(_.journey).filterNot(newExclude.contains)
     }
   }
 
