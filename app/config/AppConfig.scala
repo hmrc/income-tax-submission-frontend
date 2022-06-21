@@ -51,8 +51,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
 
-  def getExcludedJourneysUrl(taxYear: Int): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/excluded-journeys/$taxYear"
-  def clearExcludedJourneysUrl(taxYear: Int): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/clear-excluded-journeys/$taxYear"
+  def getExcludedJourneysUrl(taxYear: Int, nino: String): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax/nino/$nino/sources/excluded-journeys/$taxYear"
+  def clearExcludedJourneysUrl(taxYear: Int, nino: String): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax/nino/$nino/sources/clear-excluded-journeys/$taxYear"
 
   lazy val employmentIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxEmploymentFrontendUrl)
   lazy val employmentIncomeTaxSubmissionUrl: String =s"$employmentIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/employment-income"
@@ -187,8 +187,8 @@ trait AppConfig {
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
 
-  def getExcludedJourneysUrl(taxYear: Int): String
-  def clearExcludedJourneysUrl(taxYear: Int): String
+  def getExcludedJourneysUrl(taxYear: Int, nino: String): String
+  def clearExcludedJourneysUrl(taxYear: Int, nino: String): String
 
   val employmentIncomeTaxSubmissionBaseUrl: String
   val employmentIncomeTaxSubmissionUrl: String

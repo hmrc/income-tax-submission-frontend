@@ -27,12 +27,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ExcludedJourneysConnector @Inject()(http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
-  def getExcludedJourneys(taxYear: Int)(implicit hc: HeaderCarrier): Future[GetExcludedJourneysResponse] = {
-    http.GET[GetExcludedJourneysResponse](appConfig.getExcludedJourneysUrl(taxYear))
+  def getExcludedJourneys(taxYear: Int, nino: String)(implicit hc: HeaderCarrier): Future[GetExcludedJourneysResponse] = {
+    http.GET[GetExcludedJourneysResponse](appConfig.getExcludedJourneysUrl(taxYear, nino))
   }
 
-  def clearExcludedJourneys(taxYear: Int, data: ClearExcludedJourneysRequestModel)(implicit hc: HeaderCarrier): Future[ClearExcludedJourneysResponse] = {
-    http.POST[ClearExcludedJourneysRequestModel, ClearExcludedJourneysResponse](appConfig.clearExcludedJourneysUrl(taxYear), data)
+  def clearExcludedJourneys(taxYear: Int, nino: String, data: ClearExcludedJourneysRequestModel)
+                           (implicit hc: HeaderCarrier): Future[ClearExcludedJourneysResponse] = {
+
+    http.POST[ClearExcludedJourneysRequestModel, ClearExcludedJourneysResponse](appConfig.clearExcludedJourneysUrl(taxYear, nino), data)
   }
 
 }

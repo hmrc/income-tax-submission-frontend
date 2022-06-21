@@ -27,14 +27,14 @@ import scala.concurrent.Future
 
 class ExcludedJourneysService @Inject()(excludedJourneysConnector: ExcludedJourneysConnector) {
 
-  def getExcludedJourneys(taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[GetExcludedJourneysResponse] = {
-    excludedJourneysConnector.getExcludedJourneys(taxYear)(hc.withExtraHeaders("mtditid" -> mtditid))
+  def getExcludedJourneys(taxYear: Int, nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[GetExcludedJourneysResponse] = {
+    excludedJourneysConnector.getExcludedJourneys(taxYear, nino)(hc.withExtraHeaders("mtditid" -> mtditid))
   }
 
-  def clearExcludedJourneys(taxYear: Int, mtditid: String, data: ClearExcludedJourneysRequestModel)
+  def clearExcludedJourneys(taxYear: Int, nino: String, mtditid: String, data: ClearExcludedJourneysRequestModel)
                            (implicit hc: HeaderCarrier): Future[ClearExcludedJourneysResponse] = {
 
-    excludedJourneysConnector.clearExcludedJourneys(taxYear, data)(hc.withExtraHeaders("mtditid" -> mtditid))
+    excludedJourneysConnector.clearExcludedJourneys(taxYear, nino, data)(hc.withExtraHeaders("mtditid" -> mtditid))
 
   }
 

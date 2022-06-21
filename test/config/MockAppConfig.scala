@@ -161,9 +161,9 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$taxYear/interest/tailoring-gateway"
 
-  override def getExcludedJourneysUrl(taxYear: Int): String = "/get-excluded"
+  override def getExcludedJourneysUrl(taxYear: Int, nino: String): String = "/get-excluded"
 
-  override def clearExcludedJourneysUrl(taxYear: Int): String = "/clear-excluded"
+  override def clearExcludedJourneysUrl(taxYear: Int, nino: String): String = "/clear-excluded"
 }
 
 class MockAppConfigTaxYearFeatureOff extends MockAppConfig {

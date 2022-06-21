@@ -78,7 +78,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val employmentRemove = incomeSourcesModel.employment.nonEmpty
     val cisRemove = incomeSourcesModel.cis.nonEmpty
 
-    excludedJourneysService.getExcludedJourneys(taxYear, user.mtditid).map {
+    excludedJourneysService.getExcludedJourneys(taxYear, user.nino, user.mtditid).map {
       case Right(data) =>
         val giftAidHash = incomeSourcesModel.giftAid.exists { model =>
           val nonUkCharitiesCharityNames = model.giftAidPayments.flatMap(_.nonUkCharitiesCharityNames).getOrElse(Seq.empty)
@@ -102,7 +102,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
         ).filter(_._1).map(_._2)
 
         val newData = data.journeys.filter(excludedModels => newExclude.contains(excludedModels.journey)).map(_.journey)
-        excludedJourneysService.clearExcludedJourneys(taxYear, user.mtditid, ClearExcludedJourneysRequestModel(newData))
+        excludedJourneysService.clearExcludedJourneys(taxYear, user.nino, user.mtditid, ClearExcludedJourneysRequestModel(newData))
 
         data.journeys.map(_.journey).filterNot(newExclude.contains)
     }
