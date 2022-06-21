@@ -206,8 +206,8 @@ trait WireMockHelper {
     ))
   }
 
-  def stubGetExcludedCall(taxYear: Int, returnedJourneys: Seq[ExcludeJourneyModel] = Seq()): StubMapping = {
-    stubGet(s"/income-tax-submission-service/excluded-journeys/$taxYear", OK, Json.obj(
+  def stubGetExcludedCall(taxYear: Int, nino: String, returnedJourneys: Seq[ExcludeJourneyModel] = Seq()): StubMapping = {
+    stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources/excluded-journeys/$taxYear", OK, Json.obj(
       "journeys" -> returnedJourneys
     ).toString())
   }
