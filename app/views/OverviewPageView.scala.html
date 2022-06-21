@@ -68,7 +68,7 @@
     if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
         appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)
     } else {
-        if(appConfig.tailoringEnabled) {
+        if(appConfig.tailoringEnabled && false) { //TODO Remove 'false' when the personal-income-tax-submission-frontend is updated for the interest journey
             appConfig.personalIncomeTaxInterestGatewayUrl(taxYear)
         } else {
             appConfig.personalIncomeTaxInterestUrl(taxYear)
