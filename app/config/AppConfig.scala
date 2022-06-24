@@ -62,6 +62,10 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val cisIncomeTaxSubmissionUrl: String =s"$cisIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/construction-industry-scheme-deductions"
   def cisFEUrl(taxYear: Int): String = s"$cisIncomeTaxSubmissionUrl/$taxYear/summary"
 
+  lazy val pensionsFrontendBaseUrl: String = servicesConfig.getString(ConfigKeys.pensionsFrontendUrl)
+  lazy val pensionsFrontendUrl: String = s"$pensionsFrontendBaseUrl/update-and-submit-income-tax-return/pensions"
+  def pensionsSummaryUrl(taxYear: Int): String = s"$pensionsFrontendUrl/$taxYear/pensions-summary"
+
   lazy val vcBaseUrl: String = servicesConfig.getString(ConfigKeys.viewAndChangeUrl)
   lazy val vcPtaNavBarOrigin: String = "?origin=PTA"
   def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view$vcPtaNavBarOrigin"
@@ -143,6 +147,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val employmentEOYEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEOYEnabled")
   lazy val cisEnabled: Boolean = servicesConfig.getBoolean("feature-switch.cisEnabled")
   lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
+  lazy val pensionsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.pensionsEnabled")
+  lazy val pensionsReleased: Boolean = servicesConfig.getBoolean("feature-switch.pensionsReleased")
   lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
   lazy val crystallisationEnabled: Boolean = servicesConfig.getBoolean("feature-switch.crystallisationEnabled")
   lazy val tailoringEnabled: Boolean = servicesConfig.getBoolean("feature-switch.tailoringEnabled")
@@ -197,6 +203,10 @@ trait AppConfig {
   val cisIncomeTaxSubmissionBaseUrl: String
   val cisIncomeTaxSubmissionUrl: String
   def cisFEUrl(taxYear: Int): String
+
+  val pensionsFrontendBaseUrl: String
+  val pensionsFrontendUrl: String
+  def pensionsSummaryUrl(taxYear: Int): String
 
   val vcBaseUrl: String
   def viewAndChangeViewUrl: String
@@ -254,6 +264,8 @@ trait AppConfig {
   val employmentEOYEnabled: Boolean
   val cisEnabled: Boolean
   val cisReleased: Boolean
+  val pensionsEnabled: Boolean
+  val pensionsReleased: Boolean
   val nrsEnabled: Boolean
   val crystallisationEnabled: Boolean
   val tailoringEnabled: Boolean

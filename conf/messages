@@ -12,6 +12,7 @@ common.donationsToCharity = Donations to charity
 common.employment = PAYE employment
 common.employmentSL = PAYE employment (including student loans)
 common.cis = Construction Industry Scheme deductions
+common.pensions = Pensions
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
 common.return.button.individual = Back to your Income Tax Return

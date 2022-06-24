@@ -18,6 +18,7 @@ package models
 
 import models.cis.AllCISDeductions
 import models.employment.AllEmploymentData
+import models.pensions.Pensions
 import utils.UnitTest
 
 import scala.reflect.runtime.{universe => reflect}
@@ -34,7 +35,8 @@ class OverviewTailoringModelSpec extends UnitTest {
     Some(Seq(InterestModel("Mah Swamp", "1234567890", Some(500), Some(500)))),
     Some(GiftAidModel()),
     Some(AllEmploymentData(Seq(), None, Seq(), None)),
-    Some(AllCISDeductions(None, None))
+    Some(AllCISDeductions(None, None)),
+    Some(Pensions(None, None, None, None))
   )
   
   val sources = Seq(
@@ -42,7 +44,8 @@ class OverviewTailoringModelSpec extends UnitTest {
     IncomeSourceSetup("interest", "hasInterest"),
     IncomeSourceSetup("gift-aid", "hasGiftAid"),
     IncomeSourceSetup("employment", "hasEmployment"),
-    IncomeSourceSetup("cis", "hasCis")
+    IncomeSourceSetup("cis", "hasCis"),
+    IncomeSourceSetup("pensions", "hasPensions")
   )
   
   "the number of sources match the number of income source fields" in {

@@ -132,6 +132,15 @@
             isInYear,
             additionalShowLinkCheck = incomeSources.cis.isDefined || !isInYear
         )
+
+        @taskListItem(
+            appConfig.pensionsReleased && tailoring.hasPensions,
+            appConfig.pensionsEnabled,
+            "pensions_link",
+            "common.pensions",
+            appConfig.pensionsSummaryUrl(taxYear),
+            incomeSources.pensions.isDefined
+        )
         @if(appConfig.tailoringEnabled){
             @if(!tailoring.allJourneys.contains(true)){
                 @govukInsetText(InsetText(
