@@ -842,6 +842,25 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
         }
       }
     }
+
+    "an error is returned obtaining income sources" should {
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
+
+      val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+
+      lazy val result: Future[Result] = {
+        cleanDatabase(taxYear)
+        insertAllJourneys()
+        stubGetExcludedCall(taxYear, nino)
+        authoriseAgentOrIndividual(user.isAgent)
+        stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None), INTERNAL_SERVER_ERROR)
+        route(app, request).get
+      }
+
+      "return a status of INTERNAL_SERVER_ERROR(500)" in {
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+    }
   }
 
   ".show for end of year" when {

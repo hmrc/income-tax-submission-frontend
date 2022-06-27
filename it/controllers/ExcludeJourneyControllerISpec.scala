@@ -43,11 +43,6 @@ class ExcludeJourneyControllerISpec extends IntegrationTest with ViewHelpers {
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config(useEncryption = false, tailoringEnabled = true))
     .build
-
-
-  def stubIncomeSources(incomeSources: IncomeSourcesModel): StubMapping = {
-    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", OK, Json.toJson(incomeSources).toString())
-  }
   
   private lazy val repo: ExclusionUserDataRepository = app.injector.instanceOf[ExclusionUserDataRepository]
 
@@ -293,7 +288,7 @@ class ExcludeJourneyControllerISpec extends IntegrationTest with ViewHelpers {
         authoriseIndividual()
         stubIncomeSources(incomeSourcesModel)
 
-        await(customApp(tailoringEnabled = false).injector.instanceOf[WSClient]
+        await(customApp().injector.instanceOf[WSClient]
           .url(s"http://localhost:$port" + urlPath)
           .withHttpHeaders(headers: _*)
           .withFollowRedirects(false)
@@ -306,6 +301,33 @@ class ExcludeJourneyControllerISpec extends IntegrationTest with ViewHelpers {
 
       "redirect url location is pointing to the overview page" in {
         result.header(HeaderNames.LOCATION) shouldBe Some(controllers.routes.OverviewPageController.show(taxYear).url)
+      }
+    }
+
+    "return an InternalServerError" when {
+
+      lazy val form = Map(s"Journey" -> "cis")
+
+      lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionValues.TAX_YEAR -> taxYear.toString,
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+      ))
+
+      val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
+
+      lazy val result: WSResponse = {
+        authoriseIndividual()
+        stubIncomeSources(incomeSourcesModel, INTERNAL_SERVER_ERROR)
+
+        await(wsClient
+          .url(s"http://localhost:$port" + urlPath)
+          .withHttpHeaders(headers: _*)
+          .withFollowRedirects(false)
+          .post(form))
+      }
+
+      "returns a SEE_OTHER (303) result" in {
+        result.status shouldBe INTERNAL_SERVER_ERROR
       }
     }
   }

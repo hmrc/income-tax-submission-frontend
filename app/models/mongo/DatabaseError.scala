@@ -26,9 +26,6 @@ case object DataNotUpdated extends DatabaseError {
 case object DataNotFound extends DatabaseError {
   override val message: String = "User data could not be found due to mongo exception"
 }
-case class MongoError(error: String) extends DatabaseError {
-  override val message: String = s"Mongo exception occurred. Exception: $error"
-}
 case class EncryptionDecryptionError(error: String) extends DatabaseError {
   override val message: String = s"Encryption / Decryption exception occurred. Exception: $error"
 }

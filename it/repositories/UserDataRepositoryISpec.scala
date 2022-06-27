@@ -132,7 +132,7 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
       dataAfter.get.tailoring mustBe List("gif","emp")
     }
 
-    "return an dataNotFoundError" in{
+    "return an encryptionDecryptionError" in {
       await(tailoringInvalidRepo.find(taxYear)(testUser)) mustBe
         Left(EncryptionDecryptionError(
           "Key being used is not valid. It could be due to invalid encoding, wrong length or uninitialized for decrypt Invalid AES key length: 2 bytes")
