@@ -50,6 +50,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/interest-from-UK"
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
+  def personalIncomeTaxDividendsTailorPage(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-stocks-and-shares"
 
   def getExcludedJourneysUrl(taxYear: Int, nino: String): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax/nino/$nino/sources/excluded-journeys/$taxYear"
   def clearExcludedJourneysUrl(taxYear: Int, nino: String): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax/nino/$nino/sources/clear-excluded-journeys/$taxYear"
@@ -186,6 +187,7 @@ trait AppConfig {
   val personalIncomeTaxSubmissionBaseUrl: String
   val personalIncomeTaxSubmissionUrl: String
   def personalIncomeTaxDividendsUrl(taxYear: Int): String
+  def personalIncomeTaxDividendsTailorPage(taxYear: Int): String
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxInterestUrl(taxYear: Int): String

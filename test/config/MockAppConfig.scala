@@ -37,6 +37,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/2021/dividends"
 
+  override def personalIncomeTaxDividendsTailorPage(taxYear: Int) = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends-from-uk-companies"
+
   override def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/2021/interest"
 
   lazy val personalIncomeTaxLocalBaseUrl: String = s"http://localhost:9308/update-and-submit-income-tax-return/personal-income"
@@ -97,7 +99,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val crystallisationEnabled: Boolean = false
 
-  override lazy val tailoringEnabled: Boolean = true
+  override lazy val tailoringEnabled: Boolean = false
 
   override lazy val pensionsEnabled: Boolean = true
 
