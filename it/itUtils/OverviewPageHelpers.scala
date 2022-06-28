@@ -72,10 +72,6 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
   }
 
-  def stubIncomeSources(incomeSources: IncomeSourcesModel): StubMapping = {
-    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", OK, Json.toJson(incomeSources).toString())
-  }
-
   def stubLiabilityCalculation(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
     stubGet(s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
   }
@@ -117,6 +113,4 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
   def stubIncomeSourcesEndOfYear: StubMapping =
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYearEOY", OK, Json.toJson(incomeSourcesModel).toString)
-
-
 }

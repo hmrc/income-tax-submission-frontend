@@ -19,6 +19,7 @@ package itUtils
 import java.time.LocalDate
 
 import akka.actor.ActorSystem
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
 import config.AppConfig
 import controllers.predicates.{AuthorisedAction, InYearAction}
@@ -33,8 +34,10 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.{HeaderNames, Writeable}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
+import play.api.test.Helpers.OK
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
 import services.AuthService
@@ -219,6 +222,10 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     authService(stubbedRetrieval),
     mcc
   )
+
+  def stubIncomeSources(incomeSources: IncomeSourcesModel, status: Int = OK): StubMapping = {
+    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", status, Json.toJson(incomeSources).toString())
+  }
 
   //noinspection ScalaStyle
   def mockIVCredentials(affinityGroup: AffinityGroup, confidenceLevel: Int): Future[Some[AffinityGroup] ~ ConfidenceLevel] = {
