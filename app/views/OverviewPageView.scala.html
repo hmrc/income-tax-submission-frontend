@@ -68,7 +68,7 @@
     if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
         appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)
     } else {
-        if(appConfig.tailoringEnabled && false) { //TODO Remove 'false' when the pitsf part of the journey is ready
+        if(appConfig.tailoringEnabled) {
             appConfig.personalIncomeTaxInterestGatewayUrl(taxYear)
         } else {
             appConfig.personalIncomeTaxInterestUrl(taxYear)

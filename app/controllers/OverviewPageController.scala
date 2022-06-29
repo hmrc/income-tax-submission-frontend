@@ -20,15 +20,12 @@ import audit.{AuditService, CreateInYearTaxEstimate, IntentToCrystalliseDetail}
 import common.IncomeSources._
 import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
-import connectors.ExcludedJourneysConnector
 import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
-import models.mongo.ExclusionUserDataModel
 import models.{ClearExcludedJourneysRequestModel, IncomeSourcesModel, OverviewTailoringModel, User}
-import play.api.data
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import repositories.{ExclusionUserDataRepository, TailoringUserDataRepository}
+import repositories.TailoringUserDataRepository
 import services.{ExcludedJourneysService, IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ShaHashHelper
@@ -44,7 +41,6 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
                                        tailoringUserDataRepository: TailoringUserDataRepository,
                                        overviewPageView: OverviewPageView,
                                        authorisedAction: AuthorisedAction,
-                                       exclusionUserDataRepository: ExclusionUserDataRepository,
                                        implicit val validTaxYearListService: ValidTaxYearListService,
                                        implicit val errorHandler: ErrorHandler,
                                        auditService: AuditService,
