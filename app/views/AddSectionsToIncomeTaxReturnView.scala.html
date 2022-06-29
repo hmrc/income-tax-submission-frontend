@@ -111,6 +111,15 @@
                     item = 5
                 )
             }
+
+            @if(journeys.contains("pensions") && incomeSources.pensions.isEmpty) {
+                @checkboxItem(
+                    messages("common.pensions"),
+                    "addSections.hintText.pensions",
+                    "pensions",
+                    item = 6
+                )
+            }
         </div>
 
     }

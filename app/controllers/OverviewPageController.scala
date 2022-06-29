@@ -73,6 +73,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val interestRemove = incomeSourcesModel.interest.exists(interests => interests.exists(_.hasNonZeroData))
     val employmentRemove = incomeSourcesModel.employment.nonEmpty
     val cisRemove = incomeSourcesModel.cis.nonEmpty
+    val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
 
     excludedJourneysService.getExcludedJourneys(taxYear, user.nino, user.mtditid).map {
       case Right(data) =>
@@ -93,6 +94,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
         val newExclude: Seq[String] = Seq((dividendsRemove, DIVIDENDS),
           (cisRemove, CIS),
           (employmentRemove, EMPLOYMENT),
+          (pensionsRemove, PENSIONS),
           (giftAidRemove || giftAidHash, GIFT_AID),
           (interestRemove || interestHash, INTEREST)
         ).filter(_._1).map(_._2)

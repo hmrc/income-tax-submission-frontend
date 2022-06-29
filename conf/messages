@@ -132,6 +132,7 @@ addSections.hintText.dividends = from UK trusts, unit trusts and open-ended inve
 addSections.hintText.interest = including taxed and untaxed UK interest from banks, building societies, trust funds and life annuity payments
 addSections.hintText.donationsToCharity = including donations to overseas charities and donations of land, property, shares and securities
 addSections.hintText.employment = including employment benefits, expenses and student loan repayments
+addSections.hintText.pensions = including income from pensions, payments into UK and overseas pensions and allowances
 
 userResearch.acknowledgement.title = Making Tax Digital for Income Tax
 userResearch.acknowledgement.p1 = Making Tax Digital for Income Tax is the new way of reporting your earnings to HMRC. Instead of completing a Self Assessment return, you’ll use software of your choice (like Rhino, Xero or Quickbooks) to keep digital records and send Income Tax updates. 

@@ -46,7 +46,7 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
                                                         implicit val mcc: MessagesControllerComponents
                                                       ) extends FrontendController(mcc) with I18nSupport {
 
-  val allJourneys: Seq[String] = Seq(INTEREST, DIVIDENDS, GIFT_AID, EMPLOYMENT, CIS)
+  val allJourneys: Seq[String] = Seq(INTEREST, DIVIDENDS, GIFT_AID, EMPLOYMENT, CIS, PENSIONS)
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
     implicit user =>
