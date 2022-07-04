@@ -453,6 +453,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a cis section " which {
             textOnPageCheck(cisLinkText, cisSelector)
             textOnPageCheck(cannotUpdateText, cisStatusSelector)
+            linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
           }
 
           "has a pensions section " which {
