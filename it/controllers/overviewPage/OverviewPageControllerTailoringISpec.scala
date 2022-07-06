@@ -125,6 +125,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val employmentLinkText: String
     val cisLinkText: String
     val giftAidLinkText: String
+    val pensionsLinkText: String
     val continue: String
     val fillInTheSections: String
     val incomeTaxAccountLink: String
@@ -150,6 +151,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val employmentSLLinkText = "PAYE employment (including student loans)"
     val cisLinkText = "Construction Industry Scheme deductions"
     val giftAidLinkText = "Donations to charity"
+    val pensionsLinkText = "Pensions"
     val continue = "continue"
     val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
     val incomeTaxAccountLink = "Income Tax Account"
@@ -175,6 +177,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val employmentSLLinkText = "Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)"
     val cisLinkText = "Didyniadau Cynllun y Diwydiant Adeiladu"
     val giftAidLinkText = "Rhoddion i elusennau"
+    val pensionsLinkText = "Pensiynau"
     val continue = "continue"
     val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
@@ -206,6 +209,8 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val cisSelector: String = sectionNameSelector(5)
     val cisLinkSelector = "#cis_link"
     val cisStatusSelector: String = statusTagSelector(5)
+    val pensionsLinkSelector = "#pensions_link"
+    val pensionsStatusSelector: String = statusTagSelector(6)
     val viewEstimateSelector = "#calculation_link"
     val submitReturnEOYSelector = "#heading-checkAndSubmit"
     val submitReturnTextEOYSelector = "#p-submitText"

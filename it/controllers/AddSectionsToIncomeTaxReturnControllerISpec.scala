@@ -50,6 +50,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val giftAidHint: String
     val interest: String
     val interestHint: String
+    val pensions: String
+    val pensionsHint: String
     val saveAndContinue: String
   }
 
@@ -105,6 +107,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val giftAidHint: String = "including donations to overseas charities and donations of land, property, shares and securities"
     val interest: String = "Interest"
     val interestHint: String = "including taxed and untaxed UK interest from banks, building societies, trust funds and life annuity payments"
+    val pensions: String = "Pensions"
+    val pensionsHint: String = "including income from pensions, payments into UK and overseas pensions and allowances"
     val saveAndContinue: String = "Save and continue"
   }
 
@@ -122,6 +126,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val interest: String = "Llog"
     val interestHint: String = "gan gynnwys llog y DU wedi’i drethu a heb ei drethu a geir gan faciau, cymdeithasau adeiladu a" +
       " thrwy gronfeydd ymddiriedolaeth a thaliadau blwydd-dal bywyd"
+    val pensions: String = "Pensiynau"
+    val pensionsHint: String = "gan gynnwys incwm o bensiynau, taliadau i bensiynau a lwfansau’r DU a thramor"
     val saveAndContinue: String = "Cadw ac yn eich blaen"
   }
 
@@ -139,6 +145,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val interestHintSelector: String = "#interest-item-hint"
     val employmentSelector: String = "#employment"
     val employmentHintSelector: String = "#employment-item-hint"
+    val pensionsSelector: String = "#pensions"
+    val pensionsHintSelector: String = "#pensions-item-hint"
     val useYourSoftwareParagraphSelector: String = "#main-content > div > div > form > div:nth-child(5) > p"
     val useYourSoftwareParagraphNoSourcesSelector: String = "#main-content > div > div > form > div.govuk-body > p"
     val noMoreIncomeSourcesInsetSelector: String = "#main-content > div > div > form > div.govuk-inset-text > p"
@@ -181,7 +189,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       "interest",
       "gift-aid",
       "employment",
-      "cis"
+      "cis",
+      "pensions"
     )
   }
 
@@ -240,6 +249,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           textOnPageCheck(interestHint, Selectors.interestHintSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.employmentSelector, "employment")
           textOnPageCheck(employmentHint, Selectors.employmentHintSelector)
+          inputFieldValueCheck(addSectionsInputFieldName, Selectors.pensionsSelector, "pensions")
+          textOnPageCheck(pensionsHint, Selectors.pensionsHintSelector)
           textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphSelector)
           buttonCheck(saveAndContinue, Selectors.saveAndContinueSelector, None)
         }

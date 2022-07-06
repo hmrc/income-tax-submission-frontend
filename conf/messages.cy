@@ -130,6 +130,7 @@ addSections.hintText.dividends = gan ymddiriedolaethau yn y DU, ymddiriedolaetha
 addSections.hintText.interest = gan gynnwys llog y DU wedi’i drethu a heb ei drethu a geir gan faciau, cymdeithasau adeiladu a thrwy gronfeydd ymddiriedolaeth a thaliadau blwydd-dal bywyd
 addSections.hintText.donationsToCharity = gan gynnwys rhoddion i elusennau tramor a rhoddion o dir, eiddo, cyfranddaliadau a gwarannau
 addSections.hintText.employment = gan gynnwys buddiannau cyflogaeth, treuliau ac ad-daliadau benthyciad myfyriwr
+addSections.hintText.pensions = gan gynnwys incwm o bensiynau, taliadau i bensiynau a lwfansau’r DU a thramor
 
 userResearch.acknowledgement.title = Making Tax Digital for Income Tax
 userResearch.acknowledgement.p1 = Making Tax Digital for Income Tax is the new way of reporting your earnings to HMRC. Instead of completing a Self Assessment return, you’ll use software of your choice (like Rhino, Xero or Quickbooks) to keep digital records and send Income Tax updates. 
