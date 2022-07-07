@@ -42,7 +42,23 @@
             } else {
                 messages("common.underMaintenance")
             }),
-            classes = if(!updatedCondition || !enabledCondition) "govuk-tag--grey" else ""
+            classes = {
+                if(enabledCondition) {
+                    if(updatedCondition) {
+                        "govuk-tag--turquoise"
+                    } else if(cannotUpdateCondition) {
+                        "govuk-tag--grey"
+                    } else if(isExcluded && appConfig.tailoringEnabled) {
+                        "govuk-tag--red excluded"
+                    } else if(isMandatorySection) {
+                        "govuk-tag--purple"
+                    } else {
+                        "govuk-tag--blue"
+                    }
+                } else {
+                    "govuk-tag--orange"
+                }
+            }
         ))
     </span>
 }
