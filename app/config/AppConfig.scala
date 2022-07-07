@@ -48,6 +48,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-interest"
   def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
   def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/interest-from-UK"
+  def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-stocks-and-shares"
+
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
   def personalIncomeTaxDividendsTailorPage(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-stocks-and-shares"
@@ -192,6 +194,7 @@ trait AppConfig {
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxInterestUrl(taxYear: Int): String
   def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String
+  def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
 

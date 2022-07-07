@@ -44,6 +44,9 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
     def interestsTailoringGatewayLink(taxYear: Int = taxYear): String =
       s"http://localhost:9308/update-and-submit-income-tax-return/personal-income/$taxYear/interest/interest-from-UK"
 
+    def dividendsTailoringGatewayLink(taxYear: Int = taxYear): String =
+      s"http://localhost:9308/update-and-submit-income-tax-return/personal-income/$taxYear/dividends/dividends-from-stocks-and-shares"
+
     def employmentLink(taxYear: Int = taxYear): String = s"http://localhost:9317/update-and-submit-income-tax-return/employment-income/$taxYear/employment-summary"
 
     def cisLink(taxYear: Int = taxYear): String = s"http://localhost:9338/update-and-submit-income-tax-return/construction-industry-scheme-deductions/$taxYear/summary"

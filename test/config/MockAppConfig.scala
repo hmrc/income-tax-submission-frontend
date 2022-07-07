@@ -171,6 +171,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override val testOnly_authLoginUrl: String = "/auth-login"
 
   override def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$taxYear/interest/tailoring-gateway"
+  override def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String = s"$taxYear/dividends/dividends-from-uk-companies"
 
   override def getExcludedJourneysUrl(taxYear: Int, nino: String): String = "/get-excluded"
 
