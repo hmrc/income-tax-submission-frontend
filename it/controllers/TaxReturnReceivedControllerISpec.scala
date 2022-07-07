@@ -74,7 +74,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
 
     val nextStepsP1: String = "Find out what you owe and how to pay."
     val nextStepsP2: String = "what you owe and how to pay."
-    val nextStepsP2Link: String = s"http://localhost:9081/report-quarterly/income-and-expenses/view/payments-owed$vcPtaNavBarOrigin"
+    val nextStepsP2Link: String = s"http://localhost:9081/report-quarterly/income-and-expenses/view/what-you-owe$vcPtaNavBarOrigin"
 
     val nextStepsP4: String = "If you need to contact us about your Income Tax Return, tell us your UTR."
 
@@ -104,7 +104,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
 
     val nextStepsP1: String = "Find out what your client owes and how to pay."
     val nextStepsP2: String = "what your client owes and how to pay."
-    val nextStepsP2Link: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/payments-owed"
+    val nextStepsP2Link: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/what-you-owe"
 
     val nextStepsP4: String = "If you need to contact us about your client’s Income Tax Return, tell us their UTR."
 

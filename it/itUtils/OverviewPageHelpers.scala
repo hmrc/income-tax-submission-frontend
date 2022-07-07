@@ -60,7 +60,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
     }
 
     def viewAndChangeLink(isAgent: Boolean): String = if (isAgent) {
-      "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+      "http://localhost:9081/report-quarterly/income-and-expenses/view/agents"
     }
     else {
       s"http://localhost:9081/report-quarterly/income-and-expenses/view$vcPtaNavBarOrigin"
