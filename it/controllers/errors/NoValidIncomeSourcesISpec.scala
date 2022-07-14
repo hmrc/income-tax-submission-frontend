@@ -53,7 +53,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
     val submitAgent = "Back to Income Tax Return"
 
     val viewAndChangeOverviewLink = s"http://localhost:9081/report-quarterly/income-and-expenses/view$vcPtaNavBarOrigin"
-    val viewAndChangeOverviewLinkAgent = s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+    val viewAndChangeOverviewLinkAgent = s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents"
 
   }
 
@@ -69,7 +69,7 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
     val submitAgent = "Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm"
 
     val viewAndChangeOverviewLink = s"http://localhost:9081/report-quarterly/income-and-expenses/view$vcPtaNavBarOrigin"
-    val viewAndChangeOverviewLinkAgent = s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+    val viewAndChangeOverviewLinkAgent = s"http://localhost:9081/report-quarterly/income-and-expenses/view/agents"
 
   }
 

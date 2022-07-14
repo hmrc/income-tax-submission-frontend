@@ -138,14 +138,6 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override def viewAndChangePaymentsOwedAgentUrl: String = ???
 
-  override def viewAndChangeNextUpdatesUrl: String = ???
-
-  override def viewAndChangeNextUpdatesAgentUrl: String = ???
-
-  override def viewAndChangeTaxYearsUrl: String = ???
-
-  override def viewAndChangeTaxYearsAgentUrl: String = ???
-
   override val incomeTaxSubmissionFrontendUrl: String = "/income-tax-submission"
 
   override def overviewUrl(taxYear: Int): String = "/overview"

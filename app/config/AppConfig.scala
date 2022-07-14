@@ -71,14 +71,10 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def viewAndChangeViewUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view$vcPtaNavBarOrigin"
   def viewAndChangeViewInYearEstimateUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-overview$vcPtaNavBarOrigin"
   def viewAndChangeEnterUtrUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
-  def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/income-tax-account"
+  def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents"
   def viewAndChangeViewInYearEstimateUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/tax-overview"
-  def viewAndChangePaymentsOwedUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/payments-owed$vcPtaNavBarOrigin"
-  def viewAndChangePaymentsOwedAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/payments-owed"
-  def viewAndChangeNextUpdatesUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/obligations$vcPtaNavBarOrigin"
-  def viewAndChangeNextUpdatesAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/obligations"
-  def viewAndChangeTaxYearsUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/tax-years$vcPtaNavBarOrigin"
-  def viewAndChangeTaxYearsAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/tax-years"
+  def viewAndChangePaymentsOwedUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/what-you-owe$vcPtaNavBarOrigin"
+  def viewAndChangePaymentsOwedAgentUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/what-you-owe"
 
   def viewAndChangeFinalCalculationUrl(taxYear: Int): String = {
     s"$vcBaseUrl/report-quarterly/income-and-expenses/view/$taxYear/final-tax-overview/calculate$vcPtaNavBarOrigin"
@@ -216,10 +212,6 @@ trait AppConfig {
   def viewAndChangeViewInYearEstimateUrlAgent: String
   def viewAndChangePaymentsOwedUrl: String
   def viewAndChangePaymentsOwedAgentUrl: String
-  def viewAndChangeNextUpdatesUrl: String
-  def viewAndChangeNextUpdatesAgentUrl: String
-  def viewAndChangeTaxYearsUrl: String
-  def viewAndChangeTaxYearsAgentUrl: String
 
   def viewAndChangeFinalCalculationUrl(taxYear: Int): String
   def viewAndChangeFinalCalculationUrlAgent(taxYear: Int): String
