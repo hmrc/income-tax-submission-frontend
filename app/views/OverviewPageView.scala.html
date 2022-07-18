@@ -80,6 +80,18 @@
     }
 }
 
+@dividendsUrlRedirect(incomeSources: IncomeSourcesModel) = @{
+    if(incomeSources.dividends.isDefined) {
+        appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)
+    } else {
+        if(appConfig.tailoringEnabled) {
+            appConfig.personalIncomeTaxDividendsGatewayUrl(taxYear)
+        } else {
+            appConfig.personalIncomeTaxDividendsUrl(taxYear)
+        }
+    }
+}
+
 @interestUrlRedirect(incomeSources: IncomeSourcesModel) = @{
     if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
         appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)
@@ -91,6 +103,7 @@
         }
     }
 }
+
 
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <ol style="padding-left:0;" class="app-task-list__items govuk-!-padding-bottom-1">
@@ -109,7 +122,7 @@
             appConfig.dividendsEnabled,
             "dividends_link",
             "common.dividends",
-            if(incomeSources.dividends.isEmpty) {appConfig.personalIncomeTaxDividendsUrl(taxYear)} else {appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)},
+            dividendsUrlRedirect(incomeSources),
             DIVIDENDS,
             incomeSources.dividends.isDefined
         )
