@@ -27,6 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.status
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
+import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -35,11 +36,9 @@ class AuthorisedActionSpec extends IntegrationTest {
   lazy val auth: AuthorisedAction = app.injector.instanceOf[AuthorisedAction]
 
   ".enrolmentGetIdentifierValue" should {
-
     "return the value for the given identifier" in {
       val returnValue = "anIdentifierValue"
       val returnValueAgent = "anAgentIdentifierValue"
-
       val enrolments = Enrolments(Set(
         Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, returnValue)), "Activated"),
         Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, returnValueAgent)), "Activated")
@@ -334,12 +333,10 @@ class AuthorisedActionSpec extends IntegrationTest {
       Future.successful(Ok(s"mtditid: ${user.mtditid}${user.arn.fold("")(arn => " arn: " + arn)}"))
 
     "perform the block action" when {
-
       "the user is successfully verified as an agent" which {
-
         lazy val result = {
           authoriseAgent()
-          auth.invokeBlock(fakeRequestAgent, block)
+          auth.invokeBlock(fakeRequestAgent.withSession(SessionKeys.authToken -> "mock-bearer-token"), block)
         }
 
         "should return an OK(200) status" in {
@@ -349,10 +346,9 @@ class AuthorisedActionSpec extends IntegrationTest {
       }
 
       "the user is successfully verified as an individual" in {
-
         lazy val result = {
           authoriseIndividual()
-          auth.invokeBlock(fakeRequest, block)
+          auth.invokeBlock(fakeRequest.withSession(SessionKeys.authToken -> "mock-bearer-token"), block)
         }
 
         status(result) shouldBe OK
@@ -375,7 +371,7 @@ class AuthorisedActionSpec extends IntegrationTest {
       "there is no MTDITID value in session" which {
         lazy val result = {
           authoriseAgent()
-          auth.invokeBlock(fakeRequest.withSession("ClientNino" -> "AA123456A"), block)
+          auth.invokeBlock(fakeRequest.withSession(SessionKeys.authToken -> "mock-bearer-token", "ClientNino" -> "AA123456A"), block)
         }
 
         "has a status of SEE_OTHER (303)" in {
@@ -387,6 +383,6 @@ class AuthorisedActionSpec extends IntegrationTest {
         }
       }
     }
-    
+
   }
 }

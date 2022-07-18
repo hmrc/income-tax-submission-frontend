@@ -17,14 +17,14 @@
 package helpers
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.http.{HttpHeader, HttpHeaders}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
-import models.{ExcludeJourneyModel, GetExcludedJourneysResponseModel}
+import models.ExcludeJourneyModel
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
@@ -70,9 +70,9 @@ trait WireMockHelper {
   )
 
   private def successfulAuthResponse(affinityGroup: Option[AffinityGroup], confidenceLevel: Option[ConfidenceLevel], enrolments: JsObject*): JsObject = {
-      affinityGroup.fold(Json.obj())(unwrappedAffinityGroup => Json.obj("affinityGroup" -> unwrappedAffinityGroup)) ++
-        confidenceLevel.fold(Json.obj())(unwrappedConfidenceLevel => Json.obj("confidenceLevel" -> unwrappedConfidenceLevel)) ++
-        Json.obj("allEnrolments" -> enrolments)
+    affinityGroup.fold(Json.obj())(unwrappedAffinityGroup => Json.obj("affinityGroup" -> unwrappedAffinityGroup)) ++
+      confidenceLevel.fold(Json.obj())(unwrappedConfidenceLevel => Json.obj("confidenceLevel" -> unwrappedConfidenceLevel)) ++
+      Json.obj("allEnrolments" -> enrolments)
   }
 
   def startWiremock(): Unit = {
@@ -106,9 +106,9 @@ trait WireMockHelper {
       )
     )
 
-  def stubGetWithHeaderCheck(url: String, status: Integer, body: String, header:(String, String)): StubMapping =
+  def stubGetWithHeaderCheck(url: String, status: Integer, body: String, header: (String, String)): StubMapping =
     stubFor(get(urlMatching(url))
-      .withHeader(header._1,equalTo(header._2))
+      .withHeader(header._1, equalTo(header._2))
       .willReturn(
         aResponse().
           withStatus(status).
@@ -125,17 +125,11 @@ trait WireMockHelper {
       )
     )
 
-  def stubPostWithHeaders(url: String, status: Integer, responseBody: String, headers: Seq[(String, String)]): StubMapping =
-    stubFor(post(urlMatching(url))
-      .willReturn(
-        aResponse().
-          withStatus(status).
-          withBody(responseBody)
-          .withHeaders(new HttpHeaders(
-            headers.map(h => new HttpHeader(h._1, h._2)): _*
-          ))
-      )
-    )
+  def stubPostWithHeaders(url: String, status: Integer, responseBody: String, headers: Seq[(String, String)]): StubMapping = {
+    val responseBuilder = aResponse().withHeaders(new HttpHeaders(headers.map(h => new HttpHeader(h._1, h._2)): _*)).withStatus(status).withBody(responseBody)
+
+    stubFor(post(urlMatching(url)).willReturn(responseBuilder))
+  }
 
 
   def stubPut(url: String, status: Integer, responseBody: String): StubMapping =

@@ -16,8 +16,6 @@
 
 package itUtils
 
-import java.time.LocalDate
-
 import akka.actor.ActorSystem
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
@@ -27,7 +25,6 @@ import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
 import models.cis.{AllCISDeductions, CISDeductions, CISSource, PeriodData}
 import models.employment._
-import testModels.PensionsModels.allPensionsModel
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
@@ -36,17 +33,19 @@ import play.api.http.{HeaderNames, Writeable}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import play.api.test.Helpers.OK
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
 import services.AuthService
+import testModels.PensionsModels.allPensionsModel
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 import views.html.authErrorPages.AgentAuthErrorPageView
 
+import java.time.LocalDate
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
 
@@ -118,11 +117,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "metrics.enabled" -> "false",
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
     "useEncryption" -> useEncryption.toString,
-    "mongodb.encryption.key" -> (if (invalidEncryptionKey) {
-      "key"
-    } else {
-      "QmFyMTIzNDVCYXIxMjM0NQ=="
-    })
+    "mongodb.encryption.key" -> (if (invalidEncryptionKey) "key" else "QmFyMTIzNDVCYXIxMjM0NQ==")
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -197,7 +192,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   lazy val agentAuthErrorPage: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
   lazy val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
-  val defaultAcceptedConfidenceLevels = Seq(
+  val defaultAcceptedConfidenceLevels: Seq[ConfidenceLevel] = Seq(
     ConfidenceLevel.L200,
     ConfidenceLevel.L500
   )
@@ -218,10 +213,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   def authAction(stubbedRetrieval: Future[_]): AuthorisedAction = new AuthorisedAction(
     appConfig,
     agentAuthErrorPage
-  )(
-    authService(stubbedRetrieval),
-    mcc
-  )
+  )(authService(stubbedRetrieval), mcc)
 
   def stubIncomeSources(incomeSources: IncomeSourcesModel, status: Int = OK): StubMapping = {
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", status, Json.toJson(incomeSources).toString())
@@ -287,9 +279,9 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     customerExpenses = None
   )
   val cisSource: CISSource = CISSource(
-    Some(400),Some(400),Some(400),Seq(
+    Some(400), Some(400), Some(400), Seq(
       CISDeductions(
-        s"${2020-1}-04-06",
+        s"${2020 - 1}-04-06",
         s"${2020}-04-05",
         Some("Contractor 1"),
         "111/11111",
@@ -298,17 +290,17 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         Some(200.00),
         Seq(
           PeriodData(
-            s"${2020-1}-04-06",
-            s"${2020-1}-05-05",
+            s"${2020 - 1}-04-06",
+            s"${2020 - 1}-05-05",
             Some(100.00),
             Some(100.00),
             Some(100.00),
             "2022-05-11T16:38:57.489Z",
             None,
             "contractor"
-          ),PeriodData(
-            s"${2020-1}-05-06",
-            s"${2020-1}-06-05",
+          ), PeriodData(
+            s"${2020 - 1}-05-06",
+            s"${2020 - 1}-06-05",
             Some(100.00),
             Some(100.00),
             Some(100.00),
@@ -317,8 +309,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
             "contractor"
           )
         )
-      ),CISDeductions(
-        s"${2020-1}-04-06",
+      ), CISDeductions(
+        s"${2020 - 1}-04-06",
         s"${2020}-04-05",
         Some("Contractor 2"),
         "222/11111",
@@ -327,17 +319,17 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         Some(200.00),
         Seq(
           PeriodData(
-            s"${2020-1}-04-06",
-            s"${2020-1}-05-05",
+            s"${2020 - 1}-04-06",
+            s"${2020 - 1}-05-05",
             Some(100.00),
             Some(100.00),
             Some(100.00),
             "2022-05-11T16:38:57.489Z",
             None,
             "contractor"
-          ),PeriodData(
-            s"${2020-1}-05-06",
-            s"${2020-1}-06-05",
+          ), PeriodData(
+            s"${2020 - 1}-05-06",
+            s"${2020 - 1}-06-05",
             Some(100.00),
             Some(100.00),
             Some(100.00),
@@ -371,11 +363,12 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     giftsModel
   )
 
-  def playSessionCookies(taxYear: Int, validTaxYears:Seq[Int]): String = PlaySessionCookieBaker.bakeSessionCookie(Map(
+  def playSessionCookies(taxYear: Int, validTaxYears: Seq[Int]): String = PlaySessionCookieBaker.bakeSessionCookie(Map(
     SessionValues.TAX_YEAR -> taxYear.toString,
     SessionValues.VALID_TAX_YEARS -> validTaxYears.mkString(","),
     SessionKeys.sessionId -> sessionId,
     SessionValues.CLIENT_NINO -> "AA123456A",
-    SessionValues.CLIENT_MTDITID -> "1234567890"
+    SessionValues.CLIENT_MTDITID -> "1234567890",
+    SessionKeys.authToken -> "mock-bearer-token"
   ))
 }

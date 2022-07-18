@@ -28,40 +28,34 @@ import views.html.UserResearchLoginView
 
 import java.util.UUID
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class UserResearchLoginController @Inject()(
-                                             mcc: MessagesControllerComponents,
-                                             view: UserResearchLoginView,
-                                             loginStubConnector: AuthLoginApiConnector
-                                           )(
-                                             implicit appConfig: AppConfig,
-                                             ec: ExecutionContext
-                                           ) extends FrontendController(mcc) {
+class UserResearchLoginController @Inject()(mcc: MessagesControllerComponents,
+                                            view: UserResearchLoginView,
+                                            loginStubConnector: AuthLoginApiConnector)
+                                           (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) {
 
   def show(): Action[AnyContent] = Action { implicit request =>
     Ok(view())
   }
 
-  private[testOnly] def buildGGSession(authExchange: AuthLoginAPIResponse): Session = Session(Map(
-    SessionKeys.sessionId -> (if(authExchange.sessionId.isEmpty) SessionId(s"session-${UUID.randomUUID}").value else authExchange.sessionId),
-    SessionKeys.authToken -> authExchange.token,
-    SessionKeys.lastRequestTimestamp -> DateTime.now.getMillis.toString
-  ))
-
   def submit(): Action[AnyContent] = Action.async { implicit request =>
     val suppliedCredentialAndYear: Array[String] = UserResearchLoginForm.researchLoginForm.bindFromRequest.get.split("::")
     val suppliedCredential = suppliedCredentialAndYear.head
-    val suppliedYear = if(suppliedCredentialAndYear.length > 1 && suppliedCredentialAndYear.last.matches("[0-9]{4}")) suppliedCredentialAndYear.last.toInt else appConfig.defaultTaxYear
+    val suppliedYear = if (suppliedCredentialAndYear.length > 1 && suppliedCredentialAndYear.last.matches("[0-9]{4}")) suppliedCredentialAndYear.last.toInt else appConfig.defaultTaxYear
 
     val userDetails: ResearchUser = ResearchUsers.generateUserCredentials(suppliedCredential, suppliedYear)
 
     loginStubConnector.submitLoginRequest(userDetails).map {
-        case Some(response) => Redirect(controllers.routes.StartPageController.show(userDetails.taxYear))
-          .withSession(buildGGSession(response))
-        case None => Redirect(controllers.testOnly.routes.UserResearchLoginController.show())
+      case Some(response) => Redirect(controllers.routes.StartPageController.show(userDetails.taxYear))
+        .withSession(buildGGSession(response))
+      case None => Redirect(controllers.testOnly.routes.UserResearchLoginController.show())
     }
-
   }
 
+  private[testOnly] def buildGGSession(authExchange: AuthLoginAPIResponse): Session = Session(Map(
+    SessionKeys.sessionId -> (if (authExchange.sessionId.isEmpty) SessionId(s"session-${UUID.randomUUID}").value else authExchange.sessionId),
+    SessionKeys.authToken -> authExchange.token,
+    SessionKeys.lastRequestTimestamp -> DateTime.now.getMillis.toString
+  ))
 }

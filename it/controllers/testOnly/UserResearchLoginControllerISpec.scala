@@ -26,8 +26,6 @@ import play.api.http.HeaderNames
 import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import play.api.test.FakeRequest
-import uk.gov.hmrc.http.HttpVerbs.GET
 
 import scala.concurrent.Future
 
@@ -50,7 +48,6 @@ class UserResearchLoginControllerISpec extends IntegrationTest with ViewHelpers 
   }
 
   ".show" should {
-
     "render the page" which {
       import Selectors._
 
@@ -68,16 +65,15 @@ class UserResearchLoginControllerISpec extends IntegrationTest with ViewHelpers 
       inputFieldCheck("credential", inputField)
       buttonCheck("Continue")
     }
-
   }
 
   ".submit" should {
-
     "redirect to the start page" when {
-
       "the auth api call is successful" which {
-        lazy val call: Future[WSResponse] = wsClient.url(url).withFollowRedirects(false).post(Json.obj("credential" -> "70365"))
-
+        lazy val call: Future[WSResponse] = wsClient
+          .url(url)
+          .withFollowRedirects(false)
+          .post(Map("credential" -> "70365"))
         lazy val result: WSResponse = {
           stubAuthCall()
           await(call)
@@ -91,14 +87,11 @@ class UserResearchLoginControllerISpec extends IntegrationTest with ViewHelpers 
           result.headers("Location").head shouldBe controllers.routes.StartPageController.show(taxYear).url
         }
       }
-
     }
 
     "redirect to the start page with a given year" when {
-
       "the auth api call is successful and the credential contains a year modifier" which {
-        lazy val call: Future[WSResponse] = wsClient.url(url).withFollowRedirects(false).post(Json.obj("credential" -> "70365::2040"))
-
+        lazy val call: Future[WSResponse] = wsClient.url(url).withFollowRedirects(false).post(Map("credential" -> "70365::2040"))
         lazy val result: WSResponse = {
           stubAuthCall()
           await(call)
@@ -112,14 +105,11 @@ class UserResearchLoginControllerISpec extends IntegrationTest with ViewHelpers 
           result.headers("Location").head shouldBe controllers.routes.StartPageController.show(2040).url
         }
       }
-
     }
 
     "redirect to the login page" when {
-
       "the auth call returns a None" which {
-        lazy val call: Future[WSResponse] = wsClient.url(url).withFollowRedirects(false).post(Json.obj("credential" -> "70365"))
-
+        lazy val call: Future[WSResponse] = wsClient.url(url).withFollowRedirects(false).post(Map("credential" -> "70365"))
         lazy val result: WSResponse = {
           stubAuthCall(NO_CONTENT)
           await(call)
@@ -133,13 +123,10 @@ class UserResearchLoginControllerISpec extends IntegrationTest with ViewHelpers 
           result.headers("Location").head shouldBe controllers.testOnly.routes.UserResearchLoginController.show().url
         }
       }
-
     }
-
   }
 
   ".buildGGSession" should {
-
     "add a session id, auth token and last request timestamp to session" in {
       val resultingData: Map[String, String] = controller.buildGGSession(AuthLoginAPIResponse(
         token = "some-token", sessionId = "session-id", governmentGatewayToken = "gg-token"
@@ -159,7 +146,5 @@ class UserResearchLoginControllerISpec extends IntegrationTest with ViewHelpers 
       resultingData("authToken") shouldBe "some-token"
       resultingData("ts").nonEmpty shouldBe true
     }
-
   }
-
 }

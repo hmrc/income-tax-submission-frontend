@@ -18,8 +18,8 @@ package controllers
 
 import audit.AuditService
 import common.SessionValues
-import controllers.predicates.{AuthorisedAction, InYearAction}
 import config.{AppConfig, ErrorHandler}
+import controllers.predicates.{AuthorisedAction, InYearAction}
 import itUtils.{IntegrationTest, ViewHelpers}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -28,15 +28,16 @@ import play.api.mvc.Result
 import play.api.test.Helpers.{OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import services.{AuthService, ValidTaxYearListService}
+import uk.gov.hmrc.http.SessionKeys
 import views.html.StartPageView
 
 import scala.concurrent.Future
 
 class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
-  lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  private lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  def controller: StartPageController = new StartPageController(
+  private def controller: StartPageController = new StartPageController(
     app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[AuthService],
     app.injector.instanceOf[StartPageView],
@@ -49,7 +50,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     app.injector.instanceOf[ErrorHandler]
   )
 
-  def controllerWithoutSL: StartPageController = new StartPageController(
+  private def controllerWithoutSL: StartPageController = new StartPageController(
     app.injector.instanceOf[AuthorisedAction],
     app.injector.instanceOf[AuthService],
     app.injector.instanceOf[StartPageView],
@@ -125,7 +126,10 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   "Rendering the start page in English" should {
 
-    val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
+    val headers = Seq(
+      HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList),
+      "Csrf-Token" -> "nocheck"
+    )
 
     "render correctly when the user is an individual" should {
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
@@ -163,6 +167,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val result: Future[Result] = {
         authoriseIndividual()
         controllerWithoutSL.show(taxYear)(fakeRequest.withSession(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.TAX_YEAR -> taxYear.toString,
           SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
         ))
@@ -184,6 +189,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       lazy val result: Future[Result] = {
         authoriseIndividual()
         controllerWithoutSL.show(taxYear)(fakeRequest.withHeaders(headers: _*).withSession(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.TAX_YEAR -> taxYear.toString,
           SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
         ))
@@ -307,6 +313,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
         val result = {
           authoriseIndividual()
           await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
           ))
         }
@@ -322,6 +329,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
         lazy val result = {
           unauthorisedIndividualInsufficientConfidenceLevel()
           await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
           ))
         }
@@ -338,7 +346,6 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
     }
 
     "redirect to the sign in link" when {
-
       "it contains the wrong credentials" which {
         lazy val result = {
           unauthorisedIndividualWrongCredentials()
@@ -355,20 +362,17 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
           result.header.headers("Location") shouldBe appConfig.signInUrl
         }
       }
-
     }
-
   }
 
   "Hitting the submit endpoint" should {
-
     "redirect to the overview page" when {
-
       "the user is an individual" which {
         lazy val result: Future[Result] = {
           wireMockServer.resetAll()
           authoriseIndividual()
           controller.submit(taxYear)(fakeRequest.withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.TAX_YEAR -> taxYear.toString,
             SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
           ))
@@ -382,9 +386,6 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
           redirectUrl(result) shouldBe controllers.routes.OverviewPageController.show(taxYear).url
         }
       }
-
     }
-
   }
-  
 }

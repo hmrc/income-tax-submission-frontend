@@ -28,16 +28,15 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{CONFLICT, NO_CONTENT, OK, SEE_OTHER, UNPROCESSABLE_ENTITY, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
+import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
 class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
-
   private val crystallisationUrl: String = s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYearEOY/string/declare-crystallisation"
 
-  object ExpectedResults{
-
+  object ExpectedResults {
     val heading: String = "Declaration"
     val subheading: String = "6 April " + taxYearEndOfYearMinusOne + " to " + "5 April " + taxYearEOY
 
@@ -80,7 +79,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       " ac wynebu erlyniad os byddaf yn rhoi gwybodaeth anwir."
   }
 
-  object AgentExpectedResults{
+  object AgentExpectedResults {
 
     val agentSummaryData: DeclarationModel = DeclarationModel(
       "Joan Agent", 940.40, "EW62340", 231, 132, 321
@@ -115,6 +114,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "the language is specified as English and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
@@ -148,6 +148,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "the language is specified as Welsh and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
@@ -180,12 +181,11 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   "/show" should {
-
     "redirect back to the overview page when trying to access in year" which {
       import IndividualExpectedResults.individualSummaryData
-
       "the calc id is missing" which {
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
           SessionValues.TAX_YEAR -> taxYear.toString,
           SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
@@ -213,13 +213,13 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       }
     }
   }
-  
+
   "/submit" should {
-    
     "Redirect to the confirmation page" when {
       import IndividualExpectedResults.individualSummaryData
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
@@ -235,7 +235,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           await(wsClient
             .url(s"http://localhost:$port" + urlPathEOY)
-            .withHttpHeaders(headers:_*)
+            .withHttpHeaders(headers: _*)
             .withFollowRedirects(false)
             .post("{}"))
         }
@@ -250,12 +250,13 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
       }
 
     }
-    
+
     "Redirect to the overview page" when {
       import IndividualExpectedResults.individualSummaryData
 
       "the calc id is missing" which {
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
           SessionValues.TAX_YEAR -> taxYearEOY.toString,
           SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
@@ -268,7 +269,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           await(wsClient
             .url(s"http://localhost:$port" + urlPathEOY)
-            .withHttpHeaders(headers:_*)
+            .withHttpHeaders(headers: _*)
             .withFollowRedirects(false)
             .post("{}"))
         }
@@ -284,6 +285,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
       "the summary data is missing" which {
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.TAX_YEAR -> taxYearEOY.toString,
           SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
           SessionValues.CALCULATION_ID -> "string"
@@ -296,7 +298,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
           await(wsClient
             .url(s"http://localhost:$port" + urlPathEOY)
-            .withHttpHeaders(headers:_*)
+            .withHttpHeaders(headers: _*)
             .withFollowRedirects(false)
             .post("{}"))
         }
@@ -308,12 +310,13 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         "has a redirect url pointing at the confirmation page" in {
           result.headers("Location").head shouldBe controllers.routes.OverviewPageController.show(taxYearEOY).url
         }
-        
+
       }
     }
 
     "redirect back to the overview page when in year" which {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CALCULATION_ID -> "string"
@@ -326,7 +329,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         await(wsClient
           .url(s"http://localhost:$port" + urlPathInYear)
-          .withHttpHeaders(headers:_*)
+          .withHttpHeaders(headers: _*)
           .withFollowRedirects(false)
           .post("{}"))
       }
@@ -346,6 +349,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "the language is specified as English and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
@@ -374,13 +378,14 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         textOnPageCheck(subheading, subheadingSelector)
 
         textOnPageCheck(agentInformationText, informationTextSelector)
-        buttonCheck(agreeButton,agreeButtonSelector)
+        buttonCheck(agreeButton, agreeButtonSelector)
       }
 
     }
 
     "the language is specified as Welsh and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
@@ -410,7 +415,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         textOnPageCheck(subheadingWelsh, subheadingSelector)
 
         textOnPageCheck(agentInformationTextWelsh, informationTextSelector)
-        buttonCheck(agreeButtonWelsh,agreeButtonSelector)
+        buttonCheck(agreeButtonWelsh, agreeButtonSelector)
       }
     }
   }
@@ -421,6 +426,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "there is no Summary Data in session which" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
@@ -447,6 +453,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "the user's residency has changed" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
@@ -480,6 +487,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "the user's tax year return already exists" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
@@ -513,6 +521,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "the user's tax year return is already updated" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
@@ -546,6 +555,7 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
     "the users tax return has no valid income sources" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYearEOY.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),

@@ -26,6 +26,7 @@ import play.api.http.Status._
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
+import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -67,8 +68,8 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers {
   "an user calling GET" when {
     "language is set to ENGLISH" should {
       "return a page with multiple tax years in session" which {
-
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.TAX_YEAR -> taxYear.toString,
           SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
         ))
@@ -97,8 +98,8 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers {
       }
 
       "return a page with a single tax year in session" which {
-
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.TAX_YEAR -> taxYear.toString,
           SessionValues.VALID_TAX_YEARS -> singleValidTaxYear.mkString(",")
         ))
@@ -126,6 +127,7 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers {
     "language is set to WELSH" should {
       "return a page with multiple tax years in session" which {
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.TAX_YEAR -> taxYear.toString,
           SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
         ))
@@ -154,8 +156,8 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers {
       }
 
       "return a page with a single tax year in session" which {
-
         lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.TAX_YEAR -> taxYear.toString,
           SessionValues.VALID_TAX_YEARS -> singleValidTaxYear.mkString(",")
         ))
@@ -178,8 +180,6 @@ class TaxYearErrorControllerISpec extends IntegrationTest with ViewHelpers {
         welshToggleCheck("Welsh")
         textOnPageCheck(specificTaxYearTextSingleWelsh, specificTaxYearSelector)
       }
-
     }
   }
-
 }
