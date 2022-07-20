@@ -23,6 +23,7 @@ import itUtils.IntegrationTest
 import play.api.http.Status.SEE_OTHER
 import play.api.test.Helpers.{status, stubMessagesControllerComponents}
 import services.AuthService
+import uk.gov.hmrc.http.SessionKeys
 
 class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
 
@@ -37,36 +38,33 @@ class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
   private val callBackTaxYear: Int = taxYear + 2
 
   "IVUpliftController" should {
-
     "redirect user to initialiseJourney" when {
-
       "initialiseJourney() is called it" should {
-
         "as an individual return status code 303" in {
           lazy val response = {
             authoriseIndividual()
-            controller.initialiseJourney()(fakeRequest)
+            controller.initialiseJourney()(fakeRequest.withSession(SessionKeys.authToken -> "mock-bearer-token"))
           }
-          
+
           status(response) shouldBe SEE_OTHER
           await(response).header.headers shouldBe Map("Location" ->
             "http://localhost:9538/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/update-and-submit-income-tax-return/iv-uplift-callback&failureURL=/update-and-submit-income-tax-return/error/we-could-not-confirm-your-details")
         }
-        
+
       }
     }
-    
+
     "redirect user to start page" when {
 
       "callback() is called it" should {
         lazy val response = {
           authoriseIndividual()
-          controller.callback()(fakeRequest)
+          controller.callback()(fakeRequest.withSession(SessionKeys.authToken -> "mock-bearer-token"))
         }
-        
+
         lazy val response2 = {
           authoriseIndividual()
-          controller.callback()(fakeRequest.withSession("TAX_YEAR" -> s"$callBackTaxYear"))
+          controller.callback()(fakeRequest.withSession(SessionKeys.authToken -> "mock-bearer-token", "TAX_YEAR" -> s"$callBackTaxYear"))
         }
 
         "return status code 303" in {

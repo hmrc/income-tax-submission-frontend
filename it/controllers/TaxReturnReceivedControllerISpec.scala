@@ -28,6 +28,7 @@ import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Result
 import play.api.test.Helpers.{OK, SEE_OTHER, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.language.LanguageUtils
 import utils.ImplicitDateFormatter
 
@@ -148,7 +149,8 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
-        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
+        SessionKeys.authToken -> "mock-bearer-token"
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -189,7 +191,8 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
         SessionValues.SUMMARY_DATA -> individualSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
-        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+        SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
+        SessionKeys.authToken -> "mock-bearer-token"
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck", HeaderNames.ACCEPT_LANGUAGE -> "cy")
@@ -235,7 +238,8 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
         SessionValues.CLIENT_NINO -> nino,
-        SessionValues.CLIENT_MTDITID -> mtditid
+        SessionValues.CLIENT_MTDITID -> mtditid,
+        SessionKeys.authToken -> "mock-bearer-token"
       ))
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -274,6 +278,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
 
     "the language is specified as Welsh and" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.SUMMARY_DATA -> agentSummaryData.asJsonString,
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
@@ -319,6 +324,7 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
 
     "there is no Summary Data in session which" should {
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
@@ -343,5 +349,4 @@ class TaxReturnReceivedControllerISpec extends IntegrationTest with ImplicitDate
       }
     }
   }
-
 }

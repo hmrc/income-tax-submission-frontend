@@ -286,13 +286,14 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
       val specific = user.specificExpectedResults.get
 
       s"language is ${welshTest(user.isWelsh)} and request is from an ${agentTest(user.isAgent)}" should {
-        val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
+        val headers = Seq(
+          HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList),
+          "Csrf-Token" -> "nocheck"
+        )
 
         "render an overview page with all the sections showing with the HREFs redirecting to the Tailoring questions" when {
-
           "there is no prior data, and the tailoring feature switch is on" which {
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
             lazy val result: Future[Result] = {
               cleanDatabase(taxYear)
               insertAllJourneys()
@@ -1159,31 +1160,30 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
   }
 
   "Hitting the show endpoint" should {
-
     s"return an OK (200) and no prior data" when {
-
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
           stubGetExcludedCall(taxYear, nino)
           await(controller.show(taxYear)(fakeRequest.withSession(
-            SessionValues.TAX_YEAR -> s"$taxYear", SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
+            SessionKeys.authToken -> "mock-bearer-token",
+            SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
           ))
         }
 
         result.header.status shouldBe OK
       }
-
     }
 
     "return a SEE_OTHER (303) when end of year" when {
-
       "all auth requirements are met" in {
-
         val result = {
           authoriseIndividual()
           stubGetExcludedCall(taxYear, nino)
-          await(controller.show(taxYearEOY)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYearEOY",
+          await(controller.show(taxYearEOY)(fakeRequest.withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
+            SessionValues.TAX_YEAR -> s"$taxYearEOY",
             SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
             SessionKeys.sessionId -> "sessionId-0101010101")
           ))
@@ -1194,12 +1194,13 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     }
 
     s"return an OK (200) and no prior data and a session id" when {
-
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
           stubGetExcludedCall(taxYear, nino)
-          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
+          await(controller.show(taxYear)(fakeRequest.withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
+            SessionValues.TAX_YEAR -> s"$taxYear",
             SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","),
             SessionKeys.sessionId -> "sessionId-0101010101")
           ))
@@ -1216,9 +1217,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           stubIncomeSources
           authoriseIndividual()
           stubGetExcludedCall(taxYear, nino)
-          await(controller.show(taxYear)(fakeRequest.withSession(SessionValues.TAX_YEAR -> s"$taxYear",
-            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(","))
-          ))
+          await(controller.show(taxYear)(fakeRequest.withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
+            SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+          )))
         }
 
         result.header.status shouldBe OK
@@ -1226,13 +1229,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     }
 
     s"return an UNAUTHORISED (401)" when {
-
       "the confidence level is too low" in {
         val result = {
           stubIncomeSources
           stubGetExcludedCall(taxYear, nino)
           unauthorisedIndividualInsufficientConfidenceLevel()
-          await(controller.show(taxYear)(fakeRequest))
+          await(controller.show(taxYear)(fakeRequest.withSession(SessionKeys.authToken -> "mock-bearer-token")))
         }
 
         result.header.status shouldBe SEE_OTHER
@@ -1241,7 +1243,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     }
 
     "redirect to the sign in page" when {
-
       "it contains the wrong credentials" which {
         lazy val result = {
           unauthorisedIndividualWrongCredentials()
@@ -1266,10 +1267,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
       def authUser(): StubMapping = if (!user.isAgent) authoriseIndividual() else authoriseAgent()
 
       s"as an ${if (user.isAgent) "agent" else "individual"}" should {
-
         "return a redirect with the calc id in session when the at the end of year" which {
           lazy val calcId = UUID.randomUUID().toString
           lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYearEOY)).withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.CLIENT_MTDITID -> "1234567890",
             SessionValues.CLIENT_NINO -> "AA123456A",
             SessionValues.TAX_YEAR -> s"$taxYearEOY",
@@ -1300,6 +1301,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
         "redirect back to the overview page when trying access in year" which {
           lazy val calcId = UUID.randomUUID().toString
           lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYear)).withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.CLIENT_MTDITID -> "1234567890",
             SessionValues.CLIENT_NINO -> "AA123456A",
             SessionValues.TAX_YEAR -> s"$taxYear",
@@ -1326,10 +1328,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     }
 
     "there is an error with the liability calculation" should {
-
       "redirect to an error page" which {
-
         lazy val request = FakeRequest(controllers.routes.OverviewPageController.finalCalculation(taxYearEOY)).withSession(
+          SessionKeys.authToken -> "mock-bearer-token",
           SessionValues.CLIENT_MTDITID -> "1234567890",
           SessionValues.CLIENT_NINO -> "AA123456A",
           SessionValues.TAX_YEAR -> s"$taxYearEOY",
@@ -1372,6 +1373,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
         "return a redirect when in year" which {
           lazy val request = FakeRequest(controllers.routes.OverviewPageController.inYearEstimate(taxYear)).withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.CLIENT_MTDITID -> "1234567890",
             SessionValues.CLIENT_NINO -> "AA123456A",
             SessionValues.TAX_YEAR -> s"$taxYear",
@@ -1411,6 +1413,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
         "redirect back to the in year overview page when trying to access it at the end of year" which {
           lazy val request = FakeRequest(controllers.routes.OverviewPageController.inYearEstimate(taxYearEOY)).withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.CLIENT_MTDITID -> "1234567890",
             SessionValues.CLIENT_NINO -> "AA123456A",
             SessionValues.TAX_YEAR -> s"$taxYearEOY",
@@ -1444,7 +1447,5 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
         }
       }
     }
-
   }
-
 }

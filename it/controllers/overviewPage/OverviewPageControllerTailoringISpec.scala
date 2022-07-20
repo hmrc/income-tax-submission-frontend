@@ -23,8 +23,8 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.mvc.Result
-import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers.{status, writeableOf_AnyContentAsEmpty}
+import play.api.test.{FakeRequest, Helpers}
 
 import scala.concurrent.Future
 
@@ -246,8 +246,8 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
   private val urlPathEndOfYear = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
 
   userScenarios.foreach { user =>
-    import user.commonExpectedResults._
     import Selectors._
+    import user.commonExpectedResults._
 
     val specific = user.specificExpectedResults.get
 

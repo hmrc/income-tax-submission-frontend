@@ -26,20 +26,22 @@ import models.IncomeSourcesModel
 import models.mongo.{DatabaseError, TailoringUserDataModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.{Application, Environment, Mode}
 import play.api.http.HeaderNames
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, SEE_OTHER}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSResponse}
-import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.{FakeRequest, Helpers}
+import play.api.{Application, Environment, Mode}
 import repositories.TailoringUserDataRepository
+import uk.gov.hmrc.http.SessionKeys
 
 class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with ViewHelpers {
 
   trait CommonExpectedResults {
     def caption(taxYearMinusOne: Int, taxYear: Int): String
+
     val selectAllTheSections: String
     val cis: String
     val dividends: String
@@ -201,8 +203,6 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     UserScenario(isWelsh = true, isAgent = true, CommonExpectedCY, Some(ExpectedAgentCY))
   )
 
-  private def journeys: Seq[String] = Seq("interest", "dividends", "gift-aid", "employment", "cis")
-
   def stubIncomeSources(incomeSources: IncomeSourcesModel): StubMapping = {
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", OK, Json.toJson(incomeSources).toString())
   }
@@ -212,7 +212,6 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
   }
 
   ".show" should {
-
     userScenarios.foreach { scenarioData =>
       import scenarioData.commonExpectedResults._
 
@@ -391,6 +390,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       lazy val form = Map(s"${AddSectionsForm.addSections}[]" -> Seq("dividends"))
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
@@ -403,7 +403,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
         await(wsClient
           .url(s"http://localhost:$port" + urlPath)
-          .withHttpHeaders(headers:_*)
+          .withHttpHeaders(headers: _*)
           .withFollowRedirects(false)
           .post(form))
       }
@@ -422,6 +422,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       lazy val form = Map(s"${AddSectionsForm.addSections}[]" -> Seq("dividends"))
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
@@ -435,7 +436,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
         await(wsClient
           .url(s"http://localhost:$port" + urlPath)
-          .withHttpHeaders(headers:_*)
+          .withHttpHeaders(headers: _*)
           .withFollowRedirects(false)
           .post(form))
       }
@@ -449,11 +450,12 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       }
     }
 
-    "redirect to the overview page when submitting the form successfully with prior Tailoring Data and incomeSources" when{
+    "redirect to the overview page when submitting the form successfully with prior Tailoring Data and incomeSources" when {
 
       lazy val form = Map(s"${AddSectionsForm.addSections}[]" -> Seq("dividends"))
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
@@ -468,7 +470,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
         await(wsClient
           .url(s"http://localhost:$port" + urlPath)
-          .withHttpHeaders(headers:_*)
+          .withHttpHeaders(headers: _*)
           .withFollowRedirects(false)
           .post(form))
       }
@@ -481,7 +483,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
         result.header(HeaderNames.LOCATION) shouldBe Some(controllers.routes.OverviewPageController.show(taxYear).url)
       }
     }
-    "redirect to the same page when the form fails" when{
+    "redirect to the same page when the form fails" when {
 
       lazy val form = Map("wrongvalue" -> "",
         "anotherWrongValue" -> "")
@@ -501,7 +503,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
         await(wsClient
           .url(s"http://localhost:$port" + urlPath)
-          .withHttpHeaders(headers:_*)
+          .withHttpHeaders(headers: _*)
           .withFollowRedirects(false)
           .post(form))
       }
@@ -511,12 +513,14 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       }
 
     }
-    "redirect to the overview page when tailoring is switched off" when{
+    "redirect to the overview page when tailoring is switched off" when {
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
+
       def wsClientNoTailoring: WSClient = customApp(tailoringEnabled = false).injector.instanceOf[WSClient]
 
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies, "Csrf-Token" -> "nocheck")
@@ -527,7 +531,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
         await(wsClientNoTailoring
           .url(s"http://localhost:$port" + urlPath)
-          .withHttpHeaders(headers:_*)
+          .withHttpHeaders(headers: _*)
           .withFollowRedirects(false)
           .post(Map("" -> "")))
       }
@@ -541,11 +545,12 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       }
 
     }
-    "Return a Internal Server Error when incomeSources call fails" when{
+    "Return a Internal Server Error when incomeSources call fails" when {
 
       lazy val form = Map(s"${AddSectionsForm.addSections}[]" -> Seq("dividends"))
 
       lazy val playSessionCookies = PlaySessionCookieBaker.bakeSessionCookie(Map(
+        SessionKeys.authToken -> "mock-bearer-token",
         SessionValues.TAX_YEAR -> taxYear.toString,
         SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
       ))
@@ -560,7 +565,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
         await(wsClient
           .url(s"http://localhost:$port" + urlPath)
-          .withHttpHeaders(headers:_*)
+          .withHttpHeaders(headers: _*)
           .withFollowRedirects(false)
           .post(form))
       }
