@@ -51,7 +51,6 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
     def employmentCannotUpdateLink(taxYear: Int = taxYear) = s"http://localhost:9317/update-and-submit-income-tax-return/employment-income/$taxYear/cannot-edit"
 
-
     def cisLink(taxYear: Int = taxYear): String = s"http://localhost:9338/update-and-submit-income-tax-return/construction-industry-scheme-deductions/$taxYear/summary"
 
     def pensionsLink(taxYear: Int = taxYear): String = s"http://localhost:9321/update-and-submit-income-tax-return/pensions/$taxYear/pensions-summary"
