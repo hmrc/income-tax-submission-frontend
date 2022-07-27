@@ -451,6 +451,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has an employment section " which {
             textOnPageCheck(employmentSLLinkText, employmentSelector)
             textOnPageCheck(cannotUpdateText, employmentStatusSelector)
+            linkCheck(employmentSLLinkText, employmentLinkSelector, employmentCannotUpdateLink(taxYear))
           }
 
           "has a cis section " which {
@@ -471,7 +472,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
-
         }
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
@@ -841,7 +841,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(user.commonExpectedResults.pensionsLinkText, pensionsSelector)
             textOnPageCheck(user.commonExpectedResults.employmentSLLinkText, employmentSelector)
           }
-
         }
       }
     }

@@ -121,6 +121,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override val employmentIncomeTaxSubmissionUrl: String = "/employment-income"
 
   override def employmentFEUrl(taxYear: Int): String = ???
+  override def employmentCannotUpdateFEUrl(taxYear: Int): String = ???
 
   override val cisIncomeTaxSubmissionBaseUrl: String = "/cis-tax"
   override val cisIncomeTaxSubmissionUrl: String = "/cis-income"
