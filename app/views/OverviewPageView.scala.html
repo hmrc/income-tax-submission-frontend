@@ -104,14 +104,6 @@
     }
 }
 
-@employmentUrlRedirect(incomeSources: IncomeSourcesModel) = @{
-    if((incomeSources.employment.isDefined && isInYear) || (appConfig.employmentEOYEnabled && !isInYear)) {
-        appConfig.employmentFEUrl(taxYear)
-    } else {
-        appConfig.employmentCannotUpdateFEUrl(taxYear)
-    }
-}
-
 
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <ol style="padding-left:0;" class="app-task-list__items govuk-!-padding-bottom-1">
@@ -150,11 +142,12 @@
             appConfig.employmentEnabled,
             "employment_link",
             if(appConfig.studentLoansEnabled) { "common.employmentSL" } else { "common.employment" },
-            employmentUrlRedirect(incomeSources),
+            appConfig.employmentFEUrl(taxYear),
             EMPLOYMENT,
             incomeSources.employment.isDefined,
             (isInYear || !appConfig.employmentEOYEnabled),
-            isMandatorySection = true
+            isMandatorySection = true,
+            additionalShowLinkCheck = ((incomeSources.employment.isDefined && isInYear) || (appConfig.employmentEOYEnabled && !isInYear))
         )
 
         @taskListItem(
