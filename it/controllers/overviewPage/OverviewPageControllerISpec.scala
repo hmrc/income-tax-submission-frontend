@@ -1064,7 +1064,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           "has an employment section " which {
             linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
-            textOnPageCheck(todoText, employmentStatusSelector)
+            textOnPageCheck(notStartedText, employmentStatusSelector)
           }
 
           "has a cis section " which {
