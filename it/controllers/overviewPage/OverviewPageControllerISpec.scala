@@ -312,6 +312,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
             linkCheck(interestsLinkText, Selectors.interestLinkSelector, interestsTailoringGatewayLink(taxYear))
             linkCheck(dividendsLinkText, Selectors.dividendsLinkSelector, dividendsTailoringGatewayLink(taxYear))
+            linkCheck(giftAidLinkText, Selectors.giftAidLinkSelector, giftAidTailoringGatewayLink(taxYear))
 
             //TODO Add other journeys here
           }
