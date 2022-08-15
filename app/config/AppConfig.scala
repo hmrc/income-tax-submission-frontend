@@ -52,6 +52,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
 
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
+  def personalIncomeTaxGiftAidGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donations-to-charity"
   def personalIncomeTaxDividendsTailorPage(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-stocks-and-shares"
 
   def getExcludedJourneysUrl(taxYear: Int, nino: String): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax/nino/$nino/sources/excluded-journeys/$taxYear"
@@ -193,6 +194,7 @@ trait AppConfig {
   def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
+  def personalIncomeTaxGiftAidGatewayUrl(taxYear: Int): String
 
   def getExcludedJourneysUrl(taxYear: Int, nino: String): String
   def clearExcludedJourneysUrl(taxYear: Int, nino: String): String

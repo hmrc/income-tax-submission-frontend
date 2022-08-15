@@ -104,6 +104,18 @@
     }
 }
 
+@charityUrlRedirect(incomeSources: IncomeSourcesModel) = @{
+    if(incomeSources.giftAid.isDefined) {
+        appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)
+    } else {
+        if(appConfig.tailoringEnabled) {
+            appConfig.personalIncomeTaxGiftAidGatewayUrl(taxYear)
+        } else {
+            appConfig.personalIncomeTaxGiftAidUrl(taxYear)
+        }
+    }
+}
+
 
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <ol style="padding-left:0;" class="app-task-list__items govuk-!-padding-bottom-1">
@@ -132,7 +144,7 @@
             appConfig.giftAidEnabled,
             "giftAid_link",
             "common.donationsToCharity",
-            if(incomeSources.giftAid.isEmpty) {appConfig.personalIncomeTaxGiftAidUrl(taxYear)} else {appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)},
+            charityUrlRedirect(incomeSources),
             GIFT_AID,
             incomeSources.giftAid.isDefined
         )
