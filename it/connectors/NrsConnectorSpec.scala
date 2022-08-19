@@ -34,7 +34,7 @@ class NrsConnectorSpec extends IntegrationTest {
     "return an Ok response when successful" in {
 
       stubPost(url, OK, "{}")
-      val result = await(connector.postNrsConnector(nino, nrsSubmissionModel))
+      val result = await(connector.postNrsConnector(nino, nrsSubmissionModel, "itsa-crystallisation"))
 
       result shouldBe Right()
     }
@@ -44,7 +44,7 @@ class NrsConnectorSpec extends IntegrationTest {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal Server Error"))
 
       stubPost(url, INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
-      val result = await(connector.postNrsConnector(nino, nrsSubmissionModel))
+      val result = await(connector.postNrsConnector(nino, nrsSubmissionModel, "itsa-crystallisation"))
 
       result shouldBe Left(expectedResult)
     }
@@ -54,7 +54,7 @@ class NrsConnectorSpec extends IntegrationTest {
       val expectedResult = APIErrorModel(NOT_FOUND, APIErrorBodyModel("NOT_FOUND", "NRS returning not found error"))
 
       stubPost(url, NOT_FOUND, expectedResult.toJson.toString())
-      val result = await(connector.postNrsConnector(nino, nrsSubmissionModel))
+      val result = await(connector.postNrsConnector(nino, nrsSubmissionModel, "itsa-crystallisation"))
 
       result shouldBe Left(expectedResult)
     }
@@ -64,7 +64,7 @@ class NrsConnectorSpec extends IntegrationTest {
       val expectedResult = APIErrorModel(CONFLICT, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API"))
 
       stubPost(url, CONFLICT, expectedResult.toJson.toString())
-      val result = await(connector.postNrsConnector(nino, nrsSubmissionModel))
+      val result = await(connector.postNrsConnector(nino, nrsSubmissionModel, "itsa-crystallisation"))
 
       result shouldBe Left(expectedResult)
     }
