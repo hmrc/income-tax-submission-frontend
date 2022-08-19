@@ -19,6 +19,7 @@ package services
 import connectors.NrsConnector
 import connectors.httpParsers.NrsSubmissionHttpParser.NrsSubmissionResponse
 import models.NrsSubmissionModel
+import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,6 +37,8 @@ class NrsServiceSpec extends UnitTest {
   val mtditid: String = "968501689"
   val calculationId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
 
+  implicit val writesObject: Writes[NrsSubmissionModel] = (o: NrsSubmissionModel) => JsString(o.toString)
+
   val nrsSubmissionModel: NrsSubmissionModel = NrsSubmissionModel(calculationId)
 
   ".postNrsConnector" when {
@@ -48,13 +51,13 @@ class NrsServiceSpec extends UnitTest {
 
         val headerCarrierWithTrueClientDetails = headerCarrierWithSession.copy(trueClientIp = Some("127.0.0.1"), trueClientPort = Some("80"))
 
-        (connector.postNrsConnector(_: String, _: NrsSubmissionModel)(_: HeaderCarrier))
-          .expects(nino, nrsSubmissionModel, headerCarrierWithTrueClientDetails.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "Firefox v4.4543 / Android v3.42 / IOS v134.32", "clientIP" -> "127.0.0.1", "clientPort" -> "80"))
+        (connector.postNrsConnector(_: String, _: NrsSubmissionModel, _: String)(_: HeaderCarrier, _: Writes[NrsSubmissionModel]))
+          .expects(nino, nrsSubmissionModel, "", headerCarrierWithTrueClientDetails.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "Firefox v4.4543 / Android v3.42 / IOS v134.32", "clientIP" -> "127.0.0.1", "clientPort" -> "80"), writesObject)
           .returning(Future.successful(expectedResult))
 
         val request = FakeRequest().withHeaders("User-Agent" -> "Firefox v4.4543 / Android v3.42 / IOS v134.32")
 
-        val result = await(service.submit(nino, nrsSubmissionModel, mtditid)(request, headerCarrierWithTrueClientDetails))
+        val result = await(service.submit(nino, nrsSubmissionModel, mtditid, "")(request, headerCarrierWithTrueClientDetails, writesObject))
 
         result shouldBe expectedResult
       }
@@ -66,13 +69,13 @@ class NrsServiceSpec extends UnitTest {
 
         val expectedResult: NrsSubmissionResponse = Right()
 
-        (connector.postNrsConnector(_: String, _: NrsSubmissionModel)(_: HeaderCarrier))
-          .expects(nino, nrsSubmissionModel, headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "No user agent provided"))
+        (connector.postNrsConnector(_: String, _: NrsSubmissionModel, _: String)(_: HeaderCarrier, _: Writes[NrsSubmissionModel]))
+          .expects(nino, nrsSubmissionModel, "", headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "No user agent provided"), writesObject)
           .returning(Future.successful(expectedResult))
 
         val request: Request[_] = FakeRequest()
 
-        val result = await(service.submit(nino, nrsSubmissionModel, mtditid))
+        val result = await(service.submit(nino, nrsSubmissionModel, mtditid, ""))
 
         result shouldBe expectedResult
       }

@@ -25,11 +25,10 @@ import forms.AddSectionsForm
 import forms.AddSectionsForm.addSectionsForm
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{IncomeSourcesService, TailoringSessionService, ValidTaxYearListService}
+import services.{IncomeSourcesService, NrsService, TailoringSessionService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.AddSectionsToIncomeTaxReturnView
 import common.IncomeSources._
-import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,6 +40,7 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
                                                         implicit val validTaxYearListService: ValidTaxYearListService,
                                                         implicit val errorHandler: ErrorHandler,
                                                         auditService: AuditService,
+                                                        nrsService: NrsService,
                                                         implicit val appConfig: AppConfig,
                                                         implicit val ec: ExecutionContext,
                                                         implicit val mcc: MessagesControllerComponents
@@ -89,6 +89,9 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
                     if (auditResult.nonEmpty) {
                       auditService.sendAudit(TailorAddIncomeSourcesDetail(
                         user.nino, user.mtditid, userAffinity, taxYear, SourcesDetail(auditResult)).toAuditModel)
+                    }
+                    if (appConfig.nrsEnabled) {
+                      nrsService.submit(user.nino, SourcesDetail(auditResult), user.mtditid, "itsa-crystallisation")
                     }
                     tailoringSessionService.createSessionData(result.addSections, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
                       Redirect(controllers.routes.OverviewPageController.show(taxYear)))
