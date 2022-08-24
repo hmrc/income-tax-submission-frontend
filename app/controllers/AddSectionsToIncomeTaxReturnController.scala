@@ -91,7 +91,7 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
                         user.nino, user.mtditid, userAffinity, taxYear, SourcesDetail(auditResult)).toAuditModel)
                     }
                     if (appConfig.nrsEnabled) {
-                      nrsService.submit(user.nino, SourcesDetail(auditResult), user.mtditid, "itsa-crystallisation")
+                      nrsService.submit(user.nino, SourcesDetail(auditResult), user.mtditid, "itsa-personal-income-submission")
                     }
                     tailoringSessionService.createSessionData(result.addSections, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
                       Redirect(controllers.routes.OverviewPageController.show(taxYear)))
