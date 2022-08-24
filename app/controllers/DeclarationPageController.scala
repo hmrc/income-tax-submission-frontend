@@ -89,7 +89,7 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
               val nrsSubmissionModelCalcId: NrsSubmissionModel = NrsSubmissionModel(calculationId = calculationId)
 
               if (appConfig.nrsEnabled) {
-                nrsService.submit(user.nino, nrsSubmissionModelCalcId, user.mtditid)
+                nrsService.submit(user.nino, nrsSubmissionModelCalcId, user.mtditid, "itsa-crystallisation")
               }
 
               Redirect(controllers.routes.TaxReturnReceivedController.show(taxYear))
