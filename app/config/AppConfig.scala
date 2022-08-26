@@ -159,6 +159,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
       (DIVIDENDS, dividendsEnabled),
       (INTEREST, interestEnabled),
       (GIFT_AID, giftAidEnabled),
+      (PENSIONS, pensionsEnabled),
       employmentFeatureEnabled,
       (CIS, cisEnabled)
     ).filter(!_._2).map(_._1)
