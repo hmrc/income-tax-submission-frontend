@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
 @import views.html.templates.helpers.Link
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardHeader
+@import views.html.helper.CSPNonce
 
 @this(
         govukLayout: GovukLayout,
@@ -58,11 +59,11 @@
 
 @footerBlock = {
     @hmrcStandardFooter()
-
-    <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-    <script src='@routes.Assets.versioned("javascripts/application.js")'></script>
-    <script src='@routes.Assets.versioned("javascripts/app.js")'></script>
+    <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+    <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+    <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("javascripts/application.js")'></script>
+    <script @{CSPNonce.attr}>window.GOVUKFrontend.initAll();</script>
+    <script @{CSPNonce.attr}>window.HMRCFrontend.initAll();</script>
     @scriptsBlock.map(x => x)
 }
 
@@ -72,5 +73,6 @@
     headerBlock = Some(headerBlock),
     scriptsBlock = None,
     beforeContentBlock = Some(beforeBodyContent(taxYear, isAgent, isOverviewPage, showBreadcrumbs, backLink)),
-    footerBlock = Some(footerBlock)
+    footerBlock = Some(footerBlock),
+    cspNonce = CSPNonce.get
 )(content)
