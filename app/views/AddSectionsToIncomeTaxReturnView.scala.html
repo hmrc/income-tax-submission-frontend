@@ -120,6 +120,15 @@
                     item = 6
                 )
             }
+
+            @if(journeys.contains("state-benefits") && incomeSources.stateBenefits.isEmpty) {
+                @checkboxItem(
+                    messages("common.stateBenefits"),
+                    "addSections.hintText.stateBenefits",
+                    "state-benefits",
+                    item = 7
+                )
+            }
         </div>
 
     }

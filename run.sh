@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-sbt -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes -mem 4096 run
+sbt run -Dconfig.resource=application.conf -Dapplication.router=testOnlyDoNotUseInAppConf.Routes -Dplay.akka.http.server.request-timeout=60s -J-Xmx256m -J-Xms64m -J-XX:MaxPermSize=128m -Dhttp.port=9302 -Drun.mode=Dev

@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package common
+package utils
 
-object IncomeSources {
+import play.api.libs.json.{JsNull, JsObject, Json}
 
-  val DIVIDENDS = "dividends"
-  val INTEREST = "interest"
-  val GIFT_AID = "gift-aid"
-  val EMPLOYMENT = "employment"
-  val CIS = "cis"
-  val PENSIONS = "pensions"
-  val STATE_BENEFITS = "state-benefits"
+object JsonUtils {
+
+  def jsonObjNoNulls(fields: (String, Json.JsValueWrapper)*): JsObject =
+    JsObject(Json.obj(fields: _*).fields.filterNot(_._2 == JsNull).filterNot(_._2 == Json.obj()))
 }

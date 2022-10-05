@@ -19,6 +19,7 @@ package models
 import models.cis.AllCISDeductions
 import models.employment.{AllEmploymentData, HmrcEmploymentSource}
 import models.pensions.Pensions
+import models.statebenefits.AllStateBenefitsData
 import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
@@ -26,7 +27,8 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
                               giftAid: Option[GiftAidModel] = None,
                               employment: Option[AllEmploymentData] = None,
                               cis: Option[AllCISDeductions] = None,
-                              pensions: Option[Pensions] = None){
+                              pensions: Option[Pensions] = None,
+                              stateBenefits: Option[AllStateBenefitsData] = None) {
 
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
 
@@ -40,7 +42,7 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
       data.customerEmploymentData.nonEmpty || data.hmrcEmploymentData.nonEmpty || data.customerExpenses.nonEmpty || data.hmrcExpenses.nonEmpty
     }
 
-    this.copy(employment = if(hasData) employmentData else None)
+    this.copy(employment = if (hasData) employmentData else None)
   }
 
   private def excludeIgnoredHmrcEmployment(employmentSources: Seq[HmrcEmploymentSource]): Seq[HmrcEmploymentSource] = {
@@ -50,7 +52,12 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
     }
   }
 
-  val hasDataForEachIncomeSource: Boolean = dividends.nonEmpty && interest.nonEmpty && giftAid.nonEmpty && employment.nonEmpty && cis.nonEmpty
+  val hasDataForEachIncomeSource: Boolean = dividends.nonEmpty &&
+    interest.nonEmpty &&
+    giftAid.nonEmpty &&
+    employment.nonEmpty &&
+    cis.nonEmpty &&
+    stateBenefits.nonEmpty
 }
 
 object IncomeSourcesModel {

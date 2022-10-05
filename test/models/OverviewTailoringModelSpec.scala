@@ -19,49 +19,53 @@ package models
 import models.cis.AllCISDeductions
 import models.employment.AllEmploymentData
 import models.pensions.Pensions
+import models.statebenefits.{AllStateBenefitsData, StateBenefitsData}
 import utils.UnitTest
 
 import scala.reflect.runtime.{universe => reflect}
 
 class OverviewTailoringModelSpec extends UnitTest {
-  
+
   case class IncomeSourceSetup(sourceName: String, functionName: String) {
     val tailoringList: Seq[String] = Seq(sourceName)
   }
-  
-  private val emptyIncomeSources: IncomeSourcesModel = IncomeSourcesModel(None, None, None, None, None)
+
+  private val emptyIncomeSources: IncomeSourcesModel = IncomeSourcesModel(None, None, None, None, None, None, None)
   private val populatedIncomeSources: IncomeSourcesModel = IncomeSourcesModel(
     Some(DividendsModel()),
     Some(Seq(InterestModel("Mah Swamp", "1234567890", Some(500), Some(500)))),
     Some(GiftAidModel()),
     Some(AllEmploymentData(Seq(), None, Seq(), None)),
     Some(AllCISDeductions(None, None)),
-    Some(Pensions(None, None, None, None))
+    Some(Pensions(None, None, None, None)),
+    Some(AllStateBenefitsData(StateBenefitsData(), None))
   )
-  
+
   val sources = Seq(
     IncomeSourceSetup("dividends", "hasDividends"),
     IncomeSourceSetup("interest", "hasInterest"),
     IncomeSourceSetup("gift-aid", "hasGiftAid"),
     IncomeSourceSetup("employment", "hasEmployment"),
     IncomeSourceSetup("cis", "hasCis"),
-    IncomeSourceSetup("pensions", "hasPensions")
+    IncomeSourceSetup("pensions", "hasPensions"),
+    IncomeSourceSetup("state-benefits", "hasStateBenefits")
   )
-  
+
   "the number of sources match the number of income source fields" in {
     sources.length shouldBe classOf[IncomeSourcesModel].getConstructors.head.getParameterCount
   }
-  
+
   sources.map { data =>
-    
+
     lazy val methodSymbol: reflect.MethodSymbol = reflect.typeOf[OverviewTailoringModel].decl(reflect.TermName(data.functionName)).asMethod
     lazy val mirror = reflect.runtimeMirror(classOf[OverviewTailoringModel].getClassLoader)
+
     def method(model: OverviewTailoringModel): Boolean = mirror.reflect(model).reflectMethod(methodSymbol).apply().asInstanceOf[Boolean]
-    
+
     lazy val modelWithoutSources = OverviewTailoringModel(data.tailoringList, emptyIncomeSources)
     lazy val modelWithoutTailoringList = OverviewTailoringModel(Seq.empty[String], populatedIncomeSources)
     lazy val modelWithNeither = OverviewTailoringModel(Seq.empty[String], emptyIncomeSources)
-    
+
     s"calling .${data.functionName}" should {
 
       "return true" when {
@@ -77,14 +81,14 @@ class OverviewTailoringModelSpec extends UnitTest {
       }
 
       "return false" when {
-        
+
         s"'${data.sourceName}' is not in the tailoring list and there is no data in the income sources" in {
           method(modelWithNeither) shouldBe false
         }
-        
+
       }
 
     }
   }
-  
+
 }
