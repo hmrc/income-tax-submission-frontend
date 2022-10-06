@@ -74,6 +74,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val employmentRemove = incomeSourcesModel.employment.nonEmpty
     val cisRemove = incomeSourcesModel.cis.nonEmpty
     val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
+    val stateBenefitsRemove = incomeSourcesModel.stateBenefits.nonEmpty
 
     excludedJourneysService.getExcludedJourneys(taxYear, user.nino, user.mtditid).map {
       case Right(data) =>
@@ -95,6 +96,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
           (cisRemove, CIS),
           (employmentRemove, EMPLOYMENT),
           (pensionsRemove, PENSIONS),
+          (stateBenefitsRemove, STATE_BENEFITS),
           (giftAidRemove || giftAidHash, GIFT_AID),
           (interestRemove || interestHash, INTEREST)
         ).filter(_._1).map(_._2)
@@ -142,17 +144,17 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val isInYear: Boolean = inYearAction.inYear(taxYear)
 
     if (isInYear) {
-    val userTypeString = if (user.isAgent) "agent" else "individual"
-    auditService.sendAudit(CreateInYearTaxEstimate(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
+      val userTypeString = if (user.isAgent) "agent" else "individual"
+      auditService.sendAudit(CreateInYearTaxEstimate(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
 
-    Future.successful(
-      if (user.isAgent) {
-        Redirect(appConfig.viewAndChangeViewInYearEstimateUrlAgent)
-      } else {
-        Redirect(appConfig.viewAndChangeViewInYearEstimateUrl)
-      }
-    )
-  } else {
+      Future.successful(
+        if (user.isAgent) {
+          Redirect(appConfig.viewAndChangeViewInYearEstimateUrlAgent)
+        } else {
+          Redirect(appConfig.viewAndChangeViewInYearEstimateUrl)
+        }
+      )
+    } else {
       Future.successful(Redirect(OverviewPageControllerRoute.showCrystallisation(taxYear)))
     }
   }

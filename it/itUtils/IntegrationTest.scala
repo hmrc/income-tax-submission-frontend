@@ -92,6 +92,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
              employmentEOYEnabled: Boolean = true,
              cisEnabled: Boolean = true,
              pensionsEnabled: Boolean = true,
+             stateBenefitsEnabled: Boolean = true,
              crystallisationEnabled: Boolean = true,
              taxYearErrorFeatureSwitch: Boolean = false,
              tailoringEnabled: Boolean = false
@@ -114,6 +115,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.employmentEOYEnabled" -> employmentEOYEnabled.toString,
     "feature-switch.cisEnabled" -> cisEnabled.toString,
     "feature-switch.pensionsEnabled" -> pensionsEnabled.toString,
+    "feature-switch.stateBenefitsEnabled" -> stateBenefitsEnabled.toString,
     "feature-switch.crystallisationEnabled" -> crystallisationEnabled.toString,
     "feature-switch.tailoringEnabled" -> tailoringEnabled.toString,
     "metrics.enabled" -> "false",
@@ -127,20 +129,20 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     .configure(config())
     .build
 
-  def customApp(
-                 useEncryption: Boolean = true,
-                 invalidEncryptionKey: Boolean = false,
-                 dividendsEnabled: Boolean = true,
-                 interestEnabled: Boolean = true,
-                 giftAidEnabled: Boolean = true,
-                 studentLoansEnabled: Boolean = true,
-                 employmentEnabled: Boolean = true,
-                 employmentEOYEnabled: Boolean = true,
-                 cisEnabled: Boolean = true,
-                 pensionsEnabled: Boolean = true,
-                 crystallisationEnabled: Boolean = true,
-                 taxYearErrorFeatureSwitch: Boolean = false,
-                 tailoringEnabled: Boolean = false
+  def customApp(useEncryption: Boolean = true,
+                invalidEncryptionKey: Boolean = false,
+                dividendsEnabled: Boolean = true,
+                interestEnabled: Boolean = true,
+                giftAidEnabled: Boolean = true,
+                studentLoansEnabled: Boolean = true,
+                employmentEnabled: Boolean = true,
+                employmentEOYEnabled: Boolean = true,
+                cisEnabled: Boolean = true,
+                pensionsEnabled: Boolean = true,
+                stateBenefitsEnabled: Boolean = true,
+                crystallisationEnabled: Boolean = true,
+                taxYearErrorFeatureSwitch: Boolean = false,
+                tailoringEnabled: Boolean = false
                ): Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(
@@ -155,6 +157,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         employmentEOYEnabled,
         cisEnabled,
         pensionsEnabled,
+        stateBenefitsEnabled,
         crystallisationEnabled,
         taxYearErrorFeatureSwitch,
         tailoringEnabled

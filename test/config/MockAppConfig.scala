@@ -97,6 +97,10 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val cisReleased: Boolean = true
 
+  override lazy val stateBenefitsEnabled: Boolean = true
+
+  override lazy val stateBenefitsReleased: Boolean = true
+
   override lazy val crystallisationEnabled: Boolean = false
 
   override lazy val tailoringEnabled: Boolean = false
@@ -108,7 +112,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override def viewAndChangeViewUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view"
 
   override def viewAndChangeViewInYearEstimateUrl: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/tax-overview"
-  override def viewAndChangeViewInYearEstimateUrlAgent: String =  "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"
+
+  override def viewAndChangeViewInYearEstimateUrlAgent: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"
 
   override val calculationBaseUrl: String = "/calculation"
   override val nrsProxyBaseUrl: String = "/nrs"
@@ -126,6 +131,11 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override val cisIncomeTaxSubmissionUrl: String = "/cis-income"
 
   override def cisFEUrl(taxYear: Int): String = ???
+
+  override val stateBenefitsBaseUrl: String = "/state-benefits"
+  override val stateBenefitsUrl: String = "/summary"
+
+  override def stateBenefitsFEUrl(taxYear: Int): String = ???
 
   override val pensionsFrontendBaseUrl: String = "/pensions-income"
   override val pensionsFrontendUrl: String = "/pensions"
@@ -154,22 +164,25 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override val useEncryption: Boolean = true
   override val encryptionKey: String = "1234556"
+
   override def mongoTTL: Long = 2555
 
   override def routeToSwitchLanguage: String => Call =
     (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
 
   override def excludedIncomeSources(taxYear: Int): Seq[String] = Seq()
+
   override val testOnly_authLoginUrl: String = "/auth-login"
 
   override def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$taxYear/interest/tailoring-gateway"
+
   override def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String = s"$taxYear/dividends/dividends-from-uk-companies"
+
   override def personalIncomeTaxGiftAidGatewayUrl(taxYear: Int): String = s"$taxYear/charity/charity-donations-to-charity"
 
   override def getExcludedJourneysUrl(taxYear: Int, nino: String): String = "/get-excluded"
 
   override def clearExcludedJourneysUrl(taxYear: Int, nino: String): String = "/clear-excluded"
-
 }
 
 class MockAppConfigTaxYearFeatureOff extends MockAppConfig {
