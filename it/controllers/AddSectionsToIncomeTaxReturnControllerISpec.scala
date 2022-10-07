@@ -54,6 +54,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val interestHint: String
     val pensions: String
     val pensionsHint: String
+    val stateBenefits: String
+    val stateBenefitsHint: String
     val saveAndContinue: String
   }
 
@@ -111,6 +113,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val interestHint: String = "including taxed and untaxed UK interest from banks, building societies, trust funds and life annuity payments"
     val pensions: String = "Pensions"
     val pensionsHint: String = "including income from pensions, payments into UK and overseas pensions and allowances"
+    val stateBenefits: String = "State benefits"
+    val stateBenefitsHint: String = "including Employment and Support Allowance and Jobseeker’s Allowance"
     val saveAndContinue: String = "Save and continue"
   }
 
@@ -130,6 +134,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       " thrwy gronfeydd ymddiriedolaeth a thaliadau blwydd-dal bywyd"
     val pensions: String = "Pensiynau"
     val pensionsHint: String = "gan gynnwys incwm o bensiynau, taliadau i bensiynau a lwfansau’r DU a thramor"
+    val stateBenefits: String = "Budd-daliadau’r Wladwriaeth"
+    val stateBenefitsHint: String = "gan gynnwys Lwfans Cyflogaeth a Chymorth, a Lwfans Ceisio Gwaith"
     val saveAndContinue: String = "Cadw ac yn eich blaen"
   }
 
@@ -149,6 +155,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val employmentHintSelector: String = "#employment-item-hint"
     val pensionsSelector: String = "#pensions"
     val pensionsHintSelector: String = "#pensions-item-hint"
+    val stateBenefitsSelector: String = "#state-benefits"
+    val stateBenefitsHintSelector: String = "#state-benefits-item-hint"
     val useYourSoftwareParagraphSelector: String = "#main-content > div > div > form > div:nth-child(5) > p"
     val useYourSoftwareParagraphNoSourcesSelector: String = "#main-content > div > div > form > div.govuk-body > p"
     val noMoreIncomeSourcesInsetSelector: String = "#main-content > div > div > form > div.govuk-inset-text > p"
@@ -192,7 +200,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       "gift-aid",
       "employment",
       "cis",
-      "pensions"
+      "pensions",
+      "state-benefits"
     )
   }
 
@@ -250,6 +259,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           textOnPageCheck(employmentHint, Selectors.employmentHintSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.pensionsSelector, "pensions")
           textOnPageCheck(pensionsHint, Selectors.pensionsHintSelector)
+          inputFieldValueCheck(addSectionsInputFieldName, Selectors.stateBenefitsSelector, "state-benefits")
+          textOnPageCheck(stateBenefitsHint, Selectors.stateBenefitsHintSelector)
           textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphSelector)
           buttonCheck(saveAndContinue, Selectors.saveAndContinueSelector, None)
         }
@@ -282,7 +293,9 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
         "the user has data which has previously been entered for the dividends, interest and employment income sources" which {
           val incomeSources = incomeSourcesModel.copy(
             giftAid = None,
-            cis = None)
+            cis = None,
+            stateBenefits = None
+          )
 
           val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
 
@@ -314,9 +327,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
         "the user has prior data for all the income sources available" which {
           val incomeSources = incomeSourcesModel
-
           val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
-
           val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
           lazy val result = {
@@ -360,6 +371,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
         }
       }
     }
+
     "redirect to Overview page" when {
       "tailoring is turned off" which {
 

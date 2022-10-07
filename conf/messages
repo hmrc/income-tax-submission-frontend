@@ -13,6 +13,7 @@ common.employment = PAYE employment
 common.employmentSL = PAYE employment (including student loans)
 common.cis = Construction Industry Scheme deductions
 common.pensions = Pensions
+common.stateBenefits = State benefits
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK
 common.return.button.individual = Back to your Income Tax Return
@@ -133,6 +134,7 @@ addSections.hintText.interest = including taxed and untaxed UK interest from ban
 addSections.hintText.donationsToCharity = including donations to overseas charities and donations of land, property, shares and securities
 addSections.hintText.employment = including employment benefits, expenses and student loan repayments
 addSections.hintText.pensions = including income from pensions, payments into UK and overseas pensions and allowances
+addSections.hintText.stateBenefits = including Employment and Support Allowance and Jobseeker’s Allowance
 
 userResearch.acknowledgement.title = Making Tax Digital for Income Tax
 userResearch.acknowledgement.p1 = Making Tax Digital for Income Tax is the new way of reporting your earnings to HMRC. Instead of completing a Self Assessment return, you’ll use software of your choice (like Rhino, Xero or Quickbooks) to keep digital records and send Income Tax updates. 

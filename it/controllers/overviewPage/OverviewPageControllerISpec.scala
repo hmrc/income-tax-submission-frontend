@@ -55,7 +55,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your Income Tax Return"
     val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
-    val notificationBannerPlural = "We have added 5 sections to your return, based on the information we already hold about you."
+    val notificationBannerPlural = "We have added 7 sections to your return, based on the information we already hold about you."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -71,7 +71,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your client’s Income Tax Return"
     val notificationBanner = "We have added a section to your client’s return, based on the information we already hold about them."
-    val notificationBannerPlural = "We have added 5 sections to your client’s return, based on the information we already hold about them."
+    val notificationBannerPlural = "We have added 7 sections to your client’s return, based on the information we already hold about them."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -86,7 +86,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
     val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 5 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 7 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -101,7 +101,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
     val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 5 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 7 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
   }
 
   trait SpecificExpectedResults {

@@ -25,6 +25,7 @@ import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
 import models.cis.{AllCISDeductions, CISDeductions, CISSource, PeriodData}
 import models.employment._
+import models.statebenefits.{AllStateBenefitsData, CustomerAddedStateBenefit, CustomerAddedStateBenefitsData, StateBenefitsData}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
@@ -45,7 +46,8 @@ import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 import views.html.authErrorPages.AgentAuthErrorPageView
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate}
+import java.util.UUID
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
 
@@ -241,7 +243,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     giftAid = Some(giftAidModel),
     employment = Some(employmentsModel),
     cis = Some(allCISDeductions),
-    pensions = Some(allPensionsModel)
+    pensions = Some(allPensionsModel),
+    stateBenefits = Some(allStateBenefitsData)
   )
 
   lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
@@ -342,6 +345,51 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     ))
 
   private val allCISDeductions = AllCISDeductions(Some(cisSource), Some(cisSource))
+
+  lazy val allStateBenefitsData = AllStateBenefitsData(
+    stateBenefitsData = aStateBenefitsData,
+    customerAddedStateBenefitsData = Some(aCustomerAddedStateBenefitsData)
+  )
+
+  lazy val aStateBenefitsData: StateBenefitsData = StateBenefitsData(
+    incapacityBenefits = Some(Set(aStateBenefit)),
+    statePension = Some(aStateBenefit),
+    statePensionLumpSum = Some(aStateBenefit),
+    employmentSupportAllowances = Some(Set(aStateBenefit)),
+    jobSeekersAllowances = Some(Set(aStateBenefit)),
+    bereavementAllowance = Some(aStateBenefit),
+    other = Some(aStateBenefit)
+  )
+
+  lazy val aStateBenefit: models.statebenefits.StateBenefit = models.statebenefits.StateBenefit(
+    benefitId = UUID.fromString("a1e8057e-fbbc-47a8-a8b4-78d9f015c936"),
+    startDate = LocalDate.parse(s"${taxYearEOY - 1}-04-23"),
+    endDate = Some(LocalDate.parse(s"$taxYearEOY-08-13")),
+    dateIgnored = Some(Instant.parse(s"${taxYearEOY - 1}-07-08T05:23:00Z")),
+    submittedOn = Some(Instant.parse(s"$taxYearEOY-03-13T19:23:00Z")),
+    amount = Some(300.00),
+    taxPaid = Some(400.00)
+  )
+
+  lazy val aCustomerAddedStateBenefitsData: CustomerAddedStateBenefitsData = CustomerAddedStateBenefitsData(
+    incapacityBenefits = Some(Set(aCustomerAddedStateBenefit)),
+    statePensions = Some(Set(aCustomerAddedStateBenefit)),
+    statePensionLumpSums = Some(Set(aCustomerAddedStateBenefit)),
+    employmentSupportAllowances = Some(Set(aCustomerAddedStateBenefit)),
+    jobSeekersAllowances = Some(Set(aCustomerAddedStateBenefit)),
+    bereavementAllowances = Some(Set(aCustomerAddedStateBenefit)),
+    otherStateBenefits = Some(Set(aCustomerAddedStateBenefit))
+  )
+
+  lazy val aCustomerAddedStateBenefit: CustomerAddedStateBenefit = CustomerAddedStateBenefit(
+    benefitId = UUID.fromString("a1e8057e-fbbc-47a8-a8b4-78d9f015c941"),
+    startDate = LocalDate.parse(s"${taxYearEOY - 1}-04-23"),
+    endDate = Some(LocalDate.parse(s"$taxYearEOY-08-13")),
+    submittedOn = Some(Instant.parse(s"$taxYearEOY-03-13T19:23:00Z")),
+    amount = Some(100.00),
+    taxPaid = Some(200.00)
+  )
+
   val giftAidPaymentsModel: Option[GiftAidPaymentsModel] = Some(GiftAidPaymentsModel(
     nonUkCharitiesCharityNames = Some(List("non uk charity name", "non uk charity name 2")),
     currentYear = Some(1234.56),
