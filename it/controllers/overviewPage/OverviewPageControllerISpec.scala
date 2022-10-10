@@ -138,6 +138,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val cisLinkText: String
     val giftAidLinkText: String
     val pensionsLinkText: String
+    val stateBenefitsLinkText: String
     val continue: String
     val fillInTheSections: String
     val incomeTaxAccountLink: String
@@ -164,6 +165,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val cisLinkText = "Construction Industry Scheme deductions"
     val giftAidLinkText = "Donations to charity"
     val pensionsLinkText = "Pensions"
+    val stateBenefitsLinkText = "State benefits"
     val continue = "continue"
     val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
     val incomeTaxAccountLink = "Income Tax Account"
@@ -190,6 +192,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val cisLinkText = "Didyniadau Cynllun y Diwydiant Adeiladu"
     val giftAidLinkText = "Rhoddion i elusennau"
     val pensionsLinkText = "Pensiynau"
+    val stateBenefitsLinkText = "Budd-daliadau’r Wladwriaeth"
     val continue = "continue"
     val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
@@ -225,6 +228,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val pensionsSelector: String = sectionNameSelector(6)
     val pensionsLinkSelector = "#pensions_link"
     val pensionsStatusSelector: String = statusTagSelector(6)
+
+    val stateBenefitsSelector: String = sectionNameSelector(7)
+    val stateBenefitsLinkSelector = "#stateBenefits_link"
+    val stateBenefitsStatusSelector: String = statusTagSelector(7)
 
     val viewEstimateSelector = "#calculation_link"
     val submitReturnEOYSelector = "#heading-checkAndSubmit"
@@ -316,12 +323,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
             //TODO Add other journeys here
           }
-
         }
 
         "render an overview page with all sections showing status tag 'under maintenance' when feature switch is false" when {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             insertAllJourneys()
@@ -336,10 +341,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               employmentEOYEnabled = false,
               cisEnabled = false,
               pensionsEnabled = false,
+              stateBenefitsEnabled = false,
               crystallisationEnabled = false
             ), request, user.isWelsh).get
           }
-
 
           implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
@@ -378,6 +383,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "have a pensions section that says under maintenance" which {
             textOnPageCheck(underMaintenance, pensionsStatusSelector)
           }
+          "have a state benefits section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, stateBenefitsStatusSelector)
+          }
           "have a estimate link" which {
             linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
           }
@@ -387,7 +395,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
         "render an overview page with all sections showing employment text when student loans feature switch is false" when {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
           lazy val result: Future[Result] = {
             authoriseAgentOrIndividual(user.isAgent)
             stubGetExcludedCall(taxYear, nino)
@@ -404,19 +411,17 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           textOnPageCheck(employmentLinkText, employmentSelector)
           welshToggleCheck(welshTest(user.isWelsh))
-
         }
 
         "render overview page with 'Not Started' status tags when there is no prior data, the employment section with" +
           "the status tag 'cannot update' user in the current taxYear and all feature switches are turned on" when {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None))
             route(app, request, user.isWelsh).get
           }
 
@@ -465,6 +470,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(notStartedText, pensionsStatusSelector)
           }
 
+          "has a State Benefits section " which {
+            textOnPageCheck(stateBenefitsLinkText, stateBenefitsSelector)
+            textOnPageCheck(notStartedText, stateBenefitsStatusSelector)
+          }
+
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYear))
             textOnPageCheck(notStartedText, giftAidStatusSelector)
@@ -472,12 +482,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
-
         }
 
         "render overview page with status tag 'Not Started' for interest when interest income source is None " when {
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             insertAllJourneys()
@@ -536,6 +544,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, pensionsStatusSelector)
           }
 
+          "has a state benefits section" which {
+            linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
+            textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+          }
+
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
         }
@@ -543,9 +556,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
         "render overview page with correct status tags when there is prior data and user is in the current taxYear" should {
           "have the status as 'Not Started' for interest when interest income source is None" when {
             val incomeSources = incomeSourcesModel.copy(interest = None)
-
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
             lazy val result: Future[Result] = {
               cleanDatabase(taxYear)
               insertAllJourneys()
@@ -604,17 +615,19 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, pensionsStatusSelector)
             }
 
+            "has a state benefits section" which {
+              linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
+              textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+            }
+
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
-
           }
         }
 
         "interest income source is defined and the untaxed and taxed accounts do not have amounts" which {
           val incomeSources = incomeSourcesModel.copy(interest = Some(Seq(InterestModel("TestName", "TestSource", None, None))))
-
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             insertAllJourneys()
@@ -673,9 +686,13 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, pensionsStatusSelector)
           }
 
+          "has a state benefits section" which {
+            linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
+            textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+          }
+
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
-
         }
 
         "have the status as 'Updated' for interest" when {
@@ -683,9 +700,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           "interest income source is defined and the untaxed and taxed accounts have amounts" which {
             val incomeSources = incomeSourcesModel.copy(interest = interestsModelWithAmounts)
-
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
             lazy val result: Future[Result] = {
               cleanDatabase(taxYear)
               insertAllJourneys()
@@ -744,15 +759,18 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, pensionsStatusSelector)
             }
 
+            "has a state benefits section" which {
+              linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
+              textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+            }
+
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
-
           }
         }
+
         "have all journeys with a plural notification banner" when {
-
           val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
@@ -809,6 +827,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, pensionsStatusSelector)
           }
 
+          "has a state benefits section" which {
+            linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
+            textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+          }
+
           "have a add sections link " which {
             linkCheck(specific.addSections, addSectionsSelector, Links.addSectionsLink(taxYear))
           }
@@ -818,10 +841,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
         }
 
         "display all rows" when {
-
           "there are no activated journeys in the db and the tailoring feature switch is off" which {
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
-
             lazy val result = {
               cleanDatabase(taxYear)
               stubGetExcludedCall(taxYear, nino)
@@ -842,14 +863,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(user.commonExpectedResults.pensionsLinkText, pensionsSelector)
             textOnPageCheck(user.commonExpectedResults.employmentSLLinkText, employmentSelector)
           }
-
         }
       }
     }
 
     "an error is returned obtaining income sources" should {
       val headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList), "Csrf-Token" -> "nocheck")
-
       val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
@@ -896,6 +915,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               employmentEOYEnabled = false,
               cisEnabled = false,
               pensionsEnabled = false,
+              stateBenefitsEnabled = false,
               crystallisationEnabled = false
             ), request, user.isWelsh).get
           }
@@ -938,6 +958,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(underMaintenance, pensionsStatusSelector)
           }
 
+          "have a state benefits section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, stateBenefitsStatusSelector)
+          }
+
           "has a donations to charity section" which {
             textOnPageCheck(underMaintenance, giftAidStatusSelector)
           }
@@ -955,7 +979,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
         "render an overview page with prior data" when {
           val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
-
           lazy val result: Future[Result] = {
             cleanDatabase(taxYearEOY)
             insertAllJourneys(endOfYear = true)
@@ -983,7 +1006,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
 
-
           "has a dividends section" which {
             linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYearEOY))
             textOnPageCheck(updatedText, dividendsStatusSelector)
@@ -1007,6 +1029,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a pensions section" which {
             linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYearEOY))
             textOnPageCheck(updatedText, pensionsStatusSelector)
+          }
+
+          "has a state benefits section" which {
+            linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYearEOY))
+            textOnPageCheck(updatedText, stateBenefitsStatusSelector)
           }
 
           "has a donations to charity section" which {
@@ -1078,6 +1105,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(notStartedText, pensionsStatusSelector)
           }
 
+          "has a state benefits section " which {
+            linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, stateBenefitsStatusSelector)
+          }
+
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearEOY))
             textOnPageCheck(notStartedText, giftAidStatusSelector)
@@ -1147,6 +1179,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(notStartedText, pensionsStatusSelector)
           }
 
+          "has a state benefits section " which {
+            linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, stateBenefitsStatusSelector)
+          }
+
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearEOY))
             textOnPageCheck(notStartedText, giftAidStatusSelector)
@@ -1212,7 +1249,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     }
 
     s"return an OK (200) with prior data" when {
-
       "all auth requirements are met" in {
         val result = {
           stubIncomeSources
@@ -1350,6 +1386,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             employmentEOYEnabled = false,
             cisEnabled = false,
             pensionsEnabled = false,
+            stateBenefitsEnabled = false,
             crystallisationEnabled = false
           ), request).get
         }
@@ -1364,14 +1401,13 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
       }
     }
   }
-  "Hitting the inYear estimate endpoint" when {
 
+  "Hitting the inYear estimate endpoint" when {
     userScenarios.filterNot(_.isWelsh).foreach { user =>
 
       def authUser(): StubMapping = if (!user.isAgent) authoriseIndividual() else authoriseAgent()
 
       s"as an ${if (user.isAgent) "agent" else "individual"}" should {
-
         "return a redirect when in year" which {
           lazy val request = FakeRequest(controllers.routes.OverviewPageController.inYearEstimate(taxYear)).withSession(
             SessionKeys.authToken -> "mock-bearer-token",
@@ -1392,6 +1428,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               employmentEOYEnabled = false,
               cisEnabled = false,
               pensionsEnabled = false,
+              stateBenefitsEnabled = false,
               crystallisationEnabled = false
             ), request).get
           }
@@ -1432,6 +1469,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               employmentEOYEnabled = false,
               cisEnabled = false,
               pensionsEnabled = false,
+              stateBenefitsEnabled = false,
               crystallisationEnabled = false
             ), request).get
           }

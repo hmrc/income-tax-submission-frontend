@@ -18,7 +18,7 @@ package itUtils
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.mongo.{DatabaseError, TailoringUserDataModel}
-import models.{IncomeSourcesModel, LiabilityCalculationIdModel, User}
+import models.{LiabilityCalculationIdModel, User}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.Helpers.OK
@@ -55,6 +55,8 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
     def cisLink(taxYear: Int = taxYear): String = s"http://localhost:9338/update-and-submit-income-tax-return/construction-industry-scheme-deductions/$taxYear/summary"
 
     def pensionsLink(taxYear: Int = taxYear): String = s"http://localhost:9321/update-and-submit-income-tax-return/pensions/$taxYear/pensions-summary"
+
+    def stateBenefitsLink(taxYear: Int = taxYear): String = s"http://localhost:9376/update-and-submit-income-tax-return/state-benefits/$taxYear/summary"
 
     def viewEstimateLink(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/calculate"
 

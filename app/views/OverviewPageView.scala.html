@@ -180,6 +180,16 @@
             PENSIONS,
             incomeSources.pensions.isDefined
         )
+
+        @taskListItem(
+            appConfig.stateBenefitsReleased && tailoring.hasStateBenefits,
+            appConfig.stateBenefitsEnabled,
+            "stateBenefits_link",
+            "common.stateBenefits",
+            appConfig.stateBenefitsFEUrl(taxYear),
+            STATE_BENEFITS,
+            incomeSources.stateBenefits.isDefined
+        )
         @if(appConfig.tailoringEnabled){
             @if(!tailoring.allJourneys.contains(true)){
                 @govukInsetText(InsetText(
