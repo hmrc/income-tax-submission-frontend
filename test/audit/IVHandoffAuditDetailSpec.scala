@@ -23,7 +23,7 @@ class IVHandoffAuditDetailSpec extends UnitTest {
 
   private val handoffReason = "individual"
   private val currentConfidenceLevel = 50
-  private val minimumConfidenceLevelRequired = 200
+  private val minimumConfidenceLevelRequired = 250
 
 
   "writes" when {

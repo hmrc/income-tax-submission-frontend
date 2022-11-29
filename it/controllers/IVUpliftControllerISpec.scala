@@ -48,7 +48,7 @@ class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
 
           status(response) shouldBe SEE_OTHER
           await(response).header.headers shouldBe Map("Location" ->
-            "http://localhost:9538/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=/update-and-submit-income-tax-return/iv-uplift-callback&failureURL=/update-and-submit-income-tax-return/error/we-could-not-confirm-your-details")
+            "http://localhost:9538/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=250&completionURL=/update-and-submit-income-tax-return/iv-uplift-callback&failureURL=/update-and-submit-income-tax-return/error/we-could-not-confirm-your-details")
         }
 
       }
