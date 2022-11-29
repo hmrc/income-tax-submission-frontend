@@ -161,7 +161,7 @@ trait WireMockHelper {
 
   def authoriseIndividual(withNino: Boolean = true): StubMapping = {
     stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), None, Seq.empty[JsObject]: _*)))
-    stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), Some(ConfidenceLevel.L200), Seq(mtditEnrolment, ninoEnrolment): _*)))
+    stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), Some(ConfidenceLevel.L250), Seq(mtditEnrolment, ninoEnrolment): _*)))
   }
 
   def unauthorisedIndividualInsufficientConfidenceLevel(withNino: Boolean = true): StubMapping = {
@@ -185,18 +185,18 @@ trait WireMockHelper {
 
   def unauthorisedIndividualWrongCredentials(withNino: Boolean = true): StubMapping = {
     stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), None, Seq.empty[JsObject]: _*)))
-    stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(None, Some(ConfidenceLevel.L200), Seq.empty[JsObject]: _*)))
+    stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(None, Some(ConfidenceLevel.L250), Seq.empty[JsObject]: _*)))
   }
 
   def authoriseAgent(): StubMapping = {
     stubPost(authoriseUri, OK, Json.prettyPrint(
-      successfulAuthResponse(Some(AffinityGroup.Agent), Some(ConfidenceLevel.L200), Seq(asAgentEnrolment, mtditEnrolment): _*)
+      successfulAuthResponse(Some(AffinityGroup.Agent), Some(ConfidenceLevel.L250), Seq(asAgentEnrolment, mtditEnrolment): _*)
     ))
   }
 
   def authoriseAgentUnauthorized(): StubMapping = {
     stubPost(authoriseUri, UNAUTHORIZED, Json.prettyPrint(
-      successfulAuthResponse(Some(AffinityGroup.Agent), Some(ConfidenceLevel.L200), Seq(asAgentEnrolment, mtditEnrolment): _*)
+      successfulAuthResponse(Some(AffinityGroup.Agent), Some(ConfidenceLevel.L250), Seq(asAgentEnrolment, mtditEnrolment): _*)
     ))
   }
 

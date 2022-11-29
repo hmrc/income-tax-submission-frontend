@@ -33,7 +33,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val ivSuccessUrl: String = s"/update-and-submit-income-tax-return/iv-uplift-callback"
   override lazy val ivFailureUrl: String = s"/update-and-submit-income-tax-return/error/we-could-not-confirm-your-details"
-  override lazy val ivUpliftUrl: String = s"/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
+  override lazy val ivUpliftUrl: String = s"/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=250&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
 
   override def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/2021/dividends"
 

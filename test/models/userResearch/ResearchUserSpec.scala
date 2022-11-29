@@ -24,7 +24,7 @@ class ResearchUserSpec extends UnitTest {
   val taxYear = 2021
   val nino = "AA000000A"
   val credentialStrength: CredentialStrength = CS_Strong
-  val confidenceLevel: ConfidenceLevel = L200
+  val confidenceLevel: ConfidenceLevel = L250
   val affinityGroup: AffinityGroup = AG_Individual
   val enrolments: Enrolments = Seq(
     Enrolment("enrolment1", Seq(Identifier("id1K", "id1V")), Activated)

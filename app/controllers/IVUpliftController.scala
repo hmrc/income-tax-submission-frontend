@@ -41,7 +41,7 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
                                    val authorisedAction: AuthorisedAction,
                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
-  val minimumConfidenceLevel :Int = ConfidenceLevel.L200.level
+  val minimumConfidenceLevel :Int = ConfidenceLevel.L250.level
 
   def sessionConfidenceLevel(implicit headerCarrier: HeaderCarrier): Future[(String, Int)] = {
     authService.authorised().retrieve(affinityGroup and confidenceLevel){

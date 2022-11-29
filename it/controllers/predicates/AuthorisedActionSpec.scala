@@ -81,7 +81,7 @@ class AuthorisedActionSpec extends IntegrationTest {
         ))
 
         lazy val result: Future[Result] = {
-          val retrieval = Future.successful(enrolments and ConfidenceLevel.L200)
+          val retrieval = Future.successful(enrolments and ConfidenceLevel.L250)
           authAction(retrieval).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
         }
 
@@ -103,7 +103,7 @@ class AuthorisedActionSpec extends IntegrationTest {
         ))
 
         lazy val result: Future[Result] = {
-          val retrievals = Future.successful(enrolments and ConfidenceLevel.L200)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L250)
           authAction(retrievals).individualAuthentication[AnyContent](block)(fallBackSessionIdFakeRequest, emptyHeaderCarrier)
         }
 
@@ -129,7 +129,7 @@ class AuthorisedActionSpec extends IntegrationTest {
         ))
 
         lazy val result: Future[Result] = {
-          val retrievals = Future.successful(enrolments and ConfidenceLevel.L200)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L250)
           authAction(retrievals).individualAuthentication[AnyContent](block)(FakeRequest(), emptyHeaderCarrier)
         }
 
@@ -144,7 +144,7 @@ class AuthorisedActionSpec extends IntegrationTest {
         val enrolments = Enrolments(Set(Enrolment("notAnIndividualOops", Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated")))
 
         lazy val result: Future[Result] = {
-          val retrievals = Future.successful(enrolments and ConfidenceLevel.L200)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L250)
           authAction(retrievals).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
         }
 
@@ -163,7 +163,7 @@ class AuthorisedActionSpec extends IntegrationTest {
         val enrolments = Enrolments(Set(Enrolment("HMRC-NI", Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, nino)), "Activated")))
 
         lazy val result: Future[Result] = {
-          val retrievals = Future.successful(enrolments and ConfidenceLevel.L200)
+          val retrievals = Future.successful(enrolments and ConfidenceLevel.L250)
           authAction(retrievals).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
         }
 

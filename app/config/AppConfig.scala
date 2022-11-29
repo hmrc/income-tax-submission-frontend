@@ -122,7 +122,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val ivFailureUrl: String = s"/update-and-submit-income-tax-return/error/we-could-not-confirm-your-details"
 
   lazy val ivUpliftUrl: String = {
-    s"$ivUrl/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=200&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
+    s"$ivUrl/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=250&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
   }
 
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")
@@ -167,7 +167,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
       (GIFT_AID, giftAidEnabled),
       (PENSIONS, pensionsEnabled),
       employmentFeatureEnabled,
-      (CIS, cisEnabled)
+      (CIS, cisEnabled),
+      (STATE_BENEFITS, stateBenefitsEnabled)
     ).filter(!_._2).map(_._1)
   }
 

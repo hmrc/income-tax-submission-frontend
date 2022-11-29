@@ -198,7 +198,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   lazy val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
   val defaultAcceptedConfidenceLevels: Seq[ConfidenceLevel] = Seq(
-    ConfidenceLevel.L200,
+    ConfidenceLevel.L250,
     ConfidenceLevel.L500
   )
 
@@ -228,7 +228,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   def mockIVCredentials(affinityGroup: AffinityGroup, confidenceLevel: Int): Future[Some[AffinityGroup] ~ ConfidenceLevel] = {
     val confidenceLevelResponse = confidenceLevel match {
       case 500 => ConfidenceLevel.L500
-      case 200 => ConfidenceLevel.L200
+      case 250 => ConfidenceLevel.L250
       case 50 => ConfidenceLevel.L50
     }
 
