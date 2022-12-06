@@ -349,8 +349,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
   private val allCISDeductions = AllCISDeductions(Some(cisSource), Some(cisSource))
 
-  lazy val allStateBenefitsData = AllStateBenefitsData(
-    stateBenefitsData = aStateBenefitsData,
+  lazy val allStateBenefitsData: AllStateBenefitsData = AllStateBenefitsData(
+    stateBenefitsData = Some(aStateBenefitsData),
     customerAddedStateBenefitsData = Some(aCustomerAddedStateBenefitsData)
   )
 

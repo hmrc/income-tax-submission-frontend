@@ -20,7 +20,7 @@ import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.{JsPath, OWrites, Reads}
 import utils.JsonUtils.jsonObjNoNulls
 
-case class AllStateBenefitsData(stateBenefitsData: StateBenefitsData,
+case class AllStateBenefitsData(stateBenefitsData: Option[StateBenefitsData],
                                 customerAddedStateBenefitsData: Option[CustomerAddedStateBenefitsData] = None)
 
 object AllStateBenefitsData {
@@ -33,7 +33,7 @@ object AllStateBenefitsData {
   }
 
   implicit val allStateBenefitsDataReads: Reads[AllStateBenefitsData] = (
-    (JsPath \ "stateBenefits").read[StateBenefitsData] and
+    (JsPath \ "stateBenefits").readNullable[StateBenefitsData] and
       (JsPath \ "customerAddedStateBenefits").readNullable[CustomerAddedStateBenefitsData]
     ) (AllStateBenefitsData.apply _)
 }
