@@ -19,7 +19,7 @@ package models
 import models.cis.AllCISDeductions
 import models.employment.AllEmploymentData
 import models.pensions.Pensions
-import models.statebenefits.{AllStateBenefitsData, StateBenefitsData}
+import models.statebenefits.AllStateBenefitsData
 import utils.UnitTest
 
 import scala.reflect.runtime.{universe => reflect}
@@ -38,7 +38,7 @@ class OverviewTailoringModelSpec extends UnitTest {
     Some(AllEmploymentData(Seq(), None, Seq(), None)),
     Some(AllCISDeductions(None, None)),
     Some(Pensions(None, None, None, None)),
-    Some(AllStateBenefitsData(StateBenefitsData(), None))
+    Some(AllStateBenefitsData(None, None))
   )
 
   val sources = Seq(
