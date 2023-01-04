@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ object Benefits {
     ).tupled
 
   implicit val format: OFormat[Benefits] = {
-    (firstSetOfFields and secondSetOfFields).apply({
+    (firstSetOfFields and secondSetOfFields).apply({ (f1,f2) => (f1,f2) match {
       case (
         (accommodation, assets, assetTransfer, beneficialLoan, car, carFuel, educationalServices, entertaining,
         expenses, medicalInsurance, telephone, service, taxableExpenses, van, vanFuel, mileage, nonQualifyingRelocationExpenses,
@@ -104,6 +104,7 @@ object Benefits {
           employerProvidedProfessionalSubscriptions, employerProvidedServices, incomeTaxPaidByDirector, travelAndSubsistence,
           vouchersAndCreditCards, nonCash
         )
+    }
     }, {
       benefits =>
         (

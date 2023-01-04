@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ class TaxYearActionSpec extends UnitTest {
         )
 
         lazy val result = {
-          mockedConfig.taxYearErrorFeature _ expects() returning true
+          (mockedConfig.taxYearErrorFeature _).expects().returning(true)
 
           await(taxYearAction(validTaxYear).refine(userRequest))
         }
@@ -65,7 +65,7 @@ class TaxYearActionSpec extends UnitTest {
         )
 
         lazy val result = {
-          mockedConfig.taxYearErrorFeature _ expects() returning false
+          (mockedConfig.taxYearErrorFeature _).expects().returning(false)
 
           await(taxYearAction(validTaxYear + 1).refine(userRequest))
         }
@@ -79,7 +79,7 @@ class TaxYearActionSpec extends UnitTest {
         )
 
         lazy val result = {
-          mockedConfig.taxYearErrorFeature _ expects() returning false
+          (mockedConfig.taxYearErrorFeature _).expects().returning(false)
 
           await(taxYearAction(validTaxYear + -1, reset = false).refine(userRequest))
         }
@@ -97,7 +97,7 @@ class TaxYearActionSpec extends UnitTest {
         )
 
         lazy val result = {
-          mockedConfig.taxYearErrorFeature _ expects() returning false
+          (mockedConfig.taxYearErrorFeature _).expects().returning(false)
 
           taxYearAction(validTaxYear + 1).refine(userRequest)
         }
@@ -121,7 +121,7 @@ class TaxYearActionSpec extends UnitTest {
         )
 
         lazy val result = {
-          mockedConfig.taxYearErrorFeature _ expects() returning true
+          (mockedConfig.taxYearErrorFeature _).expects().returning(true)
 
           taxYearAction(validTaxYear + 4).refine(userRequest)
         }
@@ -144,7 +144,8 @@ class TaxYearActionSpec extends UnitTest {
         )
 
         lazy val result = {
-          mockedConfig.taxYearErrorFeature _ expects() returning false
+          (mockedConfig.taxYearErrorFeature _).expects().returning(false)
+
           (mockedService.getValidTaxYearList(_:String, _:String)(_:HeaderCarrier))
             .expects("AA123456A", "1234567890", *)
             .returning(Future.successful(Right(ValidTaxYearListModel(validTaxYearList))))
@@ -173,7 +174,8 @@ class TaxYearActionSpec extends UnitTest {
         )
 
         lazy val result = {
-          mockedConfig.taxYearErrorFeature _ expects() returning true
+          (mockedConfig.taxYearErrorFeature _).expects().returning(true)
+
           (mockedService.getValidTaxYearList(_:String, _:String)(_:HeaderCarrier))
             .expects("AA123456A", "1234567890", *)
             .returning(Future.successful(Right(ValidTaxYearListModel(validTaxYearList))))
