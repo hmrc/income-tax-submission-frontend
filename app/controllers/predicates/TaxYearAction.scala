@@ -32,12 +32,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(
   implicit val appConfig: AppConfig,
+  implicit val executionContext: ExecutionContext,
   val messagesApi: MessagesApi,
   validTaxYearListService: ValidTaxYearListService,
   errorHandler: ErrorHandler
 ) extends ActionRefiner[User, User] with I18nSupport {
 
-  implicit val executionContext: ExecutionContext = ExecutionContext.global
   lazy val logger: Logger = Logger.apply(this.getClass)
 
   override def refine[A](request: User[A]): Future[Either[Result, User[A]]] = {
@@ -89,6 +89,7 @@ class TaxYearAction @Inject()(taxYear: Int, missingTaxYearReset: Boolean)(
 
 object TaxYearAction {
   def taxYearAction(taxYear: Int, missingTaxYearReset: Boolean = true)(implicit appConfig: AppConfig,
+                                                                       ec: ExecutionContext,
                                                                        messages: MessagesApi,
                                                                        validTaxYearListService: ValidTaxYearListService,
                                                                        errorHandler: ErrorHandler
