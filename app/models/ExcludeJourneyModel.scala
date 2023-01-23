@@ -16,8 +16,8 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
-import utils.EncryptedValue
+import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.crypto.EncryptedValue
 
 case class ExcludeJourneyModel(journey: String, hash: Option[String])
 
@@ -28,5 +28,6 @@ object ExcludeJourneyModel {
 case class EncryptedExcludeJourneyModel(journey: EncryptedValue, hash: Option[EncryptedValue])
 
 object EncryptedExcludeJourneyModel {
-  implicit val formats: OFormat[EncryptedExcludeJourneyModel] = Json.format[EncryptedExcludeJourneyModel]
+  implicit lazy val encryptedValueOFormat: OFormat[EncryptedValue] = Json.format[EncryptedValue]
+  implicit val formats: Format[EncryptedExcludeJourneyModel] = Json.format[EncryptedExcludeJourneyModel]
 }

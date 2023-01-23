@@ -25,9 +25,7 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.mvc.AnyContent
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits}
 import uk.gov.hmrc.mongo.play.json.Codecs.toBson
-import utils.EncryptedValue
-
-import scala.concurrent.ExecutionContext
+import uk.gov.hmrc.crypto.EncryptedValue
 
 class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with DefaultAwaitTimeout {
 
@@ -135,8 +133,8 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
     "return an encryptionDecryptionError" in {
       await(tailoringInvalidRepo.find(taxYear)(testUser)) mustBe
         Left(EncryptionDecryptionError(
-          "Key being used is not valid. It could be due to invalid encoding, wrong length or uninitialized for decrypt Invalid AES key length: 2 bytes")
-        )
+        "Failed encrypting data"
+        ))
     }
   }
 
@@ -151,7 +149,7 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
         case e: Exception => Left(e)
       }
       result.isLeft mustBe true
-      result.left.get.getMessage must include(
+      result.left.e.swap.getOrElse(new Exception("wrong message")).getMessage must include(
         "E11000 duplicate key error collection: income-tax-submission-frontend.tailoringUserData index: UserDataLookupIndex dup key:")
     }
 

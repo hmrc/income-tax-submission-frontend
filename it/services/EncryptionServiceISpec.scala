@@ -18,12 +18,12 @@ package services
 
 import itUtils.IntegrationTest
 import models.mongo.{EncryptedTailoringUserDataModel, TailoringUserDataModel}
-import utils.SecureGCMCipher
+import utils.AesGcmAdCrypto
 
 class EncryptionServiceISpec extends IntegrationTest{
 
   val service: EncryptionService = app.injector.instanceOf[EncryptionService]
-  val encryption: SecureGCMCipher = app.injector.instanceOf[SecureGCMCipher]
+  val encryption: AesGcmAdCrypto = app.injector.instanceOf[AesGcmAdCrypto]
 
   "encryptTailoringUserData" should {
     val nino: String = "AA123456A"
