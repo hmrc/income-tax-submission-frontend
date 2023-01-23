@@ -16,32 +16,32 @@
 
 package services
 
-import config.AppConfig
 import models.mongo._
-import utils.SecureGCMCipher
+import utils.AesGcmAdCrypto
+import utils.CypherSyntax.{DecryptableOps, EncryptableOps}
 
 import javax.inject.Inject
 
-class EncryptionService @Inject()(encryptionService: SecureGCMCipher, appConfig: AppConfig) {
+class EncryptionService @Inject()(implicit val encryptionService: AesGcmAdCrypto) {
 
   def encryptTailoringUserData(tailoringUserDataModel: TailoringUserDataModel): EncryptedTailoringUserDataModel = {
-    implicit val textAndKey: TextAndKey = TextAndKey(tailoringUserDataModel.nino, appConfig.encryptionKey)
+    implicit val associatedText: String = tailoringUserDataModel.nino
 
     EncryptedTailoringUserDataModel(
       nino = tailoringUserDataModel.nino,
       taxYear = tailoringUserDataModel.taxYear,
-      tailoring = tailoringUserDataModel.tailoring.map(encryptionService.encrypt),
+      tailoring = tailoringUserDataModel.tailoring.map(_.encrypted),
       lastUpdated = tailoringUserDataModel.lastUpdated
     )
   }
 
   def decryptTailoringUserData(encryptedTailoringUserDataModel: EncryptedTailoringUserDataModel): TailoringUserDataModel = {
-    implicit val textAndKey: TextAndKey = TextAndKey(encryptedTailoringUserDataModel.nino, appConfig.encryptionKey)
+    implicit val associatedText: String = encryptedTailoringUserDataModel.nino
 
     TailoringUserDataModel(
       nino = encryptedTailoringUserDataModel.nino,
       taxYear = encryptedTailoringUserDataModel.taxYear,
-      tailoring = encryptedTailoringUserDataModel.tailoring.map(x => encryptionService.decrypt[String](x.value, x.nonce)),
+      tailoring = encryptedTailoringUserDataModel.tailoring.map(_.decrypted[String]),
       lastUpdated = encryptedTailoringUserDataModel.lastUpdated
     )
   }
