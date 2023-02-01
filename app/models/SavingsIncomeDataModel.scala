@@ -16,18 +16,10 @@
 
 package models
 
-import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.crypto.EncryptedValue
+import play.api.libs.json.{Json, OFormat}
 
-case class ExcludeJourneyModel(journey: String, hash: Option[String])
+case class SavingsIncomeDataModel(submittedOn: Option[String], securities: Option[SecuritiesModel], foreignInterest: Option[Seq[ForeignInterestModel]])
 
-object ExcludeJourneyModel {
-  implicit val formats: OFormat[ExcludeJourneyModel] = Json.format[ExcludeJourneyModel]
-}
-
-case class EncryptedExcludeJourneyModel(journey: EncryptedValue, hash: Option[EncryptedValue])
-
-object EncryptedExcludeJourneyModel {
-  implicit lazy val encryptedValueOFormat: OFormat[EncryptedValue] = Json.format[EncryptedValue]
-  implicit val formats: Format[EncryptedExcludeJourneyModel] = Json.format[EncryptedExcludeJourneyModel]
+object SavingsIncomeDataModel{
+  implicit val formats: OFormat[SavingsIncomeDataModel] = Json.format[SavingsIncomeDataModel]
 }

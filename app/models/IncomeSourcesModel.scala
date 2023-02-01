@@ -28,7 +28,8 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
                               employment: Option[AllEmploymentData] = None,
                               cis: Option[AllCISDeductions] = None,
                               pensions: Option[Pensions] = None,
-                              stateBenefits: Option[AllStateBenefitsData] = None) {
+                              stateBenefits: Option[AllStateBenefitsData] = None,
+                              interestSavings: Option[SavingsIncomeDataModel] = None) {
 
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
 
@@ -52,12 +53,16 @@ case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
     }
   }
 
-  val hasDataForEachIncomeSource: Boolean = dividends.nonEmpty &&
-    interest.nonEmpty &&
-    giftAid.nonEmpty &&
-    employment.nonEmpty &&
-    cis.nonEmpty &&
-    stateBenefits.nonEmpty
+  val hasDataForEachIncomeSource: Boolean = {
+    dividends.nonEmpty &&
+      interest.nonEmpty &&
+      giftAid.nonEmpty &&
+      employment.nonEmpty &&
+      cis.nonEmpty &&
+      pensions.nonEmpty &&
+      stateBenefits.nonEmpty &&
+      interestSavings.nonEmpty
+  }
 }
 
 object IncomeSourcesModel {

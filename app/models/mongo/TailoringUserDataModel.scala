@@ -19,7 +19,7 @@ package models.mongo
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
-import utils.EncryptedValue
+import uk.gov.hmrc.crypto.EncryptedValue
 
 
 case class TailoringUserDataModel(
@@ -45,6 +45,6 @@ case class EncryptedTailoringUserDataModel(
 
 object EncryptedTailoringUserDataModel extends MongoJodaFormats {
   implicit val mongoJodaDateTimeFormats: Format[DateTime] = dateTimeFormat
-
-  implicit lazy val formats: OFormat[EncryptedTailoringUserDataModel] = Json.format[EncryptedTailoringUserDataModel]
+  implicit lazy val encryptedValueOFormat: OFormat[EncryptedValue] = Json.format[EncryptedValue]
+  implicit val formats: Format[EncryptedTailoringUserDataModel] = Json.format[EncryptedTailoringUserDataModel]
 }

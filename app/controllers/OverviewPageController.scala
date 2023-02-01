@@ -24,6 +24,7 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import models.{ClearExcludedJourneysRequestModel, IncomeSourcesModel, OverviewTailoringModel, User}
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc._
 import repositories.TailoringUserDataRepository
 import services.{ExcludedJourneysService, IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
@@ -75,6 +76,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val cisRemove = incomeSourcesModel.cis.nonEmpty
     val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
     val stateBenefitsRemove = incomeSourcesModel.stateBenefits.nonEmpty
+    val interestSavingsRemove = incomeSourcesModel.interestSavings.nonEmpty
 
     excludedJourneysService.getExcludedJourneys(taxYear, user.nino, user.mtditid).map {
       case Right(data) =>
@@ -98,7 +100,8 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
           (pensionsRemove, PENSIONS),
           (stateBenefitsRemove, STATE_BENEFITS),
           (giftAidRemove || giftAidHash, GIFT_AID),
-          (interestRemove || interestHash, INTEREST)
+          (interestRemove || interestHash, INTEREST),
+          (interestSavingsRemove, INTEREST_SAVINGS)
         ).filter(_._1).map(_._2)
 
         val newData = data.journeys.filter(excludedModels => newExclude.contains(excludedModels.journey)).map(_.journey)

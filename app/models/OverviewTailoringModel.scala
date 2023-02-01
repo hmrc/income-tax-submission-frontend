@@ -16,11 +16,14 @@
 
 package models
 
-case class OverviewTailoringModel(tailoring: Seq[String], incomeSources: IncomeSourcesModel) {
+import config.AppConfig
+
+case class OverviewTailoringModel(tailoring: Seq[String], incomeSources: IncomeSourcesModel)(implicit appConfig: AppConfig) {
   private def bool2int(b: Boolean) = if (b) 1 else 0
 
   val hasDividends: Boolean = tailoring.contains("dividends") || incomeSources.dividends.nonEmpty
-  val hasInterest: Boolean = tailoring.contains("interest") || incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
+  val hasInterest: Boolean = tailoring.contains("interest") || incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) ||
+    (appConfig.interestSavingsEnabled && incomeSources.interestSavings.nonEmpty)
   val hasGiftAid: Boolean = tailoring.contains("gift-aid") || incomeSources.giftAid.nonEmpty
   val hasEmployment: Boolean = tailoring.contains("employment") || incomeSources.employment.nonEmpty
   val hasCis: Boolean = tailoring.contains("cis") || incomeSources.cis.nonEmpty

@@ -94,13 +94,24 @@
                 )
             }
 
-            @if(journeys.contains("interest") && !incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
-                @checkboxItem(
-                    messages("common.interest"),
-                    "addSections.hintText.interest",
-                    "interest",
-                    item = 4
-                )
+            @if(appConfig.interestSavingsEnabled){
+                @if(journeys.contains("interest") && !incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) && incomeSources.interestSavings.isEmpty) {
+                    @checkboxItem(
+                        messages("common.interestWithSavings"),
+                        "addSections.hintText.interestWithSavings",
+                        "interest",
+                        item = 4
+                    )
+                }
+            } else {
+                @if(journeys.contains("interest") && !incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
+                    @checkboxItem(
+                        messages("common.interest"),
+                        "addSections.hintText.interest",
+                        "interest",
+                        item = 4
+                    )
+                }
             }
 
             @if(journeys.contains("employment") && incomeSources.employment.isEmpty) {

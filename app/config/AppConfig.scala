@@ -48,6 +48,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-interest"
   def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
   def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/interest-from-UK"
+  def personalIncomeTaxInterestSummaryUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/interest-summary"
   def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-stocks-and-shares"
 
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
@@ -143,6 +144,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   //Enabled income sources
   lazy val dividendsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.dividendsEnabled")
   lazy val interestEnabled: Boolean = servicesConfig.getBoolean("feature-switch.interestEnabled")
+  lazy val interestSavingsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.interestSavingsEnabled")
   lazy val giftAidEnabled: Boolean = servicesConfig.getBoolean("feature-switch.giftAidEnabled")
   lazy val giftAidReleased: Boolean = servicesConfig.getBoolean("feature-switch.giftAidReleased")
   lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
@@ -168,7 +170,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
       (PENSIONS, pensionsEnabled),
       employmentFeatureEnabled,
       (CIS, cisEnabled),
-      (STATE_BENEFITS, stateBenefitsEnabled)
+      (STATE_BENEFITS, stateBenefitsEnabled),
+      (INTEREST_SAVINGS, interestSavingsEnabled)
     ).filter(!_._2).map(_._1)
   }
 
@@ -199,6 +202,7 @@ trait AppConfig {
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxInterestUrl(taxYear: Int): String
   def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String
+  def personalIncomeTaxInterestSummaryUrl(taxYear: Int): String
   def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
@@ -267,6 +271,7 @@ trait AppConfig {
   //Enabled income sources
   val dividendsEnabled: Boolean
   val interestEnabled: Boolean
+  val interestSavingsEnabled: Boolean
   val giftAidEnabled: Boolean
   val giftAidReleased: Boolean
   val studentLoansEnabled: Boolean

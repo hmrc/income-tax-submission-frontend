@@ -16,22 +16,15 @@
 
 package utils
 
-import scala.util.Try
 import config.AppConfig
+import uk.gov.hmrc.crypto.{AdDecrypter, AdEncrypter, SymmetricCryptoFactory}
 
-import models.IncomeSourcesModel
+import javax.inject.{Inject, Singleton}
 
+@Singleton
+class AesGcmAdCryptoFactory @Inject()(appConfig: AppConfig) {
 
-object ViewUtils {
+  private lazy val aesGcmAdCrypto = SymmetricCryptoFactory.aesGcmAdCrypto(appConfig.encryptionKey)
 
-  def bigDecimalCurrency(value: String, currencySymbol: String = "£"): String = {
-    Try(BigDecimal(value))
-      .map(amount => currencySymbol + f"$amount%1.2f".replace(".00", ""))
-      .getOrElse(value)
-  }
-
-  def isAnIncomeSourceDefined(incomeSources: IncomeSourcesModel)(implicit appConfig: AppConfig): Boolean = {
-    incomeSources.interest.isDefined || incomeSources.dividends.isDefined ||
-      (incomeSources.giftAid.isDefined && appConfig.giftAidReleased) || (incomeSources.employment.isDefined && appConfig.employmentReleased)
-  }
+  def instance(): AdEncrypter with AdDecrypter = aesGcmAdCrypto
 }

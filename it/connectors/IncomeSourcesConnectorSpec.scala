@@ -152,7 +152,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
     "return a IncomeSourcesModel" when {
 
       "all sources are turned off" in {
-        val expectedResult = IncomeSourcesModel(dividendResult, interestResult)
+        val expectedResult = IncomeSourcesModel()
 
         stubGetWithHeaderCheck(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYearEOY", OK,
           Json.toJson(expectedResult).toString(), ("excluded-income-sources", "dividends,interest,gift-aid,employment,cis"))

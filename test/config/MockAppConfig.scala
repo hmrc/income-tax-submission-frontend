@@ -79,6 +79,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val interestEnabled: Boolean = false
 
+  override lazy val interestSavingsEnabled: Boolean = false
+
   override lazy val studentLoansEnabled: Boolean = true
 
   override lazy val employmentEnabled: Boolean = false
@@ -183,6 +185,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override def getExcludedJourneysUrl(taxYear: Int, nino: String): String = "/get-excluded"
 
   override def clearExcludedJourneysUrl(taxYear: Int, nino: String): String = "/clear-excluded"
+
+  override def personalIncomeTaxInterestSummaryUrl(taxYear: Int): String = s"/$taxYear/interest/interest-summary"
 }
 
 class MockAppConfigTaxYearFeatureOff extends MockAppConfig {
