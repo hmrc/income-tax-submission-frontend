@@ -93,14 +93,18 @@
 }
 
 @interestUrlRedirect(incomeSources: IncomeSourcesModel) = @{
-    if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
-        appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)
-    } else {
-        if(appConfig.tailoringEnabled) {
-            appConfig.personalIncomeTaxInterestGatewayUrl(taxYear)
+    if(!appConfig.interestSavingsEnabled){
+        if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
+            appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)
         } else {
-            appConfig.personalIncomeTaxInterestUrl(taxYear)
+            if(appConfig.tailoringEnabled) {
+                appConfig.personalIncomeTaxInterestGatewayUrl(taxYear)
+            } else {
+                appConfig.personalIncomeTaxInterestUrl(taxYear)
+            }
         }
+    }   else {
+            appConfig.personalIncomeTaxInterestSummaryUrl(taxYear)
     }
 }
 
@@ -119,15 +123,27 @@
 
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <ol class="app-task-list__items govuk-!-padding-bottom-1 govuk-!-padding-left-0">
-        @taskListItem(
-            tailoring.hasInterest,
-            appConfig.interestEnabled,
-            "interest_link",
-            "common.interest",
-            interestUrlRedirect(incomeSources),
-            INTEREST,
-            incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
-        )
+        @if(appConfig.interestSavingsEnabled){
+            @taskListItem(
+                tailoring.hasInterest,
+                appConfig.interestEnabled || appConfig.interestSavingsEnabled,
+                "interest_link",
+                "common.interestWithSavings",
+                interestUrlRedirect(incomeSources),
+                INTEREST,
+                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) || incomeSources.interestSavings.isDefined
+            )
+        } else {
+            @taskListItem(
+                tailoring.hasInterest,
+                appConfig.interestEnabled,
+                "interest_link",
+                "common.interest",
+                interestUrlRedirect(incomeSources),
+                INTEREST,
+                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
+            )
+        }
         
         @taskListItem(
             tailoring.hasDividends,

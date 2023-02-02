@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object IncomeSources {
+import play.api.libs.json.{Json, OFormat}
 
-  val DIVIDENDS = "dividends"
-  val INTEREST = "interest"
-  val GIFT_AID = "gift-aid"
-  val EMPLOYMENT = "employment"
-  val CIS = "cis"
-  val PENSIONS = "pensions"
-  val STATE_BENEFITS = "state-benefits"
-  val INTEREST_SAVINGS = "interest-savings"
+case class ForeignInterestModel(
+  countryCode: String,
+  amountBeforeTax: Option[BigDecimal],
+  taxTakenOff: Option[BigDecimal],
+  specialWithholdingTax: Option[BigDecimal],
+  foreignTaxCreditRelief: Option[Boolean],
+  taxableAmount: BigDecimal)
+
+object ForeignInterestModel{
+  implicit val formats: OFormat[ForeignInterestModel] = Json.format[ForeignInterestModel]
 }

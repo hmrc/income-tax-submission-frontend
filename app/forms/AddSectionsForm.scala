@@ -36,6 +36,7 @@ object AddSectionsForm {
       if (incomeSources.employment.isDefined && !newTailoring.contains(EMPLOYMENT)) newTailoring = newTailoring :+ EMPLOYMENT
       if (incomeSources.cis.isDefined && !newTailoring.contains(CIS)) newTailoring = newTailoring :+ CIS
       if (incomeSources.pensions.isDefined && !newTailoring.contains(PENSIONS)) newTailoring = newTailoring :+ PENSIONS
+      if (incomeSources.stateBenefits.isDefined && !newTailoring.contains(STATE_BENEFITS)) newTailoring = newTailoring :+ STATE_BENEFITS
       AddSectionsQuestionModel(newTailoring, addSections)
     }
     //scalastyle:on

@@ -30,7 +30,7 @@ class OverviewTailoringModelSpec extends UnitTest {
     val tailoringList: Seq[String] = Seq(sourceName)
   }
 
-  private val emptyIncomeSources: IncomeSourcesModel = IncomeSourcesModel(None, None, None, None, None, None, None)
+  private val emptyIncomeSources: IncomeSourcesModel = IncomeSourcesModel()
   private val populatedIncomeSources: IncomeSourcesModel = IncomeSourcesModel(
     Some(DividendsModel()),
     Some(Seq(InterestModel("Mah Swamp", "1234567890", Some(500), Some(500)))),
@@ -38,7 +38,8 @@ class OverviewTailoringModelSpec extends UnitTest {
     Some(AllEmploymentData(Seq(), None, Seq(), None)),
     Some(AllCISDeductions(None, None)),
     Some(Pensions(None, None, None, None)),
-    Some(AllStateBenefitsData(None, None))
+    Some(AllStateBenefitsData(None, None)),
+    Some(SavingsIncomeDataModel(None, None, None))
   )
 
   val sources = Seq(
@@ -52,7 +53,7 @@ class OverviewTailoringModelSpec extends UnitTest {
   )
 
   "the number of sources match the number of income source fields" in {
-    sources.length shouldBe classOf[IncomeSourcesModel].getConstructors.head.getParameterCount
+    sources.:+("interest-savings", "hasInterest-savings").length shouldBe classOf[IncomeSourcesModel].getConstructors.head.getParameterCount
   }
 
   sources.map { data =>

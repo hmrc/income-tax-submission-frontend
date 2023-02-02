@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object IncomeSources {
+import play.api.libs.json.{Json, OFormat}
 
-  val DIVIDENDS = "dividends"
-  val INTEREST = "interest"
-  val GIFT_AID = "gift-aid"
-  val EMPLOYMENT = "employment"
-  val CIS = "cis"
-  val PENSIONS = "pensions"
-  val STATE_BENEFITS = "state-benefits"
-  val INTEREST_SAVINGS = "interest-savings"
+case class SecuritiesModel(
+                            taxTakenOff: Option[BigDecimal],
+                            grossAmount: BigDecimal,
+                            netAmount: Option[BigDecimal]
+                          )
+
+object SecuritiesModel{
+  implicit val formats: OFormat[SecuritiesModel] = Json.format[SecuritiesModel]
 }
