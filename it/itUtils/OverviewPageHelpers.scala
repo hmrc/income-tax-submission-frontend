@@ -54,6 +54,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
     def cisLink(taxYear: Int = taxYear): String = s"http://localhost:9338/update-and-submit-income-tax-return/construction-industry-scheme-deductions/$taxYear/summary"
 
+    def gainsLink(taxYear: Int = taxYear): String = s"http://localhost:10005/update-and-submit-income-tax-return/additional-information/$taxYear/gains/gains-gateway"
     def pensionsLink(taxYear: Int = taxYear): String = s"http://localhost:9321/update-and-submit-income-tax-return/pensions/$taxYear/pensions-summary"
 
     def stateBenefitsLink(taxYear: Int = taxYear): String = s"http://localhost:9376/update-and-submit-income-tax-return/state-benefits/$taxYear/summary"
@@ -112,6 +113,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
       "interest",
       "gift-aid",
       "employment",
+      "gains",
       "cis"
     )
   }

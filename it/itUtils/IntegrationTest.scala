@@ -25,6 +25,7 @@ import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
 import models.cis.{AllCISDeductions, CISDeductions, CISSource, PeriodData}
 import models.employment._
+import models.gains.{CapitalRedemptionModel, ForeignModel, InsurancePoliciesModel, LifeAnnuityModel, LifeInsuranceModel, VoidedIsaModel}
 import models.statebenefits.{AllStateBenefitsData, CustomerAddedStateBenefit, CustomerAddedStateBenefitsData, StateBenefitsData}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -91,6 +92,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
              studentLoansEnabled: Boolean = true,
              employmentEnabled: Boolean = true,
              employmentEOYEnabled: Boolean = true,
+             gainsEnabled: Boolean = true,
              cisEnabled: Boolean = true,
              pensionsEnabled: Boolean = true,
              stateBenefitsEnabled: Boolean = true,
@@ -114,6 +116,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.giftAidEnabled" -> giftAidEnabled.toString,
     "feature-switch.studentLoansEnabled" -> studentLoansEnabled.toString,
     "feature-switch.employmentEnabled" -> employmentEnabled.toString,
+    "feature-switch.gainsEnabled" -> gainsEnabled.toString,
+    "feature-switch.gainsReleased" -> "true",
     "feature-switch.employmentEOYEnabled" -> employmentEOYEnabled.toString,
     "feature-switch.cisEnabled" -> cisEnabled.toString,
     "feature-switch.pensionsEnabled" -> pensionsEnabled.toString,
@@ -140,6 +144,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
                 studentLoansEnabled: Boolean = true,
                 employmentEnabled: Boolean = true,
                 employmentEOYEnabled: Boolean = true,
+                gainsEnabled: Boolean = true,
                 cisEnabled: Boolean = true,
                 pensionsEnabled: Boolean = true,
                 stateBenefitsEnabled: Boolean = true,
@@ -159,6 +164,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         studentLoansEnabled,
         employmentEnabled,
         employmentEOYEnabled,
+        gainsEnabled,
         cisEnabled,
         pensionsEnabled,
         stateBenefitsEnabled,
@@ -250,6 +256,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     giftAid = Some(giftAidModel),
     employment = Some(employmentsModel),
     cis = Some(allCISDeductions),
+    gains = insurancePoliciesModel,
     pensions = Some(allPensionsModel),
     stateBenefits = Some(allStateBenefitsData),
     interestSavings = Some(savingsInterestModel)
@@ -424,6 +431,59 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     giftAidPaymentsModel,
     giftsModel
   )
+
+  val validLifeInsuranceModel: LifeInsuranceModel = LifeInsuranceModel(
+    customerReference = Some("RefNo13254687"),
+    event = Some("Life"),
+    gainAmount = 123.45,
+    taxPaid = Some(true),
+    yearsHeld = Some(4),
+    yearsHeldSinceLastGain = Some(3),
+    deficiencyRelief = Some(123.45)
+  )
+
+  val validCapitalRedemptionModel: CapitalRedemptionModel = CapitalRedemptionModel(
+    customerReference = Some("RefNo13254687"),
+    event = Some("Capital"),
+    gainAmount = 123.45,
+    taxPaid = Some(true),
+    yearsHeld = Some(3),
+    yearsHeldSinceLastGain = Some(2),
+    deficiencyRelief = Some(0)
+  )
+
+  val validLifeAnnuityModel: LifeAnnuityModel = LifeAnnuityModel(
+    customerReference = Some("RefNo13254687"),
+    event = Some("Life"),
+    gainAmount = 0,
+    taxPaid = Some(true),
+    yearsHeld = Some(2),
+    yearsHeldSinceLastGain = Some(22),
+    deficiencyRelief = Some(123.45)
+  )
+
+  val validVoidedIsaModel: VoidedIsaModel = VoidedIsaModel(
+    customerReference = Some("RefNo13254687"),
+    event = Some("isa"),
+    gainAmount = 123.45,
+    taxPaidAmount = Some(123.45),
+    yearsHeld = Some(5),
+    yearsHeldSinceLastGain = Some(6)
+  )
+
+  val validForeignModel: ForeignModel = ForeignModel(
+    customerReference = Some("RefNo13254687"),
+    gainAmount = 123.45,
+    taxPaidAmount = Some(123.45),
+    yearsHeld = Some(3)
+  )
+
+  lazy val insurancePoliciesModel: Option[InsurancePoliciesModel] = Some(InsurancePoliciesModel("2020-01-04T05:01:01Z",
+    Seq(validLifeInsuranceModel), Some(Seq(validCapitalRedemptionModel)) , Some(Seq(validLifeAnnuityModel)), Some(Seq(validVoidedIsaModel))
+    , Some(Seq(validForeignModel))))
+
+
+
 
   def playSessionCookies(taxYear: Int, validTaxYears: Seq[Int]): String = PlaySessionCookieBaker.bakeSessionCookie(Map(
     SessionValues.TAX_YEAR -> taxYear.toString,

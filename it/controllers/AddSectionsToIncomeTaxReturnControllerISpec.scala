@@ -52,6 +52,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val giftAidHint: String
     val interest: String
     val interestHint: String
+    val gains: String
+    val gainsHint: String
     val pensions: String
     val pensionsHint: String
     val stateBenefits: String
@@ -107,6 +109,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val dividendsHint: String = "from UK trusts, unit trusts and open-ended investment companies"
     val employment: String = "PAYE employment (including student loans)"
     val employmentHint: String = "including employment benefits, expenses and student loan repayments"
+    val gains: String = "Gains from life insurance policies and contracts"
+    val gainsHint: String = "including life insurance policies, life annuity contracts and capital redemption policies"
     val giftAid: String = "Donations to charity"
     val giftAidHint: String = "including donations to overseas charities and donations of land, property, shares and securities"
     val interest: String = "Interest"
@@ -127,6 +131,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val dividendsHint: String = "gan ymddiriedolaethau yn y DU, ymddiriedolaethau unedol a chwmnïau buddsoddi penagored"
     val employment: String = "Cyflogaeth TWE"
     val employmentHint: String = "gan gynnwys buddiannau cyflogaeth, treuliau ac ad-daliadau benthyciad myfyriwr"
+    val gains: String = "Gains from life insurance policies and contracts"
+    val gainsHint: String = "including life insurance policies, life annuity contracts and capital redemption policies"
     val giftAid: String = "Rhoddion i elusennau"
     val giftAidHint: String = "gan gynnwys rhoddion i elusennau tramor a rhoddion o dir, eiddo, cyfranddaliadau a gwarannau"
     val interest: String = "Llog"
@@ -149,6 +155,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val dividendsHintSelector: String = "#dividends-item-hint"
     val giftAidSelector: String = "#gift-aid"
     val giftAidHintSelector: String = "#gift-aid-item-hint"
+    val gainsSelector: String = "#gains"
+    val gainsHintSelector: String = "#gains-item-hint"
     val interestSelector: String = "#interest"
     val interestHintSelector: String = "#interest-item-hint"
     val employmentSelector: String = "#employment"
@@ -199,6 +207,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       "interest",
       "gift-aid",
       "employment",
+      "gains",
       "cis",
       "pensions",
       "state-benefits"
@@ -251,6 +260,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.cisSelector, "cis")
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.dividendsSelector, "dividends")
           textOnPageCheck(dividendsHint, Selectors.dividendsHintSelector)
+          inputFieldValueCheck(addSectionsInputFieldName, Selectors.gainsSelector, "gains")
+          textOnPageCheck(gainsHint, Selectors.gainsHintSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.giftAidSelector, "gift-aid")
           textOnPageCheck(giftAidHint, Selectors.giftAidHintSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.interestSelector, "interest")

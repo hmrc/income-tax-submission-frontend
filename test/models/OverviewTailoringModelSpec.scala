@@ -18,6 +18,7 @@ package models
 
 import models.cis.AllCISDeductions
 import models.employment.AllEmploymentData
+import models.gains.{InsurancePoliciesModel, LifeInsuranceModel}
 import models.pensions.Pensions
 import models.statebenefits.AllStateBenefitsData
 import utils.UnitTest
@@ -39,6 +40,7 @@ class OverviewTailoringModelSpec extends UnitTest {
     Some(AllEmploymentData(Seq(), None, Seq(), None)),
     Some(AllCISDeductions(None, None)),
     Some(Pensions(None, None, None, None)),
+    Some(InsurancePoliciesModel("2020-01-04T05:01:01Z", Seq(LifeInsuranceModel(None,None,500,None,None,None,None)) ,None,None,None,None)),
     Some(AllStateBenefitsData(None, None)),
     Some(SavingsIncomeDataModel(None, None, None))
   )
@@ -49,6 +51,7 @@ class OverviewTailoringModelSpec extends UnitTest {
     IncomeSourceSetup("gift-aid", "hasGiftAid"),
     IncomeSourceSetup("employment", "hasEmployment"),
     IncomeSourceSetup("cis", "hasCis"),
+    IncomeSourceSetup("gains", "hasGains"),
     IncomeSourceSetup("pensions", "hasPensions"),
     IncomeSourceSetup("state-benefits", "hasStateBenefits")
   )

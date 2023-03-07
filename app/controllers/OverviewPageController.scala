@@ -76,6 +76,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
     val stateBenefitsRemove = incomeSourcesModel.stateBenefits.nonEmpty
     val interestSavingsRemove = incomeSourcesModel.interestSavings.nonEmpty
+    val gainsRemove = incomeSourcesModel.gains.nonEmpty
 
     excludedJourneysService.getExcludedJourneys(taxYear, user.nino, user.mtditid).map {
       case Right(data) =>
@@ -100,7 +101,8 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
           (stateBenefitsRemove, STATE_BENEFITS),
           (giftAidRemove || giftAidHash, GIFT_AID),
           (interestRemove || interestHash, INTEREST),
-          (interestSavingsRemove, INTEREST_SAVINGS)
+          (interestSavingsRemove, INTEREST_SAVINGS),
+          (gainsRemove, GAINS)
         ).filter(_._1).map(_._2)
 
         val newData = data.journeys.filter(excludedModels => newExclude.contains(excludedModels.journey)).map(_.journey)

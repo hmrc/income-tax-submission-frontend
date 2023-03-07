@@ -85,12 +85,22 @@
                 )
             }
 
+            @if(appConfig.gainsEnabled){
+            @if(journeys.contains("gains") && incomeSources.gains.isEmpty) {
+                @checkboxItem(
+                    messages("common.gains"),
+                    "addSections.hintText.gains",
+                    "gains",
+                    item = 3
+                )
+            }
+            }
             @if(journeys.contains("gift-aid") && incomeSources.giftAid.isEmpty) {
                 @checkboxItem(
                     messages("common.donationsToCharity"),
                     "addSections.hintText.donationsToCharity",
                     "gift-aid",
-                    item = 3
+                    item = 4
                 )
             }
 
@@ -100,7 +110,7 @@
                         messages("common.interestWithSavings"),
                         "addSections.hintText.interestWithSavings",
                         "interest",
-                        item = 4
+                        item = 5
                     )
                 }
             } else {
@@ -109,7 +119,7 @@
                         messages("common.interest"),
                         "addSections.hintText.interest",
                         "interest",
-                        item = 4
+                        item = 6
                     )
                 }
             }
@@ -119,7 +129,7 @@
                     messages("common.employment"),
                     "addSections.hintText.employment",
                     "employment",
-                    item = 5
+                    item = 7
                 )
             }
 
@@ -128,7 +138,7 @@
                     messages("common.pensions"),
                     "addSections.hintText.pensions",
                     "pensions",
-                    item = 6
+                    item = 8
                 )
             }
 
@@ -137,7 +147,7 @@
                     messages("common.stateBenefits"),
                     "addSections.hintText.stateBenefits",
                     "state-benefits",
-                    item = 7
+                    item = 9
                 )
             }
         </div>

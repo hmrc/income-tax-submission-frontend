@@ -20,6 +20,7 @@ import models.cis.AllCISDeductions
 import models.employment.{AllEmploymentData, HmrcEmploymentSource}
 import models.pensions.Pensions
 import models.statebenefits.AllStateBenefitsData
+import models.gains.InsurancePoliciesModel
 import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(
@@ -30,9 +31,9 @@ case class IncomeSourcesModel(
                                employment: Option[AllEmploymentData] = None,
                                cis: Option[AllCISDeductions] = None,
                                pensions: Option[Pensions] = None,
+                               gains: Option[InsurancePoliciesModel] = None,
                                stateBenefits: Option[AllStateBenefitsData] = None,
-                               interestSavings: Option[SavingsIncomeDataModel] = None
-                             ) {
+                               interestSavings: Option[SavingsIncomeDataModel] = None) {
 
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
 
@@ -64,7 +65,8 @@ case class IncomeSourcesModel(
       cis.nonEmpty &&
       pensions.nonEmpty &&
       stateBenefits.nonEmpty &&
-      interestSavings.nonEmpty
+      interestSavings.nonEmpty &&
+      gains.nonEmpty
   }
 }
 
