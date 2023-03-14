@@ -24,7 +24,6 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import models.{ClearExcludedJourneysRequestModel, IncomeSourcesModel, OverviewTailoringModel, User}
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
 import play.api.mvc._
 import repositories.TailoringUserDataRepository
 import services.{ExcludedJourneysService, IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}

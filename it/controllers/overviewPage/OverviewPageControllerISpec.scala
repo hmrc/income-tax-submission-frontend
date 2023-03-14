@@ -24,7 +24,7 @@ import config.{AppConfig, ErrorHandler}
 import controllers.OverviewPageController
 import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, OverviewPageHelpers, ViewHelpers}
-import models.{ExcludeJourneyModel, IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
+import models.{APIErrorBodyModel, ExcludeJourneyModel, IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
@@ -421,7 +421,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None))
             route(app, request, user.isWelsh).get
           }
 
@@ -593,6 +593,79 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             "has an interest section with status of 'Not Started'" which {
               linkCheck(interestsLinkText, interestLinkSelector, interestsLink(taxYear))
               textOnPageCheck(notStartedText, interestStatusSelector)
+            }
+
+            "has a donations to charity section" which {
+              linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear))
+              textOnPageCheck(updatedText, giftAidStatusSelector)
+            }
+
+            "has an employment section" which {
+              linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYear))
+              textOnPageCheck(updatedText, employmentStatusSelector)
+            }
+
+            "has a cis section" which {
+              linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
+              textOnPageCheck(updatedText, cisStatusSelector)
+            }
+
+            "has a pensions section" which {
+              linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
+              textOnPageCheck(updatedText, pensionsStatusSelector)
+            }
+
+            "has a state benefits section" which {
+              linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
+              textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+            }
+
+            formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
+            buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
+          }
+        }
+
+        "render overview page with correct status tags when a service returns UNAVAILABLE and user is in the current taxYear" should {
+          "have the status as 'Under Maintenance' for interest when interest income source is unavailable" when {
+            val incomeSources = incomeSourcesModel.copy(
+              errors = Some(List(("interest", APIErrorBodyModel("UNAVAILABLE", "Something went wrong")))),
+              interest = None)
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+            lazy val result: Future[Result] = {
+              cleanDatabase(taxYear)
+              insertAllJourneys()
+              stubGetExcludedCall(taxYear, nino)
+              authoriseAgentOrIndividual(user.isAgent)
+              stubIncomeSources(incomeSources)
+              route(app, request, user.isWelsh).get
+            }
+
+            implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+            "returns status of OK(200)" in {
+              status(result) shouldBe OK
+            }
+
+            welshToggleCheck(welshTest(user.isWelsh))
+            linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
+            linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYear))
+            textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+            titleCheck(specific.headingExpected, user.isWelsh)
+            h1Check(specific.headingExpected, "xl")
+            textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+            textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
+            textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
+            textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
+            textOnPageCheck(specific.inYearInsertText(taxYear), inYearInsetTextSelector)
+
+            "has a dividends section" which {
+              linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYear))
+              textOnPageCheck(updatedText, dividendsStatusSelector)
+            }
+
+            "has an interest section with status of 'Under Maintenance'" which {
+              textOnPageCheck(underMaintenance, interestStatusSelector)
             }
 
             "has a donations to charity section" which {

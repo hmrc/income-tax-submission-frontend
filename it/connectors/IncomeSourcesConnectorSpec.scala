@@ -163,7 +163,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       }
 
       "all sources are turned on" in {
-        val expectedResult = IncomeSourcesModel(dividendResult, interestResult)
+        val expectedResult = IncomeSourcesModel(None, dividendResult, interestResult)
 
         stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYearEOY", OK, Json.toJson(expectedResult).toString())
 
@@ -173,7 +173,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
       }
 
       "all optional values are present" in {
-        val expectedResult = IncomeSourcesModel(dividendResult, interestResult, giftAidResult, employment)
+        val expectedResult = IncomeSourcesModel(None, dividendResult, interestResult, giftAidResult, employment)
 
         stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYearEOY", OK, Json.toJson(expectedResult).toString())
 

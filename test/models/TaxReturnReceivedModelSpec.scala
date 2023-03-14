@@ -16,8 +16,6 @@
 
 package models
 
-import org.joda.time.{DateTime, DateTimeZone}
-import org.joda.time.format.DateTimeFormat
 import play.api.libs.json.{JsObject, Json}
 import utils.UnitTest
 
