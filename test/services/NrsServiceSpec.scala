@@ -47,7 +47,7 @@ class NrsServiceSpec extends UnitTest {
       
       "return the connector response" in {
 
-        val expectedResult: NrsSubmissionResponse = Right()
+        val expectedResult: NrsSubmissionResponse = Right(())
 
         val headerCarrierWithTrueClientDetails = headerCarrierWithSession.copy(trueClientIp = Some("127.0.0.1"), trueClientPort = Some("80"))
 
@@ -67,13 +67,13 @@ class NrsServiceSpec extends UnitTest {
       
       "return the connector response" in {
 
-        val expectedResult: NrsSubmissionResponse = Right()
+        val expectedResult: NrsSubmissionResponse = Right(())
 
         (connector.postNrsConnector(_: String, _: NrsSubmissionModel, _: String)(_: HeaderCarrier, _: Writes[NrsSubmissionModel]))
           .expects(nino, nrsSubmissionModel, "", headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "No user agent provided"), writesObject)
           .returning(Future.successful(expectedResult))
 
-        val request: Request[_] = FakeRequest()
+        //val request: Request[_] = FakeRequest()
 
         val result = await(service.submit(nino, nrsSubmissionModel, mtditid, ""))
 

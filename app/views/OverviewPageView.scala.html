@@ -21,63 +21,87 @@
 @import views.html.templates.helpers.Link
 @import common.IncomeSources._
 
+@import views.html.helper.CSPNonce
+
 @this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag, notificationBanner: NotificationBanner, link: Link)
 @(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], tailoring: OverviewTailoringModel, taxYear: Int, isInYear: Boolean, excludedJourneys: Seq[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, isExcluded: Boolean = false) = {
-    <span class="hmrc-status-tag">
-        @govukTag(Tag(
-            content = Text(if(enabledCondition){
-                if(updatedCondition) {
-                    messages("overview.updated")
-                } else if(cannotUpdateCondition) {
-                    messages("overview.cannotUpdate")
-                } else if(isExcluded && appConfig.tailoringEnabled) {
-                    messages("overview.excluded")
-                } else if(isMandatorySection) {
-                    messages("overview.todo")
-                } else {
-                    messages("overview.notStarted")
-                }
-            } else {
-                messages("common.underMaintenance")
-            }),
-            classes = {
-                if(enabledCondition) {
-                    if(updatedCondition) {
-                        "govuk-tag--turquoise"
+@statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, isExcluded: Boolean = false, isUnavailable: Boolean = false) = {
+    @if(isUnavailable) {
+        <style @{CSPNonce.attr}>
+            .maintenance {
+                color: #000 !important;
+                background-color: #fff !important;
+            }
+        </style>
+        <span class="hmrc-status-tag">
+            <strong class="govuk-tag maintenance">
+                @messages("common.underMaintenance")
+            </strong>
+        </span>
+    } else {
+        <span class="hmrc-status-tag">
+            @govukTag(Tag(
+                content = Text(if(enabledCondition){
+                    if (updatedCondition) {
+                        messages("overview.updated")
                     } else if(cannotUpdateCondition) {
-                        "govuk-tag--grey"
+                        messages("overview.cannotUpdate")
                     } else if(isExcluded && appConfig.tailoringEnabled) {
-                        "govuk-tag--red excluded"
+                        messages("overview.excluded")
                     } else if(isMandatorySection) {
-                        "govuk-tag--purple"
+                        messages("overview.todo")
                     } else {
-                        "govuk-tag--blue"
+                        messages("overview.notStarted")
                     }
                 } else {
-                    "govuk-tag--orange"
+                    messages("common.underMaintenance")
+                }),
+                classes = {
+                    if(enabledCondition) {
+                        if(updatedCondition) {
+                            "govuk-tag--turquoise"
+                        } else if(cannotUpdateCondition) {
+                            "govuk-tag--grey"
+                        } else if(isExcluded && appConfig.tailoringEnabled) {
+                            "govuk-tag--red excluded"
+                        } else if(isMandatorySection) {
+                            "govuk-tag--purple"
+                        } else {
+                            "govuk-tag--blue"
+                        }
+                    } else {
+                        "govuk-tag--orange"
+                    }
                 }
-            }
-        ))
-    </span>
+            ))
+        </span>
+    }
 }
 
-@taskListItem(show: Boolean, enabled: Boolean, linkId: String, taskNameKey: String, href: String, journeyKey: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, additionalShowLinkCheck: Boolean = true) = {
+@taskListItem(show: Boolean, enabled: Boolean, linkId: String, taskNameKey: String, href: String, journeyKey: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, additionalShowLinkCheck: Boolean = true, isUnavailable: Boolean = false) = {
     @if(!appConfig.tailoringEnabled || show) {
         <li class="app-task-list__item">
             <span class="app-task-list__task-name">
             @if(enabled && additionalShowLinkCheck) {
-                <a class="govuk-link" id="@linkId" href="@href">
-                @messages(taskNameKey)
-                </a>
+                @if(isUnavailable) {
+                    @messages(taskNameKey)
+                } else {
+                    <a class="govuk-link" id="@linkId" href="@{if (isUnavailable) '#' else href}">
+                        @messages(taskNameKey)
+                    </a>
+                }
             } else {
                 @messages(taskNameKey)
             }
             </span>
-            @statusTag(statusTagUpdatedCondition, enabled, cannotUpdateCondition, isMandatorySection, excludedJourneys.contains(journeyKey))
+            @statusTag(statusTagUpdatedCondition, enabled, cannotUpdateCondition, isMandatorySection, excludedJourneys.contains(journeyKey), isUnavailable)
         </li>
     }
+}
+
+@checkServiceAvailability(incomeSources: IncomeSourcesModel, serviceName: String) = @{
+    incomeSources.errors.getOrElse(Seq.empty).filter(elem => serviceName == elem._1).nonEmpty
 }
 
 @dividendsUrlRedirect(incomeSources: IncomeSourcesModel) = @{
@@ -131,8 +155,10 @@
                 "common.interestWithSavings",
                 interestUrlRedirect(incomeSources),
                 INTEREST,
-                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) || incomeSources.interestSavings.isDefined
-            )
+                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) || incomeSources.interestSavings.isDefined,
+                isUnavailable = checkServiceAvailability(incomeSources, "interest-savings")
+
+        )
         } else {
             @taskListItem(
                 tailoring.hasInterest,
@@ -141,7 +167,8 @@
                 "common.interest",
                 interestUrlRedirect(incomeSources),
                 INTEREST,
-                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))
+                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)),
+                isUnavailable = checkServiceAvailability(incomeSources, "interest")
             )
         }
         
@@ -152,7 +179,8 @@
             "common.dividends",
             dividendsUrlRedirect(incomeSources),
             DIVIDENDS,
-            incomeSources.dividends.isDefined
+            incomeSources.dividends.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "dividends")
         )
 
         @taskListItem(
@@ -162,7 +190,8 @@
             "common.donationsToCharity",
             charityUrlRedirect(incomeSources),
             GIFT_AID,
-            incomeSources.giftAid.isDefined
+            incomeSources.giftAid.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "gift-aid")
         )
 
         @taskListItem(
@@ -173,7 +202,8 @@
             appConfig.employmentFEUrl(taxYear),
             EMPLOYMENT,
             incomeSources.employment.isDefined,
-            (isInYear || !appConfig.employmentEOYEnabled)
+            (isInYear || !appConfig.employmentEOYEnabled),
+            isUnavailable = checkServiceAvailability(incomeSources, "employment")
         )
 
         @taskListItem(
@@ -184,7 +214,8 @@
             appConfig.cisFEUrl(taxYear),
             CIS,
             incomeSources.cis.isDefined,
-            isInYear
+            isInYear,
+            isUnavailable = checkServiceAvailability(incomeSources, "cis")
         )
 
         @taskListItem(
@@ -194,7 +225,8 @@
             "common.pensions",
             appConfig.pensionsSummaryUrl(taxYear),
             PENSIONS,
-            incomeSources.pensions.isDefined
+            incomeSources.pensions.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "pensions")
         )
 
         @taskListItem(
@@ -204,7 +236,8 @@
             "common.stateBenefits",
             appConfig.stateBenefitsFEUrl(taxYear),
             STATE_BENEFITS,
-            incomeSources.stateBenefits.isDefined
+            incomeSources.stateBenefits.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "state-benefits")
         )
         @if(appConfig.tailoringEnabled){
             @if(!tailoring.allJourneys.contains(true)){

@@ -59,7 +59,7 @@ class IncomeSourcesModelSpec extends UnitTest {
       "investmentsNonUkCharities" -> 1234.56
     ))
 
-  val model: IncomeSourcesModel = IncomeSourcesModel(Some(dividendModel), Some(interestModel), Some(giftAidModel))
+  val model: IncomeSourcesModel = IncomeSourcesModel(None, Some(dividendModel), Some(interestModel), Some(giftAidModel))
   val jsonModel: JsObject = Json.obj(
     "dividends" -> jsonDividendsModel,
     "interest" -> jsonInterestModel,
@@ -78,7 +78,7 @@ class IncomeSourcesModelSpec extends UnitTest {
 
     "excludeNotRelevantEmploymentData" when {
 
-      def model(ignored: Boolean): IncomeSourcesModel = IncomeSourcesModel(None,None,None,Some(
+      def model(ignored: Boolean): IncomeSourcesModel = IncomeSourcesModel(None, None,None,None,Some(
         AllEmploymentData(
           hmrcEmploymentData = Seq(
             HmrcEmploymentSource(

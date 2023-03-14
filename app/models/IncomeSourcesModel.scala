@@ -22,14 +22,17 @@ import models.pensions.Pensions
 import models.statebenefits.AllStateBenefitsData
 import play.api.libs.json.{Json, OFormat}
 
-case class IncomeSourcesModel(dividends: Option[DividendsModel] = None,
-                              interest: Option[Seq[InterestModel]] = None,
-                              giftAid: Option[GiftAidModel] = None,
-                              employment: Option[AllEmploymentData] = None,
-                              cis: Option[AllCISDeductions] = None,
-                              pensions: Option[Pensions] = None,
-                              stateBenefits: Option[AllStateBenefitsData] = None,
-                              interestSavings: Option[SavingsIncomeDataModel] = None) {
+case class IncomeSourcesModel(
+                               errors: Option[Seq[(String, APIErrorBodyModel)]] = None,
+                               dividends: Option[DividendsModel] = None,
+                               interest: Option[Seq[InterestModel]] = None,
+                               giftAid: Option[GiftAidModel] = None,
+                               employment: Option[AllEmploymentData] = None,
+                               cis: Option[AllCISDeductions] = None,
+                               pensions: Option[Pensions] = None,
+                               stateBenefits: Option[AllStateBenefitsData] = None,
+                               interestSavings: Option[SavingsIncomeDataModel] = None
+                             ) {
 
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
 

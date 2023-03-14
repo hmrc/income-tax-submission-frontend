@@ -24,7 +24,7 @@ import utils.UnitTest
 
 class SignOutControllerSpec extends UnitTest with DefaultAwaitTimeout {
 
-  val controller = new SignOutController(stubMessagesControllerComponents, mockAppConfig)
+  val controller = new SignOutController(stubMessagesControllerComponents(), mockAppConfig)
 
   "SignOutController, when accessed as an individual" should {
 
