@@ -195,7 +195,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val giftAidLinkText = "Rhoddion i elusennau"
     val pensionsLinkText = "Pensiynau"
     val stateBenefitsLinkText = "Budd-daliadau’r Wladwriaeth"
-    val gainsLinkText = "Gains from life insurance policies and contracts"
+    val gainsLinkText = "Enillion o bolisïau yswiriant bywyd a chontractau"
     val continue = "continue"
     val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
