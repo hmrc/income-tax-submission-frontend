@@ -55,7 +55,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your Income Tax Return"
     val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
-    val notificationBannerPlural = "We have added 7 sections to your return, based on the information we already hold about you."
+    val notificationBannerPlural = "We have added 8 sections to your return, based on the information we already hold about you."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -71,7 +71,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your client’s Income Tax Return"
     val notificationBanner = "We have added a section to your client’s return, based on the information we already hold about them."
-    val notificationBannerPlural = "We have added 7 sections to your client’s return, based on the information we already hold about them."
+    val notificationBannerPlural = "We have added 8 sections to your client’s return, based on the information we already hold about them."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -86,7 +86,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
     val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 7 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 8 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -101,7 +101,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
     val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 7 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 8 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
   }
 
   trait SpecificExpectedResults {
@@ -139,6 +139,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val giftAidLinkText: String
     val pensionsLinkText: String
     val stateBenefitsLinkText: String
+    val gainsLinkText: String
     val continue: String
     val fillInTheSections: String
     val incomeTaxAccountLink: String
@@ -166,6 +167,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val giftAidLinkText = "Donations to charity"
     val pensionsLinkText = "Pensions"
     val stateBenefitsLinkText = "State benefits"
+    val gainsLinkText = "Gains from life insurance policies and contracts"
     val continue = "continue"
     val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
     val incomeTaxAccountLink = "Income Tax Account"
@@ -193,6 +195,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val giftAidLinkText = "Rhoddion i elusennau"
     val pensionsLinkText = "Pensiynau"
     val stateBenefitsLinkText = "Budd-daliadau’r Wladwriaeth"
+    val gainsLinkText = "Gains from life insurance policies and contracts"
     val continue = "continue"
     val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
@@ -221,17 +224,18 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val employmentSelector: String = sectionNameSelector(4)
     val employmentLinkSelector = "#employment_link"
     val employmentStatusSelector: String = statusTagSelector(4)
-    val cisSelector: String = sectionNameSelector(5)
+    val gainsLinkSelector = "#gains_link"
+    val gainsSelector: String = sectionNameSelector(5)
+    val gainsStatusSelector: String = statusTagSelector(5)
+    val cisSelector: String = sectionNameSelector(6)
     val cisLinkSelector = "#cis_link"
-    val cisStatusSelector: String = statusTagSelector(5)
-
-    val pensionsSelector: String = sectionNameSelector(6)
+    val cisStatusSelector: String = statusTagSelector(6)
+    val pensionsSelector: String = sectionNameSelector(7)
     val pensionsLinkSelector = "#pensions_link"
-    val pensionsStatusSelector: String = statusTagSelector(6)
-
-    val stateBenefitsSelector: String = sectionNameSelector(7)
+    val pensionsStatusSelector: String = statusTagSelector(7)
+    val stateBenefitsSelector: String = sectionNameSelector(8)
     val stateBenefitsLinkSelector = "#stateBenefits_link"
-    val stateBenefitsStatusSelector: String = statusTagSelector(7)
+    val stateBenefitsStatusSelector: String = statusTagSelector(8)
 
     val viewEstimateSelector = "#calculation_link"
     val submitReturnEOYSelector = "#heading-checkAndSubmit"
@@ -272,6 +276,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     JourneyData("interest", user.commonExpectedResults.interestsLinkText, IncomeSourcesModel(interest = incomeSourcesModel.interest)),
     JourneyData("dividends", user.commonExpectedResults.dividendsLinkText, IncomeSourcesModel(dividends = incomeSourcesModel.dividends)),
     JourneyData("gift-aid", user.commonExpectedResults.giftAidLinkText, IncomeSourcesModel(giftAid = incomeSourcesModel.giftAid)),
+    JourneyData("gains", user.commonExpectedResults.gainsLinkText, IncomeSourcesModel(gains = incomeSourcesModel.gains)),
     JourneyData("cis", user.commonExpectedResults.cisLinkText, IncomeSourcesModel(cis = incomeSourcesModel.cis)),
     JourneyData("employment", user.commonExpectedResults.employmentSLLinkText, IncomeSourcesModel(employment = incomeSourcesModel.employment))
   )
@@ -338,6 +343,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               giftAidEnabled = false,
               employmentEnabled = false,
               studentLoansEnabled = false,
+              gainsEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,
               pensionsEnabled = false,
@@ -376,6 +382,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
           "has a donations to charity section" which {
             textOnPageCheck(underMaintenance, giftAidStatusSelector)
+          }
+          "has a gains section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, gainsStatusSelector)
           }
           "have a cis section that says under maintenance" which {
             textOnPageCheck(underMaintenance, cisStatusSelector)
@@ -421,7 +430,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None))
             route(app, request, user.isWelsh).get
           }
 
@@ -459,6 +468,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(cannotUpdateText, employmentStatusSelector)
           }
 
+          "has an gains section " which {
+            textOnPageCheck(gainsLinkText, gainsSelector)
+            textOnPageCheck(notStartedText, gainsStatusSelector)
+          }
+
           "has a cis section " which {
             textOnPageCheck(cisLinkText, cisSelector)
             textOnPageCheck(cannotUpdateText, cisStatusSelector)
@@ -470,7 +484,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(notStartedText, pensionsStatusSelector)
           }
 
-          "has a State Benefits section " which {
+          "has a state benefits section " which {
             textOnPageCheck(stateBenefitsLinkText, stateBenefitsSelector)
             textOnPageCheck(notStartedText, stateBenefitsStatusSelector)
           }
@@ -532,6 +546,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has an employment section" which {
             linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYear))
             textOnPageCheck(updatedText, employmentStatusSelector)
+          }
+
+          "has a gains section" which {
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+            textOnPageCheck(updatedText, gainsStatusSelector)
           }
 
           "has a cis section" which {
@@ -678,6 +697,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
+            "has an gains section" which {
+              linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+              textOnPageCheck(updatedText, gainsStatusSelector)
+            }
+
             "has a cis section" which {
               linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
               textOnPageCheck(updatedText, cisStatusSelector)
@@ -747,6 +771,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has an employment section" which {
             linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYear))
             textOnPageCheck(updatedText, employmentStatusSelector)
+          }
+
+          "has an gains section" which {
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+            textOnPageCheck(updatedText, gainsStatusSelector)
           }
 
           "has a cis section" which {
@@ -822,6 +851,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, employmentStatusSelector)
             }
 
+            "has a gains section" which {
+              linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+              textOnPageCheck(updatedText, gainsStatusSelector)
+            }
+
             "has a cis section" which {
               linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
               textOnPageCheck(updatedText, cisStatusSelector)
@@ -890,6 +924,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, employmentStatusSelector)
           }
 
+          "has an gains section" which {
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+            textOnPageCheck(updatedText, gainsStatusSelector)
+          }
+
           "has a cis section" which {
             linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYear))
             textOnPageCheck(updatedText, cisStatusSelector)
@@ -933,6 +972,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(user.commonExpectedResults.dividendsLinkText, dividendsLinkSelector)
             textOnPageCheck(user.commonExpectedResults.giftAidLinkText, giftAidLinkSelector)
             textOnPageCheck(user.commonExpectedResults.cisLinkText, cisSelector)
+            textOnPageCheck(user.commonExpectedResults.gainsLinkText, gainsSelector)
             textOnPageCheck(user.commonExpectedResults.pensionsLinkText, pensionsSelector)
             textOnPageCheck(user.commonExpectedResults.employmentSLLinkText, employmentSelector)
           }
@@ -985,6 +1025,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               giftAidEnabled = false,
               employmentEnabled = false,
               studentLoansEnabled = false,
+              gainsEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,
               pensionsEnabled = false,
@@ -1021,6 +1062,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           "have an employment section that says under maintenance" which {
             textOnPageCheck(underMaintenance, employmentStatusSelector)
+          }
+
+          "have an gains section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, gainsStatusSelector)
           }
 
           "have a cis section that says under maintenance" which {
@@ -1092,6 +1137,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has an employment section" which {
             linkCheck(employmentSLLinkText, employmentLinkSelector, employmentLink(taxYearEOY))
             textOnPageCheck(updatedText, employmentStatusSelector)
+          }
+
+          "has a gains section" which {
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYearEOY))
+            textOnPageCheck(updatedText, gainsStatusSelector)
           }
 
           "has a cis section" which {
@@ -1173,6 +1223,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(notStartedText, cisStatusSelector)
           }
 
+          "has a gains section " which {
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, gainsStatusSelector)
+          }
+
           "has a pensions section " which {
             linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYearEOY))
             textOnPageCheck(notStartedText, pensionsStatusSelector)
@@ -1245,6 +1300,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a cis section " which {
             linkCheck(cisLinkText, cisLinkSelector, cisLink(taxYearEOY))
             textOnPageCheck(notStartedText, cisStatusSelector)
+          }
+
+          "has a gains section " which {
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, gainsStatusSelector)
           }
 
           "has a pensions section " which {
@@ -1454,6 +1514,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             dividendsEnabled = false,
             interestEnabled = false,
             giftAidEnabled = false,
+            gainsEnabled = false,
             employmentEnabled = false,
             studentLoansEnabled = false,
             employmentEOYEnabled = false,
@@ -1497,6 +1558,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               interestEnabled = false,
               giftAidEnabled = false,
               employmentEnabled = false,
+              gainsEnabled = false,
               studentLoansEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,
@@ -1537,6 +1599,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               dividendsEnabled = false,
               interestEnabled = false,
               giftAidEnabled = false,
+              gainsEnabled = false,
               employmentEnabled = false,
               studentLoansEnabled = false,
               employmentEOYEnabled = false,

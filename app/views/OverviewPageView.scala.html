@@ -132,6 +132,14 @@
     }
 }
 
+@gainsUrlRedirect(incomeSources: IncomeSourcesModel) = @{
+    if(incomeSources.gains.isDefined) {
+        appConfig.additionalInformationGatewayUrl(taxYear)
+    } else {
+        appConfig.additionalInformationSummaryUrl(taxYear)
+    }
+}
+
 @charityUrlRedirect(incomeSources: IncomeSourcesModel) = @{
     if(incomeSources.giftAid.isDefined) {
         appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)
@@ -204,6 +212,16 @@
             incomeSources.employment.isDefined,
             (isInYear || !appConfig.employmentEOYEnabled),
             isUnavailable = checkServiceAvailability(incomeSources, "employment")
+        )
+
+          @taskListItem(
+            appConfig.gainsReleased && tailoring.hasGains,
+            appConfig.gainsEnabled,
+            "gains_link",
+            "common.gains",
+            appConfig.additionalInformationGatewayUrl(taxYear),
+            GAINS,
+            incomeSources.gains.isDefined
         )
 
         @taskListItem(

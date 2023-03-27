@@ -43,18 +43,23 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax"
   lazy val personalIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.personalIncomeTaxFrontendUrl)
   lazy val personalIncomeTaxSubmissionUrl: String =s"$personalIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/personal-income"
+  lazy val additionalInformationSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.additionalInformationFrontendUrl)
+  lazy val additionalInformationSubmissionUrl: String =s"$additionalInformationSubmissionBaseUrl/update-and-submit-income-tax-return/additional-information"
+
   def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-uk-companies"
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-income-from-dividends"
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-interest"
   def personalIncomeTaxInterestUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/untaxed-uk-interest"
   def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/interest-from-UK"
   def personalIncomeTaxInterestSummaryUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/interest-summary"
-  def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-stocks-and-shares"
-
+  def additionalInformationSummaryUrl(taxYear: Int): String = s"$additionalInformationSubmissionUrl/$taxYear/gains/summary"
+  def additionalInformationGatewayUrl(taxYear: Int): String = s"$additionalInformationSubmissionUrl/$taxYear/gains/gains-gateway"
+  def additionalInformationSubmissionCYAUrl(taxYear: Int): String = s"$additionalInformationSubmissionUrl/$taxYear/gains/policy-summary"
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donation-using-gift-aid"
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/check-donations-to-charity"
   def personalIncomeTaxGiftAidGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/charity/charity-donations-to-charity"
   def personalIncomeTaxDividendsTailorPage(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-stocks-and-shares"
+  def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-stocks-and-shares"
 
   def getExcludedJourneysUrl(taxYear: Int, nino: String): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax/nino/$nino/sources/excluded-journeys/$taxYear"
   def clearExcludedJourneysUrl(taxYear: Int, nino: String): String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax/nino/$nino/sources/clear-excluded-journeys/$taxYear"
@@ -151,6 +156,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val studentLoansEnabled: Boolean = servicesConfig.getBoolean("feature-switch.studentLoansEnabled")
   lazy val employmentReleased: Boolean = servicesConfig.getBoolean("feature-switch.employmentReleased")
   lazy val employmentEOYEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEOYEnabled")
+  lazy val gainsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.gainsEnabled")
+  lazy val gainsReleased: Boolean = servicesConfig.getBoolean("feature-switch.gainsReleased")
   lazy val cisEnabled: Boolean = servicesConfig.getBoolean("feature-switch.cisEnabled")
   lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
   lazy val stateBenefitsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.stateBenefitsEnabled")
@@ -171,7 +178,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
       employmentFeatureEnabled,
       (CIS, cisEnabled),
       (STATE_BENEFITS, stateBenefitsEnabled),
-      (INTEREST_SAVINGS, interestSavingsEnabled)
+      (INTEREST_SAVINGS, interestSavingsEnabled),
+      (GAINS, gainsEnabled)
     ).filter(!_._2).map(_._1)
   }
 
@@ -200,9 +208,12 @@ trait AppConfig {
   def personalIncomeTaxDividendsTailorPage(taxYear: Int): String
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String
+  def additionalInformationSubmissionCYAUrl(taxYear: Int): String
+  def additionalInformationGatewayUrl(taxYear: Int): String
   def personalIncomeTaxInterestUrl(taxYear: Int): String
   def personalIncomeTaxInterestGatewayUrl(taxYear: Int): String
   def personalIncomeTaxInterestSummaryUrl(taxYear: Int): String
+  def additionalInformationSummaryUrl(taxYear: Int): String
   def personalIncomeTaxDividendsGatewayUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
@@ -274,6 +285,8 @@ trait AppConfig {
   val interestSavingsEnabled: Boolean
   val giftAidEnabled: Boolean
   val giftAidReleased: Boolean
+  val gainsEnabled: Boolean
+  val gainsReleased: Boolean
   val studentLoansEnabled: Boolean
   val employmentEnabled: Boolean
   val employmentReleased: Boolean
