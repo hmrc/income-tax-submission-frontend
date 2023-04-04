@@ -139,6 +139,13 @@
         appConfig.additionalInformationSummaryUrl(taxYear)
     }
 }
+@employmentUrlRedirect(incomeSources: IncomeSourcesModel) = @{
+    if(incomeSources.employment.isEmpty && appConfig.tailoringEnabled && !isInYear) {
+        appConfig.employmentFEGatewayUrl(taxYear)
+    } else {
+        appConfig.employmentFEUrl(taxYear)
+    }
+}
 
 @charityUrlRedirect(incomeSources: IncomeSourcesModel) = @{
     if(incomeSources.giftAid.isDefined) {
@@ -207,7 +214,7 @@
             appConfig.employmentEnabled,
             "employment_link",
             if(appConfig.studentLoansEnabled) { "common.employmentSL" } else { "common.employment" },
-            appConfig.employmentFEUrl(taxYear),
+            employmentUrlRedirect(incomeSources),
             EMPLOYMENT,
             incomeSources.employment.isDefined,
             (isInYear || !appConfig.employmentEOYEnabled),
