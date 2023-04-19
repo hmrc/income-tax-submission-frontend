@@ -44,6 +44,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val addSections = "Add sections to your Income Tax Return"
     val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
     val notificationBannerPlural = "We have added 5 sections to your return, based on the information we already hold about you."
+    val EmptyTailoringLiText: String ="No sections have been added to your Income Tax Return"
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -60,6 +61,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val addSections = "Add sections to your client’s Income Tax Return"
     val notificationBanner = "We have added a section to your client’s return, based on the information we already hold about them."
     val notificationBannerPlural = "We have added 5 sections to your client’s return, based on the information we already hold about them."
+    val EmptyTailoringLiText: String ="No sections have been added to your client’s Income Tax Return"
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -75,6 +77,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
     val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
     val notificationBannerPlural = "Rydym wedi ychwanegu 5 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val EmptyTailoringLiText: String ="Nid oes unrhyw adrannau wedi’u hychwanegu at eich Ffurflen Dreth Incwm"
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -90,11 +93,13 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
     val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
     val notificationBannerPlural = "Rydym wedi ychwanegu 5 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val EmptyTailoringLiText: String ="Nid oes unrhyw adrannau wedi’u hychwanegu at Ffurflen Dreth Incwm eich cleient"
   }
 
   trait SpecificExpectedResults {
     val headingExpected: String
     val updateIncomeTaxReturnText: String
+    val EmptyTailoringLiText: String
     val submitReturnHeaderEOY: String
     val submitReturnText: String
     val ifWeHaveInfo: String
@@ -187,6 +192,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
 
   object Selectors {
     def sectionNameSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.app-task-list__task-name"
+    def EmptyTailoringLiSelector: String = s"#main-content > div > div > ol > li.govuk-inset-text"
 
     private def statusTagSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.hmrc-status-tag"
 
@@ -279,6 +285,27 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
             textOnPageCheck(specific.addSections, sectionNameSelector(2))
           }
         }
+      }
+      "only display the " when {
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+
+            lazy val result: Future[Result] = {
+              cleanDatabase(taxYear)
+              stubGetExcludedCall(taxYear, nino)
+              authoriseAgentOrIndividual(user.isAgent)
+              route(customApp(tailoringEnabled = true), request, user.isWelsh).get
+            }
+
+            implicit val document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+            "has a status of OK(200)" in {
+              status(result) shouldBe OK
+            }
+
+            textOnPageCheck(checkSectionsText, checkSectionsSelector)
+
+            textOnPageCheck(specific.EmptyTailoringLiText, EmptyTailoringLiSelector)
+            textOnPageCheck(specific.addSections, sectionNameSelector(2))
       }
       "only display the relevant row with priorData and display singular notificationBannner" when {
         journeys(user).foreach { journey =>
