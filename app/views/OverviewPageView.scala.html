@@ -147,6 +147,14 @@
     }
 }
 
+@cisUrlRedirect(incomeSources: IncomeSourcesModel) = @{
+    if(incomeSources.cis.isEmpty && appConfig.tailoringEnabled && !isInYear) {
+        appConfig.cisFEGatewayUrl(taxYear)
+    } else {
+        appConfig.cisFEUrl(taxYear)
+    }
+}
+
 @charityUrlRedirect(incomeSources: IncomeSourcesModel) = @{
     if(incomeSources.giftAid.isDefined) {
         appConfig.personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear)
@@ -236,7 +244,7 @@
             appConfig.cisEnabled,
             "cis_link",
             "common.cis",
-            appConfig.cisFEUrl(taxYear),
+            cisUrlRedirect(incomeSources),
             CIS,
             incomeSources.cis.isDefined,
             isInYear,
