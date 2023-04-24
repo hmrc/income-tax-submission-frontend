@@ -72,6 +72,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val cisIncomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCisFrontendUrl)
   lazy val cisIncomeTaxSubmissionUrl: String =s"$cisIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/construction-industry-scheme-deductions"
   def cisFEUrl(taxYear: Int): String = s"$cisIncomeTaxSubmissionUrl/$taxYear/summary"
+  def cisFEGatewayUrl(taxYear: Int): String = s"$cisIncomeTaxSubmissionUrl/$taxYear/deductions-from-payments"
 
   lazy val stateBenefitsBaseUrl: String = servicesConfig.getString(ConfigKeys.stateBenefitsFrontendUrl)
   lazy val stateBenefitsUrl: String = s"$stateBenefitsBaseUrl/update-and-submit-income-tax-return/state-benefits"
@@ -231,6 +232,7 @@ trait AppConfig {
   val cisIncomeTaxSubmissionBaseUrl: String
   val cisIncomeTaxSubmissionUrl: String
   def cisFEUrl(taxYear: Int): String
+  def cisFEGatewayUrl(taxYear: Int): String
 
   val pensionsFrontendBaseUrl: String
   val pensionsFrontendUrl: String

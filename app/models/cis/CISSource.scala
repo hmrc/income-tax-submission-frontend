@@ -21,7 +21,13 @@ import play.api.libs.json.{Json, OFormat}
 case class CISSource(totalDeductionAmount: Option[BigDecimal],
                      totalCostOfMaterials: Option[BigDecimal],
                      totalGrossAmountPaid: Option[BigDecimal],
-                     cisDeductions: Seq[CISDeductions])
+                     cisDeductions: Seq[CISDeductions]) {
+
+  def hasNonZeroData: Boolean = {
+    totalDeductionAmount.exists(_ != 0) || totalCostOfMaterials.exists(_ != 0) || totalGrossAmountPaid.exists(_ != 0)
+  }
+}
+
 
 object CISSource {
   implicit val format: OFormat[CISSource] = Json.format[CISSource]

@@ -19,7 +19,12 @@ package models.cis
 import play.api.libs.json.{Json, OFormat}
 
 case class AllCISDeductions(customerCISDeductions: Option[CISSource],
-                            contractorCISDeductions: Option[CISSource])
+                            contractorCISDeductions: Option[CISSource]){
+  def hasNonZero: Boolean = {
+    customerCISDeductions.fold(false)(_.hasNonZeroData)
+    contractorCISDeductions.fold(false)(_.hasNonZeroData)
+  }
+}
 
 object AllCISDeductions {
   implicit val format: OFormat[AllCISDeductions] = Json.format[AllCISDeductions]

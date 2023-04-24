@@ -145,6 +145,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override def cisFEUrl(taxYear: Int): String = ???
 
+  override def cisFEGatewayUrl(taxYear: Int): String = ???
+
   override val stateBenefitsBaseUrl: String = "/state-benefits"
   override val stateBenefitsUrl: String = "/summary"
 

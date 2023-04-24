@@ -72,7 +72,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val giftAidRemove = incomeSourcesModel.giftAid.exists(giftAid => giftAid.hasNonZeroData)
     val interestRemove = incomeSourcesModel.interest.exists(interests => interests.exists(_.hasNonZeroData))
     val employmentRemove = incomeSourcesModel.employment.nonEmpty
-    val cisRemove = incomeSourcesModel.cis.nonEmpty
+    val cisRemove = incomeSourcesModel.cis.exists(_.contractorCISDeductions.exists(_.hasNonZeroData)) || incomeSourcesModel.cis.exists(_.customerCISDeductions.exists(_.hasNonZeroData))
     val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
     val stateBenefitsRemove = incomeSourcesModel.stateBenefits.nonEmpty
     val interestSavingsRemove = incomeSourcesModel.interestSavings.nonEmpty
