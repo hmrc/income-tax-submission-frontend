@@ -194,7 +194,7 @@
                 isUnavailable = checkServiceAvailability(incomeSources, "interest")
             )
         }
-        
+
         @taskListItem(
             tailoring.hasDividends,
             appConfig.dividendsEnabled,
@@ -274,9 +274,9 @@
         )
         @if(appConfig.tailoringEnabled){
             @if(!tailoring.allJourneys.contains(true)){
-                @govukInsetText(InsetText(
-                    content = Text( messages(s"overview.tailoring.insertText.${if(isAgent) "agent" else "individual"}"))
-                ))
+                <li class="govuk-inset-text">
+                    @messages(s"overview.tailoring.insertText.${if(isAgent) "agent" else "individual"}")
+                </li>
             }
 
             <li class="govuk-!-margin-top-4">
