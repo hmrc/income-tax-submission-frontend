@@ -16,6 +16,7 @@
 
 package testModels
 
+import itUtils.IntegrationTest
 import models.pensions.Pensions
 import models.pensions.charges._
 import models.pensions.employmentPensions.{EmploymentPensionModel, EmploymentPensions}
@@ -102,32 +103,8 @@ object PensionsModels {
     )
   }
 
-  object StateBenefitsModels {
-
-    val anStateBenefit: StateBenefit = StateBenefit(
-      benefitId = "a9e8057e-fbbc-47a8-a8b4-78d9f015c934",
-      startDate = "2019-11-13",
-      dateIgnored = None,
-      submittedOn = Some("2020-09-11T17:23:00Z"),
-      endDate = Some("2020-08-23"),
-      amount = Some(55.11),
-      taxPaid = Some(14.53)
-    )
-
-    val anStateBenefits: StateBenefits = StateBenefits(
-      incapacityBenefit = Some(Seq(anStateBenefit)),
-      statePension = Some(anStateBenefit),
-      statePensionLumpSum = Some(anStateBenefit),
-      employmentSupportAllowance = Some(Seq(anStateBenefit)),
-      jobSeekersAllowance = Some(Seq(anStateBenefit)),
-      bereavementAllowance = Some(anStateBenefit),
-      otherStateBenefits = Some(anStateBenefit)
-    )
-
-    val aStateBenefitsModel: StateBenefitsModel = StateBenefitsModel(
-      stateBenefits = Some(anStateBenefits),
-      customerAddedStateBenefits = Some(anStateBenefits)
-    )
+  object StateBenefitsModels extends IntegrationTest{
+    val aStateBenefitsModel = allStateBenefitsData
   }
 
   object EmploymentPensionsModels {
