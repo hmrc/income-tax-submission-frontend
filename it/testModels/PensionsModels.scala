@@ -20,8 +20,8 @@ import itUtils.IntegrationTest
 import models.pensions.Pensions
 import models.pensions.charges._
 import models.pensions.employmentPensions.{EmploymentPensionModel, EmploymentPensions}
+import models.pensions.income.{ForeignPension, OverseasPensionContribution, PensionIncome}
 import models.pensions.reliefs.{PensionReliefs, Reliefs}
-import models.pensions.statebenefits.{StateBenefit, StateBenefits, StateBenefitsModel}
 
 object PensionsModels {
 
@@ -126,11 +126,45 @@ object PensionsModels {
     )
   }
 
+  object PensionIncomeModel {
+
+    val aPensionIncome: PensionIncome =
+      PensionIncome(
+        submittedOn = "2022-07-28T07:59:39.041Z",
+        deletedOn = Some("2022-07-28T07:59:39.041Z"),
+        foreignPension = Some(Seq(
+          ForeignPension(
+            countryCode = "FRA",
+            taxableAmount = 1999.99,
+            amountBeforeTax = Some(1999.99),
+            taxTakenOff = Some(1999.99),
+            specialWithholdingTax = Some(1999.99),
+            foreignTaxCreditRelief = Some(true)
+          )
+        )),
+        overseasPensionContribution = Some(Seq(
+          OverseasPensionContribution(
+            customerReference = Some("PENSIONINCOME245"),
+            exemptEmployersPensionContribs = 1999.99,
+            migrantMemReliefQopsRefNo = None,
+            dblTaxationRelief = None,
+            dblTaxationCountry = None,
+            dblTaxationArticle = None,
+            dblTaxationTreaty = None,
+            sf74Reference = Some("SF74-123456")
+          )
+        ))
+      )
+
+  }
+
+
   val allPensionsModel: Pensions = Pensions(
     pensionReliefs = Some(ReliefsModels.anPensionReliefs),
     pensionCharges = Some(ChargesModels.anPensionCharges),
     stateBenefits = Some(StateBenefitsModels.aStateBenefitsModel),
-    employmentPensions = Some(EmploymentPensionsModels.anEmploymentPensions)
+    employmentPensions = Some(EmploymentPensionsModels.anEmploymentPensions),
+    pensionIncome = Some(PensionIncomeModel.aPensionIncome)
   )
 
 }
