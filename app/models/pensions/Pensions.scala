@@ -18,15 +18,17 @@ package models.pensions
 
 import models.pensions.charges.PensionCharges
 import models.pensions.employmentPensions.EmploymentPensions
+import models.pensions.income.PensionIncome
 import models.pensions.reliefs.PensionReliefs
-import models.pensions.statebenefits.StateBenefitsModel
 import models.statebenefits.AllStateBenefitsData
 import play.api.libs.json.{Json, OFormat}
 
 case class Pensions(pensionReliefs: Option[PensionReliefs],
                     pensionCharges: Option[PensionCharges],
                     stateBenefits: Option[AllStateBenefitsData],
-                    employmentPensions: Option[EmploymentPensions])
+                    employmentPensions: Option[EmploymentPensions],
+                    pensionIncome: Option[PensionIncome]
+                   )
 
 object Pensions {
   implicit val formats: OFormat[Pensions] = Json.format[Pensions]
