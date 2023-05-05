@@ -39,7 +39,7 @@ class OverviewTailoringModelSpec extends UnitTest {
     Some(GiftAidModel()),
     Some(AllEmploymentData(Seq(), None, Seq(), None)),
     Some(AllCISDeductions(None, None)),
-    Some(Pensions(None, None, None, None)),
+    Some(Pensions(None, None, None, None, None)),
     Some(InsurancePoliciesModel("2020-01-04T05:01:01Z", Seq(LifeInsuranceModel(None,None,500,None,None,None,None)) ,None,None,None,None)),
     Some(AllStateBenefitsData(None, None)),
     Some(SavingsIncomeDataModel(None, None, None))

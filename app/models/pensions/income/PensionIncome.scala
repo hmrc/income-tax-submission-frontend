@@ -17,7 +17,6 @@
 package models.pensions.income
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.crypto.EncryptedValue
 
 
 case class ForeignPension (
@@ -37,19 +36,6 @@ object ForeignPension {
   implicit val format: OFormat[ForeignPension] = Json.format[ForeignPension]
 }
 
-case class EncryptedForeignPension (
-                            countryCode: EncryptedValue,
-                            taxableAmount: EncryptedValue,
-                            amountBeforeTax: Option[EncryptedValue],
-                            taxTakenOff: Option[EncryptedValue],
-                            specialWithholdingTax: Option[EncryptedValue],
-                            foreignTaxCreditRelief: Option[EncryptedValue]
-                          )
-
-object EncryptedForeignPension {
-  implicit val format: OFormat[EncryptedForeignPension] = Json.format[EncryptedForeignPension]
-}
-
 case class OverseasPensionContribution (
                                          customerReference: Option[String],
                                          exemptEmployersPensionContribs: BigDecimal,
@@ -66,20 +52,7 @@ object OverseasPensionContribution {
 }
 
 
-case class EncryptedOverseasPensionContribution (
-                                         customerReference: Option[EncryptedValue],
-                                         exemptEmployersPensionContribs: EncryptedValue,
-                                         migrantMemReliefQopsRefNo: Option[EncryptedValue],
-                                         dblTaxationRelief: Option[EncryptedValue],
-                                         dblTaxationCountry: Option[EncryptedValue],
-                                         dblTaxationArticle: Option[EncryptedValue],
-                                         dblTaxationTreaty: Option[EncryptedValue],
-                                         sf74Reference: Option[EncryptedValue]
-                                       )
 
-object EncryptedOverseasPensionContribution {
-  implicit val format: OFormat[EncryptedOverseasPensionContribution] = Json.format[EncryptedOverseasPensionContribution]
-}
 
 case class PensionIncome (
                                    submittedOn: String,
@@ -89,21 +62,4 @@ case class PensionIncome (
                                  )
 object PensionIncome {
   implicit val format: OFormat[PensionIncome] = Json.format[PensionIncome]
-}
-
-case class EncryptedPensionIncome (
-                                   submittedOn: EncryptedValue,
-                                   deletedOn: Option[EncryptedValue],
-                                   foreignPension: Option[Seq[EncryptedForeignPension]],
-                                   overseasPensionContribution: Option[Seq[EncryptedOverseasPensionContribution]]
-                                 )
-object EncryptedPensionIncome {
-  implicit val format: OFormat[EncryptedPensionIncome] = Json.format[EncryptedPensionIncome]
-}
-
-case class CreateUpdatePensionIncomeModel(foreignPension: Option[Seq[ForeignPension]],
-                                          overseasPensionContribution: Option[Seq[OverseasPensionContribution]]
-                                         )
-object CreateUpdatePensionIncomeModel {
-  implicit val format: OFormat[CreateUpdatePensionIncomeModel] = Json.format[CreateUpdatePensionIncomeModel]
 }
