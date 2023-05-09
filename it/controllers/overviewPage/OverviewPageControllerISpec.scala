@@ -342,6 +342,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               interestEnabled = false,
               giftAidEnabled = false,
               employmentEnabled = false,
+              stockDividendsEnabled = false,
               studentLoansEnabled = false,
               gainsEnabled = false,
               employmentEOYEnabled = false,
@@ -882,7 +883,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             cleanDatabase(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubGetExcludedCall(taxYear, nino)
-            stubIncomeSources(incomeSourcesModel)
+            // TODO rm copy when stockDividends fully implemented
+            stubIncomeSources(incomeSourcesModel.copy(stockDividends = None))
             route(customApp(tailoringEnabled = true), request, user.isWelsh).get
           }
 
@@ -1024,6 +1026,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               interestEnabled = false,
               giftAidEnabled = false,
               employmentEnabled = false,
+              stockDividendsEnabled = false,
               studentLoansEnabled = false,
               gainsEnabled = false,
               employmentEOYEnabled = false,
@@ -1516,6 +1519,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             giftAidEnabled = false,
             gainsEnabled = false,
             employmentEnabled = false,
+            stockDividendsEnabled = false,
             studentLoansEnabled = false,
             employmentEOYEnabled = false,
             cisEnabled = false,
@@ -1559,6 +1563,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               giftAidEnabled = false,
               employmentEnabled = false,
               gainsEnabled = false,
+              stockDividendsEnabled = false,
               studentLoansEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,
@@ -1601,6 +1606,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               giftAidEnabled = false,
               gainsEnabled = false,
               employmentEnabled = false,
+              stockDividendsEnabled = false,
               studentLoansEnabled = false,
               employmentEOYEnabled = false,
               cisEnabled = false,

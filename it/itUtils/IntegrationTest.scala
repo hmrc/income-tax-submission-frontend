@@ -93,6 +93,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
              employmentEnabled: Boolean = true,
              employmentEOYEnabled: Boolean = true,
              gainsEnabled: Boolean = true,
+             stockDividendsEnabled: Boolean = true,
              cisEnabled: Boolean = true,
              pensionsEnabled: Boolean = true,
              stateBenefitsEnabled: Boolean = true,
@@ -118,6 +119,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.employmentEnabled" -> employmentEnabled.toString,
     "feature-switch.gainsEnabled" -> gainsEnabled.toString,
     "feature-switch.gainsReleased" -> "true",
+    "feature-switch.stockDividendsEnabled" -> stockDividendsEnabled.toString,
+    "feature-switch.stockDividendsReleased" -> "true",
     "feature-switch.employmentEOYEnabled" -> employmentEOYEnabled.toString,
     "feature-switch.cisEnabled" -> cisEnabled.toString,
     "feature-switch.pensionsEnabled" -> pensionsEnabled.toString,
@@ -148,6 +151,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
                 cisEnabled: Boolean = true,
                 pensionsEnabled: Boolean = true,
                 stateBenefitsEnabled: Boolean = true,
+                stockDividendsEnabled: Boolean = true,
                 crystallisationEnabled: Boolean = true,
                 taxYearErrorFeatureSwitch: Boolean = false,
                 tailoringEnabled: Boolean = false
@@ -168,6 +172,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         cisEnabled,
         pensionsEnabled,
         stateBenefitsEnabled,
+        stockDividendsEnabled,
         crystallisationEnabled,
         taxYearErrorFeatureSwitch,
         tailoringEnabled
@@ -259,7 +264,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     gains = insurancePoliciesModel,
     pensions = Some(allPensionsModel),
     stateBenefits = Some(allStateBenefitsData),
-    interestSavings = Some(savingsInterestModel)
+    interestSavings = Some(savingsInterestModel),
+    stockDividends = Some(aStockDividends)
   )
 
   lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
@@ -482,7 +488,26 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     Seq(validLifeInsuranceModel), Some(Seq(validCapitalRedemptionModel)) , Some(Seq(validLifeAnnuityModel)), Some(Seq(validVoidedIsaModel))
     , Some(Seq(validForeignModel))))
 
+  val foreignInterest: Seq[ForeignInterestModel] = Seq(ForeignInterestModel(
+    "BES",
+    Some(1232.56),
+    Some(3422.22),
+    Some(5622.67),
+    Some(true),
+    2821.92)
+  )
 
+  val dividend: Dividend = Dividend(customerReference = Some("reference"), grossAmount = Some(123.45))
+
+  val aStockDividends: StockDividendsModel = StockDividendsModel(
+    submittedOn = Some("2020-01-04T05:01:01Z"),
+    foreignDividend = Some(foreignInterest),
+    dividendIncomeReceivedWhilstAbroad = Some(foreignInterest),
+    stockDividend = Some(dividend),
+    redeemableShares = Some(dividend),
+    bonusIssuesOfSecurities = Some(dividend),
+    closeCompanyLoansWrittenOff = Some(dividend)
+  )
 
 
   def playSessionCookies(taxYear: Int, validTaxYears: Seq[Int]): String = PlaySessionCookieBaker.bakeSessionCookie(Map(

@@ -114,7 +114,8 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
       "gift-aid",
       "employment",
       "gains",
-      "cis"
+      "cis",
+      "stock-dividends"
     )
   }
 
