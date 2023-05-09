@@ -76,7 +76,7 @@ object PensionsModels {
     )
 
     val anPensionSchemeUnauthorisedPayments: PensionSchemeUnauthorisedPayments = PensionSchemeUnauthorisedPayments(
-      pensionSchemeTaxReference = Seq("00123456RA", "00123456RB"),
+      pensionSchemeTaxReference = Some(Seq("00123456RA", "00123456RB")),
       surcharge = Some(anCharge),
       noSurcharge = Some(anCharge)
     )
