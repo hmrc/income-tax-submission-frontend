@@ -27,4 +27,5 @@ object IncomeSources {
   val STATE_BENEFITS = "state-benefits"
   val INTEREST_SAVINGS = "interest-savings"
   val GAINS = "gains"
+  val STOCK_DIVIDENDS = "stock-dividends"
 }

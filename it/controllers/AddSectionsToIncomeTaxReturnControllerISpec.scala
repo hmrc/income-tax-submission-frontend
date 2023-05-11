@@ -210,7 +210,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       "gains",
       "cis",
       "pensions",
-      "state-benefits"
+      "state-benefits",
+      "stock-dividends"
     )
   }
 

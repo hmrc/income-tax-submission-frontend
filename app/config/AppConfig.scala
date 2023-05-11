@@ -160,6 +160,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val employmentEOYEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEOYEnabled")
   lazy val gainsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.gainsEnabled")
   lazy val gainsReleased: Boolean = servicesConfig.getBoolean("feature-switch.gainsReleased")
+  lazy val stockDividendsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.stockDividendsEnabled")
+  lazy val stockDividendsReleased: Boolean = servicesConfig.getBoolean("feature-switch.stockDividendsReleased")
   lazy val cisEnabled: Boolean = servicesConfig.getBoolean("feature-switch.cisEnabled")
   lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
   lazy val stateBenefitsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.stateBenefitsEnabled")
@@ -181,7 +183,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
       (CIS, cisEnabled),
       (STATE_BENEFITS, stateBenefitsEnabled),
       (INTEREST_SAVINGS, interestSavingsEnabled),
-      (GAINS, gainsEnabled)
+      (GAINS, gainsEnabled),
+      (STOCK_DIVIDENDS, stockDividendsEnabled)
     ).filter(!_._2).map(_._1)
   }
 
@@ -291,6 +294,8 @@ trait AppConfig {
   val giftAidReleased: Boolean
   val gainsEnabled: Boolean
   val gainsReleased: Boolean
+  val stockDividendsEnabled: Boolean
+  val stockDividendsReleased: Boolean
   val studentLoansEnabled: Boolean
   val employmentEnabled: Boolean
   val employmentReleased: Boolean

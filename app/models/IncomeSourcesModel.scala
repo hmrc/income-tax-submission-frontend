@@ -33,7 +33,9 @@ case class IncomeSourcesModel(
                                pensions: Option[Pensions] = None,
                                gains: Option[InsurancePoliciesModel] = None,
                                stateBenefits: Option[AllStateBenefitsData] = None,
-                               interestSavings: Option[SavingsIncomeDataModel] = None) {
+                               interestSavings: Option[SavingsIncomeDataModel] = None,
+                               stockDividends: Option[StockDividendsModel] = None
+                             ) {
 
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
 
@@ -66,7 +68,8 @@ case class IncomeSourcesModel(
       pensions.nonEmpty &&
       stateBenefits.nonEmpty &&
       interestSavings.nonEmpty &&
-      gains.nonEmpty
+      gains.nonEmpty &&
+      stockDividends.nonEmpty
   }
 }
 
