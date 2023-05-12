@@ -21,6 +21,7 @@ object ConfigKeys {
   val incomeTaxCalculationUrl = "microservice.services.income-tax-calculation.url"
   val incomeTaxNrsProxyUrl = "microservice.services.income-tax-nrs-proxy.url"
 
+
   val contactFrontendUrl = "microservice.services.contact-frontend.url"
   val incomeTaxEmploymentFrontendUrl = "microservice.services.income-tax-employment-frontend.url"
   val incomeTaxCisFrontendUrl = "microservice.services.income-tax-cis-frontend.url"
@@ -36,4 +37,5 @@ object ConfigKeys {
   val signInContinueUrl = "microservice.services.sign-in.continueUrl"
 
   val defaultTaxYear = "defaultTaxYear"
+  val alwaysEOY = "alwaysEOY"
 }
