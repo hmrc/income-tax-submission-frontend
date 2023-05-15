@@ -44,8 +44,11 @@ class InYearAction @Inject()(implicit val appConfig: AppConfig) {
     } else {
       logger.info(s"[InYearAction][inYear] Income pages for this request will be for end of year")
     }
-
-    isNowBefore
+    if (appConfig.alwaysEOY){
+      false
+    }else{
+      isNowBefore
+    }
   }
 
   def notInYear(taxYear: Int, now: LocalDateTime = LocalDateTime.now)(block: Future[Result]): Future[Result] = {

@@ -31,6 +31,7 @@ import scala.concurrent.duration.Duration
 class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppConfig with TaxYearHelper {
   private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
   def defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
+  val alwaysEOY: Boolean = servicesConfig.getBoolean(ConfigKeys.alwaysEOY)
   private lazy val signInContinueBaseUrl: String = servicesConfig.getString(ConfigKeys.signInContinueUrl)
   lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl).encodedUrl //TODO add redirect to overview page
   private lazy val signInOrigin = servicesConfig.getString("appName")
@@ -201,6 +202,7 @@ trait AppConfig {
   def defaultTaxYear: Int
   val signInContinueUrl: String
   val signInUrl: String
+  val alwaysEOY: Boolean
 
   val calculationBaseUrl: String
   val nrsProxyBaseUrl: String
