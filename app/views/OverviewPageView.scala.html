@@ -343,15 +343,15 @@
 
     
 @overview = {
-    @heading(messages(s"common.yourIncomeTaxReturn.$affinityText"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
-
-    <h2 class="govuk-heading-m" id="heading-tasklist">@messages(s"overview.$affinityText.task1.heading")</h2>
-
-    @if(appConfig.tailoringEnabled){
+     @if(appConfig.tailoringEnabled){
         @TailoringContent
     } else {
         @NonTailoringContent(isInYear)
     }
+
+    @heading(messages(s"common.yourIncomeTaxReturn.$affinityText"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
+
+    <h2 class="govuk-heading-m" id="heading-tasklist">@messages(s"overview.$affinityText.task1.heading")</h2>
     
     @if(isAgent) {
         @taskWithActionList(messages("overview.task1.caption"), None, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))
