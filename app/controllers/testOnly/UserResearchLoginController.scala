@@ -40,7 +40,7 @@ class UserResearchLoginController @Inject()(mcc: MessagesControllerComponents,
   }
 
   def submit(): Action[AnyContent] = Action.async { implicit request =>
-    val suppliedCredentialAndYear: Array[String] = UserResearchLoginForm.researchLoginForm.bindFromRequest.get.split("::")
+    val suppliedCredentialAndYear: Array[String] = UserResearchLoginForm.researchLoginForm.bindFromRequest().get.split("::")
     val suppliedCredential = suppliedCredentialAndYear.head
     val suppliedYear = if (suppliedCredentialAndYear.length > 1 && suppliedCredentialAndYear.last.matches("[0-9]{4}")) suppliedCredentialAndYear.last.toInt else appConfig.defaultTaxYear
 

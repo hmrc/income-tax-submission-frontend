@@ -52,12 +52,13 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
   }
 
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
-    authService.authorised.retrieve(affinityGroup) {
+    authService.authorised().retrieve(affinityGroup) {
       case Some(retrievedAffinityGroup) =>
         auditService.sendAudit[EnterUpdateAndSubmissionServiceAuditDetail](
           EnterUpdateAndSubmissionServiceAuditDetail(retrievedAffinityGroup, user.nino).toAuditModel
         )
         Future.successful(Redirect(controllers.routes.OverviewPageController.show(taxYear)))
+      case _ => Future.successful(errorHandler.handleError(INTERNAL_SERVER_ERROR))
     }
   }
 

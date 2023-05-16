@@ -49,7 +49,7 @@ class TailoringSessionService @Inject() (tailoringUserDataRepository: TailoringU
       lastUpdated = DateTime.now(DateTimeZone.UTC)
     )
 
-    tailoringUserDataRepository.create(userData).map {
+    tailoringUserDataRepository.create(userData)().map {
       case Left(_) =>
         logger.error("[TailoringSessionService][createSessionData] Could not create user session.")
         onFail

@@ -33,6 +33,7 @@ object EnterUpdateAndSubmissionServiceAuditDetail {
           case Individual => "individual"
           case Organisation => "organisation"
           case Agent => "agent"
+          case _ => "None"
         }),
         "nino" -> model.nino
       )

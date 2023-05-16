@@ -20,9 +20,9 @@ import akka.actor.ActorSystem
 import com.codahale.metrics.SharedMetricRegistries
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.{AppConfig, MockAppConfig, MockAppConfigTaxYearFeatureOff}
-import controllers.predicates.{AuthorisedAction, InYearAction}
-import models.employment.{AllEmploymentData, EmploymentData, EmploymentFinancialData, EmploymentSource, HmrcEmploymentSource, Pay}
+import controllers.predicates.InYearAction
 import models._
+import models.employment._
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers

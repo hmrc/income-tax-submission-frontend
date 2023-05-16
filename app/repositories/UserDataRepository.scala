@@ -44,7 +44,7 @@ trait UserDataRepository[C <: UserDataTemplate] {
 
   def decryptionMethod: C => UserData
 
-  def create[T](userData: UserData)(implicit user: User[T]): Future[Either[DatabaseError, Boolean]] = {
+  def create[T](userData: UserData)(): Future[Either[DatabaseError, Boolean]] = {
     lazy val start = s"[$repoName][create]"
     Try {
       encryptionMethod(userData)
@@ -53,11 +53,16 @@ trait UserDataRepository[C <: UserDataTemplate] {
       case Right(encryptedData) =>
         collection.insertOne(encryptedData).toFutureOption().map {
           case Some(_) => Right(true)
+          case None => Right(false)
         }.recover {
           case exception: Exception =>
             pagerDutyLog(FAILED_TO_CREATE_DATA, Some(s"$start Failed to create user data. Exception: ${exception.getMessage}"))
             Left(DataNotUpdated)
         }
+      case _ => {
+        pagerDutyLog(FAILED_TO_CREATE_DATA, Some(s"$start Failed to match either."))
+        Future(Left(DataNotUpdated))
+      }
     }
   }
 
@@ -106,11 +111,16 @@ trait UserDataRepository[C <: UserDataTemplate] {
           options = FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER)
         ).toFutureOption().map {
           case Some(_) => Right(true)
+          case _ => Left(DataNotUpdated)
         }.recover {
           case exception: Exception =>
             pagerDutyLog(FAILED_TO_UPDATE_DATA, Some(s"$start Failed to update user data. Exception: ${exception.getMessage}"))
             Left(DataNotUpdated)
         }
+      case _ => {
+        pagerDutyLog(FAILED_TO_CREATE_DATA, Some(s"$start Failed to match either."))
+        Future(Left(DataNotUpdated))
+      }
     }
   }
 

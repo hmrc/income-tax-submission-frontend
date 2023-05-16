@@ -282,7 +282,9 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
             textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
             textOnPageCheck(journey.expectedText, sectionNameSelector(1))
-            textOnPageCheck(specific.addSections, sectionNameSelector(2))
+            "have a add sections link " which {
+              linkCheck(specific.addSections, addSectionsSelector, Links.addSectionsLink(taxYear))
+            }
           }
         }
       }
@@ -305,7 +307,9 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
             textOnPageCheck(checkSectionsText, checkSectionsSelector)
 
             textOnPageCheck(specific.EmptyTailoringLiText, EmptyTailoringLiSelector)
-            textOnPageCheck(specific.addSections, sectionNameSelector(2))
+            "have a add sections link " which {
+              linkCheck(specific.addSections, addSectionsSelector, Links.addSectionsLink(taxYear))
+            }
       }
       "only display the relevant row with priorData and display singular notificationBannner" when {
         journeys(user).foreach { journey =>
@@ -328,7 +332,9 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
 
             textOnPageCheck(specific.notificationBanner, notificationBannerSelector)
             textOnPageCheck(journey.expectedText, sectionNameSelector(1))
-            textOnPageCheck(specific.addSections, sectionNameSelector(2))
+            "have a add sections link " which {
+              linkCheck(specific.addSections, addSectionsSelector, Links.addSectionsLink(taxYear))
+            }
           }
         }
       }
