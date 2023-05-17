@@ -24,41 +24,38 @@
 
 @(taxYear: Int, isAgent: Boolean, form: Form[AddSectionsQuestionModel], journeys: Seq[String], incomeSources: IncomeSourcesModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-
 @checkboxItem(incomeSource: String, hintText: String, journey: String, item: Int) = {
-<div class="govuk-checkboxes__item">
-    <input class="govuk-checkboxes__input" id="@journey" name="addSections[]" type="checkbox" value="@journey">
-    <label class="govuk-label govuk-checkboxes__label" for="@journey" aria-describedby="@journey-item-hint">
-        @messages(incomeSource)
-    </label>
-    <div id="@journey-item-hint" class="govuk-hint govuk-checkboxes__hint">
-        @messages(hintText)
+    <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="@journey" name="addSections[]" type="checkbox" value="@journey">
+        <label class="govuk-label govuk-checkboxes__label" for="@journey" aria-describedby="@journey-item-hint">
+            @messages(incomeSource)
+        </label>
+        <div id="@journey-item-hint" class="govuk-hint govuk-checkboxes__hint">
+            @messages(hintText)
+        </div>
     </div>
-</div>
-
 }
 
 @affinityText = @{
     if(isAgent) "agent" else "individual"
 }
 
-
 @contentHtml = {
     @heading(messages(s"addSections.title.$affinityText"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
 
     @formWithCSRF(action = controllers.routes.AddSectionsToIncomeTaxReturnController.submit(taxYear)) {
 
-
     @if(journeys.isEmpty || incomeSources.hasDataForEachIncomeSource){
-
         <div class="govuk-inset-text">
             <p>@messages(s"addSections.noMoreSections.$affinityText")</p>
         </div>
-
-        } else {
-
+        <div class="govuk-body">
+            <p>@messages(s"addSections.p2.$affinityText")</p>
+        </div>
+    } else {
         <div class="govuk-body">
             <p>@messages(s"addSections.p1.$affinityText")</p>
+            <p>@messages(s"addSections.p2.$affinityText")</p>
         </div>
 
         <div class="govuk-hint">
@@ -86,14 +83,14 @@
             }
 
             @if(appConfig.gainsEnabled){
-            @if(journeys.contains("gains") && incomeSources.gains.isEmpty) {
-                @checkboxItem(
-                    messages("common.gains"),
-                    "addSections.hintText.gains",
-                    "gains",
-                    item = 3
-                )
-            }
+                @if(journeys.contains("gains") && incomeSources.gains.isEmpty) {
+                    @checkboxItem(
+                        messages("common.gains"),
+                        "addSections.hintText.gains",
+                        "gains",
+                        item = 3
+                    )
+                }
             }
             @if(journeys.contains("gift-aid") && incomeSources.giftAid.isEmpty) {
                 @checkboxItem(
@@ -153,17 +150,9 @@
         </div>
 
     }
-
-        <div class="govuk-body">
-            <p>@messages(s"addSections.p2.$affinityText")</p>
-        </div>
-
-
-
         @button(alternativeText = "common.saveAndContinue", classes = Some("govuk-!-margin-top-6"))
     }
 }
-
 
 @layout(pageTitle = messages(s"addSections.title.$affinityText"))(contentHtml)
 
