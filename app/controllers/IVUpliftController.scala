@@ -45,7 +45,8 @@ class IVUpliftController @Inject()(implicit appConfig: AppConfig,
 
   def sessionConfidenceLevel(implicit headerCarrier: HeaderCarrier): Future[(String, Int)] = {
     authService.authorised().retrieve(affinityGroup and confidenceLevel){
-      case Some(affinityGroup) ~ confidenceLevel => Future.successful(affinityGroup.toString, confidenceLevel.level)
+      case Some(affinityGroup) ~ confidenceLevel => Future.successful((affinityGroup.toString, confidenceLevel.level))
+      case None ~ _ => Future(("None", minimumConfidenceLevel))
     }
   }
 

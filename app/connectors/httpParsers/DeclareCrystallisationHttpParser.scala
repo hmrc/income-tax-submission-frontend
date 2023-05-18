@@ -31,7 +31,7 @@ object DeclareCrystallisationHttpParser extends APIParser {
   implicit object DeclareCrystallisationHttpReads extends HttpReads[DeclareCrystallisationResponse] {
     override def read(method: String, url: String, response: HttpResponse): DeclareCrystallisationResponse = {
       response.status match {
-        case NO_CONTENT => Right()
+        case NO_CONTENT => Right(())
         case INTERNAL_SERVER_ERROR =>
           pagerDutyLog(INTERNAL_SERVER_ERROR_FROM_API, logMessage(response))
           handleAPIError(response)

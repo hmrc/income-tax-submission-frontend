@@ -26,7 +26,7 @@
 @this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag, notificationBanner: NotificationBanner, link: Link)
 @(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], tailoring: OverviewTailoringModel, taxYear: Int, isInYear: Boolean, excludedJourneys: Seq[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, isExcluded: Boolean = false, isUnavailable: Boolean = false) = {
+@statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean) = {
     @if(isUnavailable) {
         <style @{CSPNonce.attr}>
             .maintenance {
@@ -132,13 +132,6 @@
     }
 }
 
-@gainsUrlRedirect(incomeSources: IncomeSourcesModel) = @{
-    if(incomeSources.gains.isDefined) {
-        appConfig.additionalInformationGatewayUrl(taxYear)
-    } else {
-        appConfig.additionalInformationSummaryUrl(taxYear)
-    }
-}
 @employmentUrlRedirect(incomeSources: IncomeSourcesModel) = @{
     if(incomeSources.employment.isEmpty && appConfig.tailoringEnabled && !isInYear) {
         appConfig.employmentFEGatewayUrl(taxYear)
@@ -278,12 +271,6 @@
                     @messages(s"overview.tailoring.insertText.${if(isAgent) "agent" else "individual"}")
                 </li>
             }
-
-            <li class="govuk-!-margin-top-4">
-                <span class="app-task-list__task-name">
-                    @link(controllers.routes.AddSectionsToIncomeTaxReturnController.show(taxYear).url, s"addSections.title.${if(isAgent) "agent" else "individual"}", Some("addSectionsLink"))
-                </span>
-            </li>
         }
     </ol>
 }
@@ -357,6 +344,10 @@
         @taskWithActionList(messages("overview.task1.caption"), None, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))
     } else {
         @taskWithActionList(messages("overview.task1.caption"), Some(1), incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.individual"))
+    }
+
+    @if(appConfig.tailoringEnabled){
+        <p class="govuk-body">@link(controllers.routes.AddSectionsToIncomeTaxReturnController.show(taxYear).url, s"addSections.title.${if(isAgent) "agent" else "individual"}", Some("addSectionsLink"))</p>
     }
 
     @if(!appConfig.crystallisationEnabled){

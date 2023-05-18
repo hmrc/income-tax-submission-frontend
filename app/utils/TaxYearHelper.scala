@@ -18,8 +18,8 @@ package utils
 
 import common.SessionValues
 import models.User
+
 import java.time.LocalDate
-import play.api.libs.json.Reads
 
 trait TaxYearHelper extends SessionDataHelper {
 
@@ -28,12 +28,12 @@ trait TaxYearHelper extends SessionDataHelper {
 
   val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
 
-  def retrieveTaxYearList(implicit user: User[_], reads:Reads[String]): Seq[Int] = {
+  def retrieveTaxYearList(implicit user: User[_]): Seq[Int] = {
     user.session.get(SessionValues.VALID_TAX_YEARS).getOrElse("").split(",").toSeq.map(_.toInt)
   }
 
-  def firstClientTaxYear(implicit user: User[_], reads:Reads[String]): Int = retrieveTaxYearList.head
-  def latestClientTaxYear(implicit user: User[_], reads:Reads[String]): Int = retrieveTaxYearList.last
+  def firstClientTaxYear(implicit user: User[_]): Int = retrieveTaxYearList.head
+  def latestClientTaxYear(implicit user: User[_]): Int = retrieveTaxYearList.last
 
-  def singleValidTaxYear(implicit user: User[_], reads:Reads[String]): Boolean = firstClientTaxYear == latestClientTaxYear
+  def singleValidTaxYear(implicit user: User[_]): Boolean = firstClientTaxYear == latestClientTaxYear
 }
