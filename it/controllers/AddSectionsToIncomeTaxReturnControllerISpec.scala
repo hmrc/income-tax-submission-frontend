@@ -148,9 +148,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
   object Selectors {
     val headingSelector: String = "#main-content > div > div > header > h1"
     val captionSelector: String = "#main-content > div > div > header > p"
-    val youCanAddParagraphSelector: String = "#main-content > div > div > form > div.govuk-body > p:nth-child(1)"
-    val useYourSoftwareParagraphSelector: String = "#main-content > div > div > form > div.govuk-body > p:nth-child(2)"
-    val selectAllHintTextSelector: String = "#main-content > div > div > form > div.govuk-hint > p"
+    val youCanAddLegendSelector: String = "#main-content > div > div > form > fieldset > legend > p:nth-child(1)"
+    val selectAllHintTextSelector: String = "#main-content > div > div > form > fieldset > div.govuk-hint"
     val cisSelector: String = "#cis"
     val dividendsSelector: String = "#dividends"
     val dividendsHintSelector: String = "#dividends-item-hint"
@@ -166,6 +165,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val pensionsHintSelector: String = "#pensions-item-hint"
     val stateBenefitsSelector: String = "#state-benefits"
     val stateBenefitsHintSelector: String = "#state-benefits-item-hint"
+    val useYourSoftwareParagraphSelector: String = "#main-content > div > div > form > fieldset > legend > p:nth-child(2)"
     val useYourSoftwareParagraphNoSourcesSelector: String = "#main-content > div > div > form > div.govuk-body > p"
     val noMoreIncomeSourcesInsetSelector: String = "#main-content > div > div > form > div.govuk-inset-text > p"
     val saveAndContinueSelector = "#continue"
@@ -256,8 +256,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
           titleCheck(specific.heading, scenarioData.isWelsh)
           h1Check(specific.heading, "xl")
-          textOnPageCheck(specific.youCanAddSections, Selectors.youCanAddParagraphSelector)
-          textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphSelector)
+          textOnPageCheck(specific.youCanAddSections, Selectors.youCanAddLegendSelector)
           textOnPageCheck(selectAllTheSections, Selectors.selectAllHintTextSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.cisSelector, "cis")
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.dividendsSelector, "dividends")
@@ -274,6 +273,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           textOnPageCheck(pensionsHint, Selectors.pensionsHintSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.stateBenefitsSelector, "state-benefits")
           textOnPageCheck(stateBenefitsHint, Selectors.stateBenefitsHintSelector)
+          textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphSelector)
           buttonCheck(saveAndContinue, Selectors.saveAndContinueSelector, None)
         }
 
@@ -328,12 +328,12 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
 
           titleCheck(specific.heading, scenarioData.isWelsh)
           h1Check(specific.heading, "xl")
-          textOnPageCheck(specific.youCanAddSections, Selectors.youCanAddParagraphSelector)
-          textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphSelector)
+          textOnPageCheck(specific.youCanAddSections, Selectors.youCanAddLegendSelector)
           textOnPageCheck(selectAllTheSections, Selectors.selectAllHintTextSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.cisSelector, "cis")
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.giftAidSelector, "gift-aid")
           textOnPageCheck(giftAidHint, Selectors.giftAidHintSelector)
+          textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphSelector)
           buttonCheck(saveAndContinue, Selectors.saveAndContinueSelector, None)
         }
 
