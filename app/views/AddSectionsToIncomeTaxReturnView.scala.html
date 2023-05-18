@@ -53,34 +53,36 @@
             <p>@messages(s"addSections.p2.$affinityText")</p>
         </div>
     } else {
-        <div class="govuk-body">
-            <p>@messages(s"addSections.p1.$affinityText")</p>
-            <p>@messages(s"addSections.p2.$affinityText")</p>
-        </div>
 
-        <div class="govuk-hint">
-            <p>@messages("addSections.hint")</p>
-        </div>
+        <fieldset class="govuk-fieldset" aria-describedby="addsections-hint">
+            <legend class="govuk-fieldset__legend">
+                <p>@messages(s"addSections.p1.$affinityText")</p>
+                <p>@messages(s"addSections.p2.$affinityText")</p>
+            </legend>
 
-        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div id="addsections-hint" class="govuk-hint">
+                @messages("addSections.hint")
+            </div>
 
-            @if(journeys.contains("cis") && incomeSources.cis.isEmpty) {
-                @checkboxItem(
-                    messages("common.cis"),
-                    "",
-                    "cis",
-                    item = 1
-                )
-            }
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
 
-            @if(journeys.contains("dividends") && incomeSources.dividends.isEmpty) {
-                @checkboxItem(
-                    messages("common.dividends"),
-                    "addSections.hintText.dividends",
-                    "dividends",
-                    item = 2
-                )
-            }
+                @if(journeys.contains("cis") && incomeSources.cis.isEmpty) {
+                    @checkboxItem(
+                        messages("common.cis"),
+                        "",
+                        "cis",
+                        item = 1
+                    )
+                }
+
+                @if(journeys.contains("dividends") && incomeSources.dividends.isEmpty) {
+                    @checkboxItem(
+                        messages("common.dividends"),
+                        "addSections.hintText.dividends",
+                        "dividends",
+                        item = 2
+                    )
+                }
 
             @if(appConfig.gainsEnabled){
                 @if(journeys.contains("gains") && incomeSources.gains.isEmpty) {
@@ -148,6 +150,7 @@
                 )
             }
         </div>
+     </fieldset>
 
     }
         @button(alternativeText = "common.saveAndContinue", classes = Some("govuk-!-margin-top-6"))
