@@ -33,7 +33,6 @@ class NoValidIncomeSourcesISpec extends IntegrationTest with ViewHelpers {
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   object Selectors {
-    val headingSelector = "#main-content > div > div > header > h1"
     val p1Selector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val p2Selector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
     val bul1Selector = "#main-content > div > div > div.govuk-body > ul > li:nth-child(1)"

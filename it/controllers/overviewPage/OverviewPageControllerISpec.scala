@@ -24,7 +24,7 @@ import config.{AppConfig, ErrorHandler}
 import controllers.OverviewPageController
 import controllers.predicates.AuthorisedAction
 import itUtils.{IntegrationTest, OverviewPageHelpers, ViewHelpers}
-import models.{APIErrorBodyModel, ExcludeJourneyModel, IncomeSourcesModel, InterestModel, LiabilityCalculationIdModel}
+import models._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
@@ -48,7 +48,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val submitReturnHeaderEOY = "Check and submit your Income Tax Return"
     val submitReturnText: String = "If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. " +
       "You can check your calculation and then submit your Income Tax Return."
-    val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
+    val ifWeHaveInfo: String = "If we have information about your income and deductions, " +
+      "we’ll enter it for you. We get this information from our records and your software package - if you have one."
     val goToYourIncomeTax = "Go to your Income Tax Account to find out more about your current tax position."
 
     def inYearInsertText(taxYear: Int): String = s"You cannot submit your Income Tax Return until 6 April $taxYear."
@@ -64,7 +65,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val submitReturnHeaderEOY = "Check and submit your client’s Income Tax Return"
     val submitReturnText: String = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation." +
       " You can check their calculation and then submit their Income Tax Return."
-    val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
+    val ifWeHaveInfo: String = "If we have information about your client’s income and deductions, " +
+      "we’ll enter it for you. We get this information from our records and your software package - if you have one."
     val goToYourIncomeTax = "Go to your client’s Income Tax Account to find out more about their current tax position."
 
     def inYearInsertText(taxYear: Int): String = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
@@ -93,8 +95,10 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val headingExpected = "Ffurflen Dreth Incwm eich cleient"
     val updateIncomeTaxReturnText = "Diweddarwch Ffurflen Dreth Incwm eich cleient"
     val submitReturnHeaderEOY = "Gwiriwch a chyflwynwch Ffurflen Dreth Incwm eich cleient"
-    val submitReturnText: String = "Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, gallwch barhau a gweld eu cyfrifiad treth terfynol. Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm."
-    val ifWeHaveInfo = "Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
+    val submitReturnText: String = "Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, gallwch barhau a gweld eu cyfrifiad treth terfynol. " +
+      "Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm."
+    val ifWeHaveInfo: String = "Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. " +
+      "Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
     val goToYourIncomeTax = "Ewch i’r canlynol ar ran eich cleient Cyfrif Treth Incwm i wybod mwy am ei sefyllfa dreth bresennol."
 
     def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm eich cleient tan 6 Ebrill $taxYear."
@@ -197,7 +201,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val stateBenefitsLinkText = "Budd-daliadau’r Wladwriaeth"
     val gainsLinkText = "Enillion o bolisïau yswiriant bywyd a chontractau"
     val continue = "continue"
-    val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
+    val fillInTheSections: String = "Llenwch yr adrannau mae angen i chi eu diweddaru. " +
+      "Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
     val updateTaxCalculation = "Diweddaru cyfrifiad treth"
     val checkSectionsText = "Gwiriwch bob adran – mae’n bosibl y bydd rhaid i chi newid yr wybodaeth rydym wedi’i hychwanegu ar eich rhan."
@@ -211,8 +216,6 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
     val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
     val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3)"
-    val captionSelector = "#main-content > div > div > header > p"
-    val headerSelector = "#main-content > div > div > header > h1"
     val updateYourIncomeTaxReturnSubheadingSelector = "#heading-tasklist"
     val inYearInsetTextSelector = "#main-content > div > div > div.govuk-inset-text"
     val interestLinkSelector = "#interest_link"
@@ -365,8 +368,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
@@ -447,8 +450,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
@@ -522,8 +525,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
@@ -598,8 +601,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
             titleCheck(specific.headingExpected, user.isWelsh)
-            h1Check(specific.headingExpected, "xl")
-            textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+            h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
+            captionCheck(caption(taxYearEOY, taxYear))
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
             textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
             textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
@@ -672,8 +675,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
             titleCheck(specific.headingExpected, user.isWelsh)
-            h1Check(specific.headingExpected, "xl")
-            textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+            h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
+            captionCheck(caption(taxYearEOY, taxYear))
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
             textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
             textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
@@ -747,8 +750,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
@@ -825,8 +828,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
             titleCheck(specific.headingExpected, user.isWelsh)
-            h1Check(specific.headingExpected, "xl")
-            textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+            h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
+            captionCheck(caption(taxYearEOY, taxYear))
             textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
             textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
             textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
@@ -900,8 +903,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearEOY, taxYear), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(checkSectionsText, checkSectionsSelector)
           textOnPageCheck(specific.notificationBannerPlural, notificationBannerSelector)
@@ -1049,8 +1052,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEOY), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearEndOfYearMinusOne, taxYearEOY))
+          captionCheck(caption(taxYearEndOfYearMinusOne, taxYearEOY))
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
@@ -1121,8 +1124,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearEndOfYearMinusOne, taxYearEOY), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearEndOfYearMinusOne, taxYearEOY))
+          captionCheck(caption(taxYearEndOfYearMinusOne, taxYearEOY))
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
@@ -1200,8 +1203,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearMinusTwo, taxYearEOY), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearMinusTwo, taxYearEOY))
+          captionCheck(caption(taxYearMinusTwo, taxYearEOY))
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)
@@ -1279,8 +1282,8 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
 
           titleCheck(specific.headingExpected, user.isWelsh)
-          h1Check(specific.headingExpected, "xl")
-          textOnPageCheck(caption(taxYearMinusTwo, taxYearEOY), captionSelector)
+          h1Check(specific.headingExpected + " " + caption(taxYearMinusTwo, taxYearEOY))
+          captionCheck(caption(taxYearMinusTwo, taxYearEOY))
           textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
           textOnPageCheck(specific.ifWeHaveInfo, ifWeHaveInformationSelector)
           textOnPageCheck(fillInTheSections, fillInTheSectionsSelector)

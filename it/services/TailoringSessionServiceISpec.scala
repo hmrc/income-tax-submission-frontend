@@ -17,9 +17,6 @@
 package services
 
 import itUtils.IntegrationTest
-import models.User
-import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
 import repositories.TailoringUserDataRepository
 
 class TailoringSessionServiceISpec extends IntegrationTest {

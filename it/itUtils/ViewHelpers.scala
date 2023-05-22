@@ -67,13 +67,16 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers with WireMockHelper =>
     }
   }
 
-  def h1Check(header: String, size: String = "l")(implicit document: () => Document): Unit = {
+  def h1Check(header: String, size: String = "xl")(implicit document: () => Document): Unit = {
     s"have a page heading of '$header'" in {
-      document().select(s".govuk-heading-$size").text() shouldBe header
+      val heading = document().select(s"h1.govuk-heading-$size").first.ownText
+      val caption = document().select(s"h1 > span.govuk-caption-${size}").text
+
+      s"$heading $caption".trim shouldBe header
     }
   }
 
-  def captionCheck(caption: String, selector: String = ".govuk-caption-l")(implicit document: () => Document): Unit = {
+  def captionCheck(caption: String, selector: String = ".govuk-caption-xl")(implicit document: () => Document): Unit = {
     s"have the caption of '$caption'" in {
       document().select(selector).text() shouldBe caption
     }

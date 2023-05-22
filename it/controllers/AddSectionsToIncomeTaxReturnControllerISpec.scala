@@ -146,8 +146,6 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
   }
 
   object Selectors {
-    val headingSelector: String = "#main-content > div > div > header > h1"
-    val captionSelector: String = "#main-content > div > div > header > p"
     val youCanAddLegendSelector: String = "#main-content > div > div > form > fieldset > legend > p:nth-child(1)"
     val selectAllHintTextSelector: String = "#main-content > div > div > form > fieldset > div.govuk-hint"
     val cisSelector: String = "#cis"
@@ -197,7 +195,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       "AA123456A",
       if (endOfYear) taxYearEOY else taxYear,
       journeys
-    )))
+    ))())
   }
 
   private def insertAllJourneys(endOfYear: Boolean = false) = {
@@ -255,7 +253,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           }
 
           titleCheck(specific.heading, scenarioData.isWelsh)
-          h1Check(specific.heading, "xl")
+          h1Check(specific.heading + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.youCanAddSections, Selectors.youCanAddLegendSelector)
           textOnPageCheck(selectAllTheSections, Selectors.selectAllHintTextSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.cisSelector, "cis")
@@ -296,7 +295,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           }
 
           titleCheck(specific.heading, scenarioData.isWelsh)
-          h1Check(specific.heading, "xl")
+          h1Check(specific.heading + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.noMoreIncomeSourcesInset, Selectors.noMoreIncomeSourcesInsetSelector)
           textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphNoSourcesSelector)
           buttonCheck(saveAndContinue, Selectors.saveAndContinueSelector, None)
@@ -327,7 +327,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           }
 
           titleCheck(specific.heading, scenarioData.isWelsh)
-          h1Check(specific.heading, "xl")
+          h1Check(specific.heading + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.youCanAddSections, Selectors.youCanAddLegendSelector)
           textOnPageCheck(selectAllTheSections, Selectors.selectAllHintTextSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.cisSelector, "cis")
@@ -356,7 +357,8 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           }
 
           titleCheck(specific.heading, scenarioData.isWelsh)
-          h1Check(specific.heading, "xl")
+          h1Check(specific.heading + " " + caption(taxYearEOY, taxYear))
+          captionCheck(caption(taxYearEOY, taxYear))
           textOnPageCheck(specific.noMoreIncomeSourcesInset, Selectors.noMoreIncomeSourcesInsetSelector)
           textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphNoSourcesSelector)
           buttonCheck(saveAndContinue, Selectors.saveAndContinueSelector, None)

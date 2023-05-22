@@ -34,7 +34,6 @@ class NoUpdatesProvidedPageControllerISpec extends IntegrationTest with ViewHelp
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   object Selectors {
-    val headingSelector = "#main-content > div > div > header > h1"
     val youNeedToProvideSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"
     val noUpdatesProvidedPageView: NoUpdatesProvidedPage = app.injector.instanceOf[NoUpdatesProvidedPage]

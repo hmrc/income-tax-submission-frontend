@@ -49,7 +49,6 @@ class UnauthorisedUserErrorControllerISpec extends IntegrationTest with ViewHelp
   }
 
   object Selectors {
-    val pageHeading = "#main-content > div > div > header > h1"
     val youCanSelector = "#main-content > div > div > div.govuk-body > p"
     val incomeTaxSelector = "#main-content > div > div > ul > li:nth-child(1)"
     val selfAssessmentSelector = "#main-content > div > div > ul > li:nth-child(2)"
@@ -78,7 +77,7 @@ class UnauthorisedUserErrorControllerISpec extends IntegrationTest with ViewHelp
 
         welshToggleCheck("English")
         titleCheck(pageTitleText, isWelsh = false)
-        h1Check(pageHeadingText, "xl")
+        h1Check(pageHeadingText)
         textOnPageCheck(s"$youCanText", youCanSelector)
         textOnPageCheck(s"$goToText $incomeTaxHomePageText $forMoreText", incomeTaxSelector)
         textOnPageCheck(s"$useText $generalEnquiriesText $toSpeakText",selfAssessmentSelector)

@@ -33,7 +33,6 @@ class TaxReturnPreviouslyUpdatedControllerISpec extends IntegrationTest with Vie
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   object Selectors {
-    val headingSelector = "#main-content > div > div > header > h1"
     val p1TextSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"
   }
