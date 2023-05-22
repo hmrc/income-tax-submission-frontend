@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@this(hmrcPageHeading : HmrcPageHeading)
+@this()
 
-@(heading: String, subheading: String = "")
+@(heading: String, caption: String = "", extraClasses: String = "", size: String = "xl")
 
-<header class="hmrc-page-heading govuk-!-margin-0 govuk-!-margin-bottom-5">
- <h1 class="govuk-heading-xl govuk-!-margin-0 govuk-!-margin-bottom-5">@heading</h1>
- @if(subheading.nonEmpty){
-   <p class="govuk-caption-xl hmrc-caption-xl">@subheading</p>
- }
-</header>
+ <h1 class="hmrc-page-heading govuk-heading-@{size} govuk-!-margin-0 govuk-!-margin-bottom-5 @extraClasses">
+     @if(caption.nonEmpty){
+        <span class="govuk-caption-@{size}">@caption</span>
+    }
+    @heading
+ </h1>

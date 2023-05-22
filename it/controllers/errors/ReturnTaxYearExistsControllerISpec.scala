@@ -57,7 +57,6 @@ class ReturnTaxYearExistsControllerISpec extends IntegrationTest with ViewHelper
   }
 
   object Selectors {
-    lazy val headingSelector: String = "#main-content > div > div > header > h1"
     lazy val p1TextSelector: String = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     lazy val p2TextSelector: String = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
     lazy val returnToTaxAccountButtonSelector: String = "#returnToOverviewPageBtn"

@@ -33,7 +33,6 @@ class AddressHasChangedPageControllerISpec extends IntegrationTest with ViewHelp
   lazy val frontendAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   object Selectors {
-    val headingSelector = "#main-content > div > div > header > h1"
     val addressHasChangedSelector = "#main-content > div > div > div.govuk-body > p:nth-child(1)"
     val submitYourReturnSelector = "#main-content > div > div > div.govuk-body > p:nth-child(2)"
     val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"

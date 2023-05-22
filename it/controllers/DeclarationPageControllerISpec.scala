@@ -95,8 +95,6 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   object Selectors {
-    val headingSelector = "#main-content > div > div > header > h1"
-    val subheadingSelector = "#main-content > div > div > header > p"
     val informationTextSelector = "#main-content > div > div > div.govuk-body > p"
     val agreeButtonSelector = "#agree"
   }
@@ -137,8 +135,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         welshToggleCheck("English")
-        textOnPageCheck(heading, headingSelector)
-        textOnPageCheck(subheading, subheadingSelector)
+        h1Check(heading + " " + subheading)
+        captionCheck(subheading)
 
         textOnPageCheck(informationText, informationTextSelector)
         buttonCheck(agreeButton, agreeButtonSelector)
@@ -171,8 +169,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         welshToggleCheck("Welsh")
-        textOnPageCheck(headingWelsh, headingSelector)
-        textOnPageCheck(subheadingWelsh, subheadingSelector)
+        h1Check(headingWelsh + " " + subheadingWelsh)
+        captionCheck(subheadingWelsh)
 
         textOnPageCheck(informationTextWelsh, informationTextSelector)
         buttonCheck(agreeButtonWelsh, agreeButtonSelector)
@@ -374,8 +372,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
         }
 
         welshToggleCheck("English")
-        textOnPageCheck(heading, headingSelector)
-        textOnPageCheck(subheading, subheadingSelector)
+        h1Check(heading + " " + subheading)
+        captionCheck(subheading)
 
         textOnPageCheck(agentInformationText, informationTextSelector)
         buttonCheck(agreeButton, agreeButtonSelector)
@@ -411,8 +409,8 @@ class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
         welshToggleCheck("Welsh")
         titleCheck(headingWelsh, isWelsh = true)
-        textOnPageCheck(headingWelsh, headingSelector)
-        textOnPageCheck(subheadingWelsh, subheadingSelector)
+        h1Check(headingWelsh + " " + subheadingWelsh)
+        captionCheck(subheadingWelsh)
 
         textOnPageCheck(agentInformationTextWelsh, informationTextSelector)
         buttonCheck(agreeButtonWelsh, agreeButtonSelector)

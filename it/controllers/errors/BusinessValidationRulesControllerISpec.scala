@@ -35,7 +35,6 @@ class BusinessValidationRulesControllerISpec extends IntegrationTest with ViewHe
 
 
   object Selectors {
-    val headingSelector = "#main-content > div > div > header > h1"
     val checkYourIncomeTaxReturnSelector = "#main-content > div > div > p"
     val incomeTaxReturnButtonSelector = "#returnToOverviewPageBtn"
     val businessValidationRulesView: BusinessValidationRulesView = app.injector.instanceOf[BusinessValidationRulesView]

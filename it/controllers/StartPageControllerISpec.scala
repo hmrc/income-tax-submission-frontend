@@ -107,8 +107,6 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
   object Selectors {
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
     val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2)"
-    val pageHeading = "#main-content > div > div > header > h1"
-    val caption = "#main-content > div > div > header > p"
     val p1 = "#main-content > div > div > div:nth-child(2) > p:nth-child(1)"
     val p2 = "#main-content > div > div > div:nth-child(2) > p:nth-child(2)"
     val p3 = "#main-content > div > div > div:nth-child(2) > p:nth-child(3)"
@@ -149,8 +147,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       linkCheck(vcBreadcrumb, Selectors.vcBreadcrumbSelector, vcBreadcrumbUrl)
       textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
       titleCheck(pageTitleText, isWelsh = false)
-      h1Check(pageHeadingText, "xl")
-      textOnPageCheck(caption, Selectors.caption)
+      h1Check(pageHeadingText + " " + caption)
+      captionCheck(caption)
       textOnPageCheck(useThisServiceText, Selectors.p1)
       textOnPageCheck(inYearText, Selectors.p2)
       textOnPageCheck(dividendsBullet, Selectors.bullet1)
@@ -224,8 +222,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       textOnPageCheck(startPageBreadcrumb, Selectors.startPageBreadcrumbSelector)
 
       titleCheck(pageTitleText, isWelsh = false)
-      h1Check(pageHeadingText, "xl")
-      textOnPageCheck(caption, Selectors.caption)
+      h1Check(pageHeadingText + " " + caption)
+      captionCheck(caption)
       textOnPageCheck(useThisServiceText, Selectors.p1)
       textOnPageCheck(inYearText, Selectors.p2)
       textOnPageCheck(dividendsBullet, Selectors.bullet1)
@@ -259,8 +257,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       linkCheck(vcBreadcrumbWelsh, Selectors.vcBreadcrumbSelector, vcBreadcrumbUrl)
       textOnPageCheck(startPageBreadcrumbWelsh, Selectors.startPageBreadcrumbSelector)
       titleCheck(pageTitleTextWelsh, isWelsh = true)
-      h1Check(pageHeadingTextWelsh, "xl")
-      textOnPageCheck(captionWelsh, Selectors.caption)
+      h1Check(pageHeadingTextWelsh + " " + captionWelsh)
+      captionCheck(captionWelsh)
       textOnPageCheck(useThisServiceTextWelsh, Selectors.p1)
       textOnPageCheck(inYearWelshText, Selectors.p2)
       textOnPageCheck(dividendsBulletWelsh, Selectors.bullet1)
@@ -291,8 +289,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       textOnPageCheck(startPageBreadcrumbWelsh, Selectors.startPageBreadcrumbSelector)
 
       titleCheck(pageTitleTextWelsh, isWelsh = true)
-      h1Check(pageHeadingTextWelsh, "xl")
-      textOnPageCheck(captionWelsh, Selectors.caption)
+      h1Check(pageHeadingTextWelsh + " " + captionWelsh)
+      captionCheck(captionWelsh)
       textOnPageCheck(useThisServiceTextWelsh, Selectors.p1)
       textOnPageCheck(inYearWelshText, Selectors.p2)
       textOnPageCheck(dividendsBulletWelsh, Selectors.bullet1)

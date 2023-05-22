@@ -36,7 +36,8 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val submitReturnHeaderEOY = "Check and submit your Income Tax Return"
     val submitReturnText: String = "If you’ve finished updating your Income Tax Return, you can continue and see your final tax calculation. " +
       "You can check your calculation and then submit your Income Tax Return."
-    val ifWeHaveInfo = "If we have information about your income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
+    val ifWeHaveInfo: String = "If we have information about your income and deductions, " +
+      "we’ll enter it for you. We get this information from our records and your software package - if you have one."
     val goToYourIncomeTax = "Go to your Income Tax Account to find out more about your current tax position."
 
     def inYearInsertText(taxYear: Int): String = s"You cannot submit your Income Tax Return until 6 April $taxYear."
@@ -53,7 +54,8 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val submitReturnHeaderEOY = "Check and submit your client’s Income Tax Return"
     val submitReturnText: String = "If you’ve finished updating your client’s Income Tax Return, you can continue and see their final tax calculation." +
       " You can check their calculation and then submit their Income Tax Return."
-    val ifWeHaveInfo = "If we have information about your client’s income and deductions, we’ll enter it for you. We get this information from our records and your software package - if you have one."
+    val ifWeHaveInfo: String = "If we have information about your client’s income and deductions, " +
+        "we’ll enter it for you. We get this information from our records and your software package - if you have one."
     val goToYourIncomeTax = "Go to your client’s Income Tax Account to find out more about their current tax position."
 
     def inYearInsertText(taxYear: Int): String = s"You cannot submit your client’s Income Tax Return until 6 April $taxYear."
@@ -68,8 +70,10 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val headingExpected = "Eich Ffurflen Dreth Incwm"
     val updateIncomeTaxReturnText = "Diweddarwch eich Ffurflen Dreth Incwm"
     val submitReturnHeaderEOY = "Diweddaru a chyflwyno’ch Ffurflen Dreth Incwm"
-    val submitReturnText: String = "Os ydych wedi gorffen diweddaru eich Ffurflen Dreth Incwm, gallwch barhau a gweld eich cyfrifiad treth terfynol. Gallwch wirio eich cyfrifiad ac yna fe allwch gyflwyno eich Ffurflen Dreth Incwm."
-    val ifWeHaveInfo = "Os oes gennym wybodaeth am eich incwm a didyniadau, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
+    val submitReturnText: String = "Os ydych wedi gorffen diweddaru eich Ffurflen Dreth Incwm, gallwch barhau a gweld eich cyfrifiad treth terfynol. " +
+      "Gallwch wirio eich cyfrifiad ac yna fe allwch gyflwyno eich Ffurflen Dreth Incwm."
+    val ifWeHaveInfo: String = "Os oes gennym wybodaeth am eich incwm a didyniadau, byddwn yn ei chofnodi ar eich rhan. " +
+      "Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
     val goToYourIncomeTax = "Ewch i’ch Cyfrif Treth Incwm i wybod mwy am eich sefyllfa dreth bresennol."
 
     def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm tan 6 Ebrill $taxYear."
@@ -84,8 +88,10 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val headingExpected = "Ffurflen Dreth Incwm eich cleient"
     val updateIncomeTaxReturnText = "Diweddarwch Ffurflen Dreth Incwm eich cleient"
     val submitReturnHeaderEOY = "Gwiriwch a chyflwynwch Ffurflen Dreth Incwm eich cleient"
-    val submitReturnText: String = "Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, gallwch barhau a gweld eu cyfrifiad treth terfynol. Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm."
-    val ifWeHaveInfo = "Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
+    val submitReturnText: String = "Os ydych wedi gorffen diweddaru Ffurflen Dreth Incwm eich cleient, " +
+      "gallwch barhau a gweld eu cyfrifiad treth terfynol. Gwiriwch y cyfrifiad a chyflwyno’r Ffurflen Dreth Incwm."
+    val ifWeHaveInfo: String = "Os oes gennym wybodaeth am incwm a didyniadau eich cleient, byddwn yn ei chofnodi ar eich rhan. " +
+      "Rydym yn cael yr wybodaeth hon o’n cofnodion a’ch pecyn meddalwedd - os oes gennych un."
     val goToYourIncomeTax = "Ewch i’r canlynol ar ran eich cleient Cyfrif Treth Incwm i wybod mwy am ei sefyllfa dreth bresennol."
 
     def inYearInsertText(taxYear: Int): String = s"Ni allwch gyflwyno’ch Ffurflen Dreth Incwm eich cleient tan 6 Ebrill $taxYear."
@@ -184,7 +190,8 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     val giftAidLinkText = "Rhoddion i elusennau"
     val pensionsLinkText = "Pensiynau"
     val continue = "continue"
-    val fillInTheSections = "Llenwch yr adrannau mae angen i chi eu diweddaru. Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
+    val fillInTheSections: String = "Llenwch yr adrannau mae angen i chi eu diweddaru. " +
+      "Defnyddiwch eich pecyn meddalwedd i ddiweddaru eitemau sydd ddim ar y rhestr hon."
     val incomeTaxAccountLink = "Cyfrif Treth Incwm"
     val updateTaxCalculation = "Diweddaru cyfrifiad treth"
     val checkSectionsText = "Gwiriwch bob adran – mae’n bosibl y bydd rhaid i chi newid yr wybodaeth rydym wedi’i hychwanegu ar eich rhan."
@@ -192,15 +199,13 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
 
   object Selectors {
     def sectionNameSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.app-task-list__task-name"
-    def EmptyTailoringLiSelector: String = s"#main-content > div > div > ol > li.govuk-inset-text"
+    val EmptyTailoringLiSelector: String = s"#main-content > div > div > ol > li.govuk-inset-text"
 
     private def statusTagSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.hmrc-status-tag"
 
     val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
     val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
     val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3)"
-    val captionSelector = "#main-content > div > div > header > p"
-    val headerSelector = "#main-content > div > div > header > h1"
     val updateYourIncomeTaxReturnSubheadingSelector = "#heading-tasklist"
     val inYearInsetTextSelector = "#main-content > div > div > div.govuk-inset-text"
     val interestLinkSelector = "#interest_link"
@@ -233,7 +238,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
 
   case class JourneyData(tailoringKey: String, expectedText: String, incomeSourcesModel: IncomeSourcesModel)
 
-  def journeys(user: UserScenario[CommonExpectedResults, SpecificExpectedResults]) = Seq(
+  def journeys(user: UserScenario[CommonExpectedResults, SpecificExpectedResults]):Seq[JourneyData] = Seq(
     JourneyData("interest", user.commonExpectedResults.interestsLinkText, IncomeSourcesModel(interest = incomeSourcesModel.interest)),
     JourneyData("dividends", user.commonExpectedResults.dividendsLinkText, IncomeSourcesModel(dividends = incomeSourcesModel.dividends)),
     JourneyData("gift-aid", user.commonExpectedResults.giftAidLinkText, IncomeSourcesModel(giftAid = incomeSourcesModel.giftAid)),
@@ -249,7 +254,6 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
   )
 
   private val urlPathInYear = s"/update-and-submit-income-tax-return/$taxYear/view"
-  private val urlPathEndOfYear = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
 
   userScenarios.foreach { user =>
     import Selectors._

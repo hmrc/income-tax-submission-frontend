@@ -67,9 +67,12 @@ trait ViewTest extends IntegrationTest {
     }
   }
 
-  def h1Check(header: String)(implicit document: Document): Unit = {
+  def h1Check(header: String, size: String = "xl")(implicit document: Document): Unit = {
     s"have a page heading of '$header'" in {
-      document.select("#main-content > div > div > header > h1").text() shouldBe header
+      val heading = document.select(s"h1.govuk-heading-$size").first.ownText
+      val caption = document.select(s"h1 > span.govuk-caption-${size}").text
+
+      s"$heading $caption".trim shouldBe header
     }
   }
 
