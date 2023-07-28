@@ -56,7 +56,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your Income Tax Return"
     val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
-    val notificationBannerPlural = "We have added 8 sections to your return, based on the information we already hold about you."
+    val notificationBannerPlural = "We have added 9 sections to your return, based on the information we already hold about you."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -73,7 +73,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your client’s Income Tax Return"
     val notificationBanner = "We have added a section to your client’s return, based on the information we already hold about them."
-    val notificationBannerPlural = "We have added 8 sections to your client’s return, based on the information we already hold about them."
+    val notificationBannerPlural = "We have added 9 sections to your client’s return, based on the information we already hold about them."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -88,7 +88,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
     val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 8 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 9 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -105,7 +105,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
     val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 8 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 9 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
   }
 
   trait SpecificExpectedResults {
@@ -142,6 +142,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val cisLinkText: String
     val giftAidLinkText: String
     val pensionsLinkText: String
+    val propertyLinkText: String
     val stateBenefitsLinkText: String
     val gainsLinkText: String
     val continue: String
@@ -170,6 +171,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val cisLinkText = "Construction Industry Scheme deductions"
     val giftAidLinkText = "Donations to charity"
     val pensionsLinkText = "Pensions"
+    val propertyLinkText = "Property"
     val stateBenefitsLinkText = "State benefits"
     val gainsLinkText = "Gains from life insurance policies and contracts"
     val continue = "continue"
@@ -198,6 +200,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val cisLinkText = "Didyniadau Cynllun y Diwydiant Adeiladu"
     val giftAidLinkText = "Rhoddion i elusennau"
     val pensionsLinkText = "Pensiynau"
+    val propertyLinkText = "Property"
     val stateBenefitsLinkText = "Budd-daliadau’r Wladwriaeth"
     val gainsLinkText = "Enillion o bolisïau yswiriant bywyd a chontractau"
     val continue = "continue"
@@ -236,9 +239,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val pensionsSelector: String = sectionNameSelector(7)
     val pensionsLinkSelector = "#pensions_link"
     val pensionsStatusSelector: String = statusTagSelector(7)
-    val stateBenefitsSelector: String = sectionNameSelector(8)
+    val propertySelector: String = sectionNameSelector(8)
+    val propertyLinkSelector = "#property_link"
+    val propertyStatusSelector: String = statusTagSelector(8)
+    val stateBenefitsSelector: String = sectionNameSelector(9)
     val stateBenefitsLinkSelector = "#stateBenefits_link"
-    val stateBenefitsStatusSelector: String = statusTagSelector(8)
+    val stateBenefitsStatusSelector: String = statusTagSelector(9)
 
     val viewEstimateSelector = "#calculation_link"
     val submitReturnEOYSelector = "#heading-checkAndSubmit"
@@ -351,6 +357,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               employmentEOYEnabled = false,
               cisEnabled = false,
               pensionsEnabled = false,
+              propertyEnabled = false,
               stateBenefitsEnabled = false,
               crystallisationEnabled = false
             ), request, user.isWelsh).get
@@ -434,7 +441,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, property = None))
             route(app, request, user.isWelsh).get
           }
 
@@ -486,6 +493,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a pensions section " which {
             textOnPageCheck(pensionsLinkText, pensionsSelector)
             textOnPageCheck(notStartedText, pensionsStatusSelector)
+          }
+
+          "has a property section " which {
+            textOnPageCheck(propertyLinkText, propertySelector)
+            textOnPageCheck(notStartedText, propertyStatusSelector)
           }
 
           "has a state benefits section " which {
@@ -567,6 +579,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, pensionsStatusSelector)
           }
 
+          "has a property section " which {
+            textOnPageCheck(propertyLinkText, propertySelector)
+            textOnPageCheck(updatedText, propertyStatusSelector)
+          }
+
           "has a state benefits section" which {
             linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
             textOnPageCheck(updatedText, stateBenefitsStatusSelector)
@@ -636,6 +653,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             "has a pensions section" which {
               linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
               textOnPageCheck(updatedText, pensionsStatusSelector)
+            }
+
+            "has a property section " which {
+              textOnPageCheck(propertyLinkText, propertySelector)
+              textOnPageCheck(updatedText, propertyStatusSelector)
             }
 
             "has a state benefits section" which {
@@ -716,6 +738,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, pensionsStatusSelector)
             }
 
+            "has a property section " which {
+              textOnPageCheck(propertyLinkText, propertySelector)
+              textOnPageCheck(updatedText, propertyStatusSelector)
+            }
+
             "has a state benefits section" which {
               linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
               textOnPageCheck(updatedText, stateBenefitsStatusSelector)
@@ -790,6 +817,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a pensions section" which {
             linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
             textOnPageCheck(updatedText, pensionsStatusSelector)
+          }
+
+          "has a property section " which {
+            textOnPageCheck(propertyLinkText, propertySelector)
+            textOnPageCheck(updatedText, propertyStatusSelector)
           }
 
           "has a state benefits section" which {
@@ -870,6 +902,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, pensionsStatusSelector)
             }
 
+            "has a property section " which {
+              textOnPageCheck(propertyLinkText, propertySelector)
+              textOnPageCheck(updatedText, propertyStatusSelector)
+            }
+
             "has a state benefits section" which {
               linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
               textOnPageCheck(updatedText, stateBenefitsStatusSelector)
@@ -942,6 +979,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a pensions section" which {
             linkCheck(pensionsLinkText, pensionsLinkSelector, pensionsLink(taxYear))
             textOnPageCheck(updatedText, pensionsStatusSelector)
+          }
+
+          "has a property section " which {
+            textOnPageCheck(propertyLinkText, propertySelector)
+            textOnPageCheck(updatedText, propertyStatusSelector)
           }
 
           "has a state benefits section" which {

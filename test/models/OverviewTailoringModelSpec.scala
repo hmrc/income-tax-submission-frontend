@@ -20,6 +20,7 @@ import models.cis.AllCISDeductions
 import models.employment.AllEmploymentData
 import models.gains.{InsurancePoliciesModel, LifeInsuranceModel}
 import models.pensions.Pensions
+import models.property.AllPropertyData
 import models.statebenefits.AllStateBenefitsData
 import utils.UnitTest
 
@@ -43,7 +44,8 @@ class OverviewTailoringModelSpec extends UnitTest {
     Some(InsurancePoliciesModel("2020-01-04T05:01:01Z", Seq(LifeInsuranceModel(None,None,500,None,None,None,None)) ,None,None,None,None)),
     Some(AllStateBenefitsData(None, None)),
     Some(SavingsIncomeDataModel(None, None, None)),
-    Some(StockDividendsModel(Some("2020-01-04T05:01:01Z"), None, None, Some(Dividend(Some("ref"), Some(123.45))), None, None))
+    Some(StockDividendsModel(Some("2020-01-04T05:01:01Z"), None, None, Some(Dividend(Some("ref"), Some(123.45))), None, None)),
+    Some(AllPropertyData(""))
   )
 
   val sources = Seq(
@@ -54,6 +56,7 @@ class OverviewTailoringModelSpec extends UnitTest {
     IncomeSourceSetup("cis", "hasCis"),
     IncomeSourceSetup("gains", "hasGains"),
     IncomeSourceSetup("pensions", "hasPensions"),
+    IncomeSourceSetup("property", "hasProperty"),
     IncomeSourceSetup("state-benefits", "hasStateBenefits"),
     IncomeSourceSetup("stock-dividends", "hasStockDividends")
   )

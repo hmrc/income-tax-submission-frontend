@@ -79,6 +79,10 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val stateBenefitsUrl: String = s"$stateBenefitsBaseUrl/update-and-submit-income-tax-return/state-benefits"
   def stateBenefitsFEUrl(taxYear: Int): String = s"$stateBenefitsUrl/$taxYear/summary"
 
+  lazy val propertyBaseUrl: String = servicesConfig.getString(ConfigKeys.propertyFrontendUrl)
+  lazy val propertyUrl: String = s"$propertyBaseUrl/update-and-submit-income-tax-return/property"
+  def propertyFEUrl(taxYear: Int): String = s"$propertyUrl/$taxYear/summary"
+
   lazy val pensionsFrontendBaseUrl: String = servicesConfig.getString(ConfigKeys.pensionsFrontendUrl)
   lazy val pensionsFrontendUrl: String = s"$pensionsFrontendBaseUrl/update-and-submit-income-tax-return/pensions"
   def pensionsSummaryUrl(taxYear: Int): String = s"$pensionsFrontendUrl/$taxYear/pensions-summary"
@@ -167,6 +171,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
   lazy val stateBenefitsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.stateBenefitsEnabled")
   lazy val stateBenefitsReleased: Boolean = servicesConfig.getBoolean("feature-switch.stateBenefitsReleased")
+  lazy val propertyEnabled: Boolean = servicesConfig.getBoolean("feature-switch.propertyEnabled")
+  lazy val propertyReleased: Boolean = servicesConfig.getBoolean("feature-switch.propertyReleased")
   lazy val pensionsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.pensionsEnabled")
   lazy val pensionsReleased: Boolean = servicesConfig.getBoolean("feature-switch.pensionsReleased")
   lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
@@ -194,7 +200,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def mongoTTL: Long = Duration(servicesConfig.getString("mongodb.timeToLive")).toDays.toInt
 
   lazy val testOnly_authLoginUrl: String = servicesConfig.getString("microservice.services.auth-login-api.url")
-
 }
 
 @ImplementedBy(classOf[FrontendAppConfig])
@@ -246,6 +251,10 @@ trait AppConfig {
   val stateBenefitsBaseUrl: String
   val stateBenefitsUrl: String
   def stateBenefitsFEUrl(taxYear: Int): String
+
+  val propertyBaseUrl: String
+  val propertyUrl: String
+  def propertyFEUrl(taxYear: Int): String
 
   val vcBaseUrl: String
   def viewAndChangeViewUrl: String
@@ -306,6 +315,8 @@ trait AppConfig {
   val cisReleased: Boolean
   val pensionsEnabled: Boolean
   val pensionsReleased: Boolean
+  val propertyEnabled: Boolean
+  val propertyReleased: Boolean
   val stateBenefitsEnabled: Boolean
   val stateBenefitsReleased: Boolean
   val nrsEnabled: Boolean

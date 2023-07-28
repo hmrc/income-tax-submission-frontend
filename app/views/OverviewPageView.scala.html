@@ -256,6 +256,17 @@
         )
 
         @taskListItem(
+            appConfig.propertyReleased && tailoring.hasProperty,
+            appConfig.propertyEnabled,
+            "property_link",
+            "common.property",
+            appConfig.propertyFEUrl(taxYear),
+            PROPERTY,
+            incomeSources.property.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "property")
+        )
+
+        @taskListItem(
             appConfig.stateBenefitsReleased && tailoring.hasStateBenefits,
             appConfig.stateBenefitsEnabled,
             "stateBenefits_link",

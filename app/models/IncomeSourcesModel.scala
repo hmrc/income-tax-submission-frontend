@@ -21,6 +21,7 @@ import models.employment.{AllEmploymentData, HmrcEmploymentSource}
 import models.pensions.Pensions
 import models.statebenefits.AllStateBenefitsData
 import models.gains.InsurancePoliciesModel
+import models.property.AllPropertyData
 import play.api.libs.json.{Json, OFormat}
 
 case class IncomeSourcesModel(
@@ -34,7 +35,8 @@ case class IncomeSourcesModel(
                                gains: Option[InsurancePoliciesModel] = None,
                                stateBenefits: Option[AllStateBenefitsData] = None,
                                interestSavings: Option[SavingsIncomeDataModel] = None,
-                               stockDividends: Option[StockDividendsModel] = None
+                               stockDividends: Option[StockDividendsModel] = None,
+                               property: Option[AllPropertyData] = None
                              ) {
 
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
@@ -69,7 +71,8 @@ case class IncomeSourcesModel(
       stateBenefits.nonEmpty &&
       interestSavings.nonEmpty &&
       gains.nonEmpty &&
-      stockDividends.nonEmpty
+      stockDividends.nonEmpty &&
+      property.nonEmpty
   }
 }
 

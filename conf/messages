@@ -14,6 +14,7 @@ common.employment = PAYE employment
 common.employmentSL = PAYE employment (including student loans)
 common.cis = Construction Industry Scheme deductions
 common.pensions = Pensions
+common.property = Property
 common.stateBenefits = State benefits
 common.interestWithSavings = Interest from savings and securities
 common.underMaintenance = Under maintenance
@@ -138,6 +139,7 @@ addSections.hintText.donationsToCharity = including donations to overseas charit
 addSections.hintText.gains = including life insurance policies, life annuity contracts and capital redemption policies
 addSections.hintText.employment = including employment benefits, expenses and student loan repayments
 addSections.hintText.pensions = including income from pensions, payments into UK and overseas pensions and allowances
+addSections.hintText.property = including furnished holiday lettings in UK & EEA and property income
 addSections.hintText.stateBenefits = including Employment and Support Allowance and Jobseeker’s Allowance
 
 userResearch.acknowledgement.title = Making Tax Digital for Income Tax
