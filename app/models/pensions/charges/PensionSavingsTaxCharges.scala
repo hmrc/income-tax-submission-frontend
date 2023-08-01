@@ -21,7 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 case class PensionSavingsTaxCharges(pensionSchemeTaxReference: Seq[String],
                                     lumpSumBenefitTakenInExcessOfLifetimeAllowance: Option[LifetimeAllowance],
                                     benefitInExcessOfLifetimeAllowance: Option[LifetimeAllowance],
-                                    isAnnualAllowanceReduced: Boolean,
+                                    isAnnualAllowanceReduced: Option[Boolean],
                                     taperedAnnualAllowance: Option[Boolean],
                                     moneyPurchasedAllowance: Option[Boolean])
 
