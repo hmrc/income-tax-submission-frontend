@@ -50,7 +50,7 @@ object PensionsModels {
       lumpSumBenefitTakenInExcessOfLifetimeAllowance = Some(anLifetimeAllowance),
       benefitInExcessOfLifetimeAllowance = Some(anLifetimeAllowance),
       pensionSchemeTaxReference = Seq("00123456RA", "00123456RB"),
-      isAnnualAllowanceReduced = true,
+      isAnnualAllowanceReduced = Some(true),
       taperedAnnualAllowance = Some(true),
       moneyPurchasedAllowance = Some(true)
     )
