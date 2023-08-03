@@ -26,6 +26,7 @@ object ConfigKeys {
   val incomeTaxEmploymentFrontendUrl = "microservice.services.income-tax-employment-frontend.url"
   val incomeTaxCisFrontendUrl = "microservice.services.income-tax-cis-frontend.url"
   val stateBenefitsFrontendUrl = "microservice.services.income-tax-state-benefits-frontend.url"
+  val propertyFrontendUrl = "microservice.services.income-tax-property-frontend.url"
   val personalIncomeTaxFrontendUrl = "microservice.services.personal-income-tax-submission-frontend.url"
   val pensionsFrontendUrl = "microservice.services.income-tax-pensions-frontend.url"
   val additionalInformationFrontendUrl = "microservice.services.income-tax-additional-information-frontend.url"

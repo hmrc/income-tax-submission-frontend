@@ -141,12 +141,21 @@
                 )
             }
 
+            @if(journeys.contains("property") && incomeSources.property.isEmpty) {
+                @checkboxItem(
+                    messages("common.property"),
+                    "addSections.hintText.property",
+                    "property",
+                    item = 9
+                )
+            }
+
             @if(journeys.contains("state-benefits") && incomeSources.stateBenefits.isEmpty) {
                 @checkboxItem(
                     messages("common.stateBenefits"),
                     "addSections.hintText.stateBenefits",
                     "state-benefits",
-                    item = 9
+                    item = 10
                 )
             }
         </div>

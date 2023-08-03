@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package common
+package models.property
 
-object IncomeSources {
+import play.api.libs.json.{Json, OFormat}
 
-  val DIVIDENDS = "dividends"
-  val INTEREST = "interest"
-  val GIFT_AID = "gift-aid"
-  val EMPLOYMENT = "employment"
-  val CIS = "cis"
-  val PENSIONS = "pensions"
-  val STATE_BENEFITS = "state-benefits"
-  val INTEREST_SAVINGS = "interest-savings"
-  val GAINS = "gains"
-  val STOCK_DIVIDENDS = "stock-dividends"
-  val PROPERTY = "property"
+case class AllPropertyData(value: String)
+
+object AllPropertyData {
+  implicit val formats: OFormat[AllPropertyData] = Json.format[AllPropertyData]
 }

@@ -26,6 +26,7 @@ import models._
 import models.cis.{AllCISDeductions, CISDeductions, CISSource, PeriodData}
 import models.employment._
 import models.gains.{CapitalRedemptionModel, ForeignModel, InsurancePoliciesModel, LifeAnnuityModel, LifeInsuranceModel, VoidedIsaModel}
+import models.property.AllPropertyData
 import models.statebenefits.{AllStateBenefitsData, CustomerAddedStateBenefit, CustomerAddedStateBenefitsData, StateBenefitsData}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -150,6 +151,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
                 gainsEnabled: Boolean = true,
                 cisEnabled: Boolean = true,
                 pensionsEnabled: Boolean = true,
+                propertyEnabled: Boolean = true,
                 stateBenefitsEnabled: Boolean = true,
                 stockDividendsEnabled: Boolean = true,
                 crystallisationEnabled: Boolean = true,
@@ -265,7 +267,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     pensions = Some(allPensionsModel),
     stateBenefits = Some(allStateBenefitsData),
     interestSavings = Some(savingsInterestModel),
-    stockDividends = Some(aStockDividends)
+    stockDividends = Some(aStockDividends),
+    property = Some(allProperty)
   )
 
   lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
@@ -509,6 +512,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     closeCompanyLoansWrittenOff = Some(dividend)
   )
 
+  val allProperty: AllPropertyData = AllPropertyData("text")
 
   def playSessionCookies(taxYear: Int, validTaxYears: Seq[Int]): String = PlaySessionCookieBaker.bakeSessionCookie(Map(
     SessionValues.TAX_YEAR -> taxYear.toString,

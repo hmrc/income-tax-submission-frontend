@@ -14,6 +14,7 @@ common.employment = Cyflogaeth TWE
 common.employmentSL = Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)
 common.cis = Didyniadau Cynllun y Diwydiant Adeiladu
 common.pensions = Pensiynau
+common.property = Property
 common.stateBenefits = Budd-daliadau’r Wladwriaeth
 common.interestWithSavings = Llog o gynilion a gwarantau
 common.underMaintenance = Wrthi’n cynnal a chadw’r safle
@@ -136,6 +137,7 @@ addSections.hintText.donationsToCharity = gan gynnwys rhoddion i elusennau tramo
 addSections.hintText.gains = gan gynnwys polisïau yswiriant bywyd, contractau blwydd-daliadau bywyd a pholisïau adbrynu cyfalaf
 addSections.hintText.employment = gan gynnwys buddiannau cyflogaeth, treuliau ac ad-daliadau benthyciad myfyriwr
 addSections.hintText.pensions = gan gynnwys incwm o bensiynau, taliadau i bensiynau a lwfansau’r DU a thramor
+addSections.hintText.property = including furnished holiday lettings in UK & EEA and property income
 addSections.hintText.stateBenefits = gan gynnwys Lwfans Cyflogaeth a Chymorth, a Lwfans Ceisio Gwaith
 
 userResearch.acknowledgement.title = Making Tax Digital for Income Tax
