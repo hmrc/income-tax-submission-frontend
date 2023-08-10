@@ -66,7 +66,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     fork in Test := false
   )
-  .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(unmanagedResourceDirectories in IntegrationTest += baseDirectory.value / "it" / "resources")

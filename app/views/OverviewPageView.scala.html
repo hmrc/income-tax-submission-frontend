@@ -321,8 +321,6 @@
     @if(tailoring.sourceCount>1){
         @notificationBanner(messages(s"overview.notificationBannerPlural.${if(isAgent) "agent" else "individual"}", tailoring.sourceCount.toString()))
     }
-
-    <p class="govuk-body" id="p-checkSections">@messages("overview.tailoring")</p>
 }
 
 @NonTailoringContent(isInYear: Boolean) = {
@@ -348,6 +346,10 @@
     }
 
     @heading(messages(s"common.yourIncomeTaxReturn.$affinityText"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
+
+    @if(appConfig.tailoringEnabled){
+        <p class="govuk-body" id="p-checkSections">@messages("overview.tailoring")</p>
+    }
 
     <h2 class="govuk-heading-m" id="heading-tasklist">@messages(s"overview.$affinityText.task1.heading")</h2>
     
