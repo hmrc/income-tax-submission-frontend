@@ -47,4 +47,7 @@ object Business {
   }
 
   case class LatencyDetails(latencyEndDate: String, taxYear1: String, latencyIndicator1: String, taxYear2: String, latencyIndicator2: String)
+  object LatencyDetails{
+    implicit val latencyDetailsFormat: OFormat[LatencyDetails] = Json.format[LatencyDetails]
+  }
 }
