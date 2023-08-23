@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package models.pensions.selfEmployment
+package models.selfEmployment
 
-import models.pensions.selfEmployment.Business.{AccountingPeriod, LatencyDetails}
+import Business.{AccountingPeriod, LatencyDetails}
 import play.api.libs.json.{Json, OFormat}
 
 case class Business(
