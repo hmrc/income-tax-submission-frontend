@@ -175,7 +175,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
   lazy val stateBenefitsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.stateBenefitsEnabled")
   lazy val stateBenefitsReleased: Boolean = servicesConfig.getBoolean("feature-switch.stateBenefitsReleased")
-  lazy val selfEmploymentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.selfEmploymentReleased")
+  lazy val selfEmploymentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.selfEmploymentEnabled")
   lazy val selfEmploymentReleased: Boolean = servicesConfig.getBoolean("feature-switch.selfEmploymentReleased")
   lazy val propertyEnabled: Boolean = servicesConfig.getBoolean("feature-switch.propertyEnabled")
   lazy val propertyReleased: Boolean = servicesConfig.getBoolean("feature-switch.propertyReleased")
