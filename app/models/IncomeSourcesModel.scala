@@ -37,7 +37,7 @@ case class IncomeSourcesModel(
                                interestSavings: Option[SavingsIncomeDataModel] = None,
                                stockDividends: Option[StockDividendsModel] = None,
                                property: Option[AllPropertyData] = None,
-                               selfEmployment: Option[AllPropertyData] = None
+                               selfEmployment: Option[SelfEmploymentData] = None
                              ) {
 
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {

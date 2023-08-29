@@ -41,11 +41,12 @@ class OverviewTailoringModelSpec extends UnitTest {
     Some(AllEmploymentData(Seq(), None, Seq(), None)),
     Some(AllCISDeductions(None, None)),
     Some(Pensions(None, None, None, None, None)),
-    Some(InsurancePoliciesModel("2020-01-04T05:01:01Z", Seq(LifeInsuranceModel(None,None,500,None,None,None,None)) ,None,None,None,None)),
+    Some(InsurancePoliciesModel("2020-01-04T05:01:01Z", Seq(LifeInsuranceModel(None, None, 500, None, None, None, None)), None, None, None, None)),
     Some(AllStateBenefitsData(None, None)),
     Some(SavingsIncomeDataModel(None, None, None)),
     Some(StockDividendsModel(Some("2020-01-04T05:01:01Z"), None, None, Some(Dividend(Some("ref"), Some(123.45))), None, None)),
-    Some(AllPropertyData(""))
+    Some(AllPropertyData("")),
+    Some(SelfEmploymentData())
   )
 
   val sources = Seq(
@@ -58,6 +59,7 @@ class OverviewTailoringModelSpec extends UnitTest {
     IncomeSourceSetup("pensions", "hasPensions"),
     IncomeSourceSetup("property", "hasProperty"),
     IncomeSourceSetup("state-benefits", "hasStateBenefits"),
+    IncomeSourceSetup("self-employment", "hasSelfEmployment"),
     IncomeSourceSetup("stock-dividends", "hasStockDividends")
   )
 
