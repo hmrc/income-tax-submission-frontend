@@ -16,6 +16,7 @@ common.cis = Construction Industry Scheme deductions
 common.pensions = Pensions
 common.property = Property
 common.stateBenefits = State benefits
+common.selfEmployment = Self employment
 common.interestWithSavings = Interest from savings and securities
 common.underMaintenance = Under maintenance
 common.govUk = GOV.UK

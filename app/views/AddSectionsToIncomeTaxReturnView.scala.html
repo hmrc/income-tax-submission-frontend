@@ -158,6 +158,15 @@
                     item = 10
                 )
             }
+
+            @if(journeys.contains("self-employment") && incomeSources.selfEmployment.isEmpty) {
+                @checkboxItem(
+                    messages("common.selfEmployment"),
+                    "",
+                    "self-employment",
+                    item = 11
+                )
+            }
         </div>
      </fieldset>
 

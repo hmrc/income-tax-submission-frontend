@@ -32,10 +32,11 @@ case class OverviewTailoringModel(tailoring: Seq[String], incomeSources: IncomeS
   val hasStateBenefits: Boolean = tailoring.contains("state-benefits") || incomeSources.stateBenefits.nonEmpty
   val hasGains: Boolean = tailoring.contains("gains") || incomeSources.gains.nonEmpty
   val hasStockDividends: Boolean = tailoring.contains("stock-dividends") || incomeSources.stockDividends.nonEmpty
+  val hasSelfEmployment: Boolean = tailoring.contains("self-employment") || incomeSources.selfEmployment.nonEmpty
 
   val allJourneys: List[Boolean] =
-    List(hasDividends, hasInterest, hasGiftAid, hasEmployment, hasGains, hasCis, hasPensions, hasProperty, hasStateBenefits, hasStockDividends)
+    List(hasDividends, hasInterest, hasGiftAid, hasEmployment, hasGains, hasCis, hasPensions, hasProperty, hasStateBenefits, hasStockDividends, hasSelfEmployment)
 
   val sourceCount: Int = (tailoring.size - (bool2int(hasDividends) + bool2int(hasInterest) + bool2int(hasGiftAid) + bool2int(hasEmployment)
-    + bool2int(hasCis) + bool2int(hasPensions) + bool2int(hasProperty) + bool2int(hasGains) + bool2int(hasStateBenefits) + bool2int(hasStockDividends))) * -1
+    + bool2int(hasCis) + bool2int(hasPensions) + bool2int(hasProperty) + bool2int(hasGains) + bool2int(hasStateBenefits) + bool2int(hasStockDividends) + bool2int(hasSelfEmployment))) * -1
 }

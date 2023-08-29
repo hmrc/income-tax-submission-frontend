@@ -75,6 +75,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val cisRemove = incomeSourcesModel.cis.exists(_.contractorCISDeductions.exists(_.hasNonZeroData)) || incomeSourcesModel.cis.exists(_.customerCISDeductions.exists(_.hasNonZeroData))
     val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
     val stateBenefitsRemove = incomeSourcesModel.stateBenefits.nonEmpty
+    val selfEmploymentRemove = incomeSourcesModel.selfEmployment.nonEmpty
     val interestSavingsRemove = incomeSourcesModel.interestSavings.nonEmpty
     val gainsRemove = incomeSourcesModel.gains.nonEmpty
     val stockDividendsRemove = incomeSourcesModel.stockDividends.nonEmpty
@@ -100,6 +101,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
           (employmentRemove, EMPLOYMENT),
           (pensionsRemove, PENSIONS),
           (stateBenefitsRemove, STATE_BENEFITS),
+          (selfEmploymentRemove, SELF_EMPLOYMENT),
           (giftAidRemove || giftAidHash, GIFT_AID),
           (interestRemove || interestHash, INTEREST),
           (interestSavingsRemove, INTEREST_SAVINGS),
