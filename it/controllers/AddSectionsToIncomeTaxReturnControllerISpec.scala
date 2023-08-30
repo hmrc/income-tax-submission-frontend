@@ -58,6 +58,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val pensionsHint: String
     val stateBenefits: String
     val stateBenefitsHint: String
+    val selfEmployment: String
     val saveAndContinue: String
   }
 
@@ -119,6 +120,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val pensionsHint: String = "including income from pensions, payments into UK and overseas pensions and allowances"
     val stateBenefits: String = "State benefits"
     val stateBenefitsHint: String = "including Employment and Support Allowance and Jobseeker’s Allowance"
+    val selfEmployment: String = "Self employment"
     val saveAndContinue: String = "Save and continue"
   }
 
@@ -142,6 +144,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val pensionsHint: String = "gan gynnwys incwm o bensiynau, taliadau i bensiynau a lwfansau’r DU a thramor"
     val stateBenefits: String = "Budd-daliadau’r Wladwriaeth"
     val stateBenefitsHint: String = "gan gynnwys Lwfans Cyflogaeth a Chymorth, a Lwfans Ceisio Gwaith"
+    val selfEmployment: String = "Self employment"
     val saveAndContinue: String = "Cadw ac yn eich blaen"
   }
 
@@ -163,6 +166,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     val pensionsHintSelector: String = "#pensions-item-hint"
     val stateBenefitsSelector: String = "#state-benefits"
     val stateBenefitsHintSelector: String = "#state-benefits-item-hint"
+    val selfEmploymentSelector: String = "#self-employment"
     val useYourSoftwareParagraphSelector: String = "#main-content > div > div > form > fieldset > legend > p:nth-child(2)"
     val useYourSoftwareParagraphNoSourcesSelector: String = "#main-content > div > div > form > div.govuk-body > p"
     val noMoreIncomeSourcesInsetSelector: String = "#main-content > div > div > form > div.govuk-inset-text > p"
@@ -185,7 +189,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     .build
 
 
-  private def cleanDatabase(taxYear: Int) = {
+  private def cleanDatabase(taxYear: Int): Seq[String] = {
     await(tailoringRepository.clear(taxYear))
     await(tailoringRepository.ensureIndexes)
   }
@@ -198,7 +202,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     ))())
   }
 
-  private def insertAllJourneys(endOfYear: Boolean = false) = {
+  private def insertAllJourneys(endOfYear: Boolean = false): Either[DatabaseError, Boolean] = {
     insertJourneys(
       endOfYear,
       "dividends",
@@ -210,6 +214,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       "pensions",
       "property",
       "state-benefits",
+      "self-employment",
       "stock-dividends"
     )
   }
@@ -273,6 +278,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
           textOnPageCheck(pensionsHint, Selectors.pensionsHintSelector)
           inputFieldValueCheck(addSectionsInputFieldName, Selectors.stateBenefitsSelector, "state-benefits")
           textOnPageCheck(stateBenefitsHint, Selectors.stateBenefitsHintSelector)
+          inputFieldValueCheck(addSectionsInputFieldName, Selectors.selfEmploymentSelector, "self-employment")
           textOnPageCheck(specific.useYourSoftwarePackage, Selectors.useYourSoftwareParagraphSelector)
           buttonCheck(saveAndContinue, Selectors.saveAndContinueSelector, None)
         }

@@ -56,7 +56,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your Income Tax Return"
     val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
-    val notificationBannerPlural = "We have added 9 sections to your return, based on the information we already hold about you."
+    val notificationBannerPlural = "We have added 10 sections to your return, based on the information we already hold about you."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -73,7 +73,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your client’s Income Tax Return"
     val notificationBanner = "We have added a section to your client’s return, based on the information we already hold about them."
-    val notificationBannerPlural = "We have added 9 sections to your client’s return, based on the information we already hold about them."
+    val notificationBannerPlural = "We have added 10 sections to your client’s return, based on the information we already hold about them."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -88,7 +88,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
     val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 9 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 10 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -105,7 +105,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
     val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 9 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 10 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
   }
 
   trait SpecificExpectedResults {
@@ -144,6 +144,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val pensionsLinkText: String
     val propertyLinkText: String
     val stateBenefitsLinkText: String
+    val selfEmploymentLinkText: String
     val gainsLinkText: String
     val continue: String
     val fillInTheSections: String
@@ -173,6 +174,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val pensionsLinkText = "Pensions"
     val propertyLinkText = "Property"
     val stateBenefitsLinkText = "State benefits"
+    val selfEmploymentLinkText = "Self employment"
     val gainsLinkText = "Gains from life insurance policies and contracts"
     val continue = "continue"
     val fillInTheSections = "Fill in the sections you need to update. Use your software package to update items that are not on this list."
@@ -202,6 +204,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val pensionsLinkText = "Pensiynau"
     val propertyLinkText = "Property"
     val stateBenefitsLinkText = "Budd-daliadau’r Wladwriaeth"
+    val selfEmploymentLinkText = "Self employment"
     val gainsLinkText = "Enillion o bolisïau yswiriant bywyd a chontractau"
     val continue = "continue"
     val fillInTheSections: String = "Llenwch yr adrannau mae angen i chi eu diweddaru. " +
@@ -245,6 +248,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
     val stateBenefitsSelector: String = sectionNameSelector(9)
     val stateBenefitsLinkSelector = "#stateBenefits_link"
     val stateBenefitsStatusSelector: String = statusTagSelector(9)
+    val selfEmploymentSelector: String = sectionNameSelector(10)
+    val selfEmploymentLinkSelector = "#selfEmployment_link"
+    val selfEmploymentStatusSelector: String = statusTagSelector(10)
 
     val viewEstimateSelector = "#calculation_link"
     val submitReturnEOYSelector = "#heading-checkAndSubmit"
@@ -281,7 +287,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
   case class JourneyData(tailoringKey: String, expectedText: String, incomeSourcesModel: IncomeSourcesModel)
 
-  def journeys(user: UserScenario[CommonExpectedResults, SpecificExpectedResults]) = Seq(
+  def journeys(user: UserScenario[CommonExpectedResults, SpecificExpectedResults]): Seq[JourneyData] = Seq(
     JourneyData("interest", user.commonExpectedResults.interestsLinkText, IncomeSourcesModel(interest = incomeSourcesModel.interest)),
     JourneyData("dividends", user.commonExpectedResults.dividendsLinkText, IncomeSourcesModel(dividends = incomeSourcesModel.dividends)),
     JourneyData("gift-aid", user.commonExpectedResults.giftAidLinkText, IncomeSourcesModel(giftAid = incomeSourcesModel.giftAid)),
@@ -359,6 +365,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               pensionsEnabled = false,
               propertyEnabled = false,
               stateBenefitsEnabled = false,
+              selfEmploymentEnabled = false,
               crystallisationEnabled = false
             ), request, user.isWelsh).get
           }
@@ -406,6 +413,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "have a state benefits section that says under maintenance" which {
             textOnPageCheck(underMaintenance, stateBenefitsStatusSelector)
           }
+          "have a self employment section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, selfEmploymentStatusSelector)
+          }
           "have a estimate link" which {
             linkCheck(incomeTaxAccountLink, viewEstimateSelector, Links.viewAndChangeLink(user.isAgent))
           }
@@ -441,7 +451,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, property = None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, selfEmployment = None, property = None))
             route(app, request, user.isWelsh).get
           }
 
@@ -508,6 +518,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYear))
             textOnPageCheck(notStartedText, giftAidStatusSelector)
+          }
+
+          "has a self employment section" which {
+            textOnPageCheck(selfEmploymentLinkText, selfEmploymentSelector)
+            textOnPageCheck(notStartedText, selfEmploymentStatusSelector)
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
           }
 
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
@@ -589,6 +605,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, stateBenefitsStatusSelector)
           }
 
+          "has a self employment section" which {
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            textOnPageCheck(updatedText, selfEmploymentStatusSelector)
+          }
+
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
           buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
         }
@@ -663,6 +684,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             "has a state benefits section" which {
               linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
               textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+            }
+
+            "has a self employment section" which {
+              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+              textOnPageCheck(updatedText, selfEmploymentStatusSelector)
             }
 
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
@@ -748,6 +774,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, stateBenefitsStatusSelector)
             }
 
+            "has a self employment section" which {
+              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+              textOnPageCheck(updatedText, selfEmploymentStatusSelector)
+            }
+
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
           }
@@ -827,6 +858,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a state benefits section" which {
             linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
             textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+          }
+
+          "has a self employment section" which {
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            textOnPageCheck(updatedText, selfEmploymentStatusSelector)
           }
 
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
@@ -912,6 +948,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               textOnPageCheck(updatedText, stateBenefitsStatusSelector)
             }
 
+            "has a self employment section" which {
+              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+              textOnPageCheck(updatedText, selfEmploymentStatusSelector)
+            }
+
             formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
             buttonCheck(updateTaxCalculation, updateTaxCalculationSelector, None)
           }
@@ -989,6 +1030,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a state benefits section" which {
             linkCheck(stateBenefitsLinkText, stateBenefitsLinkSelector, stateBenefitsLink(taxYear))
             textOnPageCheck(updatedText, stateBenefitsStatusSelector)
+          }
+
+          "has a self employment section" which {
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            textOnPageCheck(updatedText, selfEmploymentStatusSelector)
           }
 
           "have a add sections link " which {
@@ -1078,6 +1124,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               cisEnabled = false,
               pensionsEnabled = false,
               stateBenefitsEnabled = false,
+              selfEmploymentEnabled = false,
               crystallisationEnabled = false
             ), request, user.isWelsh).get
           }
@@ -1128,8 +1175,12 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(underMaintenance, stateBenefitsStatusSelector)
           }
 
-          "has a donations to charity section" which {
+          "has a donations to charity section that says under maintenance" which {
             textOnPageCheck(underMaintenance, giftAidStatusSelector)
+          }
+
+          "has a self employment section that says under maintenance" which {
+            textOnPageCheck(underMaintenance, selfEmploymentStatusSelector)
           }
 
           textOnPageCheck(specific.goToYourIncomeTax, goToYourIncomeTaxReturnSelector)
@@ -1212,6 +1263,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(updatedText, giftAidStatusSelector)
           }
 
+          "has a self employment section" which {
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            textOnPageCheck(updatedText, selfEmploymentStatusSelector)
+          }
+
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
           formPostLinkCheck(endOfYearContinueLink, formSelector)
@@ -1291,6 +1347,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
+          "has a self employment section" which {
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            textOnPageCheck(notStartedText, selfEmploymentStatusSelector)
+          }
+
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
           formPostLinkCheck(endOfYearContinueLink, formSelector)
@@ -1368,6 +1429,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a donations to charity section" which {
             linkCheck(giftAidLinkText, giftAidLinkSelector, appConfig.personalIncomeTaxGiftAidUrl(taxYearEOY))
             textOnPageCheck(notStartedText, giftAidStatusSelector)
+          }
+
+          "has a self employment section" which {
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            textOnPageCheck(notStartedText, selfEmploymentStatusSelector)
           }
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
@@ -1570,6 +1636,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             cisEnabled = false,
             pensionsEnabled = false,
             stateBenefitsEnabled = false,
+            selfEmploymentEnabled = false,
             crystallisationEnabled = false
           ), request).get
         }
@@ -1614,6 +1681,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               cisEnabled = false,
               pensionsEnabled = false,
               stateBenefitsEnabled = false,
+              selfEmploymentEnabled = false,
               crystallisationEnabled = false
             ), request).get
           }
@@ -1657,6 +1725,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
               cisEnabled = false,
               pensionsEnabled = false,
               stateBenefitsEnabled = false,
+              selfEmploymentEnabled = false,
               crystallisationEnabled = false
             ), request).get
           }

@@ -165,9 +165,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override def stateBenefitsFEUrl(taxYear: Int): String = ???
 
   override val selfEmploymentBaseUrl: String = "/self-employment"
-  override val selfEmploymentUrl: String = "/task-list"
-
-  override def selfEmploymentFEUrl(taxYear: Int): String = ???
+  override val selfEmploymentFEUrl: String = "/task-list"
 
   override val propertyBaseUrl: String = "/property"
   override val propertyUrl: String = "/summary"
