@@ -98,6 +98,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
              cisEnabled: Boolean = true,
              pensionsEnabled: Boolean = true,
              stateBenefitsEnabled: Boolean = true,
+             selfEmploymentEnabled: Boolean = true,
              crystallisationEnabled: Boolean = true,
              taxYearErrorFeatureSwitch: Boolean = false,
              tailoringEnabled: Boolean = false
@@ -126,6 +127,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.cisEnabled" -> cisEnabled.toString,
     "feature-switch.pensionsEnabled" -> pensionsEnabled.toString,
     "feature-switch.stateBenefitsEnabled" -> stateBenefitsEnabled.toString,
+    "feature-switch.selfEmploymentEnabled" -> selfEmploymentEnabled.toString,
     "feature-switch.crystallisationEnabled" -> crystallisationEnabled.toString,
     "feature-switch.tailoringEnabled" -> tailoringEnabled.toString,
     "metrics.enabled" -> "false",
@@ -153,6 +155,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
                 pensionsEnabled: Boolean = true,
                 propertyEnabled: Boolean = true,
                 stateBenefitsEnabled: Boolean = true,
+                selfEmploymentEnabled: Boolean = true,
                 stockDividendsEnabled: Boolean = true,
                 crystallisationEnabled: Boolean = true,
                 taxYearErrorFeatureSwitch: Boolean = false,
@@ -174,6 +177,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         cisEnabled,
         pensionsEnabled,
         stateBenefitsEnabled,
+        selfEmploymentEnabled,
         stockDividendsEnabled,
         crystallisationEnabled,
         taxYearErrorFeatureSwitch,
@@ -268,7 +272,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     stateBenefits = Some(allStateBenefitsData),
     interestSavings = Some(savingsInterestModel),
     stockDividends = Some(aStockDividends),
-    property = Some(allProperty)
+    property = Some(allProperty),
+    selfEmployment = Some(selfEmploymentData)
   )
 
   lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
@@ -400,6 +405,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     amount = Some(300.00),
     taxPaid = Some(400.00)
   )
+
+  lazy val selfEmploymentData: SelfEmploymentData = SelfEmploymentData()
 
   lazy val aCustomerAddedStateBenefitsData: CustomerAddedStateBenefitsData = CustomerAddedStateBenefitsData(
     incapacityBenefits = Some(Set(aCustomerAddedStateBenefit)),

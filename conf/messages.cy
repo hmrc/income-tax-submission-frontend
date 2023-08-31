@@ -16,6 +16,7 @@ common.cis = Didyniadau Cynllun y Diwydiant Adeiladu
 common.pensions = Pensiynau
 common.property = Property
 common.stateBenefits = Budd-daliadau’r Wladwriaeth
+common.selfEmployment = Self employment
 common.interestWithSavings = Llog o gynilion a gwarantau
 common.underMaintenance = Wrthi’n cynnal a chadw’r safle
 common.govUk = GOV.UK/CYMRAEG

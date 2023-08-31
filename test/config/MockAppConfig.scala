@@ -113,6 +113,10 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val stateBenefitsReleased: Boolean = true
 
+  override lazy val selfEmploymentEnabled: Boolean = true
+
+  override lazy val selfEmploymentReleased: Boolean = true
+
   override lazy val propertyEnabled: Boolean = true
 
   override lazy val propertyReleased: Boolean = true
@@ -159,6 +163,9 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override val stateBenefitsUrl: String = "/summary"
 
   override def stateBenefitsFEUrl(taxYear: Int): String = ???
+
+  override val selfEmploymentBaseUrl: String = "/self-employment"
+  override val selfEmploymentFEUrl: String = "/task-list"
 
   override val propertyBaseUrl: String = "/property"
   override val propertyUrl: String = "/summary"

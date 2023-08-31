@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object IncomeSources {
+import play.api.libs.json.{Json, OFormat}
 
-  val DIVIDENDS = "dividends"
-  val INTEREST = "interest"
-  val GIFT_AID = "gift-aid"
-  val EMPLOYMENT = "employment"
-  val CIS = "cis"
-  val PENSIONS = "pensions"
-  val STATE_BENEFITS = "state-benefits"
-  val SELF_EMPLOYMENT = "self-employment"
-  val INTEREST_SAVINGS = "interest-savings"
-  val GAINS = "gains"
-  val STOCK_DIVIDENDS = "stock-dividends"
-  val PROPERTY = "property"
+case class SelfEmploymentData(value: String = "") // TODO this is a default placeholder which shall be developed later on
+
+object SelfEmploymentData {
+  implicit val formats: OFormat[SelfEmploymentData] = Json.format[SelfEmploymentData]
 }

@@ -276,6 +276,18 @@
             incomeSources.stateBenefits.isDefined,
             isUnavailable = checkServiceAvailability(incomeSources, "state-benefits")
         )
+
+        @taskListItem(
+            appConfig.selfEmploymentReleased && tailoring.hasSelfEmployment,
+            appConfig.selfEmploymentEnabled,
+            "selfEmployment_link",
+            "common.selfEmployment",
+            appConfig.selfEmploymentFEUrl,
+            SELF_EMPLOYMENT,
+            incomeSources.selfEmployment.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "self-employment")
+        )
+
         @if(appConfig.tailoringEnabled){
             @if(!tailoring.allJourneys.contains(true)){
                 <li class="govuk-inset-text">

@@ -79,6 +79,9 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val stateBenefitsUrl: String = s"$stateBenefitsBaseUrl/update-and-submit-income-tax-return/state-benefits"
   def stateBenefitsFEUrl(taxYear: Int): String = s"$stateBenefitsUrl/$taxYear/summary"
 
+  lazy val selfEmploymentBaseUrl: String = servicesConfig.getString(ConfigKeys.selfEmploymentFrontendUrl)
+  lazy val selfEmploymentFEUrl: String = s"$selfEmploymentBaseUrl/update-and-submit-income-tax-return/self-employment/task-list"
+
   lazy val propertyBaseUrl: String = servicesConfig.getString(ConfigKeys.propertyFrontendUrl)
   lazy val propertyUrl: String = s"$propertyBaseUrl/update-and-submit-income-tax-return/property"
   def propertyFEUrl(taxYear: Int): String = s"$propertyUrl/$taxYear/summary"
@@ -171,6 +174,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val cisReleased: Boolean = servicesConfig.getBoolean("feature-switch.cisReleased")
   lazy val stateBenefitsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.stateBenefitsEnabled")
   lazy val stateBenefitsReleased: Boolean = servicesConfig.getBoolean("feature-switch.stateBenefitsReleased")
+  lazy val selfEmploymentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.selfEmploymentEnabled")
+  lazy val selfEmploymentReleased: Boolean = servicesConfig.getBoolean("feature-switch.selfEmploymentReleased")
   lazy val propertyEnabled: Boolean = servicesConfig.getBoolean("feature-switch.propertyEnabled")
   lazy val propertyReleased: Boolean = servicesConfig.getBoolean("feature-switch.propertyReleased")
   lazy val pensionsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.pensionsEnabled")
@@ -252,6 +257,9 @@ trait AppConfig {
   val stateBenefitsUrl: String
   def stateBenefitsFEUrl(taxYear: Int): String
 
+  val selfEmploymentBaseUrl: String
+  val selfEmploymentFEUrl: String
+
   val propertyBaseUrl: String
   val propertyUrl: String
   def propertyFEUrl(taxYear: Int): String
@@ -319,6 +327,8 @@ trait AppConfig {
   val propertyReleased: Boolean
   val stateBenefitsEnabled: Boolean
   val stateBenefitsReleased: Boolean
+  val selfEmploymentEnabled: Boolean
+  val selfEmploymentReleased: Boolean
   val nrsEnabled: Boolean
   val crystallisationEnabled: Boolean
   val tailoringEnabled: Boolean
