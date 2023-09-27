@@ -523,7 +523,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a self employment section" which {
             textOnPageCheck(selfEmploymentLinkText, selfEmploymentSelector)
             textOnPageCheck(notStartedText, selfEmploymentStatusSelector)
-            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYear))
           }
 
           formPostLinkCheck(controllers.routes.OverviewPageController.inYearEstimate(taxYear).url, formSelector)
@@ -606,7 +606,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a self employment section" which {
-            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYear))
             textOnPageCheck(updatedText, selfEmploymentStatusSelector)
           }
 
@@ -687,7 +687,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             }
 
             "has a self employment section" which {
-              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYear))
               textOnPageCheck(updatedText, selfEmploymentStatusSelector)
             }
 
@@ -775,7 +775,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             }
 
             "has a self employment section" which {
-              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYear))
               textOnPageCheck(updatedText, selfEmploymentStatusSelector)
             }
 
@@ -861,7 +861,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a self employment section" which {
-            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYear))
             textOnPageCheck(updatedText, selfEmploymentStatusSelector)
           }
 
@@ -949,7 +949,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             }
 
             "has a self employment section" which {
-              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+              linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYear))
               textOnPageCheck(updatedText, selfEmploymentStatusSelector)
             }
 
@@ -1033,7 +1033,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a self employment section" which {
-            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYear))
             textOnPageCheck(updatedText, selfEmploymentStatusSelector)
           }
 
@@ -1264,7 +1264,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a self employment section" which {
-            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYearEOY))
             textOnPageCheck(updatedText, selfEmploymentStatusSelector)
           }
 
@@ -1348,7 +1348,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a self employment section" which {
-            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYearEOY))
             textOnPageCheck(notStartedText, selfEmploymentStatusSelector)
           }
 
@@ -1432,7 +1432,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a self employment section" which {
-            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink)
+            linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYearEOY))
             textOnPageCheck(notStartedText, selfEmploymentStatusSelector)
           }
 
