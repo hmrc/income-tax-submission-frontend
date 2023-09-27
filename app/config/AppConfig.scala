@@ -80,7 +80,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def stateBenefitsFEUrl(taxYear: Int): String = s"$stateBenefitsUrl/$taxYear/summary"
 
   lazy val selfEmploymentBaseUrl: String = servicesConfig.getString(ConfigKeys.selfEmploymentFrontendUrl)
-  lazy val selfEmploymentFEUrl: String = s"$selfEmploymentBaseUrl/update-and-submit-income-tax-return/self-employment/task-list"
+  lazy val selfEmploymentUrl: String = s"$selfEmploymentBaseUrl/update-and-submit-income-tax-return/self-employment"
+  def selfEmploymentFEUrl(taxYear: Int): String = s"$selfEmploymentUrl/$taxYear/task-list"
 
   lazy val propertyBaseUrl: String = servicesConfig.getString(ConfigKeys.propertyFrontendUrl)
   lazy val propertyUrl: String = s"$propertyBaseUrl/update-and-submit-income-tax-return/property"
@@ -258,7 +259,9 @@ trait AppConfig {
   def stateBenefitsFEUrl(taxYear: Int): String
 
   val selfEmploymentBaseUrl: String
-  val selfEmploymentFEUrl: String
+  val selfEmploymentUrl: String
+
+  def selfEmploymentFEUrl(taxYear: Int): String
 
   val propertyBaseUrl: String
   val propertyUrl: String

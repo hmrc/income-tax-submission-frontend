@@ -59,7 +59,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
     def stateBenefitsLink(taxYear: Int = taxYear): String = s"http://localhost:9376/update-and-submit-income-tax-return/state-benefits/$taxYear/summary"
 
-    val selfEmploymentLink: String = "http://localhost:10901/update-and-submit-income-tax-return/self-employment/task-list"
+    def selfEmploymentLink(taxYear: Int = taxYear): String = s"http://localhost:10901/update-and-submit-income-tax-return/self-employment/$taxYear/task-list"
 
     def viewEstimateLink(taxYear: Int = taxYear): String = s"/update-and-submit-income-tax-return/$taxYear/calculate"
 

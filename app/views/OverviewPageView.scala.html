@@ -282,7 +282,7 @@
             appConfig.selfEmploymentEnabled,
             "selfEmployment_link",
             "common.selfEmployment",
-            appConfig.selfEmploymentFEUrl,
+            appConfig.selfEmploymentFEUrl(taxYear),
             SELF_EMPLOYMENT,
             incomeSources.selfEmployment.isDefined,
             isUnavailable = checkServiceAvailability(incomeSources, "self-employment")
