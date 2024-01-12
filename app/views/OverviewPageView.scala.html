@@ -236,9 +236,9 @@
             "gains_link",
             "common.gains",
             gainsUrlRedirect(incomeSources),
-            appConfig.additionalInformationGatewayUrl(taxYear),
             GAINS,
-            incomeSources.gains.isDefined
+            incomeSources.gains.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "gains")
         )
 
         @taskListItem(
