@@ -141,7 +141,7 @@
 }
 
 @gainsUrlRedirect(incomeSources: IncomeSourcesModel) = @{
-    if(incomeSources.gains.isEmpty && appConfig.tailoringEnabled && !isInYear) {
+    if(incomeSources.gains.isEmpty && appConfig.tailoringEnabled) {
         appConfig.additionalInformationGatewayUrl(taxYear)
     } else {
         appConfig.additionalInformationSummaryUrl(taxYear)
