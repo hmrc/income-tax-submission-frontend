@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
     implicit user =>
-      if(appConfig.tailoringEnabled) {
+      if (appConfig.tailoringEnabled) {
         incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
           case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
           case Right(incomeSources) =>
@@ -73,7 +73,7 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
 
   def submit(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async {
     implicit user =>
-      if(appConfig.tailoringEnabled) {
+      if (appConfig.tailoringEnabled) {
         val userAffinity = if (user.isAgent) "agent" else "individual"
         incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
           case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
