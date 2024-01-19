@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
               val nrsSubmissionModelCalcId: NrsSubmissionModel = NrsSubmissionModel(calculationId = calculationId)
 
               if (appConfig.nrsEnabled) {
-                nrsService.submit(user.nino, nrsSubmissionModelCalcId, user.mtditid, "itsa-crystallisation")
+                nrsService.submit(user.nino, nrsSubmissionModelCalcId, user.mtditid, "itsa-crystallisation")// Does this even need to change to final declaration??
               }
 
               Redirect(controllers.routes.TaxReturnReceivedController.show(taxYear))
