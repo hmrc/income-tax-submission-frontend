@@ -192,6 +192,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
       (INTEREST, interestEnabled),
       (GIFT_AID, giftAidEnabled),
       (PENSIONS, pensionsEnabled),
+      (SELF_EMPLOYMENT, selfEmploymentEnabled),
       employmentFeatureEnabled,
       (CIS, cisEnabled),
       (STATE_BENEFITS, stateBenefitsEnabled),
