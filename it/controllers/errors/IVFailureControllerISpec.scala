@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,6 @@ class IVFailureControllerISpec extends IntegrationTest with ViewHelpers with Sta
     lazy val tookTooLongTextSelector = "#main-content > div > div > ul > li:nth-child(1)"
     lazy val failedToAnswerTextSelector = "#main-content > div > div > ul > li:nth-child(2)"
     lazy val couldNotMatchTextSelector = "#main-content > div > div > ul > li:nth-child(3)"
-    lazy val signOutFormSelector = "#main-content > div > div > form"
     lazy val signOutButtonSelector = "#continue"
   }
 
@@ -80,8 +79,7 @@ class IVFailureControllerISpec extends IntegrationTest with ViewHelpers with Sta
         textOnPageCheck(failedToAnswerText, failedToAnswerTextSelector)
         textOnPageCheck(couldNotMatchText, couldNotMatchTextSelector)
 
-        formGetLinkCheck(signOutUrl, signOutFormSelector)
-        buttonCheck(signOutButtonText, signOutButtonSelector, None)
+        buttonCheck(signOutButtonText, signOutButtonSelector, Some(signOutUrl))
       }
     }
 
@@ -107,8 +105,7 @@ class IVFailureControllerISpec extends IntegrationTest with ViewHelpers with Sta
         textOnPageCheck(failedToAnswerTextWelsh, failedToAnswerTextSelector)
         textOnPageCheck(couldNotMatchTextWelsh, couldNotMatchTextSelector)
 
-        formGetLinkCheck(signOutUrl, signOutFormSelector)
-        buttonCheck(signOutButtonTextWelsh, signOutButtonSelector, None)
+        buttonCheck(signOutButtonTextWelsh, signOutButtonSelector, Some(signOutUrl))
       }
     }
   }
