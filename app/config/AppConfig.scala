@@ -46,7 +46,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val personalIncomeTaxSubmissionUrl: String =s"$personalIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/personal-income"
   lazy val additionalInformationSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.additionalInformationFrontendUrl)
   lazy val additionalInformationSubmissionUrl: String =s"$additionalInformationSubmissionBaseUrl/update-and-submit-income-tax-return/additional-information"
-
+  //Income tax calculation service
+  lazy val incomeTaxCalculationService: String = servicesConfig.baseUrl("income-tax-calculation")
   def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-uk-companies"
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-income-from-dividends"
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-interest"
@@ -223,6 +224,8 @@ trait AppConfig {
   val incomeTaxSubmissionUrl: String
   val personalIncomeTaxSubmissionBaseUrl: String
   val personalIncomeTaxSubmissionUrl: String
+
+  val incomeTaxCalculationService: String
   def personalIncomeTaxDividendsUrl(taxYear: Int): String
   def personalIncomeTaxDividendsTailorPage(taxYear: Int): String
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String
