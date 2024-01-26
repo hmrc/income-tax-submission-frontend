@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.LiabilityCalculationConnector
+import connectors.{IncomeTaxCalculationConnector, LiabilityCalculationConnector}
 import connectors.httpParsers.LiabilityCalculationHttpParser.LiabilityCalculationResponse
 import models.LiabilityCalculationIdModel
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,9 @@ import scala.concurrent.Future
 class LiabilityCalculationServiceSpec extends UnitTest {
 
   val connector: LiabilityCalculationConnector = mock[LiabilityCalculationConnector]
-  val service: LiabilityCalculationService = new LiabilityCalculationService(connector)
+  val incomeTaxCalculationConnector: IncomeTaxCalculationConnector = mock[IncomeTaxCalculationConnector]
+
+  val service: LiabilityCalculationService = new LiabilityCalculationService(connector, incomeTaxCalculationConnector)
 
   ".getCalculationId" should {
 

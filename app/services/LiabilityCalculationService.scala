@@ -16,15 +16,20 @@
 
 package services
 
-import connectors.LiabilityCalculationConnector
+import connectors.{IncomeTaxCalculationConnector, LiabilityCalculationConnector}
 import connectors.httpParsers.LiabilityCalculationHttpParser.LiabilityCalculationResponse
+import connectors.httpParsers.CalculationDetailsHttpParser.CalculationDetailResponse
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LiabilityCalculationService @Inject()(liabilityCalculationConnector: LiabilityCalculationConnector) {
+class LiabilityCalculationService @Inject()(
+                                             liabilityCalculationConnector: LiabilityCalculationConnector,
+                                             incomeTaxCalculationConnector: IncomeTaxCalculationConnector
+                                           )  (implicit ec: ExecutionContext) {
 
   def getCalculationId(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
     liabilityCalculationConnector.getCalculationId(nino, taxYear)(hc.withExtraHeaders("mtditid" -> mtditid))
@@ -32,5 +37,19 @@ class LiabilityCalculationService @Inject()(liabilityCalculationConnector: Liabi
 
   def getIntentToCrystallise(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
     liabilityCalculationConnector.getIntentToCrystallise(nino, taxYear)(hc.withExtraHeaders("mtditid" -> mtditid))
+  }
+
+  def getCalculationDetailsByCalcId(mtditid: String, nino: String, calcId: String, taxYear: Int)
+                                   (implicit headerCarrier: HeaderCarrier): Future[CalculationDetailResponse] = {
+    Logger("application").debug("[IncomeTaxCalculationService][getCalculationDetailsByCalcId] - " +
+      s"Requesting calc data from the backend by calc id and taxYear: $calcId - $taxYear")
+    incomeTaxCalculationConnector.getCalculationResponseByCalcId(mtditid, nino, calcId, taxYear)
+  }
+
+  def getCalculationDetails(mtditid: String, nino: String, taxYear: Int)
+                           (implicit headerCarrier: HeaderCarrier): Future[CalculationDetailResponse] = {
+    Logger("application").debug("[IncomeTaxCalculationService][getCalculationDetails] - " +
+      s"Requesting calc data from the backend by nino and taxYear")
+    incomeTaxCalculationConnector.getCalculationResponse(mtditid, nino, taxYear)
   }
 }

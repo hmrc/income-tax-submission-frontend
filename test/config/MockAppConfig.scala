@@ -32,7 +32,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override lazy val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
 
 
-  override lazy val incomeTaxCalculationServiceUrl: String = s"/income-tax-calculation/" //TODO Fix me, check the usage of this in test
+  override lazy val incomeTaxCalculationServiceUrl: String = "/income-tax-calculation" //TODO Fix me, check the usage of this in test
   lazy val additionalInformationTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/additional-information"
 
   override lazy val ivSuccessUrl: String = s"/update-and-submit-income-tax-return/iv-uplift-callback"

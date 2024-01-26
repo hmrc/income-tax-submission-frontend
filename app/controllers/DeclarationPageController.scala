@@ -21,13 +21,14 @@ import common.SessionValues._
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
+import models.calculation.{CalculationResponseModel}
 
 import javax.inject.{Inject, Singleton}
-import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel, NrsSubmissionModelWithDetails}
+import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel}
 import play.api.i18n.I18nSupport
 import play.api.Logger
 import play.api.mvc._
-import services.{DeclareCrystallisationService, IncomeTaxCalculationService, NrsService, ValidTaxYearListService}
+import services.{DeclareCrystallisationService, LiabilityCalculationService, NrsService, ValidTaxYearListService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationPageView
@@ -39,7 +40,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationPageController @Inject()(declareCrystallisationService: DeclareCrystallisationService,
                                           nrsService: NrsService,
                                           appConfig: AppConfig,
-                                          incomeTaxCalculationService: IncomeTaxCalculationService,
+                                          //incomeTaxCalculationService: IncomeTaxCalculationService,
+                                          liabilityCalculationService: LiabilityCalculationService,
                                           implicit val mcc: MessagesControllerComponents,
                                           implicit val ec: ExecutionContext,
                                           declarationPageView: DeclarationPageView,
@@ -113,11 +115,11 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
   private def updateNrs(mtditid:String, nino:String, calculationId:String, taxYear:Int, attempt: Int = 1)
                                         (implicit request: Request[_],hc: HeaderCarrier): Unit = {
 
-    incomeTaxCalculationService.getCalculationDetailsByCalcId(mtditid, nino, calculationId, taxYear).map {
+    liabilityCalculationService.getCalculationDetailsByCalcId(mtditid, nino, calculationId, taxYear).map {
       case Right(result) =>
-        nrsService.submit[NrsSubmissionModelWithDetails](
+        nrsService.submit[CalculationResponseModel](
           nino,
-          NrsSubmissionModelWithDetails(result), mtditid, "itsa-crystallisation")
+          result, mtditid, "itsa-crystallisation")
 
       case Left(error) =>
         if (attempt <= maxNrsAttempts) {
