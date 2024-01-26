@@ -38,6 +38,7 @@ object ConfigKeys {
   val signInUrl = "microservice.services.sign-in.url"
   val signInContinueUrl = "microservice.services.sign-in.continueUrl"
 
+
   val defaultTaxYear = "defaultTaxYear"
   val alwaysEOY = "alwaysEOY"
 }

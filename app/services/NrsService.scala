@@ -29,7 +29,8 @@ import scala.concurrent.Future
 
 class NrsService @Inject() (nrsConnector: NrsConnector) {
 
-  def submit[A](nino: String, nrsSubmissionModel: A, mtditid: String, notableEvent: String)(implicit request: Request[_], hc: HeaderCarrier, writes: Writes[A]): Future[NrsSubmissionResponse] = {
+  def submit[A](nino: String, nrsSubmissionModel: A, mtditid: String, notableEvent: String)
+               (implicit request: Request[_], hc: HeaderCarrier, writes: Writes[A]): Future[NrsSubmissionResponse] = {
     
     val extraHeaders = Seq(
       Some("mtditid" -> mtditid),

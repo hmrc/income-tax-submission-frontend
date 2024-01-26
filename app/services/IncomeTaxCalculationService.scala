@@ -17,7 +17,7 @@
 package services
 
 import connectors.IncomeTaxCalculationConnector
-import models.calculation.{LiabilityCalculationError, LiabilityCalculationResponseModel}
+import models.calculation.{LiabilityCalculationDetailsModel, LiabilityCalculationDetailsError}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -29,16 +29,16 @@ class IncomeTaxCalculationService @Inject()(incomeTaxCalculationConnector: Incom
                                            (implicit ec: ExecutionContext) {
 
   def getCalculationDetailsByCalcId(mtditid: String, nino: String, calcId: String, taxYear: Int)
-                                   (implicit headerCarrier: HeaderCarrier): Future[Either[LiabilityCalculationError, LiabilityCalculationResponseModel]] = {
+                                   (implicit headerCarrier: HeaderCarrier): Future[Either[LiabilityCalculationDetailsError, LiabilityCalculationDetailsModel]] = {
     Logger("application").debug("[IncomeTaxCalculationService][getCalculationDetailsByCalcId] - " +
       s"Requesting calc data from the backend by calc id and taxYear: $calcId - $taxYear")
     incomeTaxCalculationConnector.getCalculationResponseByCalcId(mtditid, nino, calcId, taxYear)
   }
 
   def getCalculationDetails(mtditid: String, nino: String, taxYear: Int)
-                           (implicit headerCarrier: HeaderCarrier): Future[Either[LiabilityCalculationError, LiabilityCalculationResponseModel]] = {
+                           (implicit headerCarrier: HeaderCarrier): Future[Either[LiabilityCalculationDetailsError, LiabilityCalculationDetailsModel]] = {
     Logger("application").debug("[IncomeTaxCalculationService][getCalculationDetails] - " +
       s"Requesting calc data from the backend by nino and taxYear")
-    incomeTaxCalculationConnector.getCalculationResponse(mtditid, nino, taxYear.toString)
+    incomeTaxCalculationConnector.getCalculationResponse(mtditid, nino, taxYear)
   }
 }

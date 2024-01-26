@@ -23,11 +23,12 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
 
 import javax.inject.{Inject, Singleton}
-import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel, NrsSubmissionModel}
+import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel, NrsSubmissionModelWithDetails}
 import play.api.i18n.I18nSupport
 import play.api.Logger
 import play.api.mvc._
-import services.{DeclareCrystallisationService, NrsService, ValidTaxYearListService}
+import services.{DeclareCrystallisationService, IncomeTaxCalculationService, NrsService, ValidTaxYearListService}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationPageView
 import utils.SessionDataHelper
@@ -38,6 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationPageController @Inject()(declareCrystallisationService: DeclareCrystallisationService,
                                           nrsService: NrsService,
                                           appConfig: AppConfig,
+                                          incomeTaxCalculationService: IncomeTaxCalculationService,
                                           implicit val mcc: MessagesControllerComponents,
                                           implicit val ec: ExecutionContext,
                                           declarationPageView: DeclarationPageView,
@@ -48,6 +50,9 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                                           auditService: AuditService) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
 
   lazy val logger: Logger = Logger.apply(this.getClass)
+
+  val maxNrsAttempts = 3
+  val interval = 100
 
   implicit val config: AppConfig = appConfig
 
@@ -86,10 +91,8 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                 )
               ).toAuditModel)
 
-              val nrsSubmissionModelCalcId: NrsSubmissionModel = NrsSubmissionModel(calculationId = calculationId)
-
               if (appConfig.nrsEnabled) {
-                nrsService.submit(user.nino, nrsSubmissionModelCalcId, user.mtditid, "itsa-crystallisation")// Does this even need to change to final declaration??
+                updateNrs(user.mtditid,user.nino,calculationId,taxYear)
               }
 
               Redirect(controllers.routes.TaxReturnReceivedController.show(taxYear))
@@ -104,6 +107,27 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
           logger.info("[DeclarationPageController][submit] No Calculation ID in session, routing user to Overview page.")
           Future.successful(Redirect(routes.OverviewPageController.show(taxYear)))
       }
+    }
+  }
+
+  private def updateNrs(mtditid:String, nino:String, calculationId:String, taxYear:Int, attempt: Int = 1)
+                                        (implicit request: Request[_],hc: HeaderCarrier): Unit = {
+
+    incomeTaxCalculationService.getCalculationDetailsByCalcId(mtditid, nino, calculationId, taxYear).map {
+      case Right(result) =>
+        nrsService.submit[NrsSubmissionModelWithDetails](
+          nino,
+          NrsSubmissionModelWithDetails(result), mtditid, "itsa-crystallisation")
+
+      case Left(error) =>
+        if (attempt <= maxNrsAttempts) {
+          logger.warn(s"Error fetching Calculation details for NRS logging. Calculation ID - attempting again")
+          Thread.sleep(interval)
+          updateNrs(mtditid, nino, calculationId, taxYear, attempt + 1)
+        } else {
+          logger.warn(s"Error fetching Calculation details for NRS logging. sending only Calculation ID to NRS: ${calculationId}")
+          nrsService.submit[String](nino, calculationId, mtditid, "itsa-crystallisation")
+        }
     }
   }
 }

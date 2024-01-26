@@ -20,12 +20,12 @@ import play.api.libs.json._
 
 import java.time.LocalDate
 
-sealed trait LiabilityCalculationResponseModel
+sealed trait LiabilityCalculationDetailsModel
 
-case class LiabilityCalculationError(status: Int, message: String) extends LiabilityCalculationResponseModel
+case class LiabilityCalculationDetailsError(status: Int, message: String) extends LiabilityCalculationDetailsModel
 
-object LiabilityCalculationError {
-  implicit val format: OFormat[LiabilityCalculationError] = Json.format[LiabilityCalculationError]
+object LiabilityCalculationDetailsError {
+  implicit val format: OFormat[LiabilityCalculationDetailsError] = Json.format[LiabilityCalculationDetailsError]
 }
 
 case class CalculationResponseModel(
@@ -33,7 +33,7 @@ case class CalculationResponseModel(
                                          metadata: Metadata,
                                          messages: Option[Messages],
                                          calculation: Option[Calculation]
-                                       ) extends LiabilityCalculationResponseModel
+                                       ) extends LiabilityCalculationDetailsModel
 
 object CalculationResponseModel {
   implicit val format: OFormat[CalculationResponseModel] = Json.format[CalculationResponseModel]

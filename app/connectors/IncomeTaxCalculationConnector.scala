@@ -18,7 +18,7 @@ package connectors
 
 
 import config.AppConfig
-import models.calculation.{CalculationResponseModel, LiabilityCalculationError, LiabilityCalculationResponseModel}
+import models.calculation.{CalculationResponseModel, LiabilityCalculationDetailsError, LiabilityCalculationDetailsModel}
 import play.api.Logger
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
@@ -29,17 +29,18 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class IncomeTaxCalculationConnector @Inject()(http: HttpClient,
                                               config: AppConfig) extends RawResponseReads {
-  val baseUrl: String = config.incomeTaxCalculationService
+  val baseUrl: String = config.incomeTaxCalculationServiceUrl
 
-  def getCalculationResponseUrl(nino: String): String = s"$baseUrl/income-tax-calculation/income-tax/nino/$nino/calculation-details"
+  def getCalculationResponseUrl(nino: String): String = s"$baseUrl/income-tax/nino/$nino/calculation-details"
+
 
   def getCalculationResponseByCalcIdUrl(nino: String, calcId: String): String =
-    s"$baseUrl/income-tax-calculation/income-tax/nino/$nino/calc-id/$calcId/calculation-details"
+    s"$baseUrl/income-tax/nino/$nino/calc-id/$calcId/calculation-details"
 
-  def getCalculationResponse(mtditid: String, nino: String, taxYear: String)
+  def getCalculationResponse(mtditid: String, nino: String, taxYear: Int)
                             (implicit headerCarrier: HeaderCarrier,
-                             ec: ExecutionContext): Future[Either[LiabilityCalculationError, LiabilityCalculationResponseModel]] = {
-    http.GET[HttpResponse](getCalculationResponseUrl(nino), Seq(("taxYear", taxYear)))(httpReads,
+                             ec: ExecutionContext): Future[Either[LiabilityCalculationDetailsError, LiabilityCalculationDetailsModel]] = {
+    http.GET[HttpResponse](getCalculationResponseUrl(nino), Seq(("taxYear", taxYear.toString)))(httpReads,
       headerCarrier.withExtraHeaders("mtditid" -> mtditid), ec) map { response =>
       response.status match {
         case OK =>
@@ -47,7 +48,7 @@ class IncomeTaxCalculationConnector @Inject()(http: HttpClient,
             invalid => {
               Logger("application").error(
                 s"[IncomeTaxCalculationConnector][getCalculationResponse] - Json validation error parsing calculation response, error $invalid")
-              Left(LiabilityCalculationError(INTERNAL_SERVER_ERROR, "Json validation error parsing calculation response"))
+              Left(LiabilityCalculationDetailsError(INTERNAL_SERVER_ERROR, "Json validation error parsing calculation response"))
             },
             valid => Right(valid)
           )
@@ -57,14 +58,14 @@ class IncomeTaxCalculationConnector @Inject()(http: HttpClient,
           } else {
             Logger("application").warn(s"[IncomeTaxCalculationConnector][getCalculationResponse] - Response status: ${response.status}, body: ${response.body}")
           }
-          Left(LiabilityCalculationError(response.status, response.body))
+          Left(LiabilityCalculationDetailsError(response.status, response.body))
       }
     }
   }
 
   def getCalculationResponseByCalcId(mtditid: String, nino: String, calcId: String, taxYear: Int)
                                     (implicit headerCarrier: HeaderCarrier,
-                                     ec: ExecutionContext): Future[Either[LiabilityCalculationError, LiabilityCalculationResponseModel]] = {
+                                     ec: ExecutionContext): Future[Either[LiabilityCalculationDetailsError, LiabilityCalculationDetailsModel]] = {
     http.GET[HttpResponse](getCalculationResponseByCalcIdUrl(nino, calcId), Seq(("taxYear", taxYear.toString)))(httpReads,
       headerCarrier.withExtraHeaders("mtditid" -> mtditid), ec) map { response =>
       response.status match {
@@ -73,7 +74,7 @@ class IncomeTaxCalculationConnector @Inject()(http: HttpClient,
             invalid => {
               Logger("application").error(
                 s"[IncomeTaxCalculationConnector][getCalculationResponseByCalcId] - Json validation error parsing calculation response, error $invalid")
-              Left(LiabilityCalculationError(INTERNAL_SERVER_ERROR, "Json validation error parsing calculation response"))
+              Left(LiabilityCalculationDetailsError(INTERNAL_SERVER_ERROR, "Json validation error parsing calculation response"))
             },
             valid => Right(valid)
           )
@@ -85,7 +86,7 @@ class IncomeTaxCalculationConnector @Inject()(http: HttpClient,
             Logger("application").warn(
               s"[IncomeTaxCalculationConnector][getCalculationResponseByCalcId] - Response status: ${response.status}, body: ${response.body}")
           }
-          Left(LiabilityCalculationError(response.status, response.body))
+          Left(LiabilityCalculationDetailsError(response.status, response.body))
       }
     }
   }
