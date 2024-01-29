@@ -134,14 +134,11 @@ trait ViewTest extends IntegrationTest {
       .filter(keys => !exclusionKeys.contains(keys))
       .toSet
 
-    val allMsgVals = msgFile.filterKeys(msgKeys)
+    val allMsgVals = msgFile.view.filterKeys(msgKeys)
       .values
       .toList
 
-    val uniqueMsgVals = msgFile.filterKeys(msgKeys)
-      .values
-      .toList
-      .distinct
+    val uniqueMsgVals = allMsgVals.distinct
 
     allMsgVals.diff(uniqueMsgVals) shouldBe List.empty
   }

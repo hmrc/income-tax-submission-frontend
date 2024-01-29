@@ -140,6 +140,14 @@
     }
 }
 
+@gainsUrlRedirect(incomeSources: IncomeSourcesModel) = @{
+    if(incomeSources.gains.isEmpty && appConfig.tailoringEnabled) {
+        appConfig.additionalInformationGatewayUrl(taxYear)
+    } else {
+        appConfig.additionalInformationSummaryUrl(taxYear)
+    }
+}
+
 @cisUrlRedirect(incomeSources: IncomeSourcesModel) = @{
     if(incomeSources.cis.isEmpty && appConfig.tailoringEnabled && !isInYear) {
         appConfig.cisFEGatewayUrl(taxYear)
@@ -222,14 +230,15 @@
             isUnavailable = checkServiceAvailability(incomeSources, "employment")
         )
 
-          @taskListItem(
+        @taskListItem(
             appConfig.gainsReleased && tailoring.hasGains,
             appConfig.gainsEnabled,
             "gains_link",
             "common.gains",
-            appConfig.additionalInformationGatewayUrl(taxYear),
+            gainsUrlRedirect(incomeSources),
             GAINS,
-            incomeSources.gains.isDefined
+            incomeSources.gains.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "gains")
         )
 
         @taskListItem(

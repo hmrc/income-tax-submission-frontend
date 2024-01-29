@@ -28,8 +28,6 @@ common.returnToIncomeTaxAccount.button.agent = Go to Income Tax account
 common.back = Back
 common.saveAndContinue = Save and continue
 
-notificationBanner.important = Important
-
 betaBar.beta = beta
 betaBar.banner.message.1 = This is a new service – your
 betaBar.banner.message.2 = feedback

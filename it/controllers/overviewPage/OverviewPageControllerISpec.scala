@@ -340,7 +340,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             linkCheck(interestsLinkText, Selectors.interestLinkSelector, interestsTailoringGatewayLink(taxYear))
             linkCheck(dividendsLinkText, Selectors.dividendsLinkSelector, dividendsTailoringGatewayLink(taxYear))
             linkCheck(giftAidLinkText, Selectors.giftAidLinkSelector, giftAidTailoringGatewayLink(taxYear))
-
+            linkCheck(gainsLinkText, Selectors.gainsLinkSelector, gainsLink(taxYear))
             //TODO Add other journeys here
           }
         }
@@ -451,7 +451,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, selfEmployment = None, property = None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, None, selfEmployment = None, property = None))
             route(app, request, user.isWelsh).get
           }
 
@@ -581,7 +581,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a gains section" which {
-            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLinkSummary(taxYear))
             textOnPageCheck(updatedText, gainsStatusSelector)
           }
 
@@ -750,7 +750,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             }
 
             "has an gains section" which {
-              linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+              linkCheck(gainsLinkText, gainsLinkSelector, gainsLinkSummary(taxYear))
               textOnPageCheck(updatedText, gainsStatusSelector)
             }
 
@@ -836,7 +836,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has an gains section" which {
-            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLinkSummary(taxYear))
             textOnPageCheck(updatedText, gainsStatusSelector)
           }
 
@@ -924,7 +924,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             }
 
             "has a gains section" which {
-              linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+              linkCheck(gainsLinkText, gainsLinkSelector, gainsLinkSummary(taxYear))
               textOnPageCheck(updatedText, gainsStatusSelector)
             }
 
@@ -1008,7 +1008,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has an gains section" which {
-            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYear))
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLinkSummary(taxYear))
             textOnPageCheck(updatedText, gainsStatusSelector)
           }
 
@@ -1239,7 +1239,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a gains section" which {
-            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYearEOY))
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLinkSummary(taxYearEOY))
             textOnPageCheck(updatedText, gainsStatusSelector)
           }
 
@@ -1328,7 +1328,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a gains section " which {
-            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYearEOY))
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLinkSummary(taxYearEOY))
             textOnPageCheck(notStartedText, gainsStatusSelector)
           }
 
@@ -1350,6 +1350,64 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           "has a self employment section" which {
             linkCheck(selfEmploymentLinkText, selfEmploymentLinkSelector, selfEmploymentLink(taxYearEOY))
             textOnPageCheck(notStartedText, selfEmploymentStatusSelector)
+          }
+
+          textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
+          textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
+          formPostLinkCheck(endOfYearContinueLink, formSelector)
+        }
+
+        "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +
+          "the status tag 'To do' when user is in a previous year and tailoringEnabled" when {
+          val previousYearHeaders = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY, validTaxYearList), "Csrf-Token" -> "nocheck")
+          val previousYearUrl = s"/update-and-submit-income-tax-return/$taxYearEOY/income-tax-return-overview"
+          val taxYearMinusTwo = taxYearEOY - 1
+          val request = FakeRequest("GET", previousYearUrl).withHeaders(previousYearHeaders: _*)
+
+          lazy val result: Future[Result] = {
+            cleanDatabase(taxYearEOY)
+            insertAllJourneys(endOfYear = true)
+            stubGetExcludedCall(taxYearEOY, nino)
+            authoriseAgentOrIndividual(user.isAgent)
+            stubIncomeSources(incomeSourcesModel)
+            route(customApp(tailoringEnabled = true), request, user.isWelsh).get
+          }
+
+          implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+          "returns status of OK(200)" in {
+            status(result) shouldBe OK
+          }
+
+          welshToggleCheck(welshTest(user.isWelsh))
+          linkCheck(vcBreadcrumb, vcBreadcrumbSelector, Links.viewAndChangeLink(user.isAgent))
+          linkCheck(startPageBreadcrumb, startPageBreadcrumbSelector, startPageBreadcrumbUrl(taxYearEOY))
+          textOnPageCheck(overviewBreadcrumb, overviewBreadcrumbSelector)
+
+          titleCheck(specific.headingExpected, user.isWelsh)
+          h1Check(specific.headingExpected + " " + caption(taxYearMinusTwo, taxYearEOY))
+          captionCheck(caption(taxYearMinusTwo,taxYearEOY))
+          textOnPageCheck(specific.updateIncomeTaxReturnText, updateYourIncomeTaxReturnSubheadingSelector)
+          textOnPageCheck(checkSectionsText, checkSectionsSelector)
+
+          "has a dividends section" which {
+            linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsTailoringGatewayLink(taxYearEOY))
+            textOnPageCheck(notStartedText, dividendsStatusSelector)
+          }
+
+          "has an interest section" which {
+            linkCheck(interestsLinkText, interestLinkSelector, interestsTailoringGatewayLink(taxYearEOY))
+            textOnPageCheck(notStartedText, interestStatusSelector)
+          }
+
+          "has a gains section " which {
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYearEOY))
+            textOnPageCheck(notStartedText, gainsStatusSelector)
+          }
+
+          "has a donations to charity section" which {
+            linkCheck(giftAidLinkText, giftAidLinkSelector, giftAidTailoringGatewayLink(taxYearEOY))
+            textOnPageCheck(notStartedText, giftAidStatusSelector)
           }
 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
@@ -1412,7 +1470,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           }
 
           "has a gains section " which {
-            linkCheck(gainsLinkText, gainsLinkSelector, gainsLink(taxYearEOY))
+            linkCheck(gainsLinkText, gainsLinkSelector, gainsLinkSummary(taxYearEOY))
             textOnPageCheck(notStartedText, gainsStatusSelector)
           }
 
