@@ -138,10 +138,7 @@ trait ViewTest extends IntegrationTest {
       .values
       .toList
 
-    val uniqueMsgVals = msgFile.view.filterKeys(msgKeys)
-      .values
-      .toList
-      .distinct
+    val uniqueMsgVals = allMsgVals.distinct
 
     allMsgVals.diff(uniqueMsgVals) shouldBe List.empty
   }
