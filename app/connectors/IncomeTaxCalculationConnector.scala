@@ -18,7 +18,7 @@ package connectors
 
 
 import config.AppConfig
-import connectors.httpParsers.CalculationDetailsHttpParser.{CalculationDetailResponse,CalculationDetailsHttpReads}
+import connectors.httpParsers.CalculationDetailsHttpParser.{CalculationDetailResponse, CalculationDetailsHttpReads}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.{Inject, Singleton}
@@ -28,31 +28,16 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncomeTaxCalculationConnector @Inject()(http: HttpClient,
                                               config: AppConfig) extends RawResponseReads {
 
-  def getCalculationResponseUrl(nino: String): String = s"${config.calculationBaseUrl}/income-tax/nino/$nino/calculation-details"
-
-
-  def getCalculationResponseByCalcIdUrl(nino: String, calcId: String): String =
-    s"${config.calculationBaseUrl}/income-tax/nino/$nino/calc-id/$calcId/calculation-details"
-
-  def getCalculationResponse(mtditid: String, nino: String, taxYear: Int)
-                            (implicit headerCarrier: HeaderCarrier,
-                             ec: ExecutionContext): Future[CalculationDetailResponse] = {
-    val Url: String = getCalculationResponseUrl(nino)
-    http.GET[CalculationDetailResponse](Url,
-      Seq(("taxYear", taxYear.toString)))(
-      CalculationDetailsHttpReads,
-      headerCarrier.withExtraHeaders("mtditid" -> mtditid), ec
-    )
-  }
+  private def getCalculationResponseByCalcIdUrl(nino: String, calcId: String): String =
+    s"${config.incomeTaxCalculationServiceUrl}/nino/$nino/calc-id/$calcId/calculation-details"
 
   def getCalculationResponseByCalcId(mtditid: String, nino: String, calcId: String, taxYear: Int)
                                     (implicit headerCarrier: HeaderCarrier,
                                      ec: ExecutionContext): Future[CalculationDetailResponse] = {
     val Url: String = getCalculationResponseByCalcIdUrl(nino, calcId)
-    http.GET[CalculationDetailResponse](Url,
-      Seq(("taxYear", taxYear.toString)))(
-          CalculationDetailsHttpReads,
-          headerCarrier.withExtraHeaders("mtditid" -> mtditid), ec
-        )
+    http.GET[CalculationDetailResponse](Url)(
+      CalculationDetailsHttpReads,
+      headerCarrier.withExtraHeaders("mtditid" -> mtditid), ec
+    )
   }
 }

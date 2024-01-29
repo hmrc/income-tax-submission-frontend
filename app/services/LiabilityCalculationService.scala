@@ -45,11 +45,4 @@ class LiabilityCalculationService @Inject()(
       s"Requesting calc data from the backend by calc id and taxYear: $calcId - $taxYear")
     incomeTaxCalculationConnector.getCalculationResponseByCalcId(mtditid, nino, calcId, taxYear)
   }
-
-  def getCalculationDetails(mtditid: String, nino: String, taxYear: Int)
-                           (implicit headerCarrier: HeaderCarrier): Future[CalculationDetailResponse] = {
-    Logger("application").debug("[IncomeTaxCalculationService][getCalculationDetails] - " +
-      s"Requesting calc data from the backend by nino and taxYear")
-    incomeTaxCalculationConnector.getCalculationResponse(mtditid, nino, taxYear)
-  }
 }

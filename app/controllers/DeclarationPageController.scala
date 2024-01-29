@@ -40,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationPageController @Inject()(declareCrystallisationService: DeclareCrystallisationService,
                                           nrsService: NrsService,
                                           appConfig: AppConfig,
-                                          //incomeTaxCalculationService: IncomeTaxCalculationService,
                                           liabilityCalculationService: LiabilityCalculationService,
                                           implicit val mcc: MessagesControllerComponents,
                                           implicit val ec: ExecutionContext,
