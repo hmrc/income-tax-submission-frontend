@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LiabilityCalculationConnector @Inject()(val http: HttpClient,
-                                              val config: AppConfig
+class LiabilityCalculationConnector @Inject()(http: HttpClient,
+                                              config: AppConfig
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def getCalculationId(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {

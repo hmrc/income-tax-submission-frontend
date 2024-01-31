@@ -18,6 +18,7 @@ package connectors.httpParsers
 
 import models.{APIErrorBodyModel, APIErrorModel, APIErrorsBodyModel}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.libs.json.{JsPath, JsonValidationError}
 import uk.gov.hmrc.http.HttpResponse
 import utils.PagerDutyHelper.PagerDutyKeys.{BAD_SUCCESS_JSON_FROM_API, UNEXPECTED_RESPONSE_FROM_API}
 import utils.PagerDutyHelper.pagerDutyLog
@@ -34,6 +35,13 @@ trait APIParser {
   def badSuccessJsonFromAPI[Response]: Either[APIErrorModel, Response] = {
     pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, Some(s"[$parserName][read] Invalid Json from $service API."))
     Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel.parsingError))
+  }
+
+  def badSuccessJsonFromAPIWithErrors[Response](
+                                                 validationErrors: collection.Seq[(JsPath,
+                                                   collection.Seq[JsonValidationError])]): Either[APIErrorModel, Response] = {
+    pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, Some(s"[$parserName][read] Invalid Json response. " + validationErrors))
+    Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API - " + validationErrors)))
   }
 
   def handleAPIError[Response](response: HttpResponse, statusOverride: Option[Int] = None): Either[APIErrorModel, Response] = {
