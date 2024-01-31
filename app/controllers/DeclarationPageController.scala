@@ -116,9 +116,7 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
 
     liabilityCalculationService.getCalculationDetailsByCalcId(mtditid, nino, calculationId, taxYear).map {
       case Right(result) =>
-        nrsService.submit[CalculationResponseModel](
-          nino,
-          result, mtditid, "itsa-crystallisation")
+        nrsService.submit[CalculationResponseModel](nino, result, mtditid, "itsa-crystallisation")
 
       case Left(error) =>
         if (attempt <= maxNrsAttempts) {

@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnitTest
 
 import scala.concurrent.{ExecutionContext, Future}
-import java.time.{Instant, LocalDate}
+import java.time.LocalDate
 
 class LiabilityCalculationServiceSpec extends UnitTest {
 

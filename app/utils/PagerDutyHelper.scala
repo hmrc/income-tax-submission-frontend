@@ -31,7 +31,6 @@ object PagerDutyHelper extends Logging {
     val FAILED_TO_FIND_DATA: PagerDutyKeys.Value = Value
     val FAILED_TO_UPDATE_DATA: PagerDutyKeys.Value = Value
     val FAILED_TO_CREATE_DATA: PagerDutyKeys.Value = Value
-    val GONE_FROM_API: PagerDutyKeys.Value = Value
   }
 
   def pagerDutyLog(pagerDutyKey: PagerDutyKeys.Value, otherDetail: Option[String] = None): Unit = {
