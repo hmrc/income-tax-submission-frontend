@@ -69,7 +69,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
               Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), overviewTailoringData, taxYear, isInYear, excludedJourneys))
             }
           case Left(error) =>
-            logger.error(s"$getCorrelationid::[OverviewPageController][handleGetIncomeSources] incomeSourcesService.getIncomeSources returned error $e")
+            logger.error(s"$getCorrelationid::[OverviewPageController][handleGetIncomeSources] incomeSourcesService.getIncomeSources returned error $error")
             Future.successful(errorHandler.handleError(error.status))
         }
       case Left(e) =>
