@@ -31,10 +31,13 @@ object IncomeSourcesHttpParser extends APIParser {
   implicit object IncomeSourcesHttpReads extends HttpReads[IncomeSourcesResponse] {
     override def read(method: String, url: String, response: HttpResponse): IncomeSourcesResponse = {
       response.status match {
-        case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
-          jsonErrors => badSuccessJsonFromAPI,
-          parsedModel => Right(parsedModel.excludeNotRelevantEmploymentData)
-        )
+        case OK => {
+
+          response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
+            jsonErrors => badSuccessJsonFromAPI,
+            parsedModel => Right(parsedModel.excludeNotRelevantEmploymentData)
+          )
+        }
         case NO_CONTENT => Right(IncomeSourcesModel())
         case NOT_FOUND =>
           pagerDutyLog(NOT_FOUND_FROM_API, logMessage(response))
