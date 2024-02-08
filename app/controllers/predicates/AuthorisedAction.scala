@@ -32,6 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import views.html.authErrorPages.AgentAuthErrorPageView
 
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,6 +45,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
   lazy val logger: Logger = Logger.apply(this.getClass)
   implicit val config: AppConfig = appConfig
   implicit val messagesApi: MessagesApi = mcc.messagesApi
+  implicit val correlationId = UUID.randomUUID().toString
 
   val minimumConfidenceLevel: Int = ConfidenceLevel.L250.level
 
@@ -52,6 +54,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
   override def invokeBlock[A](request: Request[A], block: User[A] => Future[Result]): Future[Result] = {
 
     implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request,request.session)
+      .withExtraHeaders("CorrelationId"->correlationId(request.headers.get("CorrelationId")))
 
     authService.authorised().retrieve(affinityGroup) {
       case Some(AffinityGroup.Agent) => agentAuthentication(block)(request, headerCarrier)
@@ -63,6 +66,18 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
       case _: AuthorisationException =>
         logger.info(s"[AuthorisedAction][invokeBlock] - User failed to authenticate")
         Redirect(controllers.routes.UnauthorisedUserErrorController.show)
+    }
+  }
+
+  private def correlationId(correlationIdHeader: Option[String]): String = {
+
+    if (correlationIdHeader.isDefined) {
+      logger.info("[AuthorisedAction]Valid CorrelationId header found.")
+      correlationIdHeader.get
+    } else {
+      lazy val id = UUID.randomUUID().toString
+      logger.info(s"[AuthorisedAction]No valid CorrelationId found in headers. Defaulting Correlation Id. $id")
+      id
     }
   }
 
@@ -89,6 +104,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
 
             sessionId.fold {
               logger.info(s"[AuthorisedAction][individualAuthentication] - No session id in request")
+
               Future.successful(Redirect(appConfig.signInUrl))
             } { sessionId =>
               block(User(mtdItId, None, nino, sessionId))

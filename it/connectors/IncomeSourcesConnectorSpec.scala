@@ -224,7 +224,13 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
         "dividends" -> ""
       )
 
-      val expectedResult = APIErrorModel(500, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API"))
+      val expectedResult = APIErrorModel(
+        INTERNAL_SERVER_ERROR,
+        APIErrorBodyModel(
+          "PARSING_ERROR",
+          "Error parsing response from API - List((/dividends,List(JsonValidationError(List(error.expected.jsobject),ArraySeq()))))"
+        )
+      )
 
       stubGet(s"/income-tax-submission-service/income-tax/nino/$nino/sources\\?taxYear=$taxYearEOY", OK, invalidJson.toString())
       val result = await(connector.getIncomeSources(nino, taxYearEOY))

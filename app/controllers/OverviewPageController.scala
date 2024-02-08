@@ -23,14 +23,18 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import models.{ClearExcludedJourneysRequestModel, IncomeSourcesModel, OverviewTailoringModel, User}
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.TailoringUserDataRepository
 import services.{ExcludedJourneysService, IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ShaHashHelper
 import views.html.OverviewPageView
 
+import java.lang.System.Logger
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,10 +50,13 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
                                        auditService: AuditService,
                                        excludedJourneysService: ExcludedJourneysService)
                                       (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with ShaHashHelper {
+  extends FrontendController(mcc) with I18nSupport with ShaHashHelper with Logging{
+
 
   private lazy val OverviewPageControllerRoute: ReverseOverviewPageController = controllers.routes.OverviewPageController
 
+  //TODO revisit this to check duplication of correlationId creation
+  private def getCorrelationid(implicit hc:HeaderCarrier) = hc.extraHeaders.find(_._1 == "CorrelationId").getOrElse(UUID.randomUUID())
   def handleGetIncomeSources(taxYear: Int, isInYear: Boolean)(implicit user: User[_]): Future[Result] = {
     tailoringUserDataRepository.find(taxYear).flatMap {
       case Right(sessionData) =>
@@ -58,11 +65,15 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
             handleExclusion(taxYear, incomeSources).map { excludedJourneys =>
               val tailoringSources = sessionData.map(_.tailoring).getOrElse(Seq.empty[String])
               val overviewTailoringData = OverviewTailoringModel(tailoringSources, incomeSources)
+              logger.info(s"$getCorrelationid::[OverviewPageController][handleGetIncomeSources] returning overviewpage")
               Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), overviewTailoringData, taxYear, isInYear, excludedJourneys))
             }
-          case Left(error) => Future.successful(errorHandler.handleError(error.status))
+          case Left(error) =>
+            logger.error(s"$getCorrelationid::[OverviewPageController][handleGetIncomeSources] incomeSourcesService.getIncomeSources returned error $error")
+            Future.successful(errorHandler.handleError(error.status))
         }
-      case Left(_) =>
+      case Left(e) =>
+        logger.error(s"$getCorrelationid::[OverviewPageController][handleGetIncomeSources] tailoringUserDataRepository.find returned error $e")
         Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
     }
   }
@@ -121,6 +132,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     if (isInYear) {
       handleGetIncomeSources(taxYear, isInYear = true)
     } else {
+      logger.info(s"$getCorrelationid::[OverviewPageController][show] not in year")
       Future.successful(Redirect(OverviewPageControllerRoute.showCrystallisation(taxYear)))
     }
   }

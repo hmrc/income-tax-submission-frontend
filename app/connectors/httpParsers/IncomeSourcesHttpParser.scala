@@ -17,12 +17,13 @@
 package connectors.httpParsers
 
 import models.{APIErrorModel, IncomeSourcesModel}
+import play.api.Logging
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.PagerDutyHelper.pagerDutyLog
 
-object IncomeSourcesHttpParser extends APIParser {
+object IncomeSourcesHttpParser extends APIParser with Logging {
   type IncomeSourcesResponse = Either[APIErrorModel, IncomeSourcesModel]
 
   override val parserName: String = "IncomeSourcesHttpParser"
@@ -32,9 +33,9 @@ object IncomeSourcesHttpParser extends APIParser {
     override def read(method: String, url: String, response: HttpResponse): IncomeSourcesResponse = {
       response.status match {
         case OK => response.json.validate[IncomeSourcesModel].fold[IncomeSourcesResponse](
-          jsonErrors => badSuccessJsonFromAPI,
-          parsedModel => Right(parsedModel.excludeNotRelevantEmploymentData)
-        )
+            jsonErrors => badSuccessJsonFromAPIWithErrors(jsonErrors),
+            parsedModel => Right(parsedModel.excludeNotRelevantEmploymentData)
+          )
         case NO_CONTENT => Right(IncomeSourcesModel())
         case NOT_FOUND =>
           pagerDutyLog(NOT_FOUND_FROM_API, logMessage(response))
