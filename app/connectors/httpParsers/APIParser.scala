@@ -42,7 +42,6 @@ trait APIParser extends Logging {
                                                  validationErrors: collection.Seq[(JsPath,
                                                    collection.Seq[JsonValidationError])]): Either[APIErrorModel, Response] = {
     pagerDutyLog(BAD_SUCCESS_JSON_FROM_API, Some(s"[$parserName][read] Invalid Json response. " + validationErrors))
-    logger.info(s"[APIParser][badSuccessJsonFromAPI] With errors: $validationErrors")
     Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API - " + validationErrors)))
   }
 

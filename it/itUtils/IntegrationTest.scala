@@ -494,8 +494,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     yearsHeld = Some(3)
   )
 
-  lazy val insurancePoliciesModel: Option[InsurancePoliciesModel] = Some(InsurancePoliciesModel("2020-01-04T05:01:01Z",
-    Seq(validLifeInsuranceModel), Some(Seq(validCapitalRedemptionModel)) , Some(Seq(validLifeAnnuityModel)), Some(Seq(validVoidedIsaModel))
+  lazy val insurancePoliciesModel: Option[InsurancePoliciesModel] = Some(InsurancePoliciesModel(Some("2020-01-04T05:01:01Z"),
+    Some(Seq(validLifeInsuranceModel)), Some(Seq(validCapitalRedemptionModel)) , Some(Seq(validLifeAnnuityModel)), Some(Seq(validVoidedIsaModel))
     , Some(Seq(validForeignModel))))
 
   val foreignInterest: Seq[ForeignInterestModel] = Seq(ForeignInterestModel(
