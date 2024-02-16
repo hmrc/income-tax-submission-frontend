@@ -22,10 +22,10 @@ import models.pensions.Pensions
 import models.statebenefits.AllStateBenefitsData
 import models.gains.InsurancePoliciesModel
 import models.property.AllPropertyData
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json, OFormat}
 
 case class IncomeSourcesModel(
-                               errors: Option[Seq[(String, APIErrorBodyModel)]] = None,
+                               errors: Option[Seq[(String, APIErrorBody)]] = None,
                                dividends: Option[DividendsModel] = None,
                                interest: Option[Seq[InterestModel]] = None,
                                giftAid: Option[GiftAidModel] = None,
@@ -79,6 +79,7 @@ case class IncomeSourcesModel(
 }
 
 object IncomeSourcesModel {
+  implicit val errorFormat: Format[APIErrorBody] = Json.format[APIErrorBody]
   implicit val formats: OFormat[IncomeSourcesModel] = Json.format[IncomeSourcesModel]
 }
 
