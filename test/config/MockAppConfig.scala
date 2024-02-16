@@ -102,8 +102,6 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val giftAidReleased: Boolean = true
 
-  override lazy val nrsEnabled: Boolean = true
-
   override lazy val gainsEnabled: Boolean = true
 
   override lazy val gainsReleased: Boolean = true
@@ -143,7 +141,6 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override def viewAndChangeViewInYearEstimateUrlAgent: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"
 
   override val calculationBaseUrl: String = "/calculation"
-  override val nrsProxyBaseUrl: String = "/nrs"
 
   override def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = ???
 

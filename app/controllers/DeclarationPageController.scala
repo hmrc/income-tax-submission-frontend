@@ -28,7 +28,7 @@ import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel}
 import play.api.i18n.I18nSupport
 import play.api.Logger
 import play.api.mvc._
-import services.{DeclareCrystallisationService, LiabilityCalculationService, NrsService, ValidTaxYearListService}
+import services.{DeclareCrystallisationService, LiabilityCalculationService, ValidTaxYearListService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationPageView
@@ -38,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeclarationPageController @Inject()(declareCrystallisationService: DeclareCrystallisationService,
-                                          nrsService: NrsService,
                                           appConfig: AppConfig,
                                           liabilityCalculationService: LiabilityCalculationService,
                                           implicit val mcc: MessagesControllerComponents,
@@ -52,7 +51,6 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
 
   lazy val logger: Logger = Logger.apply(this.getClass)
 
-  val maxNrsAttempts = 3
   val interval = 100
 
   implicit val config: AppConfig = appConfig
@@ -92,10 +90,6 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                 )
               ).toAuditModel)
 
-              if (appConfig.nrsEnabled) {
-                updateNrs(user.mtditid,user.nino,calculationId,taxYear)
-              }
-
               Redirect(controllers.routes.TaxReturnReceivedController.show(taxYear))
             case Left(error) =>
               error.body match {
@@ -111,22 +105,4 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
     }
   }
 
-  private def updateNrs(mtditid:String, nino:String, calculationId:String, taxYear:Int, attempt: Int = 1)
-                                        (implicit request: Request[_],hc: HeaderCarrier): Unit = {
-
-    liabilityCalculationService.getCalculationDetailsByCalcId(mtditid, nino, calculationId, taxYear).map {
-      case Right(result) =>
-        nrsService.submit[CalculationResponseModel](nino, result, mtditid, "itsa-crystallisation")
-
-      case Left(error) =>
-        if (attempt <= maxNrsAttempts) {
-          logger.warn(s"Error fetching Calculation details for NRS logging. Calculation ID - attempting again")
-          Thread.sleep(interval)
-          updateNrs(mtditid, nino, calculationId, taxYear, attempt + 1)
-        } else {
-          logger.warn(s"Error fetching Calculation details for NRS logging. sending only Calculation ID to NRS: ${calculationId}")
-          nrsService.submit[String](nino, calculationId, mtditid, "itsa-crystallisation")
-        }
-    }
-  }
 }

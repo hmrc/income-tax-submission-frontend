@@ -38,7 +38,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
 
   lazy val calculationBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCalculationUrl)
-  lazy val nrsProxyBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxNrsProxyUrl)
 
   lazy val incomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxSubmissionUrl)
   lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/income-tax-submission-service/income-tax"
@@ -183,7 +182,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val propertyReleased: Boolean = servicesConfig.getBoolean("feature-switch.propertyReleased")
   lazy val pensionsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.pensionsEnabled")
   lazy val pensionsReleased: Boolean = servicesConfig.getBoolean("feature-switch.pensionsReleased")
-  lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
   lazy val crystallisationEnabled: Boolean = servicesConfig.getBoolean("feature-switch.crystallisationEnabled")
   lazy val tailoringEnabled: Boolean = servicesConfig.getBoolean("feature-switch.tailoringEnabled")
 
@@ -219,7 +217,6 @@ trait AppConfig {
   val alwaysEOY: Boolean
 
   val calculationBaseUrl: String
-  val nrsProxyBaseUrl: String
 
   val incomeTaxSubmissionBaseUrl: String
   val incomeTaxSubmissionUrl: String
@@ -337,7 +334,6 @@ trait AppConfig {
   val stateBenefitsReleased: Boolean
   val selfEmploymentEnabled: Boolean
   val selfEmploymentReleased: Boolean
-  val nrsEnabled: Boolean
   val crystallisationEnabled: Boolean
   val tailoringEnabled: Boolean
 

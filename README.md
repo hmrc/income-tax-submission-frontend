@@ -21,22 +21,21 @@ This service runs on port: `localhost:9302`
 
 ### Feature Switches
 
-| Feature | Environments Enabled In |
-| --- | --- |
-| Welsh | Local, QA, Staging |
-| NRS | Local, QA, Staging, Production |
-| Tax Year Error | Production |
-| Dividends | Local, QA, Staging, Production, ET |
-| Interest | Local, QA, Staging, Production, ET |
-| GiftAid | Local, QA, Staging, Production, ET |
-| Student loans | Local, QA, Staging, ET |
-| EmploymentsEnabled | Local, QA, Staging, Production, ET |
-| EmploymentsReleased | Local, QA, Staging, Production, ET |
-| End of year employment | Local, QA, Staging, ET |
-| CISEnabled | Local, QA, Staging |
-| CISReleased | Local, QA, Staging |
+| Feature                | Environments Enabled In            |
+|------------------------|------------------------------------|
+| Welsh                  | Local, QA, Staging                 |
+| Tax Year Error         | Production                         |
+| Dividends              | Local, QA, Staging, Production, ET |
+| Interest               | Local, QA, Staging, Production, ET |
+| GiftAid                | Local, QA, Staging, Production, ET |
+| Student loans          | Local, QA, Staging, ET             |
+| EmploymentsEnabled     | Local, QA, Staging, Production, ET |
+| EmploymentsReleased    | Local, QA, Staging, Production, ET |
+| End of year employment | Local, QA, Staging, ET             |
+| CISEnabled             | Local, QA, Staging                 |
+| CISReleased            | Local, QA, Staging                 |
 | CrystallisationEnabled | Local, QA, Staging, Production, ET |
-| TailoringEnabled | Local |
+| TailoringEnabled       | Local                              |
 
 ## Auth Setup - How to enter the service
 
@@ -44,8 +43,8 @@ auth-wizard - http://localhost:9949/auth-login-stub/gg-sign-in
 
 ### Example Auth Setup - Individual
 
-| FieldName | Value                                                                |
-| --- |----------------------------------------------------------------------|
+| FieldName           | Value                                                                |
+|---------------------|----------------------------------------------------------------------|
 | Redirect url        | http://localhost:9302/update-and-submit-income-tax-return/2022/start |
 | Credential Strength | strong                                                               |
 | Confidence Level    | 250                                                                  |
@@ -61,8 +60,8 @@ if running locally outside service manager ensure service is ran including testO
 
     sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes
 
-| FieldName | Value                                                                             |
-| --- |-----------------------------------------------------------------------------------|
+| FieldName           | Value                                                                             |
+|---------------------|-----------------------------------------------------------------------------------|
 | Redirect url        | /test-only/2022/additional-parameters?ClientNino=AA123457A&ClientMTDID=1234567890 |
 | Credential Strength | weak                                                                              |
 | Confidence Level    | 250                                                                               |
@@ -72,7 +71,7 @@ if running locally outside service manager ensure service is ran including testO
 | Identifier Value 1  | 1234567890                                                                        |
 | Enrolment Key 2     | HMRC-AS-AGENT                                                                     |
 | Identifier Name 2   | AgentReferenceNumber                                                              |
-| Identifier Value 2  | XARN1234567                                                                       
+| Identifier Value 2  | XARN1234567                                                                       |
 
 ## Income Sources
 Income-Tax-Submission-Frontend is the root of the users journey and links outward to all income sources
@@ -550,28 +549,28 @@ It must be the end of the tax year for a user to submit for crystallisation.
 The user also requires the following extra enrollment:
 
 | IR-SA | UTR | Identifier Value, e.g. 1234567890 |
-| --- | --- | --- |
+|-------|-----|-----------------------------------|
 
 ### Crystallisation in Staging
 Currently, the crystallisation journey and tax account in staging can only be accessed using the following:
 
-| Nino | MTDITID |
-| --- | --- |
+| Nino      | MTDITID         |
+|-----------|-----------------|
 | AA888888A | XAIT00000888888 |
 
 ## Ninos with stub data for Income Tax Submission Frontend
 
 ### In-Year
-| Nino | Income Tax Submission Frontend data | Source |
-| --- | --- | --- |
-| AA133742A | PAYE data | HMRC-Held |
-| AA000003A | Interest & Dividends data |
+| Nino      | Income Tax Submission Frontend data | Source    |
+|-----------|-------------------------------------|-----------|
+| AA133742A | PAYE data                           | HMRC-Held |
+| AA000003A | Interest & Dividends data           |
 
 ### End of Year
-| Nino | Income Tax Submission Frontend data | Source |
-| --- | --- | --- |
-| BB444444A | PAYE data |HMRC-Held, Customer |
-| AA123459A | All employments |HMRC-Held, Customer |
+| Nino      | Income Tax Submission Frontend data | Source              |
+|-----------|-------------------------------------|---------------------|
+| BB444444A | PAYE data                           | HMRC-Held, Customer |
+| AA123459A | All employments                     | HMRC-Held, Customer |
 
 ### License
 
