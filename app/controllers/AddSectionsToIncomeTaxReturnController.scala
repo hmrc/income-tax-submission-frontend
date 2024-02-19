@@ -25,7 +25,7 @@ import forms.AddSectionsForm
 import forms.AddSectionsForm.addSectionsForm
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{IncomeSourcesService, NrsService, TailoringSessionService, ValidTaxYearListService}
+import services.{IncomeSourcesService, TailoringSessionService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.AddSectionsToIncomeTaxReturnView
 import common.IncomeSources._
@@ -40,7 +40,6 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
                                                         implicit val validTaxYearListService: ValidTaxYearListService,
                                                         implicit val errorHandler: ErrorHandler,
                                                         auditService: AuditService,
-                                                        nrsService: NrsService,
                                                         implicit val appConfig: AppConfig,
                                                         implicit val ec: ExecutionContext,
                                                         implicit val mcc: MessagesControllerComponents
@@ -89,9 +88,6 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
                     if (auditResult.nonEmpty) {
                       auditService.sendAudit(TailorAddIncomeSourcesDetail(
                         user.nino, user.mtditid, userAffinity, taxYear, SourcesDetail(auditResult)).toAuditModel)
-                    }
-                    if (appConfig.nrsEnabled) {
-                      nrsService.submit(user.nino, SourcesDetail(auditResult), user.mtditid, "itsa-personal-income-submission")
                     }
                     tailoringSessionService.createSessionData(result.addSections, taxYear)(errorHandler.handleError(INTERNAL_SERVER_ERROR))(
                       Redirect(controllers.routes.OverviewPageController.show(taxYear)))
