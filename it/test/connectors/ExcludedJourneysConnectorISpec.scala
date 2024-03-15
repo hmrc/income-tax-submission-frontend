@@ -17,8 +17,7 @@
 package connectors
 
 import itUtils.IntegrationTest
-import models.{APIErrorBodyModel, APIErrorModel, ClearExcludedJourneysRequestModel, ExcludeJourneyModel, GetExcludedJourneysResponseModel}
-import org.checkerframework.checker.units.qual.A
+import models._
 import play.api.http.Status.{IM_A_TEAPOT, INTERNAL_SERVER_ERROR, NO_CONTENT, OK}
 import play.api.libs.json.Json
 

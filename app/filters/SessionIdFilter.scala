@@ -17,15 +17,13 @@
 package filters
 
 import java.util.UUID
-
-import akka.stream.Materializer
 import com.google.inject.Inject
+import org.apache.pekko.stream.Materializer
 import play.api.http.HeaderNames
 import play.api.mvc._
 import uk.gov.hmrc.http.{SessionKeys, HeaderNames => HMRCHeaderNames}
 import play.api.mvc.SessionCookieBaker
 import play.api.mvc.CookieHeaderEncoding
-
 
 import scala.concurrent.{ExecutionContext, Future}
 
