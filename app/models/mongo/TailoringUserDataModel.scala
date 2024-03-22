@@ -29,7 +29,6 @@ case class TailoringUserDataModel(
 
 object TailoringUserDataModel {
   implicit lazy val formats: OFormat[TailoringUserDataModel] = Json.format[TailoringUserDataModel]
-
 }
 
 case class EncryptedTailoringUserDataModel(

@@ -19,7 +19,6 @@ package repositories
 import com.mongodb.client.model.ReturnDocument
 import models.User
 import models.mongo._
-import java.time.{Clock, Instant}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.Updates.set
@@ -29,6 +28,7 @@ import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.PagerDutyHelper.pagerDutyLog
 
+import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -70,7 +70,7 @@ trait UserDataRepository[C <: UserDataTemplate] {
 
     val userData = collection.findOneAndUpdate(
       filter = filter(user.nino, taxYear),
-      update = set("lastUpdated", toBson(Instant.now(Clock.systemUTC()))),
+      update = set("lastUpdated", toBson(Instant.now())),
       options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
     ).toFutureOption().map {
       case Some(data) => Right(Some(data))
@@ -93,7 +93,6 @@ trait UserDataRepository[C <: UserDataTemplate] {
           case Right(value) => Right(value)
         }
     }
-
   }
 
   def update(userData: UserData): Future[Either[DatabaseError, Boolean]] = {
@@ -136,6 +135,5 @@ trait UserDataRepository[C <: UserDataTemplate] {
     pagerDutyLog(ENCRYPTION_DECRYPTION_ERROR, Some(s"$startOfMessage ${exception.getMessage}"))
     Left(EncryptionDecryptionError(exception.getMessage))
   }
-
 
 }
