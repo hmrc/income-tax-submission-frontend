@@ -45,16 +45,14 @@ lazy val twirlImports: Seq[String] = Seq(
 )
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
+  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(PlayKeys.playDefaultPort := 9302)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     TwirlKeys.templateImports ++= twirlImports,
-    // only required for frontends
     scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-    // for all services
     scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s",
   )
   .settings(Test / fork := false)
