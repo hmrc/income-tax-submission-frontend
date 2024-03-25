@@ -22,7 +22,7 @@ import models.employment._
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
 
-class IncomeSourcesConnectorSpec extends IntegrationTest {
+class IncomeSourcesConnectorISpec extends IntegrationTest {
 
   private lazy val connector: IncomeSourcesConnector = app.injector.instanceOf[IncomeSourcesConnector]
   private lazy val connectorWithSourcesTurnedOff: IncomeSourcesConnector = customApp(
@@ -228,7 +228,7 @@ class IncomeSourcesConnectorSpec extends IntegrationTest {
         INTERNAL_SERVER_ERROR,
         APIErrorBodyModel(
           "PARSING_ERROR",
-          "Error parsing response from API - List((/dividends,List(JsonValidationError(List(error.expected.jsobject),ArraySeq()))))"
+          "Error parsing response from API - List((/dividends,List(JsonValidationError(List(error.expected.jsobject),List()))))"
         )
       )
 

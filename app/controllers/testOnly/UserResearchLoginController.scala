@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.testOnly.AuthLoginApiConnector
 import forms.testOnly.UserResearchLoginForm
 import models.userResearch.{AuthLoginAPIResponse, ResearchUser, ResearchUsers}
-import org.joda.time.DateTime
+import java.time.Instant
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Session}
 import uk.gov.hmrc.http.{SessionId, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -42,7 +42,12 @@ class UserResearchLoginController @Inject()(mcc: MessagesControllerComponents,
   def submit(): Action[AnyContent] = Action.async { implicit request =>
     val suppliedCredentialAndYear: Array[String] = UserResearchLoginForm.researchLoginForm.bindFromRequest().get.split("::")
     val suppliedCredential = suppliedCredentialAndYear.head
-    val suppliedYear = if (suppliedCredentialAndYear.length > 1 && suppliedCredentialAndYear.last.matches("[0-9]{4}")) suppliedCredentialAndYear.last.toInt else appConfig.defaultTaxYear
+    val suppliedYear =
+      if(suppliedCredentialAndYear.length > 1 && suppliedCredentialAndYear.last.matches("[0-9]{4}")) {
+        suppliedCredentialAndYear.last.toInt
+      } else {
+        appConfig.defaultTaxYear
+      }
 
     val userDetails: ResearchUser = ResearchUsers.generateUserCredentials(suppliedCredential, suppliedYear)
 
@@ -56,6 +61,6 @@ class UserResearchLoginController @Inject()(mcc: MessagesControllerComponents,
   private[testOnly] def buildGGSession(authExchange: AuthLoginAPIResponse): Session = Session(Map(
     SessionKeys.sessionId -> (if (authExchange.sessionId.isEmpty) SessionId(s"session-${UUID.randomUUID}").value else authExchange.sessionId),
     SessionKeys.authToken -> authExchange.token,
-    SessionKeys.lastRequestTimestamp -> DateTime.now.getMillis.toString
+    SessionKeys.lastRequestTimestamp -> Instant.now().toEpochMilli.toString
   ))
 }

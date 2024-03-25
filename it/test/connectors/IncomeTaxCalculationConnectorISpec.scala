@@ -18,7 +18,7 @@ package connectors
 
 import itUtils.IntegrationTest
 import models.calculation.{CalculationResponseModel, Inputs, Metadata, PersonalInformation}
-import models.{APIErrorBodyModel, APIErrorModel, LiabilityCalculationIdModel}
+import models.{APIErrorBodyModel, APIErrorModel}
 import play.api.libs.json.{JsObject, Json}
 import play.mvc.Http.Status._
 
@@ -57,8 +57,8 @@ class IncomeTaxCalculationConnectorISpec extends IntegrationTest {
       "return a PARSING_ERROR" in {
         val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR",
           "Error parsing response from API - List(" +
-            "(/metadata,List(JsonValidationError(List(error.path.missing),ArraySeq()))), (/inputs," +
-            "List(JsonValidationError(List(error.path.missing),ArraySeq()))))"))
+            "(/metadata,List(JsonValidationError(List(error.path.missing),List()))), (/inputs," +
+            "List(JsonValidationError(List(error.path.missing),List()))))"))
 
         val invalidJson = Json.obj(
           "NotId" -> ""

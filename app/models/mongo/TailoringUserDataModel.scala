@@ -16,35 +16,29 @@
 
 package models.mongo
 
-import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
 import uk.gov.hmrc.crypto.EncryptedValue
-
+import java.time.Instant
 
 case class TailoringUserDataModel(
                                    nino: String,
                                    taxYear: Int,
                                    tailoring: Seq[String],
-                                   lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)
+                                   lastUpdated: Instant = Instant.now()
                                  ) extends UserDataTemplate
 
-object TailoringUserDataModel extends MongoJodaFormats {
-  implicit val mongoJodaDateTimeFormats: Format[DateTime] = dateTimeFormat
-
+object TailoringUserDataModel {
   implicit lazy val formats: OFormat[TailoringUserDataModel] = Json.format[TailoringUserDataModel]
-
 }
 
 case class EncryptedTailoringUserDataModel(
                                             nino: String,
                                             taxYear: Int,
                                             tailoring: Seq[EncryptedValue],
-                                            lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)
+                                            lastUpdated: Instant = Instant.now()
                                  ) extends UserDataTemplate
 
-object EncryptedTailoringUserDataModel extends MongoJodaFormats {
-  implicit val mongoJodaDateTimeFormats: Format[DateTime] = dateTimeFormat
+object EncryptedTailoringUserDataModel {
   implicit lazy val encryptedValueOFormat: OFormat[EncryptedValue] = Json.format[EncryptedValue]
   implicit val formats: Format[EncryptedTailoringUserDataModel] = Json.format[EncryptedTailoringUserDataModel]
 }

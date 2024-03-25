@@ -19,10 +19,9 @@ package services
 import com.google.inject.Inject
 import models.User
 import models.mongo.{DatabaseError, TailoringUserDataModel}
-import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
 import repositories.TailoringUserDataRepository
-
+import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
 class TailoringSessionService @Inject() (tailoringUserDataRepository: TailoringUserDataRepository) {
@@ -46,7 +45,7 @@ class TailoringSessionService @Inject() (tailoringUserDataRepository: TailoringU
       nino = user.nino,
       taxYear = taxYear,
       tailoring = dataModel,
-      lastUpdated = DateTime.now(DateTimeZone.UTC)
+      lastUpdated = Instant.now()
     )
 
     tailoringUserDataRepository.create(userData)().map {
@@ -64,7 +63,7 @@ class TailoringSessionService @Inject() (tailoringUserDataRepository: TailoringU
       nino = user.nino,
       taxYear = taxYear,
       tailoring = dataModel,
-      lastUpdated = DateTime.now(DateTimeZone.UTC)
+      lastUpdated = Instant.now()
     )
 
     tailoringUserDataRepository.update(userData).map {
