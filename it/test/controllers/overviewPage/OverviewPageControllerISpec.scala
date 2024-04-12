@@ -451,7 +451,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, None, selfEmployment = None, property = None))
+            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, None, selfEmployment = None, property = None, stockDividends = None))
             route(app, request, user.isWelsh).get
           }
 
@@ -1271,6 +1271,29 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
           formPostLinkCheck(endOfYearContinueLink, formSelector)
+        }
+
+        "render an overview page with updated status for dividends when there is prior data only for stock dividends" when {
+          val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+          lazy val result: Future[Result] = {
+            cleanDatabase(taxYearEOY)
+            insertStockDividendsJourney(endOfYear = true)
+            stubGetExcludedCall(taxYearEOY, nino)
+            authoriseAgentOrIndividual(user.isAgent)
+            stubStockDividendsEndOfYear
+            route(customApp(), request, user.isWelsh).get
+          }
+
+          implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+          "returns status of OK(200)" in {
+            status(result) shouldBe OK
+          }
+
+          "has a dividends section" which {
+            linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYearEOY))
+            textOnPageCheck(updatedText, dividendsStatusSelector)
+          }
         }
 
         "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +

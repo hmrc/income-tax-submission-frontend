@@ -105,7 +105,7 @@
 }
 
 @dividendsUrlRedirect(incomeSources: IncomeSourcesModel) = @{
-    if(incomeSources.dividends.isDefined) {
+    if(incomeSources.dividends.isDefined || incomeSources.stockDividends.isDefined) {
         appConfig.personalIncomeTaxDividendsSubmissionCYAUrl(taxYear)
     } else {
         if(appConfig.tailoringEnabled) {
@@ -198,13 +198,13 @@
 
         @taskListItem(
             tailoring.hasDividends,
-            appConfig.dividendsEnabled,
+            appConfig.dividendsEnabled || appConfig.stockDividendsEnabled,
             "dividends_link",
             "common.dividends",
             dividendsUrlRedirect(incomeSources),
             DIVIDENDS,
-            incomeSources.dividends.isDefined,
-            isUnavailable = checkServiceAvailability(incomeSources, "dividends")
+            incomeSources.dividends.isDefined || incomeSources.stockDividends.isDefined,
+            isUnavailable = checkServiceAvailability(incomeSources, "dividends") || checkServiceAvailability(incomeSources, "stockDividends")
         )
 
         @taskListItem(
