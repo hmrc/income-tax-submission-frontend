@@ -451,7 +451,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, None, selfEmployment = None, property = None, stockDividends = None))
+            stubIncomeSources(IncomeSourcesModel())
             route(app, request, user.isWelsh).get
           }
 
