@@ -252,6 +252,10 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
     JourneyData("employment", user.commonExpectedResults.employmentSLLinkText, IncomeSourcesModel(employment = incomeSourcesModel.employment))
   )
 
+  def stockDividendJourney(user: UserScenario[CommonExpectedResults, SpecificExpectedResults]): Seq[JourneyData] = Seq(
+    JourneyData("stock-dividends", user.commonExpectedResults.dividendsLinkText , IncomeSourcesModel(stockDividends = incomeSourcesModel.stockDividends))
+  )
+
   val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
     UserScenario(isWelsh = false, isAgent = false, CommonExpectedEN, Some(ExpectedIndividualEN)),
     UserScenario(isWelsh = false, isAgent = true, CommonExpectedEN, Some(ExpectedAgentEN)),
@@ -298,6 +302,36 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
           }
         }
       }
+
+      "display the dividends link when tailoring has only stock dividends journey" when {
+        stockDividendJourney(user).foreach { journey =>
+          s"the journey is for '${journey.tailoringKey}'" which {
+            val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+
+            lazy val result: Future[Result] = {
+              cleanDatabase(taxYear)
+              insertJourneys(false, journey.tailoringKey)
+              stubGetExcludedCall(taxYear, nino)
+              authoriseAgentOrIndividual(user.isAgent)
+              route(customApp(tailoringEnabled = true), request, user.isWelsh).get
+            }
+
+            implicit val document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+            "has a status of OK(200)" in {
+              status(result) shouldBe OK
+            }
+
+            textOnPageCheck(checkSectionsText, checkSectionsSelector)
+
+            textOnPageCheck(journey.expectedText, sectionNameSelector(1))
+            "have a add sections link " which {
+              linkCheck(specific.addSections, addSectionsSelector, Links.addSectionsLink(taxYear))
+            }
+          }
+        }
+      }
+
       "only display the " when {
             val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
 

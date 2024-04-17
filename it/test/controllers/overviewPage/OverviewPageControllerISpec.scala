@@ -56,7 +56,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your Income Tax Return"
     val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
-    val notificationBannerPlural = "We have added 10 sections to your return, based on the information we already hold about you."
+    val notificationBannerPlural = "We have added 11 sections to your return, based on the information we already hold about you."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -73,7 +73,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your client’s Income Tax Return"
     val notificationBanner = "We have added a section to your client’s return, based on the information we already hold about them."
-    val notificationBannerPlural = "We have added 10 sections to your client’s return, based on the information we already hold about them."
+    val notificationBannerPlural = "We have added 11 sections to your client’s return, based on the information we already hold about them."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -88,7 +88,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
     val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 10 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 11 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -105,7 +105,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
     val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 10 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 11 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
   }
 
   trait SpecificExpectedResults {
@@ -964,8 +964,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             cleanDatabase(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubGetExcludedCall(taxYear, nino)
-            // TODO rm copy when stockDividends fully implemented
-            stubIncomeSources(incomeSourcesModel.copy(stockDividends = None))
+            stubIncomeSources(incomeSourcesModel)
             route(customApp(tailoringEnabled = true), request, user.isWelsh).get
           }
 
