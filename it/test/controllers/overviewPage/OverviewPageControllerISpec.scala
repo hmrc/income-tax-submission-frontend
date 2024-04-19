@@ -56,7 +56,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your Income Tax Return"
     val notificationBanner = "We have added a section to your return, based on the information we already hold about you."
-    val notificationBannerPlural = "We have added 10 sections to your return, based on the information we already hold about you."
+    val notificationBannerPlural = "We have added 11 sections to your return, based on the information we already hold about you."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -73,7 +73,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Add sections to your client’s Income Tax Return"
     val notificationBanner = "We have added a section to your client’s return, based on the information we already hold about them."
-    val notificationBannerPlural = "We have added 10 sections to your client’s return, based on the information we already hold about them."
+    val notificationBannerPlural = "We have added 11 sections to your client’s return, based on the information we already hold about them."
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -88,7 +88,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections = "Ychwanegu adrannau at eich Ffurflen Dreth Incwm"
     val notificationBanner = "Rydym wedi ychwanegu adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 10 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 11 adran at eich Ffurflen Dreth, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdanoch."
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -105,7 +105,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val addSections: String = "Ychwanegu adrannau at Ffurflen Dreth Incwm eich cleient"
     val notificationBanner = "Rydym wedi ychwanegu adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
-    val notificationBannerPlural = "Rydym wedi ychwanegu 10 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
+    val notificationBannerPlural = "Rydym wedi ychwanegu 11 adran at Ffurflen Dreth eich cleient, yn seiliedig ar yr wybodaeth sydd eisoes gennym amdano."
   }
 
   trait SpecificExpectedResults {
@@ -451,7 +451,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             insertAllJourneys()
             stubGetExcludedCall(taxYear, nino)
             authoriseAgentOrIndividual(user.isAgent)
-            stubIncomeSources(incomeSourcesModel.copy(None, None, None, None, None, None, None, None, None, None, selfEmployment = None, property = None))
+            stubIncomeSources(IncomeSourcesModel())
             route(app, request, user.isWelsh).get
           }
 
@@ -964,8 +964,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             cleanDatabase(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
             stubGetExcludedCall(taxYear, nino)
-            // TODO rm copy when stockDividends fully implemented
-            stubIncomeSources(incomeSourcesModel.copy(stockDividends = None))
+            stubIncomeSources(incomeSourcesModel)
             route(customApp(tailoringEnabled = true), request, user.isWelsh).get
           }
 
@@ -1271,6 +1270,29 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           textOnPageCheck(specific.submitReturnHeaderEOY, submitReturnEOYSelector)
           textOnPageCheck(specific.submitReturnText, submitReturnTextEOYSelector)
           formPostLinkCheck(endOfYearContinueLink, formSelector)
+        }
+
+        "render an overview page with updated status for dividends when there is prior data only for stock dividends" when {
+          val request = FakeRequest("GET", urlPathEndOfYear).withHeaders(headers: _*)
+          lazy val result: Future[Result] = {
+            cleanDatabase(taxYearEOY)
+            insertStockDividendsJourney(endOfYear = true)
+            stubGetExcludedCall(taxYearEOY, nino)
+            authoriseAgentOrIndividual(user.isAgent)
+            stubStockDividendsEndOfYear
+            route(customApp(), request, user.isWelsh).get
+          }
+
+          implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
+
+          "returns status of OK(200)" in {
+            status(result) shouldBe OK
+          }
+
+          "has a dividends section" which {
+            linkCheck(dividendsLinkText, dividendsLinkSelector, dividendsLinkWithPriorData(taxYearEOY))
+            textOnPageCheck(updatedText, dividendsStatusSelector)
+          }
         }
 
         "render overview page with 'Started' status tags when there is prior data and the employment section is clickable with" +

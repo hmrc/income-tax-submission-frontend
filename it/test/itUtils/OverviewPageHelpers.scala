@@ -18,7 +18,7 @@ package itUtils
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.mongo.{DatabaseError, TailoringUserDataModel}
-import models.{LiabilityCalculationIdModel, User}
+import models.{IncomeSourcesModel, LiabilityCalculationIdModel, User}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.Helpers.OK
@@ -108,7 +108,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
       "AA123456A",
       if (endOfYear) taxYearEOY else taxYear,
       journeys
-    )))
+    ))())
   }
 
   def insertAllJourneys(endOfYear: Boolean = false): Either[DatabaseError, Boolean] = {
@@ -124,9 +124,18 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
     )
   }
 
+  def insertStockDividendsJourney(endOfYear: Boolean = false): Either[DatabaseError, Boolean] = {
+    insertJourneys(
+      endOfYear,
+      "stock-dividends"
+    )
+  }
   def stubIncomeSources: StubMapping =
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", OK, Json.toJson(incomeSourcesModel).toString)
 
   def stubIncomeSourcesEndOfYear: StubMapping =
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYearEOY", OK, Json.toJson(incomeSourcesModel).toString)
+
+  def stubStockDividendsEndOfYear: StubMapping =
+    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYearEOY", OK, Json.toJson(IncomeSourcesModel(stockDividends = Some(aStockDividends))).toString)
 }
