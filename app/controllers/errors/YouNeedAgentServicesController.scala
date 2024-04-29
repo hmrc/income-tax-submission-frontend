@@ -29,7 +29,7 @@ class YouNeedAgentServicesController @Inject()(val mcc: MessagesControllerCompon
                                                youNeedAgentServicesPage: YouNeedAgentServicesView,
                                                implicit val appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-  def show(): Action[AnyContent] = Action.async { implicit request =>
+  def show: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Unauthorized(youNeedAgentServicesPage()))
   }
 }

@@ -45,7 +45,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
   lazy val logger: Logger = Logger.apply(this.getClass)
   implicit val config: AppConfig = appConfig
   implicit val messagesApi: MessagesApi = mcc.messagesApi
-  implicit val correlationId = UUID.randomUUID().toString
+  implicit val correlationId: String = UUID.randomUUID().toString
 
   val minimumConfidenceLevel: Int = ConfidenceLevel.L250.level
 
