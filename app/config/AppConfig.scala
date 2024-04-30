@@ -348,7 +348,7 @@ trait AppConfig {
   val crystallisationEnabled: Boolean
   val tailoringEnabled: Boolean
 
-  //Tailor Return Phase2
+  //Tailor return Phase2
   val tailoringPhase2Enabled: Boolean
   val tailorReturnBaseUrl: String
   val tailorReturnServiceUrl: String
