@@ -102,7 +102,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
              crystallisationEnabled: Boolean = true,
              taxYearErrorFeatureSwitch: Boolean = false,
              tailoringEnabled: Boolean = false,
-             newTailoringEnabled: Boolean = false
+             tailoringPhase2Enabled: Boolean = false
             ): Map[String, String] = Map(
     "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
@@ -131,7 +131,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.selfEmploymentEnabled" -> selfEmploymentEnabled.toString,
     "feature-switch.crystallisationEnabled" -> crystallisationEnabled.toString,
     "feature-switch.tailoringEnabled" -> tailoringEnabled.toString,
-    "feature-switch.newTailoringEnabled" -> newTailoringEnabled.toString,
+    "feature-switch.tailoringPhase2Enabled" -> tailoringPhase2Enabled.toString,
     "metrics.enabled" -> "false",
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
     "useEncryption" -> useEncryption.toString,
@@ -162,7 +162,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
                 crystallisationEnabled: Boolean = true,
                 taxYearErrorFeatureSwitch: Boolean = false,
                 tailoringEnabled: Boolean = false,
-                newTailoringEnabled: Boolean = false
+                tailoringPhase2Enabled: Boolean = false
                ): Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(
@@ -185,7 +185,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         crystallisationEnabled,
         taxYearErrorFeatureSwitch,
         tailoringEnabled,
-        newTailoringEnabled
+        tailoringPhase2Enabled
       )
     ).build
 

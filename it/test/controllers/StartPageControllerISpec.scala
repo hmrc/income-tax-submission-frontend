@@ -120,7 +120,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
   import CommonExpectedResults._
 
   private val urlPath = s"/update-and-submit-income-tax-return/$taxYear/start"
-
+  private val tailoringPhase2UrlPath = s"http://localhost:10007/update-and-submit-income-tax-return/tailored-return/$taxYear/start"
   "Rendering the start page in English" should {
 
     val headers = Seq(
@@ -159,18 +159,22 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
-    "render tailor return start page when the user is an individual and new tailoring feature switch is on" should {
+    "render tailor return start page when the user is an individual and tailoring phase2 feature switch is on" should {
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
-        route(customApp(newTailoringEnabled=true), request).get
+        route(customApp(tailoringPhase2Enabled=true), request).get
       }
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
 
       "returns status of 303" in {
         status(result) shouldBe SEE_OTHER
+      }
+
+      "redirects to tailoring start page location" in {
+        await(result).header.headers("Location") shouldBe tailoringPhase2UrlPath
       }
     }
 
@@ -249,16 +253,20 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
       formPostLinkCheck(continueButtonHref, Selectors.continueButton)
     }
 
-    "render correctly when the user is an agent and new tailoring feature switch is on" should {
+    "render correctly when the user is an agent and tailoring phase2 feature switch is on" should {
       val request = FakeRequest("GET", urlPath).withHeaders(headers: _*)
 
       lazy val result: Future[Result] = {
         authoriseAgent()
-        route(customApp(newTailoringEnabled=true), request).get
+        route(customApp(tailoringPhase2Enabled=true), request).get
       }
 
       "returns status of 303" in {
         status(result) shouldBe SEE_OTHER
+      }
+
+      "redirects to tailoring start page location" in {
+        await(result).header.headers("Location") shouldBe tailoringPhase2UrlPath
       }
     }
   }

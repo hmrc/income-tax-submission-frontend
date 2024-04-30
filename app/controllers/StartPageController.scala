@@ -48,7 +48,7 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
     implicit user =>
-      if(appConfig.newTailoringEnabled) {
+      if(appConfig.tailoringPhase2Enabled) {
         Redirect(appConfig.tailorReturnStartPageUrl(taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
       } else {
         Ok(startPageView(isAgent = user.isAgent, taxYear, inYearAction.inYear(taxYear))).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
