@@ -119,8 +119,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   import CommonExpectedResults._
 
-  private val urlPath = s"/update-and-submit-income-tax-return/$taxYear/start"
-  private val tailoringPhase2UrlPath = s"http://localhost:10007/update-and-submit-income-tax-return/tailored-return/$taxYear/start"
+  private val urlPath: String = s"/update-and-submit-income-tax-return/$taxYear/start"
+  private val tailoringPhase2UrlPath: String = s"${frontendAppConfig.tailorReturnServiceUrl}/$taxYear/start"
   "Rendering the start page in English" should {
 
     val headers = Seq(
@@ -164,7 +164,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
       lazy val result: Future[Result] = {
         authoriseIndividual()
-        route(customApp(tailoringPhase2Enabled=true), request).get
+        route(customApp(tailoringPhase2Enabled = true), request).get
       }
 
       implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
@@ -258,7 +258,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
       lazy val result: Future[Result] = {
         authoriseAgent()
-        route(customApp(tailoringPhase2Enabled=true), request).get
+        route(customApp(tailoringPhase2Enabled = true), request).get
       }
 
       "returns status of 303" in {
