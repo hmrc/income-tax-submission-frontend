@@ -55,8 +55,9 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
   private lazy val OverviewPageControllerRoute: ReverseOverviewPageController = controllers.routes.OverviewPageController
 
   //TODO revisit this to check duplication of correlationId creation
-  private def getCorrelationid(implicit hc:HeaderCarrier) = hc.extraHeaders.find(_._1 == "CorrelationId").getOrElse(UUID.randomUUID())
-  def handleGetIncomeSources(taxYear: Int, isInYear: Boolean)(implicit user: User[_]): Future[Result] = {
+  private def getCorrelationId(implicit hc:HeaderCarrier): Serializable = hc.extraHeaders.find(_._1 == "CorrelationId").getOrElse(UUID.randomUUID())
+
+  private def handleGetIncomeSources(taxYear: Int, isInYear: Boolean)(implicit user: User[_]): Future[Result] = {
     tailoringUserDataRepository.find(taxYear).flatMap {
       case Right(sessionData) =>
         incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
@@ -64,31 +65,32 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
             handleExclusion(taxYear, incomeSources).map { excludedJourneys =>
               val tailoringSources = sessionData.map(_.tailoring).getOrElse(Seq.empty[String])
               val overviewTailoringData = OverviewTailoringModel(tailoringSources, incomeSources)
-              logger.info(s"$getCorrelationid::[OverviewPageController][handleGetIncomeSources] returning overviewpage")
+              logger.info(s"$getCorrelationId::[OverviewPageController][handleGetIncomeSources] returning overview page")
               Ok(overviewPageView(isAgent = user.isAgent, Some(incomeSources), overviewTailoringData, taxYear, isInYear, excludedJourneys))
             }
           case Left(error) =>
-            logger.error(s"$getCorrelationid::[OverviewPageController][handleGetIncomeSources] incomeSourcesService.getIncomeSources returned error $error")
+            logger.error(s"$getCorrelationId::[OverviewPageController][handleGetIncomeSources] incomeSourcesService.getIncomeSources returned error $error")
             Future.successful(errorHandler.handleError(error.status))
         }
       case Left(e) =>
-        logger.error(s"$getCorrelationid::[OverviewPageController][handleGetIncomeSources] tailoringUserDataRepository.find returned error $e")
+        logger.error(s"$getCorrelationId::[OverviewPageController][handleGetIncomeSources] tailoringUserDataRepository.find returned error $e")
         Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
     }
   }
 
-  def handleExclusion(taxYear: Int, incomeSourcesModel: IncomeSourcesModel)(implicit user: User[_]): Future[Seq[String]] = {
+  private def handleExclusion(taxYear: Int, incomeSourcesModel: IncomeSourcesModel)(implicit user: User[_]): Future[Seq[String]] = {
     val dividendsRemove = incomeSourcesModel.dividends.exists(dividends => dividends.hasNonZeroData)
     val giftAidRemove = incomeSourcesModel.giftAid.exists(giftAid => giftAid.hasNonZeroData)
     val interestRemove = incomeSourcesModel.interest.exists(interests => interests.exists(_.hasNonZeroData))
     val employmentRemove = incomeSourcesModel.employment.nonEmpty
-    val cisRemove = incomeSourcesModel.cis.exists(_.contractorCISDeductions.exists(_.hasNonZeroData)) || incomeSourcesModel.cis.exists(_.customerCISDeductions.exists(_.hasNonZeroData))
+    val cisRemove = incomeSourcesModel.cis.exists(_.contractorCISDeductions.exists(_.hasNonZeroData)) ||
+      incomeSourcesModel.cis.exists(_.customerCISDeductions.exists(_.hasNonZeroData))
     val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
     val stateBenefitsRemove = incomeSourcesModel.stateBenefits.nonEmpty
     val selfEmploymentRemove = incomeSourcesModel.selfEmployment.nonEmpty
     val interestSavingsRemove = incomeSourcesModel.interestSavings.nonEmpty
     val gainsRemove = incomeSourcesModel.gains.nonEmpty
-    val stockDividendsRemove = incomeSourcesModel.stockDividends.nonEmpty
+    val stockDividendsRemove = incomeSourcesModel.stockDividends.exists(stockDividends => stockDividends.hasNonZeroData)
 
     excludedJourneysService.getExcludedJourneys(taxYear, user.nino, user.mtditid).map {
       case Right(data) =>
@@ -106,7 +108,8 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
           data.journeys.find(_.journey == INTEREST).exists(_.hash.exists(_ != sha256Hash(interestAccounts.mkString(","))))
         }
 
-        val newExclude: Seq[String] = Seq((dividendsRemove, DIVIDENDS),
+        val newExclude: Seq[String] = Seq(
+          (dividendsRemove, DIVIDENDS),
           (cisRemove, CIS),
           (employmentRemove, EMPLOYMENT),
           (pensionsRemove, PENSIONS),
@@ -131,7 +134,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     if (isInYear) {
       handleGetIncomeSources(taxYear, isInYear = true)
     } else {
-      logger.info(s"$getCorrelationid::[OverviewPageController][show] not in year")
+      logger.info(s"$getCorrelationId::[OverviewPageController][show] not in year")
       Future.successful(Redirect(OverviewPageControllerRoute.showCrystallisation(taxYear)))
     }
   }
