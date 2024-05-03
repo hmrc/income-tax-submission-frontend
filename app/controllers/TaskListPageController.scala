@@ -28,7 +28,7 @@ import utils.ShaHashHelper
 import views.html.TaskListPageView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class TaskListPageController @Inject()(inYearAction: InYearAction,
