@@ -131,7 +131,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val tailoringEnabled: Boolean = false
 
-  override lazy val tailoringPhase2Enabled: Boolean = true
+  override lazy val tailoringPhase2Enabled: Boolean = false
 
   override lazy val pensionsEnabled: Boolean = true
 
