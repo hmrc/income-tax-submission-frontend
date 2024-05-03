@@ -46,6 +46,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val personalIncomeTaxSubmissionUrl: String =s"$personalIncomeTaxSubmissionBaseUrl/update-and-submit-income-tax-return/personal-income"
   lazy val additionalInformationSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.additionalInformationFrontendUrl)
   lazy val additionalInformationSubmissionUrl: String =s"$additionalInformationSubmissionBaseUrl/update-and-submit-income-tax-return/additional-information"
+
   //Income tax calculation service
   lazy val incomeTaxCalculationServiceUrl: String = s"$calculationBaseUrl/income-tax-calculation/income-tax"
 
@@ -186,6 +187,12 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val nrsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.nrsEnabled")
   lazy val crystallisationEnabled: Boolean = servicesConfig.getBoolean("feature-switch.crystallisationEnabled")
   lazy val tailoringEnabled: Boolean = servicesConfig.getBoolean("feature-switch.tailoringEnabled")
+
+  //Tailor return phase2
+  val tailoringPhase2Enabled: Boolean = servicesConfig.getBoolean("feature-switch.tailoringPhase2Enabled")
+  val tailorReturnBaseUrl: String = servicesConfig.getString(ConfigKeys.tailorReturnFrontendUrl)
+  val tailorReturnServiceUrl: String = s"$tailorReturnBaseUrl/update-and-submit-income-tax-return/tailored-return"
+  def tailorReturnStartPageUrl(taxYear: Int): String = s"$tailorReturnServiceUrl/$taxYear/start"
 
   def excludedIncomeSources(inputTaxYear: Int): Seq[String] = {
     val employmentFeatureEnabled: (String, Boolean) = if(inputTaxYear != taxYear) (EMPLOYMENT, employmentEOYEnabled) else (EMPLOYMENT, employmentEnabled)
@@ -340,6 +347,12 @@ trait AppConfig {
   val nrsEnabled: Boolean
   val crystallisationEnabled: Boolean
   val tailoringEnabled: Boolean
+
+  //Tailor return Phase2
+  val tailoringPhase2Enabled: Boolean
+  val tailorReturnBaseUrl: String
+  val tailorReturnServiceUrl: String
+  def tailorReturnStartPageUrl(taxYear: Int): String
 
   def excludedIncomeSources(taxYear: Int): Seq[String]
 

@@ -30,7 +30,7 @@ class SessionExpiredController @Inject()(val mcc: MessagesControllerComponents,
                                          implicit val appConfig: AppConfig,
                                          timeoutPage: TimeoutPage) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
 
-  def keepAlive(): Action[AnyContent] = Action(NoContent)
+  def keepAlive: Action[AnyContent] = Action(NoContent)
 
   def timeout: Action[AnyContent] = Action { implicit request =>
 

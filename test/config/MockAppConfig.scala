@@ -30,7 +30,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override lazy val incomeTaxSubmissionUrl: String = s"$incomeTaxSubmissionBaseUrl/index"
   override lazy val personalIncomeTaxSubmissionBaseUrl: String = "/personalIncomeTaxSubmissionFrontend"
   override lazy val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
-
+  override lazy val tailorReturnBaseUrl: String = "http://localhost:10007"
+  override lazy val tailorReturnServiceUrl: String = s"$tailorReturnBaseUrl/update-and-submit-income-tax-return/tailored-return"
 
   override lazy val incomeTaxCalculationServiceUrl: String = "/income-tax-calculation/income-tax"
   lazy val additionalInformationTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/additional-information"
@@ -38,6 +39,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override lazy val ivSuccessUrl: String = s"/update-and-submit-income-tax-return/iv-uplift-callback"
   override lazy val ivFailureUrl: String = s"/update-and-submit-income-tax-return/error/we-could-not-confirm-your-details"
   override lazy val ivUpliftUrl: String = s"/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=250&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
+
+  override def tailorReturnStartPageUrl(taxYear: Int): String = s"$tailorReturnServiceUrl/$taxYear/start"
 
   override def additionalInformationSummaryUrl(taxYear: Int): String = s"$additionalInformationTaxSubmissionUrl/$taxYear/gains/summary"
 
@@ -127,6 +130,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override lazy val crystallisationEnabled: Boolean = false
 
   override lazy val tailoringEnabled: Boolean = false
+
+  override lazy val tailoringPhase2Enabled: Boolean = false
 
   override lazy val pensionsEnabled: Boolean = true
 

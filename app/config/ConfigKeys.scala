@@ -21,7 +21,6 @@ object ConfigKeys {
   val incomeTaxCalculationUrl = "microservice.services.income-tax-calculation.url"
   val incomeTaxNrsProxyUrl = "microservice.services.income-tax-nrs-proxy.url"
 
-
   val contactFrontendUrl = "microservice.services.contact-frontend.url"
   val incomeTaxEmploymentFrontendUrl = "microservice.services.income-tax-employment-frontend.url"
   val incomeTaxCisFrontendUrl = "microservice.services.income-tax-cis-frontend.url"
@@ -38,6 +37,8 @@ object ConfigKeys {
   val signInUrl = "microservice.services.sign-in.url"
   val signInContinueUrl = "microservice.services.sign-in.continueUrl"
 
+  //Tailor return Phase2
+  val tailorReturnFrontendUrl = "microservice.services.income-tax-tailor-returns-frontend.url"
 
   val defaultTaxYear = "defaultTaxYear"
   val alwaysEOY = "alwaysEOY"

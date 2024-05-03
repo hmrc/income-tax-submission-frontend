@@ -34,7 +34,7 @@ class TaxYearErrorController @Inject()(val authorisedAction: AuthorisedAction,
                                        implicit val appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with TaxYearHelper {
 
-  def show(): Action[AnyContent] = authorisedAction.async { implicit request =>
+  def show: Action[AnyContent] = authorisedAction.async { implicit request =>
 
     Future.successful(Ok(wrongTaxYearPage(firstClientTaxYear, latestClientTaxYear, singleValidTaxYear)))
   }

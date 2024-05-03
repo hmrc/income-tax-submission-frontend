@@ -30,7 +30,7 @@ class AgentAuthErrorController @Inject()(
                                          view: AgentAuthErrorPageView
                                         ) extends FrontendController(mcc) with I18nSupport {
 
-  def show(): Action[AnyContent] = Action { implicit request =>
+  def show: Action[AnyContent] = Action { implicit request =>
     Unauthorized(view())
   }
 
