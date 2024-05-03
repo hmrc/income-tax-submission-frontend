@@ -27,18 +27,18 @@ class TaskListServiceSpec extends UnitTest {
 
   val connector = mock[TaskListConnector]
   val service: TaskListService = new TaskListService(connector)
-  val taxYear: Int = 1999
+  val invalidTaxYear: Int = 1999
 
   ".getTaskList" should {
 
-    "return the connector response" in {
+    "return 500 error for invalid tax year from connector response" in {
       val expectedResult: TaskListResponse = Left(error500)
 
       (connector.getTaskList(_: Int)(_: HeaderCarrier))
-        .expects(taxYear, headerCarrierWithSession)
+        .expects(invalidTaxYear, headerCarrierWithSession)
         .returning(Future.successful(expectedResult))
 
-      val result = await(service.getTaskList(taxYear))
+      val result = await(service.getTaskList(invalidTaxYear))
 
       result shouldBe expectedResult
     }

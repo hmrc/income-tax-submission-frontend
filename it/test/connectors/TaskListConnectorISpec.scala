@@ -113,8 +113,8 @@ class TaskListConnectorISpec extends IntegrationTest {
 
       result shouldBe Left(expectedResult)
     }
-    "return a PARSING_ERROR when unexpected status 408" in {
-      val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API"))
+    "return a INTERNAL_SERVER_ERROR when unexpected status 408" in {
+      val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal server error"))
 
       stubGet(tasklistUrl, REQUEST_TIMEOUT, "")
       val result = await(connector.getTaskList(taxYearEOY))
