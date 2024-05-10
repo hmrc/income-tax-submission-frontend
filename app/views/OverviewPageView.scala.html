@@ -41,25 +41,22 @@
         </span>
     } else {
         <span class="hmrc-status-tag">
-           @govukTag(Tag(
-            content = Text(if(enabledCondition){
-                if(isExcluded && appConfig.tailoringEnabled) {
-                    messages("overview.excluded")
-                } else if (updatedCondition) {
-                    messages("overview.updated")
-                } else if(cannotUpdateCondition) {
-                    messages("overview.cannotUpdate")
-                } else if(isExcluded && appConfig.tailoringEnabled) {
-                    messages("overview.excluded")
-                } else if(isMandatorySection) {
-                    messages("overview.todo")
-                } else {
-                    messages("overview.notStarted")
-                }
+            @govukTag(Tag(
+                content = Text(if(enabledCondition){
+                    if (isExcluded && appConfig.tailoringEnabled) {
+                        messages("overview.excluded")
+                    } else if(updatedCondition) {
+                        messages("overview.updated")
+                    } else if(cannotUpdateCondition) {
+                        messages("overview.cannotUpdate")
+                    } else if(isMandatorySection) {
+                        messages("overview.todo")
+                    } else {
+                        messages("overview.notStarted")
+                    }
                 } else {
                     messages("common.underMaintenance")
-                }
-            ),
+                }),
             classes = {
                 if(enabledCondition) {
                     if(isExcluded && appConfig.tailoringEnabled) {
@@ -68,7 +65,7 @@
                         "govuk-tag--turquoise"
                     } else if(cannotUpdateCondition) {
                         "govuk-tag--grey"
-                    }  else if(isMandatorySection) {
+                    } else if(isMandatorySection) {
                         "govuk-tag--purple"
                     } else {
                         "govuk-tag--blue"
@@ -76,7 +73,8 @@
                 } else {
                     "govuk-tag--orange"
                 }
-            }))
+            }
+            ))
         </span>
     }
 }
