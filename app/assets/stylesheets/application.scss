@@ -1,9 +1,14 @@
-$govuk-assets-path: "/update-and-submit-income-tax-return/assets/lib/govuk-frontend/govuk/assets/";
+$govuk-assets-path: "/update-and-submit-income-tax-return/assets/lib/govuk-frontend/dist/govuk/assets/";
 $hmrc-assets-path: "/update-and-submit-income-tax-return/assets/lib/hmrc-frontend/hmrc/";
 
-@import "lib/govuk-frontend/govuk/all";
+@import "lib/govuk-frontend/dist/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
 
+.maintenance {
+    color: #000;
+    background-color: #fff;
+    text-wrap: nowrap;
+}
 
 a.govuk-link.hmrc-sign-out-nav__link:active {
   color: black;

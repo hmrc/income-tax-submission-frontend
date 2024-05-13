@@ -28,12 +28,6 @@
 
 @statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean) = {
     @if(isUnavailable) {
-        <style @{CSPNonce.attr}>
-            .maintenance {
-                color: #000 !important;
-                background-color: #fff !important;
-            }
-        </style>
         <span class="hmrc-status-tag">
             <strong class="govuk-tag maintenance">
                 @messages("common.underMaintenance")
