@@ -28,7 +28,7 @@ common.returnToIncomeTaxAccount.button.agent = Yn ôl i gyfrif Treth Incwm
 common.back = Yn ôl
 common.saveAndContinue = Cadw ac yn eich blaen
 
-betaBar.beta = beta
+betaBar.beta = Beta
 betaBar.banner.message.1 = Gwasanaeth newydd yw hwn – bydd eich
 betaBar.banner.message.2 = adborth
 betaBar.banner.message.3 = yn ein helpu i’w wella.
