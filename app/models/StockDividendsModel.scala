@@ -26,13 +26,24 @@ case class StockDividendsModel(
                                 redeemableShares: Option[Dividend] = None,
                                 bonusIssuesOfSecurities: Option[Dividend] = None,
                                 closeCompanyLoansWrittenOff: Option[Dividend] = None
-                              )
+                              ) {
+
+  val hasNonZeroData: Boolean =
+    foreignDividend.exists(foreignInterestModel => foreignInterestModel.exists(_.hasNonZeroData)) ||
+    dividendIncomeReceivedWhilstAbroad.exists(dividendIncomeReceivedWhilstAbroad => dividendIncomeReceivedWhilstAbroad.exists(_.hasNonZeroData)) ||
+    stockDividend.exists(_.hasNonZeroData) ||
+    redeemableShares.exists(_.hasNonZeroData) ||
+    bonusIssuesOfSecurities.exists(_.hasNonZeroData) ||
+    closeCompanyLoansWrittenOff.exists(_.hasNonZeroData)
+}
 
 object StockDividendsModel {
   implicit val formats: OFormat[StockDividendsModel] = Json.format[StockDividendsModel]
 }
 
-case class Dividend(customerReference: Option[String] = None, grossAmount: Option[BigDecimal] = None)
+case class Dividend(customerReference: Option[String] = None, grossAmount: Option[BigDecimal] = None) {
+  val hasNonZeroData: Boolean = grossAmount.exists(_ != 0)
+}
 
 object Dividend {
   implicit val formats: OFormat[Dividend] = Json.format[Dividend]

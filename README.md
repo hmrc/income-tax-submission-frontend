@@ -568,7 +568,8 @@ Currently, the crystallisation journey and tax account in staging can only be ac
 | Nino      | Income Tax Submission Frontend data | Source    |
 |-----------|-------------------------------------|-----------|
 | AA133742A | PAYE data                           | HMRC-Held |
-| AA000003A | Interest & Dividends data           |
+| AA000003A | Interest & Dividends data           |           |
+| AA000011A | Zeroed Stock Dividends data         |           |
 
 ### End of Year
 | Nino      | Income Tax Submission Frontend data | Source              |
