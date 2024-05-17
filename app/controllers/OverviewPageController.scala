@@ -109,7 +109,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
         }
 
         val newExclude: Seq[String] = Seq(
-          (dividendsRemove, DIVIDENDS),
+          (dividendsRemove || stockDividendsRemove, DIVIDENDS),
           (cisRemove, CIS),
           (employmentRemove, EMPLOYMENT),
           (pensionsRemove, PENSIONS),
@@ -118,8 +118,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
           (giftAidRemove || giftAidHash, GIFT_AID),
           (interestRemove || interestHash, INTEREST),
           (interestSavingsRemove, INTEREST_SAVINGS),
-          (gainsRemove, GAINS),
-          (stockDividendsRemove, STOCK_DIVIDENDS)
+          (gainsRemove, GAINS)
         ).filter(_._1).map(_._2)
 
         val newData = data.journeys.filter(excludedModels => newExclude.contains(excludedModels.journey)).map(_.journey)
