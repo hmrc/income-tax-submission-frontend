@@ -88,7 +88,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
              invalidEncryptionKey: Boolean = false,
              dividendsEnabled: Boolean = true,
              interestEnabled: Boolean = true,
-             interestSavingsEnabled: Boolean = false,
+             savingsEnabled: Boolean = false,
              giftAidEnabled: Boolean = true,
              studentLoansEnabled: Boolean = true,
              employmentEnabled: Boolean = true,
@@ -116,7 +116,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "microservice.services.auth-login-api.url" -> s"http://$wiremockHost:$wiremockPort",
     "feature-switch.dividendsEnabled" -> dividendsEnabled.toString,
     "feature-switch.interestEnabled" -> interestEnabled.toString,
-    "feature-switch.interestSavingsEnabled" -> interestSavingsEnabled.toString,
+    "feature-switch.savingsEnabled" -> savingsEnabled.toString,
     "feature-switch.giftAidEnabled" -> giftAidEnabled.toString,
     "feature-switch.studentLoansEnabled" -> studentLoansEnabled.toString,
     "feature-switch.employmentEnabled" -> employmentEnabled.toString,
@@ -147,7 +147,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
                 invalidEncryptionKey: Boolean = false,
                 dividendsEnabled: Boolean = true,
                 interestEnabled: Boolean = true,
-                interestSavingsEnabled: Boolean = false,
+                savingsEnabled: Boolean = false,
                 giftAidEnabled: Boolean = true,
                 studentLoansEnabled: Boolean = true,
                 employmentEnabled: Boolean = true,
@@ -171,7 +171,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         invalidEncryptionKey,
         dividendsEnabled,
         interestEnabled,
-        interestSavingsEnabled,
+        savingsEnabled,
         giftAidEnabled,
         studentLoansEnabled,
         employmentEnabled,
@@ -274,7 +274,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     gains = insurancePoliciesModel,
     pensions = Some(allPensionsModel),
     stateBenefits = Some(allStateBenefitsData),
-    interestSavings = Some(savingsInterestModel),
+    savings = Some(savingsModel),
     stockDividends = Some(aStockDividends),
     property = Some(allProperty),
     selfEmployment = Some(selfEmploymentData)
@@ -282,7 +282,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
   lazy val dividendsModel: Option[DividendsModel] = Some(DividendsModel(Some(100.00), Some(100.00)))
   lazy val interestsModel: Option[Seq[InterestModel]] = Some(Seq(InterestModel("TestName", "TestSource", Some(100.00), Some(100.00))))
-  lazy val savingsInterestModel: SavingsIncomeDataModel = SavingsIncomeDataModel(
+  lazy val savingsModel: SavingsIncomeDataModel = SavingsIncomeDataModel(
     submittedOn = Some("2020-02-04T05:01:01Z"),
     securities = Some(SecuritiesModel(Some(800.67), 7455.99, Some(6123.2))),
     foreignInterest = Some(Seq(ForeignInterestModel("BES", Some(1232.56), Some(3422.22), Some(5622.67), Some(true), 2821.92)

@@ -51,24 +51,24 @@
                 } else {
                     messages("common.underMaintenance")
                 }),
-            classes = {
-                if(enabledCondition) {
-                    if(isExcluded && appConfig.tailoringEnabled) {
-                        "govuk-tag--red excluded"
-                    } else if(updatedCondition) {
-                        "govuk-tag--turquoise"
-                    } else if(cannotUpdateCondition) {
-                        "govuk-tag--grey"
-                    } else if(isMandatorySection) {
-                        "govuk-tag--purple"
+                classes = {
+                    if(enabledCondition) {
+                        if(isExcluded && appConfig.tailoringEnabled) {
+                            "govuk-tag--red excluded"
+                        } else if(updatedCondition) {
+                            "govuk-tag--turquoise"
+                        } else if(cannotUpdateCondition) {
+                            "govuk-tag--grey"
+                        } else if(isMandatorySection) {
+                            "govuk-tag--purple"
+                        } else {
+                            "govuk-tag--blue"
+                        }
                     } else {
-                        "govuk-tag--blue"
+                        "govuk-tag--orange"
                     }
-                } else {
-                    "govuk-tag--orange"
                 }
-            }
-            ))
+                ))
         </span>
     }
 }
@@ -111,7 +111,7 @@
 }
 
 @interestUrlRedirect(incomeSources: IncomeSourcesModel) = @{
-    if(!appConfig.interestSavingsEnabled){
+    if(!appConfig.savingsEnabled){
         if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
             appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)
         } else {
@@ -165,15 +165,15 @@
 
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <ol class="app-task-list__items govuk-!-padding-bottom-1 govuk-!-padding-left-0">
-        @if(appConfig.interestSavingsEnabled){
+        @if(appConfig.savingsEnabled){
             @taskListItem(
                 tailoring.hasInterest,
-                appConfig.interestEnabled || appConfig.interestSavingsEnabled,
+                appConfig.interestEnabled || appConfig.savingsEnabled,
                 "interest_link",
                 "common.interestWithSavings",
                 interestUrlRedirect(incomeSources),
                 INTEREST,
-                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) || incomeSources.interestSavings.isDefined,
+                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) || incomeSources.savings.isDefined,
                 isUnavailable = checkServiceAvailability(incomeSources, "interest-savings")
 
         )

@@ -23,7 +23,7 @@ case class OverviewTailoringModel(tailoring: Seq[String], incomeSources: IncomeS
 
   val hasDividends: Boolean = tailoring.contains("dividends") || incomeSources.dividends.nonEmpty
   val hasInterest: Boolean = tailoring.contains("interest") || incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) ||
-    (appConfig.interestSavingsEnabled && incomeSources.interestSavings.nonEmpty)
+    (appConfig.savingsEnabled && incomeSources.savings.nonEmpty)
   val hasGiftAid: Boolean = tailoring.contains("gift-aid") || incomeSources.giftAid.nonEmpty
   val hasEmployment: Boolean = tailoring.contains("employment") || incomeSources.employment.nonEmpty
   val hasCis: Boolean = tailoring.contains("cis") || incomeSources.cis.nonEmpty

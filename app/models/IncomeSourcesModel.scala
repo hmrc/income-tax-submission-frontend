@@ -34,7 +34,7 @@ case class IncomeSourcesModel(
                                pensions: Option[Pensions] = None,
                                gains: Option[InsurancePoliciesModel] = None,
                                stateBenefits: Option[AllStateBenefitsData] = None,
-                               interestSavings: Option[SavingsIncomeDataModel] = None,
+                               savings: Option[SavingsIncomeDataModel] = None,
                                stockDividends: Option[StockDividendsModel] = None,
                                property: Option[AllPropertyData] = None,
                                selfEmployment: Option[SelfEmploymentData] = None
@@ -70,7 +70,7 @@ case class IncomeSourcesModel(
       cis.nonEmpty &&
       pensions.nonEmpty &&
       stateBenefits.nonEmpty &&
-      interestSavings.nonEmpty &&
+      savings.nonEmpty &&
       gains.nonEmpty &&
       stockDividends.nonEmpty &&
       property.nonEmpty &&

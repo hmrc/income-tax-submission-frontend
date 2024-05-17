@@ -91,7 +91,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
 
   override lazy val interestEnabled: Boolean = false
 
-  override lazy val interestSavingsEnabled: Boolean = false
+  override lazy val savingsEnabled: Boolean = false
 
   override lazy val studentLoansEnabled: Boolean = true
 

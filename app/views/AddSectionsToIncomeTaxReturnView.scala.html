@@ -103,8 +103,8 @@
                 )
             }
 
-            @if(appConfig.interestSavingsEnabled){
-                @if(journeys.contains("interest") && !incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) && incomeSources.interestSavings.isEmpty) {
+            @if(appConfig.savingsEnabled){
+                @if(journeys.contains("interest") && !incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) && incomeSources.savings.isEmpty) {
                     @checkboxItem(
                         messages("common.interestWithSavings"),
                         "addSections.hintText.interestWithSavings",

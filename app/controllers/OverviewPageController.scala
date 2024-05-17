@@ -88,7 +88,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
     val stateBenefitsRemove = incomeSourcesModel.stateBenefits.nonEmpty
     val selfEmploymentRemove = incomeSourcesModel.selfEmployment.nonEmpty
-    val interestSavingsRemove = incomeSourcesModel.interestSavings.nonEmpty
+    val savingsRemove = incomeSourcesModel.savings.exists(savings => savings.hasNonZeroData)
     val gainsRemove = incomeSourcesModel.gains.nonEmpty
     val stockDividendsRemove = incomeSourcesModel.stockDividends.exists(stockDividends => stockDividends.hasNonZeroData)
 
@@ -116,8 +116,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
           (stateBenefitsRemove, STATE_BENEFITS),
           (selfEmploymentRemove, SELF_EMPLOYMENT),
           (giftAidRemove || giftAidHash, GIFT_AID),
-          (interestRemove || interestHash, INTEREST),
-          (interestSavingsRemove, INTEREST_SAVINGS),
+          ((interestRemove || interestHash) && savingsRemove, INTEREST),
           (gainsRemove, GAINS)
         ).filter(_._1).map(_._2)
 
