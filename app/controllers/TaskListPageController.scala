@@ -42,7 +42,7 @@ class TaskListPageController @Inject()(inYearAction: InYearAction,
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     val isInYear: Boolean = inYearAction.inYear(taxYear)
-    taskListService.getTaskList(taxYear).map {
+    taskListService.getTaskList(taxYear)(hc.withExtraHeaders("MTDITID" -> user.mtditid)).map {
       case Left(error) => errorHandler.handleError(error.status)
       case Right(taskListSectionModel) => Ok(taskListPageView(user.isAgent, taxYear, isInYear, taskListSectionModel))
     }

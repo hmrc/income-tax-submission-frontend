@@ -20,22 +20,47 @@
 @import views.html.templates.helpers.NotificationBanner
 @import views.html.templates.helpers.Link
 @import models.tasklist.TaskListSectionModel
+@import models.tasklist.Tasks
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @import views.html.helper.CSPNonce
 
-@this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag, notificationBanner: NotificationBanner, link: Link)
-@(isAgent: Boolean, taxYear: Int, isInYear: Boolean, taskListSectionModel: Option[Seq[TaskListSectionModel]])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@this(layout: Layout,
+  heading: Heading,
+  button: Button,
+  govukInsetText: GovukInsetText,
+  formWithCSRF: FormWithCSRF,
+  govUkButton: GovukButton,
+  govukTag: GovukTag,
+  notificationBanner: NotificationBanner,
+  govukTaskList: GovukTaskList)
+@(isAgent: Boolean, taxYear: Int, isInYear: Boolean, taskListSectionModel: Option[Tasks])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @affinityText = @{
-if(isAgent) "agent" else "individual"
+ if(isAgent) "agent" else "individual"
 }
 
-@taskList = {
+@content = {
 
     @heading(messages(s"common.yourIncomeTaxReturn.$affinityText"), messages("common.caption", (taxYear - 1).toString, taxYear.toString))
 
+    @for(section <- taskListSectionModel.getOrElse(Tasks(Seq())).taskList) {
+
+        @heading(section.sectionTitle)
+
+            @govukTaskList(TaskList(
+                section.taskItems.getOrElse(Seq()).map { item =>
+                    TaskListItem(
+                        title = TaskListItemTitle(Text(item.title.content)),
+                        status = TaskListItemStatus(tag = Some(Tag(Text(item.status.content)))),
+                        href = item.href
+                    )
+                }
+            ))
+    }
 }
-@layout(pageTitle = messages(s"common.yourIncomeTaxReturn.$affinityText"), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(taskList)
+
+@layout(pageTitle = messages(s"common.yourIncomeTaxReturn.$affinityText"), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(content)
 
 @{
 // $COVERAGE-OFF$

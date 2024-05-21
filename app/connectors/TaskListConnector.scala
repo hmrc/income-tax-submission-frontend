@@ -29,7 +29,7 @@ class TaskListConnector @Inject()(val http: HttpClient,
                                       )(implicit ec: ExecutionContext) extends RawResponseReads with Logging{
 
   def getTaskList(taxYear: Int)(implicit hc: HeaderCarrier): Future[TaskListResponse] = {
-    val taskListUrl: String = config.incomeTaxSubmissionUrl + s"/task-list/data/$taxYear"
+    val taskListUrl: String = config.incomeTaxSubmissionUrl + s"/task-list/$taxYear"
     http.GET[TaskListResponse](taskListUrl)
   }
 
