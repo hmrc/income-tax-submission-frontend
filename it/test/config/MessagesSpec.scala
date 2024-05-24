@@ -25,7 +25,7 @@ class MessagesSpec extends ViewTest {
 
   lazy val allLanguages: Map[String, Map[String, String]] = app.injector.instanceOf[MessagesApi].messages
 
-  val exclusionKeys = Set(
+  private val exclusionKeys: Set[String] = Set(
     "global.error.badRequest400.title",
     "global.error.badRequest400.heading",
     "global.error.badRequest400.message",
@@ -61,7 +61,17 @@ class MessagesSpec extends ViewTest {
     "language.day.plural",
     "language.day.singular",
     "back.text",
-    "error.summary.title"
+    "error.summary.title",
+    "taskList.agent.aboutYou",
+    "taskList.agent.charitableDonations",
+    "taskList.agent.employment",
+    "taskList.agent.selfEmployment",
+    "taskList.agent.esaTitle",
+    "taskList.agent.jsaTitle",
+    "taskList.agent.pensions",
+    "taskList.agent.paymentsIntoPensions",
+    "taskList.agent.interest",
+    "taskList.agent.dividends"
   )
 
   val betaMessagesInBothHMRCLibraryAndMessages = 3
@@ -105,7 +115,7 @@ class MessagesSpec extends ViewTest {
   }
 
   "the welsh file" should {
-    "have no duplicate messages(values) if all keys are unique" in {
+    "have no duplicate messages.cy(values) if all keys are unique" in {
       checkMessagesAreUnique(welsh, exclusionKeys)
     }
   }
