@@ -16,7 +16,6 @@
 
 package models.tasklist.taskItemTitles
 
-import models.tasklist.TaskTitle
 import models.tasklist.taskItemTitles.AboutYouItemTitles.FosterCarer
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -27,7 +26,7 @@ class FosterCarerSpec extends AnyFreeSpec with Matchers {
   "FosterCarer" - {
 
     "must parse to and from json" in {
-      val underTest = TaskTitle.aboutYouItemTitles.FosterCarer()
+      val underTest = FosterCarer()
       Json.toJson(underTest).toString() mustBe "{}"
       Json.toJson(underTest).validate[FosterCarer] mustBe JsSuccess(FosterCarer(), JsPath())
     }

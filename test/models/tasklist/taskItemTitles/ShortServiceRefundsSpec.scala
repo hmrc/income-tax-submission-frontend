@@ -16,7 +16,6 @@
 
 package models.tasklist.taskItemTitles
 
-import models.tasklist.TaskTitle
 import models.tasklist.taskItemTitles.PensionsTitles.ShortServiceRefunds
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -27,7 +26,7 @@ class ShortServiceRefundsSpec extends AnyFreeSpec with Matchers {
   "ShortServiceRefunds" - {
 
     "must parse to and from json" in {
-      val underTest = TaskTitle.pensionsTitles.ShortServiceRefunds()
+      val underTest = ShortServiceRefunds()
       Json.toJson(underTest).toString() mustBe "{}"
       Json.toJson(underTest).validate[ShortServiceRefunds] mustBe JsSuccess(ShortServiceRefunds(), JsPath())
     }

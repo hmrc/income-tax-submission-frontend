@@ -233,7 +233,7 @@ error.business-validation-rules.paragraph.individual = Ewch ati i wirio’ch Ffu
 taskList.incomplete = Incomplete
 taskList.completedText = You have completed {0} of {1} sections.
 
-### Task List Section Titles ###
+### Task List Section Titles / TEMP IN ENGLISH UNTIL TRANSLATIONS ARRIVE  ###
 
 taskList.aboutYouTitle = About You
 taskList.agent.aboutYouTitle = About your client
@@ -258,41 +258,41 @@ taskList.agent.dividendsTitle = UK dividends, shares and loans from limited comp
 
 ### Task List Item Titles / TEMP IN ENGLISH UNTIL TRANSLATIONS ARRIVE ###
 
-taskList.ukResidenceStatus = UK residence status
-taskList.fosterCarer = Foster carer status
+taskList.ukResidenceStatusTask = UK residence status
+taskList.fosterCarerTask = Foster carer status
 
-taskList.donationsUsingGiftAid = Donations using Gift Aid
-taskList.giftsOfLandOrProperty = Gifts of land or property
-taskList.giftsOfSharesOrSecurities = Gifts of shares or securities
+taskList.donationsUsingGiftAidTask = Donations using Gift Aid
+taskList.giftsOfLandOrPropertyTask = Gifts of land or property
+taskList.giftsOfSharesOrSecuritiesTask = Gifts of shares or securities
 
-taskList.employed = PAYE employment (including student loans)
+taskList.employmentTask = PAYE employment (including student loans)
 
-taskList.selfEmployed = Construction Industry Schemes deductions
+taskList.cisTask = Construction Industry Schemes deductions
 
-taskList.esa = Review Employment and support allowance claims
+taskList.esaTask = Review Employment and support allowance claims
 
-taskList.jsa = Review Jobseeker’s Allowance claims
+taskList.jsaTask = Review Jobseeker’s Allowance claims
 
-taskList.statePension = State Pension
-taskList.otherUkPensions = Other UK Pensions
-taskList.unauthorisedPayments = Unauthorised payments
-taskList.shortServiceRefunds = Short service refunds
-taskList.nonUkPensions = Income from overseas pensions
+taskList.statePensionTask = State Pension
+taskList.otherUkPensionsTask = Other UK Pensions
+taskList.unauthorisedPaymentsTask = Unauthorised payments
+taskList.shortServiceRefundsTask = Short service refunds
+taskList.incomeFromOverseasTask = Income from overseas pensions
 
-taskList.ukPensions = Payments into UK pensions
-taskList.paymentsIntoNonUkPensions = Payments into overseas pensions
-taskList.annualAllowances = Annual allowances
-taskList.overseas = Overseas transfer charge
+taskList.paymentsIntoUkPensions = Payments into UK pensions
+taskList.paymentsIntoOverseasPensionsTask = Payments into overseas pensions
+taskList.annualAllowancesTask = Annual allowances
+taskList.overseasTransferTask = Overseas transfer charge
 
-taskList.fromUkBanks = Banks and building societies
-taskList.fromUkTrustFunds = Trust fund bond or bonds
-taskList.fromGiltEdged = Gilt-edged or accrued income securities
+taskList.banksAndBuildingTask = Banks and building societies
+taskList.trustFundBondTask = Trust fund bond or bonds
+taskList.giltEdgedTask = Gilt-edged or accrued income securities
 
-taskList.cashDividendsUkStocksAndShares = Cash dividends from UK stocks and shares
-taskList.stockDividendsUkCompanies = Stock dividends from UK companies
-taskList.dividendsUnitTrustsInvestmentCompanies = Dividends from unit trusts or investment companies
-taskList.freeOrRedeemableShares = Free or redeemable shares
-taskList.closeCompanyLoansWrittenOffReleased = Close company loans written off or released
+taskList.cashDividendsTask = Cash dividends from UK stocks and shares
+taskList.stockDividendsTask = Stock dividends from UK companies
+taskList.dividendsUnitTrustsInvestmentCompaniesTask = Dividends from unit trusts or investment companies
+taskList.freeOrRedeemableSharesTask = Free or redeemable shares
+taskList.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
 
 notStarted = Not started
 completed = Completed

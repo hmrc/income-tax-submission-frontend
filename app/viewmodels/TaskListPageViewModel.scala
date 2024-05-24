@@ -24,7 +24,7 @@ import models.tasklist.taskItemTitles.CharitableDonationsTitles.{DonationsUsingG
 import models.tasklist.taskItemTitles.EmploymentTitles.PayeEmployment
 import models.tasklist.taskItemTitles.EsaTitles.ESA
 import models.tasklist.taskItemTitles.JsaTitles.JSA
-import models.tasklist.taskItemTitles.PaymentsIntoPensionsTitles.{OverseasTransfer, PaymentsIntoOverseas, PaymentsIntoUk}
+import models.tasklist.taskItemTitles.PaymentsIntoPensionsTitles.{AnnualAllowances, OverseasTransfer, PaymentsIntoOverseas, PaymentsIntoUk}
 import models.tasklist.taskItemTitles.PensionsTitles.{IncomeFromOverseas, OtherUkPensions, ShortServiceRefunds, StatePension, UnauthorisedPayments}
 import models.tasklist.taskItemTitles.SelfEmploymentTitles.CIS
 import models.tasklist.taskItemTitles.TaskItemTitleKeys._
@@ -62,7 +62,8 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
               TaskListItem(
                 title = TaskListItemTitle(Text(sectionItemOps(item.title))),
                 status = itemStatus(item.status),
-                href = item.href
+                href = item.href,
+                classes = item.title.toString
               )
             }
           )).body
@@ -133,6 +134,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       UnauthorisedPayments().toString -> messages(prefix + UNAUTHORISED_PAYMENTS_KEY),
       PaymentsIntoUk().toString -> messages(prefix + PAYMENTS_INTO_UK_KEY),
       PaymentsIntoOverseas().toString -> messages(prefix + PAYMENTS_INTO_OVERSEAS_KEY),
+      AnnualAllowances().toString -> messages(prefix + ANNUAL_ALLOWANCES_KEY),
       OverseasTransfer().toString -> messages(prefix + OVERSEAS_TRANSFER_KEY),
       ShortServiceRefunds().toString -> messages(prefix + SHORT_SERVICE_REFUNDS_KEY),
       IncomeFromOverseas().toString -> messages(prefix + INCOME_FROM_OVERSEAS_KEY),
