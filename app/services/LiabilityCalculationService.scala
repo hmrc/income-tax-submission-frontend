@@ -35,8 +35,9 @@ class LiabilityCalculationService @Inject()(
     liabilityCalculationConnector.getCalculationId(nino, taxYear)(hc.withExtraHeaders("mtditid" -> mtditid))
   }
 
-  def getIntentToCrystallise(nino: String, taxYear: Int, mtditid: String)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
-    liabilityCalculationConnector.getIntentToCrystallise(nino, taxYear)(hc.withExtraHeaders("mtditid" -> mtditid))
+  def getIntentToCrystallise(nino: String, taxYear: Int, mtditid: String, crystallise: Boolean)
+                            (implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
+    liabilityCalculationConnector.getIntentToCrystallise(nino, taxYear, crystallise)(hc.withExtraHeaders("mtditid" -> mtditid))
   }
 
   def getCalculationDetailsByCalcId(mtditid: String, nino: String, calcId: String, taxYear: Int)

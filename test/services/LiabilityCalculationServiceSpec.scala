@@ -29,12 +29,12 @@ import java.time.LocalDate
 
 class LiabilityCalculationServiceSpec extends UnitTest {
 
-  val connector: LiabilityCalculationConnector = mock[LiabilityCalculationConnector]
-  val incomeTaxCalculationConnector: IncomeTaxCalculationConnector = mock[IncomeTaxCalculationConnector]
+  private val connector: LiabilityCalculationConnector = mock[LiabilityCalculationConnector]
+  private val incomeTaxCalculationConnector: IncomeTaxCalculationConnector = mock[IncomeTaxCalculationConnector]
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
-
-  val service: LiabilityCalculationService = new LiabilityCalculationService(connector, incomeTaxCalculationConnector)
-  val calculationResponseModel: CalculationResponseModel = CalculationResponseModel(
+  private val service: LiabilityCalculationService = new LiabilityCalculationService(connector, incomeTaxCalculationConnector)
+  private val year: Int = 1999
+  private val calculationResponseModel: CalculationResponseModel = CalculationResponseModel(
     inputs = Inputs(PersonalInformation(taxRegime = "UK", class2VoluntaryContributions = None)),
     messages = None,
     metadata = Metadata(Some("2019-02-15T09:35:15.094Z"), Some(false), Some("customerRequest"), None, None),
@@ -48,10 +48,10 @@ class LiabilityCalculationServiceSpec extends UnitTest {
       val expectedResult: LiabilityCalculationResponse = Right(responseBody)
 
       (connector.getCalculationId(_: String, _: Int)(_: HeaderCarrier))
-        .expects("123456789",1999, headerCarrierWithSession.withExtraHeaders("mtditid"->"987654321"))
+        .expects("123456789", year, headerCarrierWithSession.withExtraHeaders("mtditid"->"987654321"))
         .returning(Future.successful(expectedResult))
 
-      val result = await(service.getCalculationId("123456789", 1999, "987654321"))
+      val result = await(service.getCalculationId("123456789", year, "987654321"))
 
       result shouldBe expectedResult
     }
@@ -64,11 +64,11 @@ class LiabilityCalculationServiceSpec extends UnitTest {
       val responseBody = LiabilityCalculationIdModel("calculationId")
       val expectedResult: LiabilityCalculationResponse = Right(responseBody)
 
-      (connector.getIntentToCrystallise(_: String, _: Int)(_: HeaderCarrier))
-        .expects("123456789",1999, headerCarrierWithSession.withExtraHeaders("mtditid"->"987654321"))
+      (connector.getIntentToCrystallise(_: String, _: Int, _: Boolean)(_: HeaderCarrier))
+        .expects("123456789", year, true, headerCarrierWithSession.withExtraHeaders("mtditid"->"987654321"))
         .returning(Future.successful(expectedResult))
 
-      val result = await(service.getIntentToCrystallise("123456789", 1999, "987654321"))
+      val result = await(service.getIntentToCrystallise("123456789", year, "987654321", crystallise = true))
 
       result shouldBe expectedResult
     }

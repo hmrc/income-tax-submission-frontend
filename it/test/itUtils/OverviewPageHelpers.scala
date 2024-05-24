@@ -86,6 +86,10 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
   }
 
+  def stubInYearLiabilityCalculation(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
+    stubGet(s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/tax-calculation\\?crystallise=false", returnStatus, Json.toJson(response).toString())
+  }
+
   def stubLiabilityCalculation(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
     stubGet(s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
   }

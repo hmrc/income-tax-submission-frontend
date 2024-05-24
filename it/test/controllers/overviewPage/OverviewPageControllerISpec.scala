@@ -1749,6 +1749,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
           lazy val result: Future[Result] = {
             authUser()
+            stubInYearLiabilityCalculation(Some(LiabilityCalculationIdModel("00000000-0000-1000-8000-000000000000")), OK)
             route(customApp(
               dividendsEnabled = false,
               interestEnabled = false,

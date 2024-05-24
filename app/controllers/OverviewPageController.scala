@@ -144,7 +144,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
 
   def finalCalculation(taxYear: Int): Action[AnyContent] = authorisedAction.async { implicit user =>
     inYearAction.notInYear(taxYear) {
-      liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid).map {
+      liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid, crystallise = true).map {
         case Right(calculationId) =>
 
           val userTypeString = if (user.isAgent) "agent" else "individual"
@@ -165,16 +165,19 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val isInYear: Boolean = inYearAction.inYear(taxYear)
 
     if (isInYear) {
-      val userTypeString = if (user.isAgent) "agent" else "individual"
-      auditService.sendAudit(CreateInYearTaxEstimate(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
+      liabilityCalculationService.getIntentToCrystallise(user.nino, taxYear, user.mtditid, crystallise = false).map {
+        case Right(calcId) =>
+          val userTypeString = if (user.isAgent) "agent" else "individual"
+          auditService.sendAudit(CreateInYearTaxEstimate(taxYear, userTypeString, user.nino, user.mtditid).toAuditModel)
 
-      Future.successful(
-        if (user.isAgent) {
-          Redirect(appConfig.viewAndChangeViewInYearEstimateUrlAgent)
-        } else {
-          Redirect(appConfig.viewAndChangeViewInYearEstimateUrl)
-        }
-      )
+          if (user.isAgent) {
+            Redirect(appConfig.viewAndChangeViewInYearEstimateUrlAgent).addingToSession(CALCULATION_ID -> calcId.id)
+          } else {
+            Redirect(appConfig.viewAndChangeViewInYearEstimateUrl).addingToSession(CALCULATION_ID -> calcId.id)
+          }
+
+        case Left(error) => errorHandler.handleIntentToCrystalliseError(error.status, taxYear)
+      }
     } else {
       Future.successful(Redirect(OverviewPageControllerRoute.showCrystallisation(taxYear)))
     }
