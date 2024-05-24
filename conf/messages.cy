@@ -228,3 +228,72 @@ error.no-valid-income.p2.bullet2 = Eiddo yn y DU neu dramor
 error.business-validation-rules.heading = Mae problem gyda’ch diweddariadau
 error.business-validation-rules.paragraph.agent = Ewch ati i wirio Ffurflen Dreth eich cleient ar gyfer Treth Incwm a’i chyflwyno eto.
 error.business-validation-rules.paragraph.individual = Ewch ati i wirio’ch Ffurflen Dreth ar gyfer Treth Incwm a’i chyflwyno eto.
+
+
+taskList.incomplete = Incomplete
+taskList.completedText = You have completed {0} of {1} sections.
+
+### Task List Section Titles ###
+
+taskList.aboutYou = About You
+taskList.agent.aboutYou = About your client
+taskList.charitableDonations = Charitable donations
+taskList.agent.charitableDonations = Charitable donations
+taskList.employment = Employment
+taskList.agent.employment = Employment
+taskList.selfEmployment = Self-Employment
+taskList.agent.selfEmployment = Self-Employment
+taskList.esaTitle = Employment and Support Allowance
+taskList.agent.esaTitle = Employment and Support Allowance
+taskList.jsaTitle = Jobseeker’s Allowance
+taskList.agent.jsaTitle = Jobseeker’s Allowance
+taskList.pensions = Pensions
+taskList.agent.pensions = Pensions
+taskList.paymentsIntoPensions = Payments into Pensions
+taskList.agent.paymentsIntoPensions = Payments into Pensions
+taskList.interest = UK Interest
+taskList.agent.interest = UK Interest
+taskList.dividends = UK dividends, shares and loans from limited companies
+taskList.agent.dividends = UK dividends, shares and loans from limited companies
+
+### Task List Item Titles / TEMP IN ENGLISH UNTIL TRANSLATIONS ARRIVE ###
+
+taskList.ukResidenceStatus = UK residence status
+taskList.fosterCarer = Foster carer status
+
+taskList.donationsUsingGiftAid = Donations using Gift Aid
+taskList.giftsOfLandOrProperty = Gifts of land or property
+taskList.giftsOfSharesOrSecurities = Gifts of shares or securities
+
+taskList.employed = PAYE employment (including student loans)
+
+taskList.selfEmployed = Construction Industry Schemes deductions
+
+taskList.esa = Review Employment and support allowance claims
+
+taskList.jsa = Review Jobseeker’s Allowance claims
+
+taskList.statePension = State Pension
+taskList.otherUkPensions = Other UK Pensions
+taskList.unauthorisedPayments = Unauthorised payments
+taskList.shortServiceRefunds = Short service refunds
+taskList.nonUkPensions = Income from overseas pensions
+
+taskList.ukPensions = Payments into UK pensions
+taskList.paymentsIntoNonUkPensions = Payments into overseas pensions
+taskList.overseas = Overseas transfer charge
+
+taskList.fromUkBanks = Banks and building societies
+taskList.fromUkTrustFunds = Trust fund bond or bonds
+taskList.fromGiltEdged = Gilt-edged or accrued income securities
+
+taskList.cashDividendsUkStocksAndShares = Cash dividends from UK stocks and shares
+taskList.stockDividendsUkCompanies = Stock dividends from UK companies
+taskList.dividendsUnitTrustsInvestmentCompanies = Dividends from unit trusts or investment companies
+taskList.freeOrRedeemableShares = Free or redeemable shares
+taskList.closeCompanyLoansWrittenOffReleased = Close company loans written off or released
+
+notStarted = Not started
+completed = Completed
+checkNow = Check now
+inProgress = In progress
