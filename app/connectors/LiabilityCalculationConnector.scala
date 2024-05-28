@@ -32,8 +32,8 @@ class LiabilityCalculationConnector @Inject()(http: HttpClient,
     http.GET[LiabilityCalculationResponse](Url)
   }
 
-  def getIntentToCrystallise(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
-    val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation?crystallise=true"
+  def getIntentToCrystallise(nino: String, taxYear: Int, crystallise: Boolean)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
+    val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation?crystallise=$crystallise"
     http.GET[LiabilityCalculationResponse](Url)
   }
 }

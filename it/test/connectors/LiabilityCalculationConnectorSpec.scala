@@ -25,6 +25,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
   lazy val connector: LiabilityCalculationConnector = app.injector.instanceOf[LiabilityCalculationConnector]
 
+  private val crystallise: Boolean = true
 
 
   ".LiabilityCalculationConnector" should {
@@ -125,7 +126,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", OK, Json.toJson(expectedResult).toString())
 
-        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY))
+        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY, crystallise))
 
         result shouldBe Right(expectedResult)
       }
@@ -139,7 +140,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", OK, Json.toJson(invalidJson).toString())
 
-        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY))
+        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY, crystallise))
 
         result shouldBe Left(expectedResult)
       }
@@ -149,7 +150,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
 
-        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY))
+        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY, crystallise))
 
         result shouldBe Left(expectedResult)
       }
@@ -159,7 +160,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
 
-        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY))
+        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY, crystallise))
 
         result shouldBe Left(expectedResult)
       }
@@ -170,7 +171,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", UNPROCESSABLE_ENTITY, expectedResult.toJson.toString())
 
-        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY))
+        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY, crystallise))
 
         result shouldBe Left(expectedResult)
       }
@@ -181,7 +182,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", FORBIDDEN, expectedResult.toJson.toString())
 
-        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY))
+        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY, crystallise))
 
         result shouldBe Left(expectedResult)
       }
@@ -191,7 +192,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", GONE, "{}")
 
-        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY))
+        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY, crystallise))
 
         result shouldBe Left(expectedResult)
       }
@@ -201,7 +202,7 @@ class LiabilityCalculationConnectorSpec extends IntegrationTest {
 
         stubGet(s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", BAD_REQUEST, expectedResult.toJson.toString())
 
-        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY))
+        val result = await(connector.getIntentToCrystallise(nino, taxYearEOY, crystallise))
 
         result shouldBe Left(expectedResult)
       }
