@@ -38,17 +38,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverviewPageController @Inject()(inYearAction: InYearAction,
-                                       incomeSourcesService: IncomeSourcesService,
-                                       liabilityCalculationService: LiabilityCalculationService,
-                                       tailoringUserDataRepository: TailoringUserDataRepository,
-                                       overviewPageView: OverviewPageView,
-                                       authorisedAction: AuthorisedAction,
-                                       implicit val validTaxYearListService: ValidTaxYearListService,
-                                       implicit val errorHandler: ErrorHandler,
-                                       auditService: AuditService,
-                                       excludedJourneysService: ExcludedJourneysService)
-                                      (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
+class OverviewPageController @Inject()(
+  inYearAction: InYearAction,
+  incomeSourcesService: IncomeSourcesService,
+  liabilityCalculationService: LiabilityCalculationService,
+  tailoringUserDataRepository: TailoringUserDataRepository,
+  overviewPageView: OverviewPageView,
+  authorisedAction: AuthorisedAction,
+  implicit val validTaxYearListService: ValidTaxYearListService,
+  implicit val errorHandler: ErrorHandler,
+  auditService: AuditService,
+  excludedJourneysService: ExcludedJourneysService
+) (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with ShaHashHelper with Logging{
 
 
@@ -88,7 +89,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val pensionsRemove = incomeSourcesModel.pensions.nonEmpty
     val stateBenefitsRemove = incomeSourcesModel.stateBenefits.nonEmpty
     val selfEmploymentRemove = incomeSourcesModel.selfEmployment.nonEmpty
-    val savingsRemove = incomeSourcesModel.savings.exists(savings => savings.hasNonZeroData)
+    val savingsRemove = incomeSourcesModel.interestSavings.exists(savings => savings.hasNonZeroData)
     val gainsRemove = incomeSourcesModel.gains.nonEmpty
     val stockDividendsRemove = incomeSourcesModel.stockDividends.exists(stockDividends => stockDividends.hasNonZeroData)
 

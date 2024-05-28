@@ -36,21 +36,24 @@
     } else {
         <span class="hmrc-status-tag">
             @govukTag(Tag(
-                content = Text(if(enabledCondition){
-                    if (isExcluded && appConfig.tailoringEnabled) {
-                        messages("overview.excluded")
-                    } else if(updatedCondition) {
-                        messages("overview.updated")
-                    } else if(cannotUpdateCondition) {
-                        messages("overview.cannotUpdate")
-                    } else if(isMandatorySection) {
-                        messages("overview.todo")
-                    } else {
-                        messages("overview.notStarted")
-                    }
-                } else {
-                    messages("common.underMaintenance")
-                }),
+                content =
+                    Text(
+                        if(enabledCondition){
+                            if (isExcluded && appConfig.tailoringEnabled) {
+                                messages("overview.excluded")
+                            } else if(updatedCondition) {
+                                messages("overview.updated")
+                            } else if(cannotUpdateCondition) {
+                                messages("overview.cannotUpdate")
+                            } else if(isMandatorySection) {
+                                messages("overview.todo")
+                            } else {
+                                messages("overview.notStarted")
+                            }
+                        } else {
+                            messages("common.underMaintenance")
+                        }
+                    ),
                 classes = {
                     if(enabledCondition) {
                         if(isExcluded && appConfig.tailoringEnabled) {
@@ -111,7 +114,7 @@
 }
 
 @interestUrlRedirect(incomeSources: IncomeSourcesModel) = @{
-    if(!appConfig.savingsEnabled){
+    if(!appConfig.interestSavingsEnabled){
         if(incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts))) {
             appConfig.personalIncomeTaxInterestSubmissionCYAUrl(taxYear)
         } else {
@@ -165,18 +168,17 @@
 
 @taskWithActionList(caption: String, index: Option[Int], incomeSources: IncomeSourcesModel, warningEOY: String) = {
     <ol class="app-task-list__items govuk-!-padding-bottom-1 govuk-!-padding-left-0">
-        @if(appConfig.savingsEnabled){
+        @if(appConfig.interestSavingsEnabled){
             @taskListItem(
                 tailoring.hasInterest,
-                appConfig.interestEnabled || appConfig.savingsEnabled,
+                appConfig.interestEnabled || appConfig.interestSavingsEnabled,
                 "interest_link",
                 "common.interestWithSavings",
                 interestUrlRedirect(incomeSources),
                 INTEREST,
-                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) || incomeSources.savings.isDefined,
+                incomeSources.interest.exists(accounts => accounts.exists(_.hasAmounts)) || incomeSources.interestSavings.isDefined,
                 isUnavailable = checkServiceAvailability(incomeSources, "interest-savings")
-
-        )
+            )
         } else {
             @taskListItem(
                 tailoring.hasInterest,

@@ -24,9 +24,7 @@ case class InterestModel(
                           taxedUkInterest: Option[BigDecimal],
                           untaxedUkInterest: Option[BigDecimal]
                         ) {
-
   val hasAmounts: Boolean = taxedUkInterest.isDefined || untaxedUkInterest.isDefined
-
   val hasNonZeroData: Boolean = taxedUkInterest.exists(_ != 0) || untaxedUkInterest.exists(_ != 0)
 }
 

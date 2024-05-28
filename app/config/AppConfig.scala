@@ -163,7 +163,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   //Enabled income sources
   lazy val dividendsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.dividendsEnabled")
   lazy val interestEnabled: Boolean = servicesConfig.getBoolean("feature-switch.interestEnabled")
-  lazy val savingsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.savingsEnabled")
+  lazy val interestSavingsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.interestSavingsEnabled")
   lazy val giftAidEnabled: Boolean = servicesConfig.getBoolean("feature-switch.giftAidEnabled")
   lazy val giftAidReleased: Boolean = servicesConfig.getBoolean("feature-switch.giftAidReleased")
   lazy val employmentEnabled: Boolean = servicesConfig.getBoolean("feature-switch.employmentEnabled")
@@ -205,7 +205,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
       employmentFeatureEnabled,
       (CIS, cisEnabled),
       (STATE_BENEFITS, stateBenefitsEnabled),
-      (SAVINGS, savingsEnabled),
+      (INTEREST_SAVINGS, interestSavingsEnabled),
       (GAINS, gainsEnabled),
       (STOCK_DIVIDENDS, stockDividendsEnabled)
     ).filter(!_._2).map(_._1)
@@ -323,7 +323,7 @@ trait AppConfig {
   //Enabled income sources
   val dividendsEnabled: Boolean
   val interestEnabled: Boolean
-  val savingsEnabled: Boolean
+  val interestSavingsEnabled: Boolean
   val giftAidEnabled: Boolean
   val giftAidReleased: Boolean
   val gainsEnabled: Boolean
