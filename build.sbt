@@ -1,3 +1,4 @@
+
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
@@ -6,7 +7,7 @@ ThisBuild / scalaVersion := "2.13.12"
 
 val appName = "income-tax-submission-frontend"
 
-lazy val coverageSettings: Seq[Setting[_]] = {
+lazy val coverageSettings: Seq[Setting[?]] = {
 
   val excludedPackages = Seq(
     "<empty>",
@@ -56,12 +57,8 @@ lazy val microservice = Project(appName, file("."))
     scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s",
   )
   .settings(Test / fork := false)
-  .settings(
-    DefaultBuildSettings.itSettings() ++
-      Seq(unmanagedResourceDirectories.withRank(KeyRanks.Invisible) := Seq(baseDirectory.value / "it" / "resources"))
-  )
   .settings(resolvers += Resolver.jcenterRepo)
-  .settings(coverageSettings: _*)
+  .settings(coverageSettings *)
   .settings(
     // concatenate js
     Concat.groups := Seq(
