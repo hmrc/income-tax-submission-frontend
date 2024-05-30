@@ -25,21 +25,20 @@ import models.property.AllPropertyData
 import play.api.libs.json.{Format, Json, OFormat}
 
 case class IncomeSourcesModel(
-                               errors: Option[Seq[(String, APIErrorBody)]] = None,
-                               dividends: Option[DividendsModel] = None,
-                               interest: Option[Seq[InterestModel]] = None,
-                               giftAid: Option[GiftAidModel] = None,
-                               employment: Option[AllEmploymentData] = None,
-                               cis: Option[AllCISDeductions] = None,
-                               pensions: Option[Pensions] = None,
-                               gains: Option[InsurancePoliciesModel] = None,
-                               stateBenefits: Option[AllStateBenefitsData] = None,
-                               interestSavings: Option[SavingsIncomeDataModel] = None,
-                               stockDividends: Option[StockDividendsModel] = None,
-                               property: Option[AllPropertyData] = None,
-                               selfEmployment: Option[SelfEmploymentData] = None
-                             ) {
-
+  errors: Option[Seq[(String, APIErrorBody)]] = None,
+  dividends: Option[DividendsModel] = None,
+  interest: Option[Seq[InterestModel]] = None,
+  giftAid: Option[GiftAidModel] = None,
+  employment: Option[AllEmploymentData] = None,
+  cis: Option[AllCISDeductions] = None,
+  pensions: Option[Pensions] = None,
+  gains: Option[InsurancePoliciesModel] = None,
+  stateBenefits: Option[AllStateBenefitsData] = None,
+  interestSavings: Option[SavingsIncomeDataModel] = None,
+  stockDividends: Option[StockDividendsModel] = None,
+  property: Option[AllPropertyData] = None,
+  selfEmployment: Option[SelfEmploymentData] = None
+) {
   def excludeNotRelevantEmploymentData: IncomeSourcesModel = {
 
     val employmentData: Option[AllEmploymentData] = this.employment.map(
@@ -82,4 +81,3 @@ object IncomeSourcesModel {
   implicit val errorFormat: Format[APIErrorBody] = Json.format[APIErrorBody]
   implicit val formats: OFormat[IncomeSourcesModel] = Json.format[IncomeSourcesModel]
 }
-
