@@ -62,16 +62,16 @@ class MessagesSpec extends ViewTest {
     "language.day.singular",
     "back.text",
     "error.summary.title",
-    "taskList.agent.aboutYou",
-    "taskList.agent.charitableDonations",
-    "taskList.agent.employment",
-    "taskList.agent.selfEmployment",
+    "taskList.agent.aboutYouTitle",
+    "taskList.agent.charitableDonationsTitle",
+    "taskList.agent.employmentTitle",
+    "taskList.agent.selfEmploymentTitle",
     "taskList.agent.esaTitle",
     "taskList.agent.jsaTitle",
-    "taskList.agent.pensions",
-    "taskList.agent.paymentsIntoPensions",
-    "taskList.agent.interest",
-    "taskList.agent.dividends"
+    "taskList.agent.pensionsTitle",
+    "taskList.agent.paymentsIntoPensionsTitle",
+    "taskList.agent.interestTitle",
+    "taskList.agent.dividendsTitle"
   )
 
   val betaMessagesInBothHMRCLibraryAndMessages = 3
