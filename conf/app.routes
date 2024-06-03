@@ -9,6 +9,8 @@ GET         /sign-out                                       controllers.SignOutC
 GET         /:taxYear/start                                 controllers.StartPageController.show(taxYear: Int)
 POST        /:taxYear/start                                 controllers.StartPageController.submit(taxYear: Int)
 
+GET         /:taxYear/tasklist                              controllers.TaskListPageController.show(taxYear: Int)
+
 GET         /:taxYear/view                                  controllers.OverviewPageController.show(taxYear: Int)
 GET         /:taxYear/income-tax-return-overview            controllers.OverviewPageController.showCrystallisation(taxYear: Int)
 POST        /:taxYear/final-calculation                     controllers.OverviewPageController.finalCalculation(taxYear: Int)
