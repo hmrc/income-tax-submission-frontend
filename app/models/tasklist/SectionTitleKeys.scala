@@ -22,25 +22,25 @@ sealed trait SectionTitleKeys extends Enumerable.Implicits
 
 object SectionTitleKeys extends SectionTitleKeys {
 
-  case object AboutYouTitleKey extends WithName("aboutYou") with SectionTitleKeys
+  case object AboutYouTitleKey extends WithName("aboutYouTitle") with SectionTitleKeys
 
-  case object CharitableDonationsTitleKey extends WithName("charitableDonations") with SectionTitleKeys
+  case object CharitableDonationsTitleKey extends WithName("charitableDonationsTitle") with SectionTitleKeys
 
-  case object EmploymentTitleKey extends WithName("employment") with SectionTitleKeys
+  case object EmploymentTitleKey extends WithName("employmentTitle") with SectionTitleKeys
 
-  case object SelfEmploymentTitleKey extends WithName("selfEmployment") with SectionTitleKeys
+  case object SelfEmploymentTitleKey extends WithName("selfEmploymentTitle") with SectionTitleKeys
 
   case object EsaTitleKey extends WithName("esaTitle") with SectionTitleKeys
 
   case object JsaTitleKey extends WithName("jsaTitle") with SectionTitleKeys
 
-  case object PensionsTitleKey extends WithName("pensions") with SectionTitleKeys
+  case object PensionsTitleKey extends WithName("pensionsTitle") with SectionTitleKeys
 
-  case object PaymentsIntoPensionsTitleKey extends WithName("paymentsIntoPensions") with SectionTitleKeys
+  case object PaymentsIntoPensionsTitleKey extends WithName("paymentsIntoPensionsTitle") with SectionTitleKeys
 
-  case object InterestTitleKey extends WithName("interest") with SectionTitleKeys
+  case object InterestTitleKey extends WithName("interestTitle") with SectionTitleKeys
 
-  case object DividendsTitleKey extends WithName("dividends") with SectionTitleKeys
+  case object DividendsTitleKey extends WithName("dividendsTitle") with SectionTitleKeys
 
   val values: Seq[SectionTitleKeys] = Seq(
     AboutYouTitleKey,

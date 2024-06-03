@@ -240,26 +240,26 @@ taskList.completedText = You have completed {0} of {1} sections.
 
 ### Task List Section Titles ###
 
-taskList.aboutYou = About You
-taskList.agent.aboutYou = About your client
-taskList.charitableDonations = Charitable donations
-taskList.agent.charitableDonations = Charitable donations
-taskList.employment = Employment
-taskList.agent.employment = Employment
-taskList.selfEmployment = Self-Employment
-taskList.agent.selfEmployment = Self-Employment
+taskList.aboutYouTitle = About You
+taskList.agent.aboutYouTitle = About your client
+taskList.charitableDonationsTitle = Charitable donations
+taskList.agent.charitableDonationsTitle = Charitable donations
+taskList.employmentTitle = Employment
+taskList.agent.employmentTitle = Employment
+taskList.selfEmploymentTitle = Self-Employment
+taskList.agent.selfEmploymentTitle = Self-Employment
 taskList.esaTitle = Employment and Support Allowance
 taskList.agent.esaTitle = Employment and Support Allowance
 taskList.jsaTitle = Jobseeker’s Allowance
 taskList.agent.jsaTitle = Jobseeker’s Allowance
-taskList.pensions = Pensions
-taskList.agent.pensions = Pensions
-taskList.paymentsIntoPensions = Payments into Pensions
-taskList.agent.paymentsIntoPensions = Payments into Pensions
-taskList.interest = UK Interest
-taskList.agent.interest = UK Interest
-taskList.dividends = UK dividends, shares and loans from limited companies
-taskList.agent.dividends = UK dividends, shares and loans from limited companies
+taskList.pensionsTitle = Pensions
+taskList.agent.pensionsTitle = Pensions
+taskList.paymentsIntoPensionsTitle = Payments into Pensions
+taskList.agent.paymentsIntoPensionsTitle = Payments into Pensions
+taskList.interestTitle = UK Interest
+taskList.agent.interestTitle = UK Interest
+taskList.dividendsTitle = UK dividends, shares and loans from limited companies
+taskList.agent.dividendsTitle = UK dividends, shares and loans from limited companies
 
 ### Task List Item Titles ###
 

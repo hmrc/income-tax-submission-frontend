@@ -39,14 +39,6 @@ class TaskListPageViewModelSpec extends UnitTest {
     "return the task list with no data" in {
       underTest.copy(None).getTaskList shouldBe Seq()
     }
-
-//    "return an exception when invalid title is used" in {
-//      underTest.copy(Some(taskListModelCompleted.copy(Seq(TaskListSection("", Some(Seq(TaskListSectionItem(TaskTitle(""), TaskStatus(""), None)))))))).getTaskList.isInstanceOf[Seq[HtmlFormat.Appendable]] shouldBe true
-//    }
-//
-//    "return an exception when no items are present" in {
-//      underTest.copy(Some(taskListModelCompleted.copy(Seq(TaskListSection("employment", None))))).getTaskList.isInstanceOf[Seq[HtmlFormat.Appendable]] shouldBe true
-//    }
   }
 
   ".getCompletedText" should {
