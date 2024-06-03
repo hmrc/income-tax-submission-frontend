@@ -16,13 +16,14 @@
 
 package utils
 
-import org.apache.pekko.actor.ActorSystem
 import com.codahale.metrics.SharedMetricRegistries
 import common.{EnrolmentIdentifiers, EnrolmentKeys}
 import config.{AppConfig, MockAppConfig, MockAppConfigTaxYearFeatureOff}
 import controllers.predicates.InYearAction
 import models._
 import models.employment._
+import models.tasklist._
+import org.apache.pekko.actor.ActorSystem
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
@@ -171,5 +172,35 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   val giftAidModel: GiftAidModel = GiftAidModel(
     giftAidPaymentsModel,
     giftsModel
+  )
+
+  val taskListModel: TaskListModel = TaskListModel(
+    Seq[TaskListSection](
+      TaskListSection(
+        SectionTitle.EmploymentTitle.toString,
+        Some(Seq(TaskListSectionItem(TaskTitle("employment"), TaskStatus(StatusTag.Completed.toString), Some(""))))
+      ),
+      TaskListSection(
+        SectionTitle.JsaTitle.toString,
+        Some(Seq(TaskListSectionItem(TaskTitle("jsaTitle"), TaskStatus(StatusTag.InProgress.toString), Some(""))))
+      ),
+      TaskListSection(
+        SectionTitle.EsaTitle.toString,
+        Some(Seq(TaskListSectionItem(TaskTitle("esaTitle"), TaskStatus(StatusTag.NotStarted.toString), Some(""))))
+      ),
+      TaskListSection(
+        SectionTitle.AboutYouTitle.toString,
+        Some(Seq(TaskListSectionItem(TaskTitle("aboutYou"), TaskStatus(StatusTag.CheckNow.toString), Some(""))))
+      )
+    )
+  )
+
+  val taskListModelCompleted: TaskListModel = TaskListModel(
+    Seq[TaskListSection](
+      TaskListSection(
+        SectionTitle.EmploymentTitle.toString,
+        Some(Seq(TaskListSectionItem(TaskTitle("employment"), TaskStatus(StatusTag.Completed.toString), Some(""))))
+      )
+    )
   )
 }

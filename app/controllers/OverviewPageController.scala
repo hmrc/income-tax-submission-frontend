@@ -38,19 +38,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverviewPageController @Inject()(
-  inYearAction: InYearAction,
-  incomeSourcesService: IncomeSourcesService,
-  liabilityCalculationService: LiabilityCalculationService,
-  tailoringUserDataRepository: TailoringUserDataRepository,
-  overviewPageView: OverviewPageView,
-  authorisedAction: AuthorisedAction,
-  implicit val validTaxYearListService: ValidTaxYearListService,
-  implicit val errorHandler: ErrorHandler,
-  auditService: AuditService,
-  excludedJourneysService: ExcludedJourneysService
-) (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with ShaHashHelper with Logging{
+class OverviewPageController @Inject()(inYearAction: InYearAction,
+                                       incomeSourcesService: IncomeSourcesService,
+                                       liabilityCalculationService: LiabilityCalculationService,
+                                       tailoringUserDataRepository: TailoringUserDataRepository,
+                                       overviewPageView: OverviewPageView,
+                                       authorisedAction: AuthorisedAction,
+                                       implicit val validTaxYearListService: ValidTaxYearListService,
+                                       implicit val errorHandler: ErrorHandler,
+                                       auditService: AuditService,
+                                       excludedJourneysService: ExcludedJourneysService)
+                                      (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport with ShaHashHelper with Logging {
 
 
   private lazy val OverviewPageControllerRoute: ReverseOverviewPageController = controllers.routes.OverviewPageController
