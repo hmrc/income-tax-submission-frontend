@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.tasklist
+@this()
 
-import play.api.libs.json.{Json, OFormat}
+@(heading: String, extraClasses: String = "")
 
-case class TaskListItemTitleModel(content: String)
-
-object TaskListItemTitleModel {
-  implicit val format: OFormat[TaskListItemTitleModel] = Json.format[TaskListItemTitleModel]
-}
+ <h2 class="govuk-heading-m govuk-!-margin-0 govuk-!-margin-bottom-2 @extraClasses">
+    @heading
+ </h2>

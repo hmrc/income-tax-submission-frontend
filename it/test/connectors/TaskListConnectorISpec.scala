@@ -26,14 +26,14 @@ class TaskListConnectorISpec extends IntegrationTest {
 
   private lazy val connector: TaskListConnector = app.injector.instanceOf[TaskListConnector]
 
-  private val taskListSectionTitleModel = TaskListSectionTitleModel("About you")
-  private val taskListItemModel = Seq(TaskListItemModel(TaskListItemTitleModel("Uk residence status"), TaskListItemStatusModel("Completed"), Some("")))
+  private val taskListSectionTitle = "AboutYou"
+  private val taskListItemModel = Seq(TaskListSectionItem(TaskTitle("Uk residence status"), TaskStatus("completed"), Some("")))
 
-  val tasklistUrl = s"/income-tax-submission-service/income-tax/task-list/data/$taxYearEOY"
+  val tasklistUrl = s"/income-tax-submission-service/income-tax/task-list/$taxYearEOY"
 
   ".TaskListConnector" should {
     "return a TaskListSectionModel" in {
-        val expectedResult = List(TaskListSectionModel(taskListSectionTitleModel, taskListItemModel))
+        val expectedResult = TaskListModel(Seq(TaskListSection(taskListSectionTitle, Some(taskListItemModel))))
 
         stubGet(tasklistUrl, OK, Json.toJson(expectedResult).toString())
 
@@ -78,7 +78,7 @@ class TaskListConnectorISpec extends IntegrationTest {
         INTERNAL_SERVER_ERROR,
         APIErrorBodyModel(
           "PARSING_ERROR",
-          "Error parsing response from API - List((,List(JsonValidationError(List(error.expected.jsarray),List()))))"
+          "Error parsing response from API - List((/taskList,List(JsonValidationError(List(error.path.missing),List()))))"
         )
       )
 
@@ -116,7 +116,7 @@ class TaskListConnectorISpec extends IntegrationTest {
     "return a INTERNAL_SERVER_ERROR when unexpected status 408" in {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal server error"))
 
-      stubGet(tasklistUrl, REQUEST_TIMEOUT, "")
+      stubGet(tasklistUrl, REQUEST_TIMEOUT, expectedResult.toJson.toString())
       val result = await(connector.getTaskList(taxYearEOY))
 
       result shouldBe Left(expectedResult)

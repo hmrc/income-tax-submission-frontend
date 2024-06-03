@@ -16,6 +16,7 @@
 
 package models
 
+import models.tasklist.SectionTitle.AboutYouTitle
 import models.tasklist._
 import play.api.libs.json.{JsObject, Json}
 import utils.UnitTest
@@ -23,14 +24,14 @@ import utils.UnitTest
 class TaskListSectionModelSpec extends UnitTest {
 
 
-  val taskListSectionTitleModel: TaskListSectionTitleModel = TaskListSectionTitleModel("About you")
+  val taskListSectionTitleModel: SectionTitle = AboutYouTitle
   val jsonTaskListSectionTitleModel: JsObject = Json.obj(
     "content" -> "About you"
   )
 
-  val taskListItemModel: Seq[TaskListItemModel] = Seq(TaskListItemModel(
-    TaskListItemTitleModel("UK residence status"),
-    TaskListItemStatusModel("Completed"),
+  val taskListItemModel: Seq[TaskListSectionItem] = Seq(TaskListSectionItem(
+    TaskTitle("UK residence status"),
+    TaskStatus("Completed"),
     Some(""))
   )
   val jsonTaskListItemModel: Seq[JsObject] = Seq(Json.obj(
@@ -43,9 +44,9 @@ class TaskListSectionModelSpec extends UnitTest {
     "href" -> Some("")
   ))
 
-  val model: TaskListSectionModel = TaskListSectionModel(taskListSectionTitleModel, taskListItemModel)
+  val model: TaskListSection = TaskListSection(taskListSectionTitleModel.toString, Some(taskListItemModel))
   val jsonModel: JsObject = Json.obj(
-    "sectionTitle" -> jsonTaskListSectionTitleModel,
+    "sectionTitle" -> taskListSectionTitleModel.toString,
     "taskItems" -> jsonTaskListItemModel
   )
 
@@ -56,7 +57,7 @@ class TaskListSectionModelSpec extends UnitTest {
     }
 
     "parse from Json" in {
-      jsonModel.as[TaskListSectionModel]
+      jsonModel.as[TaskListSection]
     }
   }
 }

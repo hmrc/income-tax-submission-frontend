@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package models.tasklist
+package models
 
-import play.api.libs.json.{Json, OFormat}
+import models.tasklist.StatusTag
+import models.tasklist.StatusTag._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-case class TaskListSectionModel(sectionTitle: TaskListSectionTitleModel, taskItems: Seq[TaskListItemModel])
+class StatusTagSpec extends AnyFreeSpec with Matchers {
 
-object TaskListSectionModel {
-  implicit val format: OFormat[TaskListSectionModel] = Json.format[TaskListSectionModel]
+  "TagStatus" - {
+
+    "must contain the correct values" in {
+      StatusTag.values mustEqual Seq(Completed, InProgress, NotStarted, CheckNow)
+    }
+  }
 }
+

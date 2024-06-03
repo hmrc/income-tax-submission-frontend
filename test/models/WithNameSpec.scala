@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package models.tasklist
+package models
 
-import play.api.libs.json.{Json, OFormat}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-case class TaskListItemStatusModel(content: String)
+class WithNameSpec extends AnyFreeSpec with Matchers {
 
-object TaskListItemStatusModel {
-  implicit val format: OFormat[TaskListItemStatusModel] = Json.format[TaskListItemStatusModel]
+  object Foo extends WithName("bar")
+
+  ".toString" - {
+
+    "must return the correct string" in {
+      Foo.toString mustEqual "bar"
+    }
+  }
 }

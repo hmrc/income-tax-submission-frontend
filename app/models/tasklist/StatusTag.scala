@@ -16,7 +16,25 @@
 
 package models.tasklist
 
-// TODO: Replace String of status with enum of possible status
-trait StatusTag {
+import models.{Enumerable, WithName}
+
+trait StatusTag extends Enumerable.Implicits
+
+object StatusTag {
+
+  case object Completed extends WithName("completed") with StatusTag
+
+  case object InProgress extends WithName("inProgress") with StatusTag
+
+  case object NotStarted extends WithName("notStarted") with StatusTag
+
+  case object CheckNow extends WithName("checkNow") with StatusTag
+
+  val values: Seq[StatusTag] = Seq(
+    Completed, InProgress, NotStarted, CheckNow
+  )
+
+  implicit val enumerable: Enumerable[StatusTag] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 
 }
