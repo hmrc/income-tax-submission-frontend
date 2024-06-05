@@ -18,7 +18,8 @@ package viewmodels
 
 import models.tasklist.SectionTitle._
 import models.tasklist.SectionTitleKeys._
-import models.tasklist.{StatusTag, TaskListModel}
+import models.tasklist.TaskStatus._
+import models.tasklist.{TaskStatus, TaskListModel}
 import play.api.Logging
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -43,13 +44,13 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
     taskListData match {
       case Some(tasks) =>
         for (section <- tasks.taskList) yield {
-          val subHeading: String = new Heading2().apply(sectionTitleKeyOps(section.sectionTitle)).body
+          val subHeading: String = new Heading2().apply(sectionTitleKeyOps(section.sectionTitle.toString)).body
 
           val taskItems: String = new GovukTaskList(new GovukTag)(TaskList(
             section.taskItems.getOrElse(Seq()).map { item =>
               TaskListItem(
                 title = TaskListItemTitle(Text(sectionItemOps(item.title.content))),
-                status = itemStatus(item.status.content),
+                status = itemStatus(item.status),
                 href = item.href
               )
             }
@@ -91,9 +92,9 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       taskItems <- data.taskList.map(_.taskItems)
       sectionItem <- taskItems.getOrElse(Seq())
     } yield {
-      sectionItem.status.content.equals(StatusTag.Completed.toString)
+      sectionItem.status.toString.equals(Completed().toString)
     }
-    numOfCompletedItems.count(_.equals(true)).toString
+    numOfCompletedItems.count(i => i).toString
   }
 
   private def countItems: TaskListModel => String = { data =>
@@ -111,34 +112,32 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
 
   private def sectionTitleKeyOps: String => String = { key =>
       Map(
-        AboutYouTitle.toString -> messages(prefix + AboutYouTitleKey.toString),
-        CharitableDonationsTitle.toString -> messages(prefix + CharitableDonationsTitleKey.toString),
-        EmploymentTitle.toString -> messages(prefix + EmploymentTitleKey.toString),
-        SelfEmploymentTitle.toString -> messages(prefix + SelfEmploymentTitleKey.toString),
-        EsaTitle.toString -> messages(prefix + EsaTitleKey.toString),
-        JsaTitle.toString -> messages(prefix + JsaTitleKey.toString),
-        PensionsTitle.toString -> messages(prefix + PensionsTitleKey.toString),
-        PaymentsIntoPensionsTitle.toString -> messages(prefix + PaymentsIntoPensionsTitleKey.toString),
-        InterestTitle.toString -> messages(prefix + InterestTitleKey.toString),
-        DividendsTitle.toString -> messages(prefix + DividendsTitleKey.toString)
-      ).applyOrElse(key, Map(key -> ""))
+        AboutYouTitle().toString -> messages(prefix + AboutYouTitleKey.toString),
+        CharitableDonationsTitle().toString -> messages(prefix + CharitableDonationsTitleKey.toString),
+        EmploymentTitle().toString -> messages(prefix + EmploymentTitleKey.toString),
+        SelfEmploymentTitle().toString -> messages(prefix + SelfEmploymentTitleKey.toString),
+        EsaTitle().toString -> messages(prefix + EsaTitleKey.toString),
+        JsaTitle().toString -> messages(prefix + JsaTitleKey.toString),
+        PensionsTitle().toString -> messages(prefix + PensionsTitleKey.toString),
+        PaymentsIntoPensionsTitle().toString -> messages(prefix + PaymentsIntoPensionsTitleKey.toString),
+        InterestTitle().toString -> messages(prefix + InterestTitleKey.toString),
+        DividendsTitle().toString -> messages(prefix + DividendsTitleKey.toString)
+      )(key)
   }
 
 
-  private def itemStatus: String => TaskListItemStatus = {
-    case status@StatusTag.NotStarted.toString =>
-      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status)),
+  private def itemStatus: TaskStatus => TaskListItemStatus = {
+    case status@TaskStatus.NotStarted() =>
+      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagBlue)))
-    case status@StatusTag.InProgress.toString =>
-      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status)),
+    case status@TaskStatus.InProgress() =>
+      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagGreen)))
-    case status@StatusTag.Completed.toString =>
-      TaskListItemStatus(content = HtmlContent(messages(status)),
+    case status@TaskStatus.Completed() =>
+      TaskListItemStatus(content = HtmlContent(messages(status.toString)),
         classes = tagWhite)
-    case status@StatusTag.CheckNow.toString =>
-      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status)),
+    case status@TaskStatus.CheckNow() =>
+      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagBlue)))
-    case _ => TaskListItemStatus(Some(Tag(content = HtmlContent(messages(StatusTag.NotStarted.toString)),
-      classes = tagBlue)))
   }
 }
