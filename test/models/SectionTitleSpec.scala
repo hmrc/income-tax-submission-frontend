@@ -27,16 +27,16 @@ class SectionTitleSpec extends AnyFreeSpec with Matchers {
 
     "must contain the correct values" in {
       SectionTitle.values mustEqual Seq(
-        AboutYouTitle,
-        CharitableDonationsTitle,
-        EmploymentTitle,
-        SelfEmploymentTitle,
-        EsaTitle,
-        JsaTitle,
-        PensionsTitle,
-        PaymentsIntoPensionsTitle,
-        InterestTitle,
-        DividendsTitle
+        AboutYouTitle(),
+        CharitableDonationsTitle(),
+        EmploymentTitle(),
+        SelfEmploymentTitle(),
+        EsaTitle(),
+        JsaTitle(),
+        PensionsTitle(),
+        PaymentsIntoPensionsTitle(),
+        InterestTitle(),
+        DividendsTitle()
       )
     }
   }

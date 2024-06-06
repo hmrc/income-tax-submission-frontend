@@ -24,27 +24,26 @@ import utils.UnitTest
 class TaskListSectionModelSpec extends UnitTest {
 
 
-  val taskListSectionTitleModel: SectionTitle = AboutYouTitle
+  val taskListSectionTitleModel: SectionTitle = AboutYouTitle()
   val jsonTaskListSectionTitleModel: JsObject = Json.obj(
     "content" -> "About you"
   )
 
   val taskListItemModel: Seq[TaskListSectionItem] = Seq(TaskListSectionItem(
     TaskTitle("UK residence status"),
-    TaskStatus("Completed"),
+    TaskStatus.Completed(),
     Some(""))
   )
+
   val jsonTaskListItemModel: Seq[JsObject] = Seq(Json.obj(
     "title" -> Json.obj(
       "content" -> "UK residence status"
     ),
-    "status" -> Json.obj(
-      "content" -> "Completed"
-    ),
+    "status" -> "completed",
     "href" -> Some("")
   ))
 
-  val model: TaskListSection = TaskListSection(taskListSectionTitleModel.toString, Some(taskListItemModel))
+  val model: TaskListSection = TaskListSection(taskListSectionTitleModel, Some(taskListItemModel))
   val jsonModel: JsObject = Json.obj(
     "sectionTitle" -> taskListSectionTitleModel.toString,
     "taskItems" -> jsonTaskListItemModel

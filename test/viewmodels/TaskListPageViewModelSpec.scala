@@ -16,7 +16,6 @@
 
 package viewmodels
 
-import models.tasklist.{TaskListSection, TaskListSectionItem, TaskStatus, TaskTitle}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat

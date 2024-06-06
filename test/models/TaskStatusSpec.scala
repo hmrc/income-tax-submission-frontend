@@ -16,17 +16,17 @@
 
 package models
 
-import models.tasklist.StatusTag
-import models.tasklist.StatusTag._
+import models.tasklist.TaskStatus
+import models.tasklist.TaskStatus._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class StatusTagSpec extends AnyFreeSpec with Matchers {
+class TaskStatusSpec extends AnyFreeSpec with Matchers {
 
-  "TagStatus" - {
+  "TaskStatus" - {
 
     "must contain the correct values" in {
-      StatusTag.values mustEqual Seq(Completed, InProgress, NotStarted, CheckNow)
+      TaskStatus.values mustEqual Seq(Completed(), InProgress(), NotStarted(), CheckNow())
     }
   }
 }

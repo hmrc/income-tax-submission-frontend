@@ -26,8 +26,8 @@ class TaskListConnectorISpec extends IntegrationTest {
 
   private lazy val connector: TaskListConnector = app.injector.instanceOf[TaskListConnector]
 
-  private val taskListSectionTitle = "AboutYou"
-  private val taskListItemModel = Seq(TaskListSectionItem(TaskTitle("Uk residence status"), TaskStatus("completed"), Some("")))
+  private val taskListSectionTitle = SectionTitle.AboutYouTitle()
+  private val taskListItemModel = Seq(TaskListSectionItem(TaskTitle("Uk residence status"), TaskStatus.Completed(), Some("")))
 
   val tasklistUrl = s"/income-tax-submission-service/income-tax/task-list/$taxYearEOY"
 
