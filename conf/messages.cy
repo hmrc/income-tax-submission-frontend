@@ -281,6 +281,7 @@ taskList.nonUkPensions = Income from overseas pensions
 
 taskList.ukPensions = Payments into UK pensions
 taskList.paymentsIntoNonUkPensions = Payments into overseas pensions
+taskList.annualAllowances = Annual allowances
 taskList.overseas = Overseas transfer charge
 
 taskList.fromUkBanks = Banks and building societies
