@@ -178,19 +178,19 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     Seq[TaskListSection](
       TaskListSection(
         SectionTitle.EmploymentTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle("employment"), TaskStatus.Completed(), Some(""))))
+        Some(Seq(TaskListSectionItem(TaskTitle.employmentTitles.PayeEmployment(), TaskStatus.Completed(), Some(""))))
       ),
       TaskListSection(
         SectionTitle.JsaTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle("jsaTitle"), TaskStatus.InProgress(), Some(""))))
+        Some(Seq(TaskListSectionItem(TaskTitle.jsaTitles.JSA(), TaskStatus.InProgress(), Some(""))))
       ),
       TaskListSection(
         SectionTitle.EsaTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle("esaTitle"), TaskStatus.NotStarted(), Some(""))))
+        Some(Seq(TaskListSectionItem(TaskTitle.esaTitles.ESA(), TaskStatus.NotStarted(), Some(""))))
       ),
       TaskListSection(
         SectionTitle.AboutYouTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle("aboutYou"), TaskStatus.CheckNow(), Some(""))))
+        Some(Seq(TaskListSectionItem(TaskTitle.aboutYouItemTitles.UkResidenceStatus(), TaskStatus.CheckNow(), Some(""))))
       )
     )
   )
@@ -199,7 +199,7 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     Seq[TaskListSection](
       TaskListSection(
         SectionTitle.EmploymentTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle("employment"), TaskStatus.Completed(), Some(""))))
+        Some(Seq(TaskListSectionItem(TaskTitle.employmentTitles.PayeEmployment(), TaskStatus.Completed(), Some(""))))
       )
     )
   )
