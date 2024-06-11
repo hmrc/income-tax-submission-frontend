@@ -14,29 +14,21 @@
  * limitations under the License.
  */
 
-package models.tasklist
+package models.tasklist.taskItemTitles
 
+import models.tasklist.taskItemTitles.UkDividendsTitles.CashDividends
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import play.api.libs.json.{JsPath, JsSuccess, Json}
 
-object SectionTitleKeys {
+class CashDividendsSpec extends AnyFreeSpec with Matchers {
 
-  val ABOUT_YOU_TITLE_KEY = "aboutYouTitle"
+  "CashDividends" - {
 
-  val CHARITABLE_DONATIONS_TITLE_KEY = "charitableDonationsTitle"
-
-  val EMPLOYMENT_TITLE_KEY = "employmentTitle"
-
-  val SELF_EMPLOYMENT_TITLE_KEY = "selfEmploymentTitle"
-
-  val ESA_TITLE_KEY = "esaTitle"
-
-  val JSA_TITLE_KEY = "jsaTitle"
-
-  val PENSIONS_TITLE_KEY = "pensionsTitle"
-
-  val PAYMENTS_INTO_PENSIONS_TITLE_KEY = "paymentsIntoPensionsTitle"
-
-  val INTEREST_TITLE_KEY = "interestTitle"
-
-  val DIVIDENDS_TITLE_KEY = "dividendsTitle"
-
+    "must parse to and from json" in {
+      val underTest = CashDividends()
+      Json.toJson(underTest).toString() mustBe "{}"
+      Json.toJson(underTest).validate[CashDividends] mustBe JsSuccess(CashDividends(), JsPath())
+    }
+  }
 }

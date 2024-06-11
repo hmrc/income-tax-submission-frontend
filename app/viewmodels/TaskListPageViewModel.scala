@@ -149,16 +149,16 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
 
   private def sectionTitleKeyOps: String => String = { key =>
     Map(
-      AboutYouTitle().toString -> messages(prefix + AboutYouTitleKey.toString),
-      CharitableDonationsTitle().toString -> messages(prefix + CharitableDonationsTitleKey.toString),
-      EmploymentTitle().toString -> messages(prefix + EmploymentTitleKey.toString),
-      SelfEmploymentTitle().toString -> messages(prefix + SelfEmploymentTitleKey.toString),
-      EsaTitle().toString -> messages(prefix + EsaTitleKey.toString),
-      JsaTitle().toString -> messages(prefix + JsaTitleKey.toString),
-      PensionsTitle().toString -> messages(prefix + PensionsTitleKey.toString),
-      PaymentsIntoPensionsTitle().toString -> messages(prefix + PaymentsIntoPensionsTitleKey.toString),
-      InterestTitle().toString -> messages(prefix + InterestTitleKey.toString),
-      DividendsTitle().toString -> messages(prefix + DividendsTitleKey.toString)
+      AboutYouTitle().toString -> messages(prefix + ABOUT_YOU_TITLE_KEY),
+      CharitableDonationsTitle().toString -> messages(prefix + CHARITABLE_DONATIONS_TITLE_KEY),
+      EmploymentTitle().toString -> messages(prefix + EMPLOYMENT_TITLE_KEY),
+      SelfEmploymentTitle().toString -> messages(prefix + SELF_EMPLOYMENT_TITLE_KEY),
+      EsaTitle().toString -> messages(prefix + ESA_TITLE_KEY),
+      JsaTitle().toString -> messages(prefix + JSA_TITLE_KEY),
+      PensionsTitle().toString -> messages(prefix + PENSIONS_TITLE_KEY),
+      PaymentsIntoPensionsTitle().toString -> messages(prefix + PAYMENTS_INTO_PENSIONS_TITLE_KEY),
+      InterestTitle().toString -> messages(prefix + INTEREST_TITLE_KEY),
+      DividendsTitle().toString -> messages(prefix + DIVIDENDS_TITLE_KEY)
     )(key)
   }
 
