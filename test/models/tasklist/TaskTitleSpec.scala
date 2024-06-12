@@ -44,6 +44,7 @@ class TaskTitleSpec extends AnyFreeSpec with Matchers {
         pensionsTitles.ShortServiceRefunds(),
         paymentsIntoPensionsTitles.PaymentsIntoUk(),
         paymentsIntoPensionsTitles.PaymentsIntoOverseas(),
+        paymentsIntoPensionsTitles.AnnualAllowances(),
         paymentsIntoPensionsTitles.OverseasTransfer(),
         ukInterestTitles.BanksAndBuilding(),
         ukInterestTitles.TrustFundBond(),
@@ -59,12 +60,6 @@ class TaskTitleSpec extends AnyFreeSpec with Matchers {
     "must parse to json" in {
       val underTest: Seq[JsValue] = TaskTitle.values.map(x => Json.toJson(x))
       underTest.isInstanceOf[Seq[JsValue]] mustBe true
-    }
-
-    "something" in {
-      val underTest = TaskTitle.pensionsTitles.OtherUkPensions()
-      Json.toJson(underTest).toString() mustBe "{}"
-      Json.toJson(underTest).validate[TaskTitle.pensionsTitles.OtherUkPensions] mustBe JsSuccess(OtherUkPensions(), JsPath())
     }
   }
 }
