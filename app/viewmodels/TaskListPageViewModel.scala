@@ -18,7 +18,19 @@ package viewmodels
 
 import models.tasklist.SectionTitle._
 import models.tasklist.SectionTitleKeys._
-import models.tasklist.{StatusTag, TaskListModel}
+import models.tasklist.TaskStatus._
+import models.tasklist.taskItemTitles.AboutYouItemTitles.{FosterCarer, UkResidenceStatus}
+import models.tasklist.taskItemTitles.CharitableDonationsTitles.{DonationsUsingGiftAid, GiftsOfLandOrProperty, GiftsOfShares}
+import models.tasklist.taskItemTitles.EmploymentTitles.PayeEmployment
+import models.tasklist.taskItemTitles.EsaTitles.ESA
+import models.tasklist.taskItemTitles.JsaTitles.JSA
+import models.tasklist.taskItemTitles.PaymentsIntoPensionsTitles.{AnnualAllowances, OverseasTransfer, PaymentsIntoOverseas, PaymentsIntoUk}
+import models.tasklist.taskItemTitles.PensionsTitles.{IncomeFromOverseas, OtherUkPensions, ShortServiceRefunds, StatePension, UnauthorisedPayments}
+import models.tasklist.taskItemTitles.SelfEmploymentTitles.CIS
+import models.tasklist.taskItemTitles.TaskItemTitleKeys._
+import models.tasklist.taskItemTitles.UkDividendsTitles.{CashDividends, CloseCompanyLoans, DividendsFromUnitTrusts, FreeRedeemableShares, StockDividends}
+import models.tasklist.taskItemTitles.UkInterestTitles.{BanksAndBuilding, GiltEdged, TrustFundBond}
+import models.tasklist.{TaskListModel, TaskStatus, TaskTitle}
 import play.api.Logging
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -43,14 +55,15 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
     taskListData match {
       case Some(tasks) =>
         for (section <- tasks.taskList) yield {
-          val subHeading: String = new Heading2().apply(sectionTitleKeyOps(section.sectionTitle)).body
+          val subHeading: String = new Heading2().apply(sectionTitleKeyOps(section.sectionTitle.toString)).body
 
           val taskItems: String = new GovukTaskList(new GovukTag)(TaskList(
             section.taskItems.getOrElse(Seq()).map { item =>
               TaskListItem(
-                title = TaskListItemTitle(Text(sectionItemOps(item.title.content))),
-                status = itemStatus(item.status.content),
-                href = item.href
+                title = TaskListItemTitle(Text(sectionItemOps(item.title))),
+                status = itemStatus(item.status),
+                href = item.href,
+                classes = item.title.toString
               )
             }
           )).body
@@ -91,9 +104,9 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       taskItems <- data.taskList.map(_.taskItems)
       sectionItem <- taskItems.getOrElse(Seq())
     } yield {
-      sectionItem.status.content.equals(StatusTag.Completed.toString)
+      sectionItem.status.toString.equals(Completed().toString)
     }
-    numOfCompletedItems.count(_.equals(true)).toString
+    numOfCompletedItems.count(i => i).toString
   }
 
   private def countItems: TaskListModel => String = { data =>
@@ -105,40 +118,65 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
     numOfItems.sum.toString
   }
 
-  private def sectionItemOps: String => String = { title =>
-    messages(prefix + title)
+  private def sectionItemOps: TaskTitle => String = { taskTitle =>
+    Map(
+      UkResidenceStatus().toString -> messages(prefix + RESIDENCE_STATUS_KEY),
+      FosterCarer().toString -> messages(prefix + FOSTER_CARER_KEY),
+      DonationsUsingGiftAid().toString -> messages(prefix + DONATIONS_GIFT_AID_KEY),
+      GiftsOfLandOrProperty().toString -> messages(prefix + GIFTS_LAND_PROPERTY_KEY),
+      GiftsOfShares().toString -> messages(prefix + GIFTS_SHARES_SECURITIES_KEY),
+      PayeEmployment().toString -> messages(prefix + EMPLOYMENT_KEY),
+      CIS().toString -> messages(prefix + CIS_KEY),
+      ESA().toString -> messages(prefix + ESA_KEY),
+      JSA().toString -> messages(prefix + JSA_KEY),
+      StatePension().toString -> messages(prefix + STATE_PENSION_KEY),
+      OtherUkPensions().toString -> messages(prefix + OTHER_UK_PENSIONS_KEY),
+      UnauthorisedPayments().toString -> messages(prefix + UNAUTHORISED_PAYMENTS_KEY),
+      PaymentsIntoUk().toString -> messages(prefix + PAYMENTS_INTO_UK_KEY),
+      PaymentsIntoOverseas().toString -> messages(prefix + PAYMENTS_INTO_OVERSEAS_KEY),
+      AnnualAllowances().toString -> messages(prefix + ANNUAL_ALLOWANCES_KEY),
+      OverseasTransfer().toString -> messages(prefix + OVERSEAS_TRANSFER_KEY),
+      ShortServiceRefunds().toString -> messages(prefix + SHORT_SERVICE_REFUNDS_KEY),
+      IncomeFromOverseas().toString -> messages(prefix + INCOME_FROM_OVERSEAS_KEY),
+      BanksAndBuilding().toString -> messages(prefix + BANKS_AND_BUILDING_KEY),
+      TrustFundBond().toString -> messages(prefix + TRUST_FUND_BOND_KEY),
+      GiltEdged().toString -> messages(prefix + GILT_EDGED_KEY),
+      CashDividends().toString -> messages(prefix + CASH_DIVIDENDS_KEY),
+      StockDividends().toString -> messages(prefix + STOCK_DIVIDENDS_KEY),
+      DividendsFromUnitTrusts().toString -> messages(prefix + DIVIDENDS_FROM_UNIT_TRUSTS_KEY),
+      FreeRedeemableShares().toString -> messages(prefix + FREE_REDEEMABLE_SHARES_KEY),
+      CloseCompanyLoans().toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY)
+    )(taskTitle.toString)
   }
 
   private def sectionTitleKeyOps: String => String = { key =>
-      Map(
-        AboutYouTitle.toString -> messages(prefix + AboutYouTitleKey.toString),
-        CharitableDonationsTitle.toString -> messages(prefix + CharitableDonationsTitleKey.toString),
-        EmploymentTitle.toString -> messages(prefix + EmploymentTitleKey.toString),
-        SelfEmploymentTitle.toString -> messages(prefix + SelfEmploymentTitleKey.toString),
-        EsaTitle.toString -> messages(prefix + EsaTitleKey.toString),
-        JsaTitle.toString -> messages(prefix + JsaTitleKey.toString),
-        PensionsTitle.toString -> messages(prefix + PensionsTitleKey.toString),
-        PaymentsIntoPensionsTitle.toString -> messages(prefix + PaymentsIntoPensionsTitleKey.toString),
-        InterestTitle.toString -> messages(prefix + InterestTitleKey.toString),
-        DividendsTitle.toString -> messages(prefix + DividendsTitleKey.toString)
-      ).applyOrElse(key, Map(key -> ""))
+    Map(
+      AboutYouTitle().toString -> messages(prefix + ABOUT_YOU_TITLE_KEY),
+      CharitableDonationsTitle().toString -> messages(prefix + CHARITABLE_DONATIONS_TITLE_KEY),
+      EmploymentTitle().toString -> messages(prefix + EMPLOYMENT_TITLE_KEY),
+      SelfEmploymentTitle().toString -> messages(prefix + SELF_EMPLOYMENT_TITLE_KEY),
+      EsaTitle().toString -> messages(prefix + ESA_TITLE_KEY),
+      JsaTitle().toString -> messages(prefix + JSA_TITLE_KEY),
+      PensionsTitle().toString -> messages(prefix + PENSIONS_TITLE_KEY),
+      PaymentsIntoPensionsTitle().toString -> messages(prefix + PAYMENTS_INTO_PENSIONS_TITLE_KEY),
+      InterestTitle().toString -> messages(prefix + INTEREST_TITLE_KEY),
+      DividendsTitle().toString -> messages(prefix + DIVIDENDS_TITLE_KEY)
+    )(key)
   }
 
 
-  private def itemStatus: String => TaskListItemStatus = {
-    case status@StatusTag.NotStarted.toString =>
-      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status)),
+  private def itemStatus: TaskStatus => TaskListItemStatus = {
+    case status@TaskStatus.NotStarted() =>
+      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagBlue)))
-    case status@StatusTag.InProgress.toString =>
-      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status)),
+    case status@TaskStatus.InProgress() =>
+      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagGreen)))
-    case status@StatusTag.Completed.toString =>
-      TaskListItemStatus(content = HtmlContent(messages(status)),
+    case status@TaskStatus.Completed() =>
+      TaskListItemStatus(content = HtmlContent(messages(status.toString)),
         classes = tagWhite)
-    case status@StatusTag.CheckNow.toString =>
-      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status)),
+    case status@TaskStatus.CheckNow() =>
+      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagBlue)))
-    case _ => TaskListItemStatus(Some(Tag(content = HtmlContent(messages(StatusTag.NotStarted.toString)),
-      classes = tagBlue)))
   }
 }

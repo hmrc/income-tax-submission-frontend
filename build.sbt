@@ -64,7 +64,7 @@ lazy val microservice = Project(appName, file("."))
     Concat.groups := Seq(
       "javascripts/application.js" ->
         group(Seq(
-          "lib/govuk-frontend/govuk/all.js",
+          "lib/govuk-frontend/dist/govuk/all.bundle.js",
           "javascripts/jquery.min.js",
           "javascripts/backbutton.js"
         ))

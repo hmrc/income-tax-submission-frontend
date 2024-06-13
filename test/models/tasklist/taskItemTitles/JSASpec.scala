@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package models.tasklist.taskItemTitles
 
-import models.tasklist.SectionTitle
-import models.tasklist.SectionTitle._
+import models.tasklist.taskItemTitles.JsaTitles.JSA
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import play.api.libs.json.{JsPath, JsSuccess, Json}
 
-class SectionTitleSpec extends AnyFreeSpec with Matchers {
+class JSASpec extends AnyFreeSpec with Matchers {
 
-  "SectionTitle" - {
+  "JSA" - {
 
-    "must contain the correct values" in {
-      SectionTitle.values mustEqual Seq(
-        AboutYouTitle(),
-        CharitableDonationsTitle(),
-        EmploymentTitle(),
-        SelfEmploymentTitle(),
-        EsaTitle(),
-        JsaTitle(),
-        PensionsTitle(),
-        PaymentsIntoPensionsTitle(),
-        InterestTitle(),
-        DividendsTitle()
-      )
+    "must parse to and from json" in {
+      val underTest = JSA()
+      Json.toJson(underTest).toString() mustBe "{}"
+      Json.toJson(underTest).validate[JSA] mustBe JsSuccess(JSA(), JsPath())
     }
   }
 }
-

@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-package models.tasklist
+package models.tasklist.taskItemTitles
 
-import models.{Enumerable, WithName}
+import models.WithName
+import models.tasklist.TaskTitle
+import play.api.libs.json.{Json, OWrites, Reads}
 
-trait StatusTag extends Enumerable.Implicits
+object EmploymentTitles {
 
-object StatusTag {
-
-  case object Completed extends WithName("completed") with StatusTag
-
-  case object InProgress extends WithName("inProgress") with StatusTag
-
-  case object NotStarted extends WithName("notStarted") with StatusTag
-
-  case object CheckNow extends WithName("checkNow") with StatusTag
-
-  val values: Seq[StatusTag] = Seq(
-    Completed, InProgress, NotStarted, CheckNow
-  )
-
-  implicit val enumerable: Enumerable[StatusTag] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+  case class PayeEmployment() extends WithName("PayeEmploymentTitle") with TaskTitle
+  object PayeEmployment {
+    implicit val nonStrictReads: Reads[PayeEmployment] = Reads.pure(PayeEmployment())
+    implicit val writes: OWrites[PayeEmployment] = OWrites[PayeEmployment](_ => Json.obj())
+  }
 
 }

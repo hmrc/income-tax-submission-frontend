@@ -16,45 +16,27 @@
 
 package models.tasklist
 
-import models.{Enumerable, WithName}
 
-sealed trait SectionTitleKeys extends Enumerable.Implicits
+object SectionTitleKeys {
 
-object SectionTitleKeys extends SectionTitleKeys {
+  val ABOUT_YOU_TITLE_KEY = "aboutYouTitle"
 
-  case object AboutYouTitleKey extends WithName("aboutYouTitle") with SectionTitleKeys
+  val CHARITABLE_DONATIONS_TITLE_KEY = "charitableDonationsTitle"
 
-  case object CharitableDonationsTitleKey extends WithName("charitableDonationsTitle") with SectionTitleKeys
+  val EMPLOYMENT_TITLE_KEY = "employmentTitle"
 
-  case object EmploymentTitleKey extends WithName("employmentTitle") with SectionTitleKeys
+  val SELF_EMPLOYMENT_TITLE_KEY = "selfEmploymentTitle"
 
-  case object SelfEmploymentTitleKey extends WithName("selfEmploymentTitle") with SectionTitleKeys
+  val ESA_TITLE_KEY = "esaTitle"
 
-  case object EsaTitleKey extends WithName("esaTitle") with SectionTitleKeys
+  val JSA_TITLE_KEY = "jsaTitle"
 
-  case object JsaTitleKey extends WithName("jsaTitle") with SectionTitleKeys
+  val PENSIONS_TITLE_KEY = "pensionsTitle"
 
-  case object PensionsTitleKey extends WithName("pensionsTitle") with SectionTitleKeys
+  val PAYMENTS_INTO_PENSIONS_TITLE_KEY = "paymentsIntoPensionsTitle"
 
-  case object PaymentsIntoPensionsTitleKey extends WithName("paymentsIntoPensionsTitle") with SectionTitleKeys
+  val INTEREST_TITLE_KEY = "interestTitle"
 
-  case object InterestTitleKey extends WithName("interestTitle") with SectionTitleKeys
+  val DIVIDENDS_TITLE_KEY = "dividendsTitle"
 
-  case object DividendsTitleKey extends WithName("dividendsTitle") with SectionTitleKeys
-
-  val values: Seq[SectionTitleKeys] = Seq(
-    AboutYouTitleKey,
-    CharitableDonationsTitleKey,
-    EmploymentTitleKey,
-    SelfEmploymentTitleKey,
-    EsaTitleKey,
-    JsaTitleKey,
-    PensionsTitleKey,
-    PaymentsIntoPensionsTitleKey,
-    InterestTitleKey,
-    DividendsTitleKey
-  )
-
-  implicit val enumerable: Enumerable[SectionTitleKeys] =
-    Enumerable(values.map(v => v.toString -> v): _*)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package models.tasklist.taskItemTitles
 
-import models.tasklist.SectionTitleKeys
-import models.tasklist.SectionTitleKeys._
+import models.tasklist.taskItemTitles.UkInterestTitles.BanksAndBuilding
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import play.api.libs.json.{JsPath, JsSuccess, Json}
 
-class SectionTitleKeysSpec extends AnyFreeSpec with Matchers {
+class BanksAndBuildingSpec extends AnyFreeSpec with Matchers {
 
-  "SectionTitle" - {
+  "BanksAndBuilding" - {
 
-    "must contain the correct values" in {
-      SectionTitleKeys.values mustEqual Seq(
-        AboutYouTitleKey,
-        CharitableDonationsTitleKey,
-        EmploymentTitleKey,
-        SelfEmploymentTitleKey,
-        EsaTitleKey,
-        JsaTitleKey,
-        PensionsTitleKey,
-        PaymentsIntoPensionsTitleKey,
-        InterestTitleKey,
-        DividendsTitleKey
-      )
+    "must parse to and from json" in {
+      val underTest = BanksAndBuilding()
+      Json.toJson(underTest).toString() mustBe "{}"
+      Json.toJson(underTest).validate[BanksAndBuilding] mustBe JsSuccess(BanksAndBuilding(), JsPath())
     }
   }
 }
-

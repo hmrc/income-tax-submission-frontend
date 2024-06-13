@@ -16,28 +16,17 @@
 
 package models
 
-import models.tasklist.SectionTitle
-import models.tasklist.SectionTitle._
+import models.tasklist.TaskStatus
+import models.tasklist.TaskStatus._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class SectionTitleSpec extends AnyFreeSpec with Matchers {
+class TaskStatusSpec extends AnyFreeSpec with Matchers {
 
-  "SectionTitle" - {
+  "TaskStatus" - {
 
     "must contain the correct values" in {
-      SectionTitle.values mustEqual Seq(
-        AboutYouTitle(),
-        CharitableDonationsTitle(),
-        EmploymentTitle(),
-        SelfEmploymentTitle(),
-        EsaTitle(),
-        JsaTitle(),
-        PensionsTitle(),
-        PaymentsIntoPensionsTitle(),
-        InterestTitle(),
-        DividendsTitle()
-      )
+      TaskStatus.values mustEqual Seq(Completed(), InProgress(), NotStarted(), CheckNow())
     }
   }
 }
