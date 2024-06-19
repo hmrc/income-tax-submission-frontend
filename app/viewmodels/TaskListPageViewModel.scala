@@ -29,8 +29,9 @@ import models.tasklist.taskItemTitles.PensionsTitles.{IncomeFromOverseas, OtherU
 import models.tasklist.taskItemTitles.SelfEmploymentTitles.CIS
 import models.tasklist.taskItemTitles.TaskItemTitleKeys._
 import models.tasklist.taskItemTitles.UkDividendsTitles.{CashDividends, CloseCompanyLoans, DividendsFromUnitTrusts, FreeRedeemableShares, StockDividends}
+import models.tasklist.taskItemTitles.UkInsuranceGainsTitles.{CapitalRedemption, LifeAnnuity, LifeInsurance, VoidedISA}
 import models.tasklist.taskItemTitles.UkInterestTitles.{BanksAndBuilding, GiltEdged, TrustFundBond}
-import models.tasklist.{TaskListModel, TaskStatus, TaskTitle}
+import models.tasklist.{SectionTitle, TaskListModel, TaskStatus, TaskTitle}
 import play.api.Logging
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -145,7 +146,11 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       StockDividends().toString -> messages(prefix + STOCK_DIVIDENDS_KEY),
       DividendsFromUnitTrusts().toString -> messages(prefix + DIVIDENDS_FROM_UNIT_TRUSTS_KEY),
       FreeRedeemableShares().toString -> messages(prefix + FREE_REDEEMABLE_SHARES_KEY),
-      CloseCompanyLoans().toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY)
+      CloseCompanyLoans().toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY),
+      LifeInsurance().toString -> messages(prefix + LIFE_INSURANCE_KEY),
+      LifeAnnuity().toString -> messages(prefix + LIFE_ANNUITY_KEY),
+      CapitalRedemption().toString -> messages(prefix + CAPITAL_REDEMPTION_KEY),
+      VoidedISA().toString -> messages(prefix + VOIDED_ISA_KEY)
     )(taskTitle.toString)
   }
 
@@ -160,7 +165,8 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       PensionsTitle().toString -> messages(prefix + PENSIONS_TITLE_KEY),
       PaymentsIntoPensionsTitle().toString -> messages(prefix + PAYMENTS_INTO_PENSIONS_TITLE_KEY),
       InterestTitle().toString -> messages(prefix + INTEREST_TITLE_KEY),
-      DividendsTitle().toString -> messages(prefix + DIVIDENDS_TITLE_KEY)
+      DividendsTitle().toString -> messages(prefix + DIVIDENDS_TITLE_KEY),
+      InsuranceGainsTitle().toString -> messages(prefix + INSURANCE_GAINS_TITLE_KEY)
     )(key)
   }
 

@@ -83,6 +83,12 @@ object SectionTitle extends SectionTitle {
     implicit val writes: OWrites[DividendsTitle] = OWrites[DividendsTitle](_ => Json.obj())
   }
 
+  case class InsuranceGainsTitle() extends WithName("InsuranceGains") with SectionTitle
+  object InsuranceGainsTitle {
+    implicit val nonStrictReads: Reads[InsuranceGainsTitle] = Reads.pure(InsuranceGainsTitle())
+    implicit val writes: OWrites[InsuranceGainsTitle] = OWrites[InsuranceGainsTitle](_ => Json.obj())
+  }
+
   val values: Seq[SectionTitle] = Seq(
     AboutYouTitle(),
     CharitableDonationsTitle(),
@@ -93,7 +99,8 @@ object SectionTitle extends SectionTitle {
     PensionsTitle(),
     PaymentsIntoPensionsTitle(),
     InterestTitle(),
-    DividendsTitle()
+    DividendsTitle(),
+    InsuranceGainsTitle()
   )
 
   implicit val enumerable: Enumerable[SectionTitle] =
