@@ -17,15 +17,11 @@
 package models.tasklist.taskItemTitles
 
 import models.WithName
-import models.tasklist.TaskTitle
-import play.api.libs.json.{Json, OWrites, Reads}
+import models.tasklist.{ReadsWrites, TaskTitle}
 
 object SelfEmploymentTitles {
 
   case class CIS() extends WithName("CISTitle") with TaskTitle
-  object CIS {
-    implicit val nonStrictReads: Reads[CIS] = Reads.pure(CIS())
-    implicit val writes: OWrites[CIS] = OWrites[CIS](_ => Json.obj())
-  }
+  object CIS extends ReadsWrites[CIS]
 
 }

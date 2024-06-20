@@ -17,33 +17,20 @@
 package models.tasklist.taskItemTitles
 
 import models.WithName
-import models.tasklist.TaskTitle
-import play.api.libs.json.{Json, OWrites, Reads}
+import models.tasklist.{ReadsWrites, TaskTitle}
 
 object UkInsuranceGainsTitles {
 
   case class LifeInsurance() extends WithName("LifeInsuranceTitle") with TaskTitle
-  object LifeInsurance {
-    implicit val nonStrictReads: Reads[LifeInsurance] = Reads.pure(LifeInsurance())
-    implicit val writes: OWrites[LifeInsurance] = OWrites[LifeInsurance](_ => Json.obj())
-  }
+  object LifeInsurance extends ReadsWrites[LifeInsurance]
 
   case class LifeAnnuity() extends WithName("LifeAnnuityTitle") with TaskTitle
-  object LifeAnnuity {
-    implicit val nonStrictReads: Reads[LifeAnnuity] = Reads.pure(LifeAnnuity())
-    implicit val writes: OWrites[LifeAnnuity] = OWrites[LifeAnnuity](_ => Json.obj())
-  }
+  object LifeAnnuity extends ReadsWrites[LifeAnnuity]
 
   case class CapitalRedemption() extends WithName("CapitalRedemptionTitle") with TaskTitle
-  object CapitalRedemption {
-    implicit val nonStrictReads: Reads[CapitalRedemption] = Reads.pure(CapitalRedemption())
-    implicit val writes: OWrites[CapitalRedemption] = OWrites[CapitalRedemption](_ => Json.obj())
-  }
+  object CapitalRedemption extends ReadsWrites[CapitalRedemption]
 
   case class VoidedISA() extends WithName("VoidedISATitle") with TaskTitle
-  object VoidedISA {
-    implicit val nonStrictReads: Reads[VoidedISA] = Reads.pure(VoidedISA())
-    implicit val writes: OWrites[VoidedISA] = OWrites[VoidedISA](_ => Json.obj())
-  }
+  object VoidedISA extends ReadsWrites[VoidedISA]
 
 }
