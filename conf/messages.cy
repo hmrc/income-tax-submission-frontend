@@ -269,7 +269,7 @@ taskList.giftsOfLandOrPropertyTask = Gifts of land or property
 taskList.agent.giftsOfLandOrPropertyTask = Gifts of land or property
 taskList.giftsOfSharesOrSecuritiesTask = Gifts of shares or securities
 taskList.agent.giftsOfSharesOrSecuritiesTask = Gifts of shares or securities
-tasklist.giftsToOverseasCharities = Gifts to overseas charities
+tasklist.giftsToOverseasCharities = Rhoddion i elusennau tramor
 tasklist.agent.giftsToOverseasCharities = Gifts to overseas charities
 
 taskList.employmentTask = PAYE employment (including student loans)
