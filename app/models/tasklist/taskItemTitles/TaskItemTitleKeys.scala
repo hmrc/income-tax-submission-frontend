@@ -39,7 +39,12 @@ object TaskItemTitleKeys {
   val SHORT_SERVICE_REFUNDS_KEY: String = "shortServiceRefundsTask"
   val INCOME_FROM_OVERSEAS_KEY: String = "incomeFromOverseasTask"
 
-  val PAYMENTS_INTO_UK_KEY: String = "paymentsIntoUkPensions"
+  val LIFE_INSURANCE_KEY: String = "lifeInsuranceTask"
+  val LIFE_ANNUITY_KEY: String = "lifeAnnuityTask"
+  val CAPITAL_REDEMPTION_KEY: String = "capitalRedemptionTask"
+  val VOIDED_ISA_KEY: String = "voidedIsaTask"
+
+  val PAYMENTS_INTO_UK_KEY: String = "paymentsIntoUkPensionsTask"
   val PAYMENTS_INTO_OVERSEAS_KEY: String = "paymentsIntoOverseasPensionsTask"
   val ANNUAL_ALLOWANCES_KEY: String = "annualAllowancesTask"
   val OVERSEAS_TRANSFER_KEY: String = "overseasTransferTask"

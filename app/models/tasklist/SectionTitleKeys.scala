@@ -33,6 +33,8 @@ object SectionTitleKeys {
 
   val PENSIONS_TITLE_KEY = "pensionsTitle"
 
+  val INSURANCE_GAINS_TITLE_KEY = "insuranceGainsTitle"
+
   val PAYMENTS_INTO_PENSIONS_TITLE_KEY = "paymentsIntoPensionsTitle"
 
   val INTEREST_TITLE_KEY = "interestTitle"

@@ -254,6 +254,8 @@ taskList.jsaTitle = Jobseeker’s Allowance
 taskList.agent.jsaTitle = Jobseeker’s Allowance
 taskList.pensionsTitle = Pensions
 taskList.agent.pensionsTitle = Pensions
+taskList.insuranceGainsTitle = UK insurance gains
+taskList.agent.insuranceGainsTitle = UK insurance gains
 taskList.paymentsIntoPensionsTitle = Payments into Pensions
 taskList.agent.paymentsIntoPensionsTitle = Payments into Pensions
 taskList.interestTitle = UK Interest
@@ -284,7 +286,12 @@ taskList.unauthorisedPaymentsTask = Unauthorised payments
 taskList.shortServiceRefundsTask = Short service refunds
 taskList.incomeFromOverseasTask = Income from overseas pensions
 
-taskList.paymentsIntoUkPensions = Payments into UK pensions
+taskList.lifeInsuranceTask = Life Insurance
+taskList.lifeAnnuityTask = Life Annuity
+taskList.capitalRedemptionTask = Capital Redemption
+taskList.voidedIsaTask = Voided ISA
+
+taskList.paymentsIntoUkPensionsTask = Payments into UK pensions
 taskList.paymentsIntoOverseasPensionsTask = Payments into overseas pensions
 taskList.annualAllowancesTask = Annual allowances
 taskList.overseasTransferTask = Overseas transfer charge

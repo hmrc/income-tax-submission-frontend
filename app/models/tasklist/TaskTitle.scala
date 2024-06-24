@@ -30,6 +30,7 @@ object TaskTitle extends TaskTitle {
   val esaTitles: EsaTitles.type = EsaTitles
   val jsaTitles: JsaTitles.type = JsaTitles
   val pensionsTitles: PensionsTitles.type = PensionsTitles
+  val ukInsuranceGainsTitles: UkInsuranceGainsTitles.type = UkInsuranceGainsTitles
   val paymentsIntoPensionsTitles: PaymentsIntoPensionsTitles.type = PaymentsIntoPensionsTitles
   val ukInterestTitles: UkInterestTitles.type = UkInterestTitles
   val ukDividendsTitles: UkDividendsTitles.type = UkDividendsTitles
@@ -49,6 +50,10 @@ object TaskTitle extends TaskTitle {
     pensionsTitles.IncomeFromOverseas(),
     pensionsTitles.UnauthorisedPayments(),
     pensionsTitles.ShortServiceRefunds(),
+    ukInsuranceGainsTitles.LifeInsurance(),
+    ukInsuranceGainsTitles.LifeAnnuity(),
+    ukInsuranceGainsTitles.CapitalRedemption(),
+    ukInsuranceGainsTitles.VoidedISA(),
     paymentsIntoPensionsTitles.PaymentsIntoUk(),
     paymentsIntoPensionsTitles.PaymentsIntoOverseas(),
     paymentsIntoPensionsTitles.AnnualAllowances(),
