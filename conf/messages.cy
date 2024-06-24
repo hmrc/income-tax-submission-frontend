@@ -279,6 +279,11 @@ taskList.unauthorisedPaymentsTask = Unauthorised payments
 taskList.shortServiceRefundsTask = Short service refunds
 taskList.incomeFromOverseasTask = Income from overseas pensions
 
+taskList.lifeInsuranceTask = Life Insurance
+taskList.lifeAnnuityTask = Life Annuity
+taskList.capitalRedemptionTask = Capital Redemption
+taskList.voidedIsaTask = Voided ISA(a policy cancelled by your ISA manager)
+
 taskList.paymentsIntoUkPensions = Payments into UK pensions
 taskList.paymentsIntoOverseasPensionsTask = Payments into overseas pensions
 taskList.annualAllowancesTask = Annual allowances
