@@ -29,7 +29,7 @@ class TaskListConnectorISpec extends IntegrationTest {
   private val taskListSectionTitle = SectionTitle.AboutYouTitle
   private val taskListItemModel = Seq(TaskListSectionItem(TaskTitle.UkResidenceStatus, TaskStatus.Completed, Some("")))
 
-  val tasklistUrl = s"/income-tax-submission-service/income-tax/task-list/$taxYearEOY"
+  val tasklistUrl = s"/income-tax-submission-service/income-tax/nino/$nino/sources/task-list/$taxYearEOY"
 
   ".TaskListConnector" should {
     "return a TaskListSectionModel" in {
@@ -37,14 +37,14 @@ class TaskListConnectorISpec extends IntegrationTest {
 
         stubGet(tasklistUrl, OK, Json.toJson(expectedResult).toString())
 
-        val result = await(connector.getTaskList(taxYearEOY))
+        val result = await(connector.getTaskList(nino, taxYearEOY))
 
         result shouldBe Right(Some(expectedResult))
     }
     "non json is returned" in {
       stubGet(tasklistUrl, INTERNAL_SERVER_ERROR, "")
 
-      val result = await(connector.getTaskList(taxYearEOY))
+      val result = await(connector.getTaskList(nino, taxYearEOY))
 
       result shouldBe Left(APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel.parsingError))
     }
@@ -64,7 +64,7 @@ class TaskListConnectorISpec extends IntegrationTest {
       )
       stubGet(tasklistUrl, BAD_REQUEST, responseBody.toString())
 
-      val result = await(connector.getTaskList(taxYearEOY))
+      val result = await(connector.getTaskList(nino, taxYearEOY))
 
       result shouldBe Left(expectedResult)
     }
@@ -83,7 +83,7 @@ class TaskListConnectorISpec extends IntegrationTest {
       )
 
       stubGet(tasklistUrl, OK, invalidJson.toString())
-      val result = await(connector.getTaskList(taxYearEOY))
+      val result = await(connector.getTaskList(nino, taxYearEOY))
 
       result shouldBe Left(expectedResult)
     }
@@ -92,7 +92,7 @@ class TaskListConnectorISpec extends IntegrationTest {
       val expectedResult = APIErrorModel(SERVICE_UNAVAILABLE, APIErrorBodyModel("SERVICE_UNAVAILABLE", "Service unavailable"))
 
       stubGet(tasklistUrl, SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
-      val result = await(connector.getTaskList(taxYearEOY))
+      val result = await(connector.getTaskList(nino, taxYearEOY))
 
       result shouldBe Left(expectedResult)
     }
@@ -101,7 +101,7 @@ class TaskListConnectorISpec extends IntegrationTest {
       val expectedResult = Right(None)
 
       stubGet(tasklistUrl, NOT_FOUND, "{}")
-      val result = await(connector.getTaskList(taxYearEOY))
+      val result = await(connector.getTaskList(nino, taxYearEOY))
 
       result shouldBe expectedResult
     }
@@ -109,7 +109,7 @@ class TaskListConnectorISpec extends IntegrationTest {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal server error"))
 
       stubGet(tasklistUrl, INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
-      val result = await(connector.getTaskList(taxYearEOY))
+      val result = await(connector.getTaskList(nino, taxYearEOY))
 
       result shouldBe Left(expectedResult)
     }
@@ -117,7 +117,7 @@ class TaskListConnectorISpec extends IntegrationTest {
       val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal server error"))
 
       stubGet(tasklistUrl, REQUEST_TIMEOUT, expectedResult.toJson.toString())
-      val result = await(connector.getTaskList(taxYearEOY))
+      val result = await(connector.getTaskList(nino, taxYearEOY))
 
       result shouldBe Left(expectedResult)
     }

@@ -27,6 +27,6 @@ import scala.concurrent.Future
 @Singleton
 class TaskListService @Inject()(taskListConnector: TaskListConnector) {
 
-  def getTaskList(taxYear: Int)(implicit hc: HeaderCarrier): Future[TaskListResponse] =
-    taskListConnector.getTaskList(taxYear)
+  def getTaskList(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[TaskListResponse] =
+    taskListConnector.getTaskList(nino, taxYear)
 }

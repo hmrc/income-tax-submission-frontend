@@ -43,7 +43,7 @@ class TaskListPageController @Inject()(inYearAction: InYearAction,
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     val isInYear: Boolean = inYearAction.inYear(taxYear)
-    taskListService.getTaskList(taxYear)(hc.withExtraHeaders("MTDITID" -> user.mtditid)).map {
+    taskListService.getTaskList(user.nino, taxYear)(hc.withExtraHeaders("MTDITID" -> user.mtditid)).map {
       case Left(error) => errorHandler.handleError(error.status)
       case Right(taskListData) =>
         val prefix: String = if (user.isAgent) "taskList.agent." else "taskList."
