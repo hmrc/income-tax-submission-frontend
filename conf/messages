@@ -266,45 +266,75 @@ taskList.agent.dividendsTitle = UK dividends, shares and loans from limited comp
 ### Task List Item Titles ###
 
 taskList.ukResidenceStatusTask = UK residence status
+taskList.agent.ukResidenceStatusTask = UK residence status
 taskList.fosterCarerTask = Foster carer status
+taskList.agent.fosterCarerTask = Foster carer status
 
 taskList.donationsUsingGiftAidTask = Donations using Gift Aid
+taskList.agent.donationsUsingGiftAidTask = Donations using Gift Aid
 taskList.giftsOfLandOrPropertyTask = Gifts of land or property
+taskList.agent.giftsOfLandOrPropertyTask = Gifts of land or property
 taskList.giftsOfSharesOrSecuritiesTask = Gifts of shares or securities
+taskList.agent.giftsOfSharesOrSecuritiesTask = Gifts of shares or securities
 
 taskList.employmentTask = PAYE employment (including student loans)
+taskList.agent.employmentTask = PAYE employment (including student loans)
 
 taskList.cisTask = Construction Industry Schemes deductions
+taskList.agent.cisTask = Construction Industry Schemes deductions
 
 taskList.esaTask = Review Employment and support allowance claims
+taskList.agent.esaTask = Review Employment and support allowance claims
 
 taskList.jsaTask = Review Jobseeker’s Allowance claims
+taskList.agent.jsaTask = Review Jobseeker’s Allowance claims
 
 taskList.statePensionTask = State Pension
+taskList.agent.statePensionTask = State Pension
 taskList.otherUkPensionsTask = Other UK Pensions
+taskList.agent.otherUkPensionsTask = Other UK Pensions
 taskList.unauthorisedPaymentsTask = Unauthorised payments
+taskList.agent.unauthorisedPaymentsTask = Unauthorised payments
 taskList.shortServiceRefundsTask = Short service refunds
+taskList.agent.shortServiceRefundsTask = Short service refunds
 taskList.incomeFromOverseasTask = Income from overseas pensions
+taskList.agent.incomeFromOverseasTask = Income from overseas pensions
 
 taskList.lifeInsuranceTask = Life Insurance
+taskList.agent.lifeInsuranceTask = Life Insurance
 taskList.lifeAnnuityTask = Life Annuity
+taskList.agent.lifeAnnuityTask = Life Annuity
 taskList.capitalRedemptionTask = Capital Redemption
+taskList.agent.capitalRedemptionTask = Capital Redemption
 taskList.voidedIsaTask = Voided ISA(a policy cancelled by your ISA manager)
+taskList.agent.voidedIsaTask = Voided ISA(a policy cancelled by your ISA manager)
 
 taskList.paymentsIntoUkPensionsTask = Payments into UK pensions
+taskList.agent.paymentsIntoUkPensionsTask = Payments into UK pensions
 taskList.paymentsIntoOverseasPensionsTask = Payments into overseas pensions
+taskList.agent.paymentsIntoOverseasPensionsTask = Payments into overseas pensions
 taskList.annualAllowancesTask = Annual allowances
+taskList.agent.annualAllowancesTask = Annual allowances
 taskList.overseasTransferTask = Overseas transfer charge
+taskList.agent.overseasTransferTask = Overseas transfer charge
 
 taskList.banksAndBuildingTask = Banks and building societies
+taskList.agent.banksAndBuildingTask = Banks and building societies
 taskList.trustFundBondTask = Trust fund bond or bonds
+taskList.agent.trustFundBondTask = Trust fund bond or bonds
 taskList.giltEdgedTask = Gilt-edged or accrued income securities
+taskList.agent.giltEdgedTask = Gilt-edged or accrued income securities
 
 taskList.cashDividendsTask = Cash dividends from UK stocks and shares
+taskList.agent.cashDividendsTask = Cash dividends from UK stocks and shares
 taskList.stockDividendsTask = Stock dividends from UK companies
+taskList.agent.stockDividendsTask = Stock dividends from UK companies
 taskList.dividendsUnitTrustsInvestmentCompaniesTask = Dividends from unit trusts or investment companies
+taskList.agent.dividendsUnitTrustsInvestmentCompaniesTask = Dividends from unit trusts or investment companies
 taskList.freeOrRedeemableSharesTask = Free or redeemable shares
+taskList.agent.freeOrRedeemableSharesTask = Free or redeemable shares
 taskList.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
+taskList.agent.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
 
 notStarted = Not started
 completed = Completed
