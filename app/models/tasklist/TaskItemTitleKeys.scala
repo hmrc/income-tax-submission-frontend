@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.tasklist.taskItemTitles
+package models.tasklist
 
 object TaskItemTitleKeys {
 
@@ -48,7 +48,6 @@ object TaskItemTitleKeys {
   val PAYMENTS_INTO_OVERSEAS_KEY: String = "paymentsIntoOverseasPensionsTask"
   val ANNUAL_ALLOWANCES_KEY: String = "annualAllowancesTask"
   val OVERSEAS_TRANSFER_KEY: String = "overseasTransferTask"
-
 
   val BANKS_AND_BUILDING_KEY: String = "banksAndBuildingTask"
   val TRUST_FUND_BOND_KEY: String = "trustFundBondTask"

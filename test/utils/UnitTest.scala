@@ -177,20 +177,20 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   val taskListModel: TaskListModel = TaskListModel(
     Seq[TaskListSection](
       TaskListSection(
-        SectionTitle.EmploymentTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle.employmentTitles.PayeEmployment(), TaskStatus.Completed(), Some(""))))
+        SectionTitle.EmploymentTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.PayeEmployment, TaskStatus.Completed, Some(""))))
       ),
       TaskListSection(
-        SectionTitle.JsaTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle.jsaTitles.JSA(), TaskStatus.InProgress(), Some(""))))
+        SectionTitle.JsaTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.JSA, TaskStatus.InProgress, Some(""))))
       ),
       TaskListSection(
-        SectionTitle.EsaTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle.esaTitles.ESA(), TaskStatus.NotStarted(), Some(""))))
+        SectionTitle.EsaTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.ESA, TaskStatus.NotStarted, Some(""))))
       ),
       TaskListSection(
-        SectionTitle.AboutYouTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle.aboutYouItemTitles.UkResidenceStatus(), TaskStatus.CheckNow(), Some(""))))
+        SectionTitle.AboutYouTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.UkResidenceStatus, TaskStatus.CheckNow, Some(""))))
       )
     )
   )
@@ -198,8 +198,8 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   val taskListModelCompleted: TaskListModel = TaskListModel(
     Seq[TaskListSection](
       TaskListSection(
-        SectionTitle.EmploymentTitle(),
-        Some(Seq(TaskListSectionItem(TaskTitle.employmentTitles.PayeEmployment(), TaskStatus.Completed(), Some(""))))
+        SectionTitle.EmploymentTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.PayeEmployment, TaskStatus.Completed, Some(""))))
       )
     )
   )

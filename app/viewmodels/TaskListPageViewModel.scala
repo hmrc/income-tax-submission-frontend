@@ -19,19 +19,9 @@ package viewmodels
 import models.tasklist.SectionTitle._
 import models.tasklist.SectionTitleKeys._
 import models.tasklist.TaskStatus._
-import models.tasklist.taskItemTitles.AboutYouItemTitles.{FosterCarer, UkResidenceStatus}
-import models.tasklist.taskItemTitles.CharitableDonationsTitles.{DonationsUsingGiftAid, GiftsOfLandOrProperty, GiftsOfShares}
-import models.tasklist.taskItemTitles.EmploymentTitles.PayeEmployment
-import models.tasklist.taskItemTitles.EsaTitles.ESA
-import models.tasklist.taskItemTitles.JsaTitles.JSA
-import models.tasklist.taskItemTitles.PaymentsIntoPensionsTitles.{AnnualAllowances, OverseasTransfer, PaymentsIntoOverseas, PaymentsIntoUk}
-import models.tasklist.taskItemTitles.PensionsTitles.{IncomeFromOverseas, OtherUkPensions, ShortServiceRefunds, StatePension, UnauthorisedPayments}
-import models.tasklist.taskItemTitles.SelfEmploymentTitles.CIS
-import models.tasklist.taskItemTitles.TaskItemTitleKeys._
-import models.tasklist.taskItemTitles.UkDividendsTitles.{CashDividends, CloseCompanyLoans, DividendsFromUnitTrusts, FreeRedeemableShares, StockDividends}
-import models.tasklist.taskItemTitles.UkInsuranceGainsTitles.{CapitalRedemption, LifeAnnuity, LifeInsurance, VoidedISA}
-import models.tasklist.taskItemTitles.UkInterestTitles.{BanksAndBuilding, GiltEdged, TrustFundBond}
-import models.tasklist.{SectionTitle, TaskListModel, TaskStatus, TaskTitle}
+import models.tasklist.TaskItemTitleKeys._
+import models.tasklist.{TaskListModel, TaskStatus, TaskTitle}
+import models.tasklist.TaskTitle._
 import play.api.Logging
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -105,7 +95,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       taskItems <- data.taskList.map(_.taskItems)
       sectionItem <- taskItems.getOrElse(Seq())
     } yield {
-      sectionItem.status.toString.equals(Completed().toString)
+      sectionItem.status.toString.equals(Completed.toString)
     }
     numOfCompletedItems.count(i => i).toString
   }
@@ -121,67 +111,67 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
 
   private def sectionItemOps: TaskTitle => String = { taskTitle =>
     Map(
-      UkResidenceStatus().toString -> messages(prefix + RESIDENCE_STATUS_KEY),
-      FosterCarer().toString -> messages(prefix + FOSTER_CARER_KEY),
-      DonationsUsingGiftAid().toString -> messages(prefix + DONATIONS_GIFT_AID_KEY),
-      GiftsOfLandOrProperty().toString -> messages(prefix + GIFTS_LAND_PROPERTY_KEY),
-      GiftsOfShares().toString -> messages(prefix + GIFTS_SHARES_SECURITIES_KEY),
-      PayeEmployment().toString -> messages(prefix + EMPLOYMENT_KEY),
-      CIS().toString -> messages(prefix + CIS_KEY),
-      ESA().toString -> messages(prefix + ESA_KEY),
-      JSA().toString -> messages(prefix + JSA_KEY),
-      StatePension().toString -> messages(prefix + STATE_PENSION_KEY),
-      OtherUkPensions().toString -> messages(prefix + OTHER_UK_PENSIONS_KEY),
-      UnauthorisedPayments().toString -> messages(prefix + UNAUTHORISED_PAYMENTS_KEY),
-      PaymentsIntoUk().toString -> messages(prefix + PAYMENTS_INTO_UK_KEY),
-      PaymentsIntoOverseas().toString -> messages(prefix + PAYMENTS_INTO_OVERSEAS_KEY),
-      AnnualAllowances().toString -> messages(prefix + ANNUAL_ALLOWANCES_KEY),
-      OverseasTransfer().toString -> messages(prefix + OVERSEAS_TRANSFER_KEY),
-      ShortServiceRefunds().toString -> messages(prefix + SHORT_SERVICE_REFUNDS_KEY),
-      IncomeFromOverseas().toString -> messages(prefix + INCOME_FROM_OVERSEAS_KEY),
-      BanksAndBuilding().toString -> messages(prefix + BANKS_AND_BUILDING_KEY),
-      TrustFundBond().toString -> messages(prefix + TRUST_FUND_BOND_KEY),
-      GiltEdged().toString -> messages(prefix + GILT_EDGED_KEY),
-      CashDividends().toString -> messages(prefix + CASH_DIVIDENDS_KEY),
-      StockDividends().toString -> messages(prefix + STOCK_DIVIDENDS_KEY),
-      DividendsFromUnitTrusts().toString -> messages(prefix + DIVIDENDS_FROM_UNIT_TRUSTS_KEY),
-      FreeRedeemableShares().toString -> messages(prefix + FREE_REDEEMABLE_SHARES_KEY),
-      CloseCompanyLoans().toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY),
-      LifeInsurance().toString -> messages(prefix + LIFE_INSURANCE_KEY),
-      LifeAnnuity().toString -> messages(prefix + LIFE_ANNUITY_KEY),
-      CapitalRedemption().toString -> messages(prefix + CAPITAL_REDEMPTION_KEY),
-      VoidedISA().toString -> messages(prefix + VOIDED_ISA_KEY)
+      UkResidenceStatus.toString -> messages(prefix + RESIDENCE_STATUS_KEY),
+      FosterCarer.toString -> messages(prefix + FOSTER_CARER_KEY),
+      DonationsUsingGiftAid.toString -> messages(prefix + DONATIONS_GIFT_AID_KEY),
+      GiftsOfLandOrProperty.toString -> messages(prefix + GIFTS_LAND_PROPERTY_KEY),
+      GiftsOfShares.toString -> messages(prefix + GIFTS_SHARES_SECURITIES_KEY),
+      PayeEmployment.toString -> messages(prefix + EMPLOYMENT_KEY),
+      CIS.toString -> messages(prefix + CIS_KEY),
+      ESA.toString -> messages(prefix + ESA_KEY),
+      JSA.toString -> messages(prefix + JSA_KEY),
+      StatePension.toString -> messages(prefix + STATE_PENSION_KEY),
+      OtherUkPensions.toString -> messages(prefix + OTHER_UK_PENSIONS_KEY),
+      UnauthorisedPayments.toString -> messages(prefix + UNAUTHORISED_PAYMENTS_KEY),
+      LifeInsurance.toString -> messages(prefix + LIFE_INSURANCE_KEY),
+      LifeAnnuity.toString -> messages(prefix + LIFE_ANNUITY_KEY),
+      CapitalRedemption.toString -> messages(prefix + CAPITAL_REDEMPTION_KEY),
+      VoidedISA.toString -> messages(prefix + VOIDED_ISA_KEY),
+      PaymentsIntoUk.toString -> messages(prefix + PAYMENTS_INTO_UK_KEY),
+      PaymentsIntoOverseas.toString -> messages(prefix + PAYMENTS_INTO_OVERSEAS_KEY),
+      AnnualAllowances.toString -> messages(prefix + ANNUAL_ALLOWANCES_KEY),
+      OverseasTransfer.toString -> messages(prefix + OVERSEAS_TRANSFER_KEY),
+      ShortServiceRefunds.toString -> messages(prefix + SHORT_SERVICE_REFUNDS_KEY),
+      IncomeFromOverseas.toString -> messages(prefix + INCOME_FROM_OVERSEAS_KEY),
+      BanksAndBuilding.toString -> messages(prefix + BANKS_AND_BUILDING_KEY),
+      TrustFundBond.toString -> messages(prefix + TRUST_FUND_BOND_KEY),
+      GiltEdged.toString -> messages(prefix + GILT_EDGED_KEY),
+      CashDividends.toString -> messages(prefix + CASH_DIVIDENDS_KEY),
+      StockDividends.toString -> messages(prefix + STOCK_DIVIDENDS_KEY),
+      DividendsFromUnitTrusts.toString -> messages(prefix + DIVIDENDS_FROM_UNIT_TRUSTS_KEY),
+      FreeRedeemableShares.toString -> messages(prefix + FREE_REDEEMABLE_SHARES_KEY),
+      CloseCompanyLoans.toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY)
     )(taskTitle.toString)
   }
 
   private def sectionTitleKeyOps: String => String = { key =>
     Map(
-      AboutYouTitle().toString -> messages(prefix + ABOUT_YOU_TITLE_KEY),
-      CharitableDonationsTitle().toString -> messages(prefix + CHARITABLE_DONATIONS_TITLE_KEY),
-      EmploymentTitle().toString -> messages(prefix + EMPLOYMENT_TITLE_KEY),
-      SelfEmploymentTitle().toString -> messages(prefix + SELF_EMPLOYMENT_TITLE_KEY),
-      EsaTitle().toString -> messages(prefix + ESA_TITLE_KEY),
-      JsaTitle().toString -> messages(prefix + JSA_TITLE_KEY),
-      PensionsTitle().toString -> messages(prefix + PENSIONS_TITLE_KEY),
-      PaymentsIntoPensionsTitle().toString -> messages(prefix + PAYMENTS_INTO_PENSIONS_TITLE_KEY),
-      InterestTitle().toString -> messages(prefix + INTEREST_TITLE_KEY),
-      DividendsTitle().toString -> messages(prefix + DIVIDENDS_TITLE_KEY),
-      InsuranceGainsTitle().toString -> messages(prefix + INSURANCE_GAINS_TITLE_KEY)
+      AboutYouTitle.toString -> messages(prefix + ABOUT_YOU_TITLE_KEY),
+      CharitableDonationsTitle.toString -> messages(prefix + CHARITABLE_DONATIONS_TITLE_KEY),
+      EmploymentTitle.toString -> messages(prefix + EMPLOYMENT_TITLE_KEY),
+      SelfEmploymentTitle.toString -> messages(prefix + SELF_EMPLOYMENT_TITLE_KEY),
+      EsaTitle.toString -> messages(prefix + ESA_TITLE_KEY),
+      JsaTitle.toString -> messages(prefix + JSA_TITLE_KEY),
+      PensionsTitle.toString -> messages(prefix + PENSIONS_TITLE_KEY),
+      InsuranceGainsTitle.toString -> messages(prefix + INSURANCE_GAINS_TITLE_KEY),
+      PaymentsIntoPensionsTitle.toString -> messages(prefix + PAYMENTS_INTO_PENSIONS_TITLE_KEY),
+      InterestTitle.toString -> messages(prefix + INTEREST_TITLE_KEY),
+      DividendsTitle.toString -> messages(prefix + DIVIDENDS_TITLE_KEY)
     )(key)
   }
 
 
   private def itemStatus: TaskStatus => TaskListItemStatus = {
-    case status@TaskStatus.NotStarted() =>
+    case status@TaskStatus.NotStarted =>
       TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagBlue)))
-    case status@TaskStatus.InProgress() =>
+    case status@TaskStatus.InProgress =>
       TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagGreen)))
-    case status@TaskStatus.Completed() =>
+    case status@TaskStatus.Completed =>
       TaskListItemStatus(content = HtmlContent(messages(status.toString)),
         classes = tagWhite)
-    case status@TaskStatus.CheckNow() =>
+    case status@TaskStatus.CheckNow =>
       TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagBlue)))
   }
