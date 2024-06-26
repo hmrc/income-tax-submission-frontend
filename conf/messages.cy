@@ -230,108 +230,110 @@ error.business-validation-rules.paragraph.agent = Ewch ati i wirio Ffurflen Dret
 error.business-validation-rules.paragraph.individual = Ewch ati i wirio’ch Ffurflen Dreth ar gyfer Treth Incwm a’i chyflwyno eto.
 
 
-taskList.incomplete = Incomplete
-taskList.completedText = You have completed {0} of {1} sections.
+taskList.incomplete = Heb lenwi
+taskList.completedText = Rydych wedi cwblhau {0} o {1} adran.
 
-### Task List Section Titles / TEMP IN ENGLISH UNTIL TRANSLATIONS ARRIVE  ###
+### Task List Section Titles ###
 
-taskList.aboutYouTitle = About You
-taskList.agent.aboutYouTitle = About your client
-taskList.charitableDonationsTitle = Charitable donations
-taskList.agent.charitableDonationsTitle = Charitable donations
-taskList.employmentTitle = Employment
-taskList.agent.employmentTitle = Employment
-taskList.selfEmploymentTitle = Self-Employment
-taskList.agent.selfEmploymentTitle = Self-Employment
-taskList.esaTitle = Employment and Support Allowance
-taskList.agent.esaTitle = Employment and Support Allowance
-taskList.jsaTitle = Jobseeker’s Allowance
-taskList.agent.jsaTitle = Jobseeker’s Allowance
-taskList.pensionsTitle = Pensions
-taskList.agent.pensionsTitle = Pensions
-taskList.paymentsIntoPensionsTitle = Payments into Pensions
-taskList.agent.paymentsIntoPensionsTitle = Payments into Pensions
-taskList.interestTitle = UK Interest
-taskList.agent.interestTitle = UK Interest
-taskList.dividendsTitle = UK dividends, shares and loans from limited companies
-taskList.agent.dividendsTitle = UK dividends, shares and loans from limited companies
+taskList.aboutYouTitle = Amdanoch chi
+taskList.agent.aboutYouTitle = Ynglŷn â’ch cleient
+taskList.charitableDonationsTitle = Cyfraniadau elusennol
+taskList.agent.charitableDonationsTitle = Cyfraniadau elusennol
+taskList.employmentTitle = Cyflogaeth
+taskList.agent.employmentTitle = Cyflogaeth
+taskList.selfEmploymentTitle = Hunangyflogaeth
+taskList.agent.selfEmploymentTitle = Hunangyflogaeth
+taskList.esaTitle = Lwfans Cyflogaeth a Chymorth
+taskList.agent.esaTitle = Lwfans Cyflogaeth a Chymorth
+taskList.jsaTitle = Lwfans Ceisio Gwaith
+taskList.agent.jsaTitle = Lwfans Ceisio Gwaith
+taskList.pensionsTitle = Pensiynau
+taskList.agent.pensionsTitle = Pensiynau
+taskList.insuranceGainsTitle = Enillion yswiriant yn y DU
+taskList.agent.insuranceGainsTitle = Enillion yswiriant yn y DU
+taskList.paymentsIntoPensionsTitle = Taliadau i mewn i Bensiynau
+taskList.agent.paymentsIntoPensionsTitle = Taliadau i mewn i Bensiynau
+taskList.interestTitle = Llog yn y DU
+taskList.agent.interestTitle = Llog yn y DU
+taskList.dividendsTitle = Difidendau, cyfranddaliadau a benthyciadau yn y DU o gwmnïau cyfyngedig
+taskList.agent.dividendsTitle = Difidendau, cyfranddaliadau a benthyciadau yn y DU o gwmnïau cyfyngedig
 
-### Task List Item Titles / TEMP IN ENGLISH UNTIL TRANSLATIONS ARRIVE ###
+### Task List Item Titles ###
 
-taskList.ukResidenceStatusTask = UK residence status
-taskList.agent.ukResidenceStatusTask = UK residence status
-taskList.fosterCarerTask = Foster carer status
-taskList.agent.fosterCarerTask = Foster carer status
+taskList.ukResidenceStatusTask = Statws preswyl yn y DU
+taskList.agent.ukResidenceStatusTask = Statws preswyl yn y DU
+taskList.fosterCarerTask = Statws gofalwr maeth
+taskList.agent.fosterCarerTask = Statws gofalwr maeth
 
-taskList.donationsUsingGiftAidTask = Donations using Gift Aid
-taskList.agent.donationsUsingGiftAidTask = Donations using Gift Aid
-taskList.giftsOfLandOrPropertyTask = Gifts of land or property
-taskList.agent.giftsOfLandOrPropertyTask = Gifts of land or property
-taskList.giftsOfSharesOrSecuritiesTask = Gifts of shares or securities
-taskList.agent.giftsOfSharesOrSecuritiesTask = Gifts of shares or securities
+taskList.donationsUsingGiftAidTask = Cyfraniadau drwy Rodd Cymorth
+taskList.agent.donationsUsingGiftAidTask = Cyfraniadau drwy Rodd Cymorth
+taskList.giftsOfLandOrPropertyTask = Rhoddion o dir neu eiddo
+taskList.agent.giftsOfLandOrPropertyTask = Rhoddion o dir neu eiddo
+taskList.giftsOfSharesOrSecuritiesTask = Rhoddion o gyfranddaliadau neu warantau
+taskList.agent.giftsOfSharesOrSecuritiesTask = Rhoddion o gyfranddaliadau neu warantau
 tasklist.giftsToOverseasCharitiesTask = Rhoddion i elusennau tramor
 tasklist.agent.giftsToOverseasCharitiesTask = Rhoddion i elusennau tramor
 
-taskList.employmentTask = PAYE employment (including student loans)
-taskList.agent.employmentTask = PAYE employment (including student loans)
+taskList.employmentTask = Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)
+taskList.agent.employmentTask = Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)
 
-taskList.cisTask = Construction Industry Schemes deductions
-taskList.agent.cisTask = Construction Industry Schemes deductions
+taskList.cisTask = Didyniadau Cynllun y Diwydiant Adeiladu
+taskList.agent.cisTask = Didyniadau Cynllun y Diwydiant Adeiladu
 
-taskList.esaTask = Review Employment and support allowance claims
-taskList.agent.esaTask = Review Employment and support allowance claims
+taskList.esaTask = Adolygu hawliadau Lwfans Cyflogaeth a Chymorth
+taskList.agent.esaTask = Adolygu hawliadau Lwfans Cyflogaeth a Chymorth
 
-taskList.jsaTask = Review Jobseeker’s Allowance claims
-taskList.agent.jsaTask = Review Jobseeker’s Allowance claims
+taskList.jsaTask = Adolygu hawliadau Lwfans Ceisio Gwaith
+taskList.agent.jsaTask = Adolygu hawliadau Lwfans Ceisio Gwaith
 
-taskList.statePensionTask = State Pension
-taskList.agent.statePensionTask = State Pension
-taskList.otherUkPensionsTask = Other UK Pensions
-taskList.agent.otherUkPensionsTask = Other UK Pensions
-taskList.unauthorisedPaymentsTask = Unauthorised payments
-taskList.agent.unauthorisedPaymentsTask = Unauthorised payments
-taskList.shortServiceRefundsTask = Short service refunds
-taskList.agent.shortServiceRefundsTask = Short service refunds
-taskList.incomeFromOverseasTask = Income from overseas pensions
-taskList.agent.incomeFromOverseasTask = Income from overseas pensions
+taskList.statePensionTask = Pensiwn y Wladwriaeth
+taskList.agent.statePensionTask = Pensiwn y Wladwriaeth
+taskList.otherUkPensionsTask = Pensiynau eraill y DU
+taskList.agent.otherUkPensionsTask = Pensiynau eraill y DU
+taskList.unauthorisedPaymentsTask = Taliadau heb eu hawdurdodi
+taskList.agent.unauthorisedPaymentsTask = Taliadau heb eu hawdurdodi
+taskList.shortServiceRefundsTask = Ad-daliadau am wasanaeth byr
+taskList.agent.shortServiceRefundsTask = Ad-daliadau am wasanaeth byr
+taskList.incomeFromOverseasTask = Incwm o bensiynau tramor
+taskList.agent.incomeFromOverseasTask = Incwm o bensiynau tramor
 
-taskList.lifeInsuranceTask = Life Insurance
-taskList.agent.lifeInsuranceTask = Life Insurance
-taskList.lifeAnnuityTask = Life Annuity
-taskList.agent.lifeAnnuityTask = Life Annuity
-taskList.capitalRedemptionTask = Capital Redemption
-taskList.agent.capitalRedemptionTask = Capital Redemption
-taskList.voidedIsaTask = Voided ISA(a policy cancelled by your ISA manager)
-taskList.agent.voidedIsaTask = Voided ISA(a policy cancelled by your ISA manager)
+taskList.lifeInsuranceTask = Yswiriant Bywyd
+taskList.agent.lifeInsuranceTask = Yswiriant Bywyd
+taskList.lifeAnnuityTask = Blwydd-dal Bywyd
+taskList.agent.lifeAnnuityTask = Blwydd-dal Bywyd
+taskList.capitalRedemptionTask = Adbrynu Cyfalaf
+taskList.agent.capitalRedemptionTask = Adbrynu Cyfalaf
+taskList.voidedIsaTask = ISA sydd wedi’i ddirymu (polisi a ganslwyd gan reolwr eich ISA)
+taskList.agent.voidedIsaTask = ISA sydd wedi’i ddirymu (polisi a ganslwyd gan reolwr eich ISA)
 
-taskList.paymentsIntoUkPensionsTask = Payments into UK pensions
-taskList.agent.paymentsIntoUkPensionsTask = Payments into UK pensions
-taskList.paymentsIntoOverseasPensionsTask = Payments into overseas pensions
-taskList.agent.paymentsIntoOverseasPensionsTask = Payments into overseas pensions
-taskList.annualAllowancesTask = Annual allowances
-taskList.agent.annualAllowancesTask = Annual allowances
-taskList.overseasTransferTask = Overseas transfer charge
-taskList.agent.overseasTransferTask = Overseas transfer charge
+taskList.paymentsIntoUkPensionsTask = Taliadau i mewn i bensiynau’r DU
+taskList.agent.paymentsIntoUkPensionsTask = Taliadau i mewn i bensiynau’r DU
+taskList.paymentsIntoOverseasPensionsTask = Taliadau i mewn i bensiynau tramor
+taskList.agent.paymentsIntoOverseasPensionsTask = Taliadau i mewn i bensiynau tramor
+taskList.annualAllowancesTask = Lwfansau blynyddol
+taskList.agent.annualAllowancesTask = Lwfansau blynyddol
+taskList.overseasTransferTask = Taliadau ar drosglwyddiadau tramor
+taskList.agent.overseasTransferTask = Taliadau ar drosglwyddiadau tramor
 
-taskList.banksAndBuildingTask = Banks and building societies
-taskList.agent.banksAndBuildingTask = Banks and building societies
-taskList.trustFundBondTask = Trust fund bond or bonds
-taskList.agent.trustFundBondTask = Trust fund bond or bonds
-taskList.giltEdgedTask = Gilt-edged or accrued income securities
-taskList.agent.giltEdgedTask = Gilt-edged or accrued income securities
+taskList.banksAndBuildingTask = Banciau a chymdeithasau adeiladu
+taskList.agent.banksAndBuildingTask = Banciau a chymdeithasau adeiladu
+taskList.trustFundBondTask = Bond cronfa ymddiriedolaeth neu fondiau
+taskList.agent.trustFundBondTask = Bond cronfa ymddiriedolaeth neu fondiau
+taskList.giltEdgedTask = Warantau gilt neu warantau incwm cronedig
+taskList.agent.giltEdgedTask = Warantau gilt neu warantau incwm cronedig
 
-taskList.cashDividendsTask = Cash dividends from UK stocks and shares
-taskList.agent.cashDividendsTask = Cash dividends from UK stocks and shares
-taskList.stockDividendsTask = Stock dividends from UK companies
-taskList.agent.stockDividendsTask = Stock dividends from UK companies
-taskList.dividendsUnitTrustsInvestmentCompaniesTask = Dividends from unit trusts or investment companies
-taskList.agent.dividendsUnitTrustsInvestmentCompaniesTask = Dividends from unit trusts or investment companies
-taskList.freeOrRedeemableSharesTask = Free or redeemable shares
-taskList.agent.freeOrRedeemableSharesTask = Free or redeemable shares
-taskList.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
-taskList.agent.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
+taskList.cashDividendsTask = Difidendau arian parod o stociau a chyfranddaliadau yn y DU
+taskList.agent.cashDividendsTask = Difidendau arian parod o stociau a chyfranddaliadau yn y DU
+taskList.stockDividendsTask = Difidendau stoc o gwmnïau yn y DU
+taskList.agent.stockDividendsTask = Difidendau stoc o gwmnïau yn y DU
+taskList.dividendsUnitTrustsInvestmentCompaniesTask = Difidendau o ymddiriedolaethau unedol neu gwmnïau buddsoddi
+taskList.agent.dividendsUnitTrustsInvestmentCompaniesTask = Difidendau o ymddiriedolaethau unedol neu gwmnïau buddsoddi
+taskList.freeOrRedeemableSharesTask = Cyfranddaliadau sy’n rhad ac am ddim neu gyfranddaliadau adbryn
+taskList.agent.freeOrRedeemableSharesTask = Cyfranddaliadau sy’n rhad ac am ddim neu gyfranddaliadau adbryn
+taskList.closeCompanyLoansWrittenOffReleasedTask = Benthyciadau gan gwmnïau caeedig a ddilëwyd neu a ryddhawyd
+taskList.agent.closeCompanyLoansWrittenOffReleasedTask = Benthyciadau gan gwmnïau caeedig a ddilëwyd neu a ryddhawyd
 
-notStarted = Not started
-completed = Completed
-checkNow = Check now
-inProgress = In progress
+notStarted = Heb ddechrau
+completed = Wedi cwblhau
+checkNow = Gwiriwch nawr
+inProgress = Ar y gweill

@@ -102,7 +102,13 @@ class MessagesSpec extends ViewTest {
     "taskList.agent.stockDividendsTask",
     "taskList.agent.dividendsUnitTrustsInvestmentCompaniesTask",
     "taskList.agent.freeOrRedeemableSharesTask",
-    "taskList.agent.closeCompanyLoansWrittenOffReleasedTask"
+    "taskList.agent.closeCompanyLoansWrittenOffReleasedTask",
+    "common.cis",
+    "common.pensions",
+    "error.no-valid-income.p2.bullet1",
+    "notStarted",
+    "taskList.agent.insuranceGainsTitle",
+    "common.employmentSL"
   )
 
   val betaMessagesInBothHMRCLibraryAndMessages = 3
