@@ -77,6 +77,7 @@ class MessagesSpec extends ViewTest {
     "taskList.agent.donationsUsingGiftAidTask",
     "taskList.agent.giftsOfLandOrPropertyTask",
     "taskList.agent.giftsOfSharesOrSecuritiesTask",
+    "tasklist.agent.giftsToOverseasCharitiesTask",
     "taskList.agent.employmentTask",
     "taskList.agent.cisTask",
     "taskList.agent.esaTask",

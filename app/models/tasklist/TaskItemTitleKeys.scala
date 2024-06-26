@@ -24,7 +24,7 @@ object TaskItemTitleKeys {
   val DONATIONS_GIFT_AID_KEY: String = "donationsUsingGiftAidTask"
   val GIFTS_LAND_PROPERTY_KEY: String = "giftsOfLandOrPropertyTask"
   val GIFTS_SHARES_SECURITIES_KEY: String = "giftsOfSharesOrSecuritiesTask"
-
+  val GIFTS_TO_OVERSEAS_CHARITIES_KEY: String = "giftsToOverseasCharitiesTask"
   val EMPLOYMENT_KEY: String = "employmentTask"
 
   val CIS_KEY: String = "cisTask"
