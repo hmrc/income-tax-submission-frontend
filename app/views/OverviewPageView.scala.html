@@ -84,7 +84,7 @@
                 @if(isUnavailable) {
                     @messages(taskNameKey)
                 } else {
-                    <a class="govuk-link" id="@linkId" href="@{if (isUnavailable) '#' else href}">
+                    <a class="govuk-link" id="@linkId" href="@{if (isUnavailable) '#' else href}" aria-describedby=@messages(journeyKey)-status>
                         @messages(taskNameKey)
                     </a>
                 }
