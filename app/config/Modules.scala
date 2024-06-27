@@ -17,11 +17,13 @@
 package config
 
 import com.google.inject.AbstractModule
+import connectors.{IncomeTaxSessionDataConnector, IncomeTaxSessionDataConnectorImpl}
 
 class Modules extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[AppConfig]).asEagerSingleton()
+    bind(classOf[IncomeTaxSessionDataConnector]).to(classOf[IncomeTaxSessionDataConnectorImpl]).asEagerSingleton()
   }
 
 }

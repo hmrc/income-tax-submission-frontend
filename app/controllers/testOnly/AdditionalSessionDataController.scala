@@ -17,18 +17,22 @@
 package controllers.testOnly
 
 import config.AppConfig
+import connectors.IncomeTaxSessionDataConnector
+import models.sessionData.SessionData
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.OverviewPageView
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalSessionDataController @Inject()(
                                                  appConfig: AppConfig,
                                                  mcc: MessagesControllerComponents,
-                                                 overviewPageView: OverviewPageView) extends FrontendController(mcc) with I18nSupport {
+                                                 sessionDataConnector: IncomeTaxSessionDataConnector,
+                                                 overviewPageView: OverviewPageView)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   implicit val config: AppConfig = appConfig
 
@@ -43,6 +47,15 @@ class AdditionalSessionDataController @Inject()(
         passedResult.addingToSession(key -> value)
       }
 
-    Future.successful(result)
+    val sessionId = request
+      .session.get("sessionId")
+      .orElse(hc.sessionId.map(_.value))
+      .getOrElse(throw new IllegalStateException("Session ID not found"))
+    val sessionData = SessionData.mkSessionData(sessionId, queryParams)
+
+    println(sessionId)
+    println(sessionData)
+
+    sessionDataConnector.upsert(sessionId, sessionData).map(_ => result)
   }
 }
