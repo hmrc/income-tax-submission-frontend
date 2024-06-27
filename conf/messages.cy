@@ -271,8 +271,8 @@ taskList.giftsOfLandOrPropertyTask = Rhoddion o dir neu eiddo
 taskList.agent.giftsOfLandOrPropertyTask = Rhoddion o dir neu eiddo
 taskList.giftsOfSharesOrSecuritiesTask = Rhoddion o gyfranddaliadau neu warantau
 taskList.agent.giftsOfSharesOrSecuritiesTask = Rhoddion o gyfranddaliadau neu warantau
-tasklist.giftsToOverseasCharitiesTask = Rhoddion i elusennau tramor
-tasklist.agent.giftsToOverseasCharitiesTask = Rhoddion i elusennau tramor
+taskList.giftsToOverseasCharitiesTask = Rhoddion i elusennau tramor
+taskList.agent.giftsToOverseasCharitiesTask = Rhoddion i elusennau tramor
 
 taskList.employmentTask = Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)
 taskList.agent.employmentTask = Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)
