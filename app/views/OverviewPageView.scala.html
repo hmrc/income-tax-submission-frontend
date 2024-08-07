@@ -26,15 +26,36 @@
 @this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag, notificationBanner: NotificationBanner, link: Link)
 @(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], tailoring: OverviewTailoringModel, taxYear: Int, isInYear: Boolean, excludedJourneys: Seq[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@statusTag(updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean) = {
+@statusLink(journeyKey: String, enabledCondition: Boolean = true, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, isUnavailable: Boolean, additionalShowLinkCheck: Boolean) = @{
+    if(enabledCondition && additionalShowLinkCheck && !isUnavailable){
+        if (statusTagUpdatedCondition) {
+            Some(messages("overview.tag.updated"))
+        } else if (cannotUpdateCondition) {
+            Some(messages("overview.tag.cannotUpdate"))
+        } else if (isMandatorySection) {
+            Some(messages("overview.tag.todo"))
+        } else if (excludedJourneys.contains(journeyKey)) {
+            Some(messages("overview.tag.excluded"))
+        } else {
+            Some(messages("overview.tag.notStarted"))
+        }      }
+    else{
+        Some(messages("overview.tag.underMaintenance"))
+            }
+        }
+
+@htmlTagSpanOpen(journeyKey: String, updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean, additionalShowLinkCheck: Boolean)={
+<span class="hmrc-status-tag" id="@messages(journeyKey)-@statusLink(journeyKey, enabledCondition,updatedCondition, cannotUpdateCondition, isMandatorySection, isUnavailable, additionalShowLinkCheck)">}
+
+@statusTag(journeyKey: String, updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean, additionalShowLinkCheck: Boolean) = {
     @if(isUnavailable) {
-        <span class="hmrc-status-tag">
+        @htmlTagSpanOpen(journeyKey, updatedCondition, enabledCondition, cannotUpdateCondition, isMandatorySection, isExcluded, isUnavailable, additionalShowLinkCheck)
             <strong class="govuk-tag maintenance">
                 @messages("common.underMaintenance")
             </strong>
         </span>
     } else {
-        <span class="hmrc-status-tag">
+        @htmlTagSpanOpen(journeyKey, updatedCondition, enabledCondition, cannotUpdateCondition, isMandatorySection, isExcluded, isUnavailable, additionalShowLinkCheck)
             @govukTag(Tag(
                 content =
                     Text(
@@ -76,7 +97,7 @@
     }
 }
 
-@taskListItem(show: Boolean, enabled: Boolean, linkId: String, taskNameKey: String, href: String, journeyKey: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, additionalShowLinkCheck: Boolean = true, isUnavailable: Boolean = false) = {
+@taskListItem(show: Boolean, enabled: Boolean, linkId: String, taskNameKey: String, href: String, journeyKey: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, isUnavailable: Boolean = false, additionalShowLinkCheck: Boolean = true) = {
     @if(!appConfig.tailoringEnabled || show) {
         <li class="app-task-list__item">
             <span class="app-task-list__task-name">
@@ -84,7 +105,7 @@
                 @if(isUnavailable) {
                     @messages(taskNameKey)
                 } else {
-                    <a class="govuk-link" id="@linkId" href="@{if (isUnavailable) '#' else href}" aria-describedby=@messages(journeyKey)-status>
+                    <a class="govuk-link" id="@linkId" href="@{if (isUnavailable) '#' else href}" aria-describedby="@messages(journeyKey)-@statusLink(journeyKey, enabled,statusTagUpdatedCondition, cannotUpdateCondition, isMandatorySection, isUnavailable, additionalShowLinkCheck)">
                         @messages(taskNameKey)
                     </a>
                 }
@@ -92,7 +113,7 @@
                 @messages(taskNameKey)
             }
             </span>
-            @statusTag(statusTagUpdatedCondition, enabled, cannotUpdateCondition, isMandatorySection, excludedJourneys.contains(journeyKey), isUnavailable)
+            @statusTag(journeyKey, statusTagUpdatedCondition, enabled, cannotUpdateCondition, isMandatorySection, excludedJourneys.contains(journeyKey), isUnavailable, additionalShowLinkCheck)
         </li>
     }
 }
