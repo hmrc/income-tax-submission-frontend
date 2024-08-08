@@ -44,56 +44,87 @@
             }
         }
 
-@htmlTagSpanOpen(journeyKey: String, updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean, additionalShowLinkCheck: Boolean)={
-<span class="hmrc-status-tag" id="@messages(journeyKey)-@statusLink(journeyKey, enabledCondition,updatedCondition, cannotUpdateCondition, isMandatorySection, isUnavailable, additionalShowLinkCheck)">}
+@underMaintenanceTag(journeyKey: String,
+                     updatedCondition: Boolean,
+                     enabledCondition: Boolean,
+                     cannotUpdateCondition: Boolean,
+                     isMandatorySection: Boolean,
+                     isExcluded: Boolean,
+                     isUnavailable: Boolean,
+                     additionalShowLinkCheck: Boolean) = {
+    <span class="hmrc-status-tag" id="@messages(journeyKey)@statusLink(journeyKey, enabledCondition,updatedCondition, cannotUpdateCondition, isMandatorySection, isUnavailable, additionalShowLinkCheck)">
+        <strong class="govuk-tag maintenance">
+            @messages("common.underMaintenance")
+        </strong>
+    </span>
+}
 
-@statusTag(journeyKey: String, updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean, additionalShowLinkCheck: Boolean) = {
-    @if(isUnavailable) {
-        @htmlTagSpanOpen(journeyKey, updatedCondition, enabledCondition, cannotUpdateCondition, isMandatorySection, isExcluded, isUnavailable, additionalShowLinkCheck)
-            <strong class="govuk-tag maintenance">
-                @messages("common.underMaintenance")
-            </strong>
-        </span>
-    } else {
-        @htmlTagSpanOpen(journeyKey, updatedCondition, enabledCondition, cannotUpdateCondition, isMandatorySection, isExcluded, isUnavailable, additionalShowLinkCheck)
-            @govukTag(Tag(
-                content =
-                    Text(
-                        if(enabledCondition){
-                            if (isExcluded && appConfig.tailoringEnabled) {
-                                messages("overview.excluded")
-                            } else if(updatedCondition) {
-                                messages("overview.updated")
-                            } else if(cannotUpdateCondition) {
-                                messages("overview.cannotUpdate")
-                            } else if(isMandatorySection) {
-                                messages("overview.todo")
-                            } else {
-                                messages("overview.notStarted")
-                            }
-                        } else {
-                            messages("common.underMaintenance")
-                        }
-                    ),
-                classes = {
-                    if(enabledCondition) {
-                        if(isExcluded && appConfig.tailoringEnabled) {
-                            "govuk-tag--red excluded"
-                        } else if(updatedCondition) {
-                            "govuk-tag--turquoise"
-                        } else if(cannotUpdateCondition) {
-                            "govuk-tag--grey"
-                        } else if(isMandatorySection) {
-                            "govuk-tag--purple"
-                        } else {
-                            "govuk-tag--blue"
-                        }
+@determineTag(journeyKey: String,
+              updatedCondition: Boolean,
+              enabledCondition: Boolean,
+              cannotUpdateCondition: Boolean,
+              isMandatorySection: Boolean,
+              isExcluded: Boolean,
+              isUnavailable: Boolean,
+              additionalShowLinkCheck: Boolean) = {
+    <span class="hmrc-status-tag" id="@messages(journeyKey)-@statusLink(journeyKey, enabledCondition,updatedCondition, cannotUpdateCondition, isMandatorySection, isUnavailable, additionalShowLinkCheck)">
+        @govukTag(Tag(
+            content = Text(
+                if(enabledCondition){
+                    if (isExcluded && appConfig.tailoringEnabled) {
+                    messages("overview.excluded")
+                    } else if(updatedCondition) {
+                    messages("overview.updated")
+                    } else if(cannotUpdateCondition) {
+                    messages("overview.cannotUpdate")
+                    } else if(isMandatorySection) {
+                    messages("overview.todo")
                     } else {
-                        "govuk-tag--orange"
+                    messages("overview.notStarted")
                     }
+                } else {
+                    messages("common.underMaintenance")
+                }),
+            classes = {
+                if(enabledCondition) {
+                    if(isExcluded && appConfig.tailoringEnabled) {
+                        "govuk-tag--red excluded"
+                    } else if(updatedCondition) {
+                        "govuk-tag--turquoise"
+                    } else if(cannotUpdateCondition) {
+                        "govuk-tag--grey"
+                    } else if(isMandatorySection) {
+                        "govuk-tag--purple"
+                    } else {
+                        "govuk-tag--blue"
+                    }
+                } else {
+                    "govuk-tag maintenance"
                 }
-                ))
-        </span>
+            }
+        ))
+    </span>
+}
+
+    @statusTag(journeyKey: String, updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean, additionalShowLinkCheck: Boolean) = {
+        @if(isUnavailable) {
+        @underMaintenanceTag(journeyKey,
+                     updatedCondition,
+                     enabledCondition,
+                     cannotUpdateCondition,
+                     isMandatorySection,
+                     isExcluded,
+                     isUnavailable,
+                     additionalShowLinkCheck)
+    } else {
+        @determineTag(journeyKey,
+                    updatedCondition,
+                    enabledCondition,
+                    cannotUpdateCondition,
+                    isMandatorySection,
+                    isExcluded,
+                    isUnavailable,
+                    additionalShowLinkCheck)
     }
 }
 
