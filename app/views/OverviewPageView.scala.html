@@ -106,8 +106,8 @@
     </span>
 }
 
-    @statusTag(journeyKey: String, updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean, additionalShowLinkCheck: Boolean) = {
-        @if(isUnavailable) {
+@statusTag(journeyKey: String, updatedCondition: Boolean, enabledCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isExcluded: Boolean, isUnavailable: Boolean, additionalShowLinkCheck: Boolean) = {
+    @if(isUnavailable) {
         @underMaintenanceTag(journeyKey,
                      updatedCondition,
                      enabledCondition,
