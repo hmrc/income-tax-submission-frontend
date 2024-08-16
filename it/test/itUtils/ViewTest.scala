@@ -33,7 +33,6 @@ trait ViewTest extends IntegrationTest {
   val govUkExtension = "GOV.UK"
 
   val serviceNameWelsh = "Diweddaru a chyflwyno Ffurflen Dreth Incwm"
-  val govUkExtensionWelsh = "GOV.UK/CYMRAEG"
 
   type IntString = Int => String
 
@@ -58,7 +57,7 @@ trait ViewTest extends IntegrationTest {
   def titleCheck(title: String, isWelsh: Boolean)(implicit document: Document): Unit = {
     if (isWelsh) {
       s"has a title of $title" in {
-        document.title() shouldBe s"$title - $serviceNameWelsh - $govUkExtensionWelsh"
+        document.title() shouldBe s"$title - $serviceNameWelsh - $govUkExtension"
       }
     } else {
       s"has a title of $title" in {
