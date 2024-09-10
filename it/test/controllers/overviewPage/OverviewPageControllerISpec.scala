@@ -162,7 +162,7 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     val updatedText = "Updated"
     val todoText = "To do"
-    val notStartedText = "Not Yet Started"
+    val notStartedText = "Not yet started"
     val underMaintenance = "Under maintenance"
     val cannotUpdateText = "Cannot update"
     val dividendsLinkText = "Dividends"
