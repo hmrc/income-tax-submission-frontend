@@ -89,7 +89,7 @@ overview.tailoring.insertText.agent = No sections have been added to your client
 overview.crystallisation.heading.EOY.individual = Check and submit your Income Tax Return
 overview.crystallisation.heading.EOY.agent = Check and submit your client’s Income Tax Return
 
-overview.notStarted = Not Yet Started
+overview.notStarted = Not yet started
 overview.todo = To do
 overview.updated = Updated
 overview.cannotUpdate = Cannot update
@@ -338,7 +338,7 @@ taskList.agent.freeOrRedeemableSharesTask = Free or redeemable shares
 taskList.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
 taskList.agent.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
 
-notStarted = Not Yet Started
+notStarted = Not yet started
 completed = Completed
 checkNow = Check now
 inProgress = In progress
