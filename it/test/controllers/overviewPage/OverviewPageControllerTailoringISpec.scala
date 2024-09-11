@@ -154,7 +154,7 @@ class OverviewPageControllerTailoringISpec extends IntegrationTest with ViewHelp
 
     val updatedText = "Updated"
     val todoText = "To do"
-    val notStartedText = "Not started"
+    val notStartedText = "Not yet started"
     val underMaintenance = "Under maintenance"
     val cannotUpdateText = "Cannot update"
     val dividendsLinkText = "Dividends"
