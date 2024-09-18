@@ -130,7 +130,11 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     val isInYear: Boolean = inYearAction.inYear(taxYear)
     if (isInYear) {
-      handleGetIncomeSources(taxYear, isInYear = true)
+      if(appConfig.tailoringPhase2Enabled) {
+        Future.successful(Redirect(controllers.routes.TaskListPageController.show(taxYear)))
+      } else {
+        handleGetIncomeSources(taxYear, isInYear = true)
+      }
     } else {
       logger.info(s"$getCorrelationId::[OverviewPageController][show] not in year")
       Future.successful(Redirect(OverviewPageControllerRoute.showCrystallisation(taxYear)))
