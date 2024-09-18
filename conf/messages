@@ -347,5 +347,5 @@ taskList.agent.closeCompanyLoansWrittenOffReleasedTask = Close company loans wri
 
 notStarted = Not yet started
 completed = Completed
-checkNow = Check now
+checkNow = Check
 inProgress = In progress
