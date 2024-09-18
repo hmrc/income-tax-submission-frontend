@@ -1821,7 +1821,48 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
             await(result).header.headers("Location") shouldBe expectedUrl
           }
         }
+
+        "redirect back to the tasklist when future switch is true" which {
+          lazy val request = FakeRequest(controllers.routes.OverviewPageController.show(taxYear)).withSession(
+            SessionKeys.authToken -> "mock-bearer-token",
+            SessionValues.CLIENT_MTDITID -> "1234567890",
+            SessionValues.CLIENT_NINO -> "AA123456A",
+            SessionValues.TAX_YEAR -> s"$taxYear",
+            SessionValues.VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+          ).withHeaders("X-Session-ID" -> sessionId)
+
+          lazy val result: Future[Result] = {
+            authUser()
+            route(customApp(
+              dividendsEnabled = false,
+              interestEnabled = false,
+              giftAidEnabled = false,
+              gainsEnabled = false,
+              employmentEnabled = false,
+              stockDividendsEnabled = false,
+              studentLoansEnabled = false,
+              employmentEOYEnabled = false,
+              cisEnabled = false,
+              pensionsEnabled = false,
+              stateBenefitsEnabled = false,
+              selfEmploymentEnabled = false,
+              crystallisationEnabled = false,
+              tailoringPhase2Enabled = true
+            ), request).get
+          }
+
+          "has a status of SEE_OTHER" in {
+            status(result) shouldBe SEE_OTHER
+          }
+
+          s"has a redirect to the end of year overview page" in {
+            val expectedUrl = s"/update-and-submit-income-tax-return/$taxYear/tasklist"
+
+            await(result).header.headers("Location") shouldBe expectedUrl
+          }
+        }
       }
     }
   }
 }
+
