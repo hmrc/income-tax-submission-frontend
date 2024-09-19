@@ -335,5 +335,5 @@ taskList.agent.closeCompanyLoansWrittenOffReleasedTask = Benthyciadau gan gwmnï
 
 notStarted = Heb ddechrau
 completed = Wedi cwblhau
-checkNow = Gwiriwch nawr
+checkNow = Gwirio
 inProgress = Ar y gweill
