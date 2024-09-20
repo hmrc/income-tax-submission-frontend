@@ -142,4 +142,10 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
   def stubStockDividendsEndOfYear: StubMapping =
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYearEOY", OK, Json.toJson(IncomeSourcesModel(stockDividends = Some(aStockDividends))).toString)
+
+  def stubTaskListService: StubMapping =
+    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources/task-list/$taxYear", OK, Json.toJson(taskListModel).toString())
+
+  def stubTaskListServiceEndOfYear: StubMapping =
+    stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources/task-list/$taxYearEOY", OK, Json.toJson(taskListModel).toString())
 }
