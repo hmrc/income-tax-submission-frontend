@@ -333,7 +333,7 @@ taskList.agent.freeOrRedeemableSharesTask = Cyfranddaliadau sy’n rhad ac am dd
 taskList.closeCompanyLoansWrittenOffReleasedTask = Benthyciadau gan gwmnïau caeedig a ddilëwyd neu a ryddhawyd
 taskList.agent.closeCompanyLoansWrittenOffReleasedTask = Benthyciadau gan gwmnïau caeedig a ddilëwyd neu a ryddhawyd
 
-notStarted = Heb ddechrau
+notStarted = Heb ddechrau hyd yn hyn
 completed = Wedi cwblhau
 checkNow = Gwirio
 inProgress = Ar y gweill
