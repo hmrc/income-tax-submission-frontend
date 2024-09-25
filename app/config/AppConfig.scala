@@ -193,6 +193,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   val tailorReturnBaseUrl: String = servicesConfig.getString(ConfigKeys.tailorReturnFrontendUrl)
   val tailorReturnServiceUrl: String = s"$tailorReturnBaseUrl/update-and-submit-income-tax-return/tailored-return"
   def tailorReturnStartPageUrl(taxYear: Int): String = s"$tailorReturnServiceUrl/$taxYear/start"
+  def tailorReturnAddSectionsPageUrl(taxYear: Int): String = s"$tailorReturnServiceUrl/$taxYear/add-sections"
 
   def excludedIncomeSources(inputTaxYear: Int): Seq[String] = {
     val employmentFeatureEnabled: (String, Boolean) = if(inputTaxYear != taxYear) (EMPLOYMENT, employmentEOYEnabled) else (EMPLOYMENT, employmentEnabled)
@@ -353,6 +354,7 @@ trait AppConfig {
   val tailorReturnBaseUrl: String
   val tailorReturnServiceUrl: String
   def tailorReturnStartPageUrl(taxYear: Int): String
+  def tailorReturnAddSectionsPageUrl(taxYear: Int): String
 
   def excludedIncomeSources(taxYear: Int): Seq[String]
 

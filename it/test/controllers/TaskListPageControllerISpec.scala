@@ -106,6 +106,7 @@ class TaskListPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYear)
             authoriseAgentOrIndividual(user.isAgent)
+            stubTaskListService
             route(app, request, user.isWelsh).get
           }
 
@@ -118,6 +119,29 @@ class TaskListPageControllerISpec extends IntegrationTest with ViewHelpers with 
           titleCheck(specific.headingExpected, user.isWelsh)
           h1Check(specific.headingExpected + " " + caption(taxYearEOY, taxYear))
           captionCheck(caption(taxYearEOY, taxYear))
+        }
+
+        "redirect to the tailor returns add sections page when no tasklist data is defined" when {
+
+          val headers = Seq(
+            HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList),
+            "Csrf-Token" -> "nocheck"
+          )
+
+          val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+          lazy val result: Future[Result] = {
+            cleanDatabase(taxYear)
+            authoriseAgentOrIndividual(user.isAgent)
+            route(app, request, user.isWelsh).get
+          }
+
+          "has a status of SEE_OTHER (303)" in {
+            status(result) shouldBe SEE_OTHER
+          }
+
+          "has the tailor returns add section page redirect link" in {
+            redirectUrl(result) shouldBe appConfig.tailorReturnAddSectionsPageUrl(taxYear)
+          }
         }
       }
     }
@@ -141,6 +165,7 @@ class TaskListPageControllerISpec extends IntegrationTest with ViewHelpers with 
           lazy val result: Future[Result] = {
             cleanDatabase(taxYearEOY)
             authoriseAgentOrIndividual(user.isAgent)
+            stubTaskListServiceEndOfYear
             route(app, request, user.isWelsh).get
           }
 
@@ -154,14 +179,39 @@ class TaskListPageControllerISpec extends IntegrationTest with ViewHelpers with 
           h1Check(specific.headingExpected + " " + caption(taxYearEndOfYearMinusOne, taxYearEOY))
           captionCheck(caption(taxYearEndOfYearMinusOne, taxYearEOY))
         }
+
+        "redirect to the tailor returns add sections page when no tasklist data is defined" when {
+
+          val headers = Seq(
+            HeaderNames.COOKIE -> playSessionCookies(taxYear, validTaxYearList),
+            "Csrf-Token" -> "nocheck"
+          )
+
+          val request = FakeRequest("GET", urlPathInYear).withHeaders(headers: _*)
+          lazy val result: Future[Result] = {
+            cleanDatabase(taxYear)
+            authoriseAgentOrIndividual(user.isAgent)
+            route(app, request, user.isWelsh).get
+          }
+
+          "has a status of SEE_OTHER (303)" in {
+            status(result) shouldBe SEE_OTHER
+          }
+
+          "has the tailor returns add section page redirect link" in {
+             redirectUrl(result) shouldBe appConfig.tailorReturnAddSectionsPageUrl(taxYear)
+          }
+        }
       }
     }
   }
+
   "Hitting the show endpoint" should {
     s"return an OK (200) for in year" when {
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
+          stubTaskListService
           await(controller.show(taxYear)(fakeRequest.withSession(
             SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.TAX_YEAR -> s"$taxYear",
@@ -177,6 +227,7 @@ class TaskListPageControllerISpec extends IntegrationTest with ViewHelpers with 
       "all auth requirements are met" in {
         val result = {
           authoriseIndividual()
+          stubTaskListServiceEndOfYear
           await(controller.show(taxYearEOY)(fakeRequest.withSession(
             SessionKeys.authToken -> "mock-bearer-token",
             SessionValues.TAX_YEAR -> s"$taxYearEOY",
