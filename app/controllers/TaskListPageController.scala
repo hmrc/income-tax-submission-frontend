@@ -16,6 +16,7 @@
 
 package controllers
 
+import common.SessionValues
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
@@ -45,6 +46,8 @@ class TaskListPageController @Inject()(inYearAction: InYearAction,
     val isInYear: Boolean = inYearAction.inYear(taxYear)
     taskListService.getTaskList(user.nino, taxYear)(hc.withExtraHeaders("MTDITID" -> user.mtditid)).map {
       case Left(error) => errorHandler.handleError(error.status)
+      case Right(None) =>
+        Redirect(appConfig.tailorReturnAddSectionsPageUrl(taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
       case Right(taskListData) =>
         val prefix: String = if (user.isAgent) "taskList.agent." else "taskList."
         Ok(taskListPageView(user.isAgent, taxYear, isInYear, vm = TaskListPageViewModel(taskListData, prefix)))

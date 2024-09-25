@@ -28,6 +28,7 @@ import models.employment._
 import models.gains.{CapitalRedemptionModel, ForeignModel, InsurancePoliciesModel, LifeAnnuityModel, LifeInsuranceModel, VoidedIsaModel}
 import models.property.AllPropertyData
 import models.statebenefits.{AllStateBenefitsData, CustomerAddedStateBenefit, CustomerAddedStateBenefitsData, StateBenefitsData}
+import models.tasklist.{SectionTitle, TaskListModel, TaskListSection, TaskListSectionItem, TaskStatus, TaskTitle}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
@@ -525,6 +526,27 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
   val allProperty: AllPropertyData = AllPropertyData("text")
 
+  val taskListModel: TaskListModel = TaskListModel(
+    Seq[TaskListSection](
+      TaskListSection(
+        SectionTitle.EmploymentTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.PayeEmployment, TaskStatus.Completed, Some(""))))
+      ),
+      TaskListSection(
+        SectionTitle.JsaTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.JSA, TaskStatus.InProgress, Some(""))))
+      ),
+      TaskListSection(
+        SectionTitle.EsaTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.ESA, TaskStatus.NotStarted, Some(""))))
+      ),
+      TaskListSection(
+        SectionTitle.AboutYouTitle,
+        Some(Seq(TaskListSectionItem(TaskTitle.UkResidenceStatus, TaskStatus.CheckNow, Some(""))))
+      )
+    )
+  )
+
   def playSessionCookies(taxYear: Int, validTaxYears: Seq[Int]): String = PlaySessionCookieBaker.bakeSessionCookie(Map(
     SessionValues.TAX_YEAR -> taxYear.toString,
     SessionValues.VALID_TAX_YEARS -> validTaxYears.mkString(","),
@@ -533,4 +555,6 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     SessionValues.CLIENT_MTDITID -> "1234567890",
     SessionKeys.authToken -> "mock-bearer-token"
   ))
+
+
 }

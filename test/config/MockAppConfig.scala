@@ -41,6 +41,7 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override lazy val ivUpliftUrl: String = s"/mdtp/uplift?origin=update-and-submit-income-tax-return&confidenceLevel=250&completionURL=$ivSuccessUrl&failureURL=$ivFailureUrl"
 
   override def tailorReturnStartPageUrl(taxYear: Int): String = s"$tailorReturnServiceUrl/$taxYear/start"
+  override def tailorReturnAddSectionsPageUrl(taxYear: Int): String = s"$tailorReturnServiceUrl/$taxYear/add-sections"
 
   override def additionalInformationSummaryUrl(taxYear: Int): String = s"$additionalInformationTaxSubmissionUrl/$taxYear/gains/summary"
 
