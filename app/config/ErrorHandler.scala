@@ -17,16 +17,15 @@
 package config
 
 import common.StatusMessage
-
-import javax.inject.{Inject, Singleton}
+import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.LegacyFrontendErrorHandler
 import views.html.errors._
-import play.api.http.Status._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
@@ -34,7 +33,7 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
                              internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
                              serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
 
-  extends FrontendErrorHandler {
+  extends LegacyFrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
     internalServerErrorPage()

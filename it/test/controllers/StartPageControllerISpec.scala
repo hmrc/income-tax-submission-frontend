@@ -104,8 +104,8 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
   }
 
   object Selectors {
-    val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
-    val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2)"
+    val vcBreadcrumbSelector = "body > div > nav.govuk-breadcrumbs > ol > li:nth-child(1) > a"
+    val startPageBreadcrumbSelector = "body > div > nav.govuk-breadcrumbs > ol > li:nth-child(2)"
     val p1 = "#main-content > div > div > div:nth-child(2) > p:nth-child(1)"
     val p2 = "#main-content > div > div > div:nth-child(2) > p:nth-child(2)"
     val p3 = "#main-content > div > div > div:nth-child(2) > p:nth-child(3)"
@@ -121,6 +121,7 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
 
   private val urlPath: String = s"/update-and-submit-income-tax-return/$taxYear/start"
   private val tailoringPhase2UrlPath: String = s"${frontendAppConfig.tailorReturnServiceUrl}/$taxYear/start"
+
   "Rendering the start page in English" should {
 
     val headers = Seq(
