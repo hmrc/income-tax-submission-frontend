@@ -219,9 +219,9 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
 
     private def statusTagSelector(index: Int): String = s"#main-content > div > div > ol > li:nth-child($index) > span.hmrc-status-tag"
 
-    val vcBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(1) > a"
-    val startPageBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(2) > a"
-    val overviewBreadcrumbSelector = "body > div > div.govuk-breadcrumbs > ol > li:nth-child(3)"
+    val vcBreadcrumbSelector = "body > div > nav.govuk-breadcrumbs > ol > li:nth-child(1) > a"
+    val startPageBreadcrumbSelector = "body > div > nav.govuk-breadcrumbs > ol > li:nth-child(2) > a"
+    val overviewBreadcrumbSelector = "body > div > nav.govuk-breadcrumbs > ol > li:nth-child(3)"
     val updateYourIncomeTaxReturnSubheadingSelector = "#heading-tasklist"
     val inYearInsetTextSelector = "#main-content > div > div > div.govuk-inset-text"
     val interestLinkSelector = "#interest_link"
