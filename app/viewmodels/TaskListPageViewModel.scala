@@ -39,6 +39,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
   private val completedKey: String = "completed"
   private val incompleteKey: String = "taskList.incomplete"
   private val tagBlue: String = "govuk-tag--blue"
+  private val tagLightBlue: String = "govuk-tag--light-blue"
   private val tagWhite: String = "govuk-tag--white"
   private val tagGreen: String = "govuk-tag--green"
 
@@ -168,7 +169,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
         classes = tagBlue)))
     case status@TaskStatus.InProgress =>
       TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
-        classes = tagGreen)))
+        classes = tagLightBlue)))
     case status@TaskStatus.Completed =>
       TaskListItemStatus(content = HtmlContent(messages(status.toString)),
         classes = tagWhite)
