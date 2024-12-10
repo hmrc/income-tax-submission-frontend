@@ -17,7 +17,7 @@
 package utils
 
 import com.codahale.metrics.SharedMetricRegistries
-import common.{EnrolmentIdentifiers, EnrolmentKeys}
+import common.{EnrolmentIdentifiers, EnrolmentKeys, SessionValues}
 import config.{AppConfig, MockAppConfig, MockAppConfigTaxYearFeatureOff}
 import controllers.predicates.InYearAction
 import models._
@@ -57,7 +57,15 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
 
   val sessionId = "sessionId-1618a1e8-4979-41d8-a32e-5ffbe69fac81"
 
-  implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
+  implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("sessionId" -> sessionId)
+  lazy val fakeRequestWithMtditidAndNino: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession(
+    SessionValues.TAX_YEAR -> "2022",
+    SessionValues.CLIENT_MTDITID -> "1234567890",
+    SessionValues.CLIENT_NINO -> "A123456A"
+  )
+  val fakeRequestWithNino: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession(
+    SessionValues.CLIENT_NINO -> "AA123456A"
+  )
   implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
@@ -69,6 +77,11 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   
   def status(awaitable: Future[Result]): Int = await(awaitable).header.status
   def redirectUrl(awaitable: Future[Result]): String = await(awaitable).header.headers("Location")
+
+  def bodyOf(awaitable: Future[Result]): String = {
+    val awaited = await(awaitable)
+    await(awaited.body.consumeData.map(_.utf8String))
+  }
 
   //noinspection ScalaStyle
   def mockAuth(nino: Option[String]) = {

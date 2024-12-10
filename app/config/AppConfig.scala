@@ -35,7 +35,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   private lazy val signInContinueBaseUrl: String = servicesConfig.getString(ConfigKeys.signInContinueUrl)
   lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl).encodedUrl //TODO add redirect to overview page
   private lazy val signInOrigin = servicesConfig.getString("appName")
-  lazy val signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
+  def signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
 
   lazy val calculationBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCalculationUrl)
   lazy val nrsProxyBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxNrsProxyUrl)
@@ -212,6 +212,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
     ).filter(!_._2).map(_._1)
   }
 
+  def emaSupportingAgentsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.ema-supporting-agents-enabled")
+
   lazy val useEncryption: Boolean = servicesConfig.getBoolean("useEncryption")
   lazy val encryptionKey: String = servicesConfig.getString("mongodb.encryption.key")
   def mongoTTL: Long = Duration(servicesConfig.getString("mongodb.timeToLive")).toDays.toInt
@@ -223,7 +225,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
 trait AppConfig {
   def defaultTaxYear: Int
   val signInContinueUrl: String
-  val signInUrl: String
+  def signInUrl: String
   val alwaysEOY: Boolean
 
   val calculationBaseUrl: String
@@ -357,6 +359,8 @@ trait AppConfig {
   def tailorReturnAddSectionsPageUrl(taxYear: Int): String
 
   def excludedIncomeSources(taxYear: Int): Seq[String]
+
+  def emaSupportingAgentsEnabled: Boolean
 
   val useEncryption: Boolean
   val encryptionKey: String
