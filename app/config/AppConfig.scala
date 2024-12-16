@@ -148,7 +148,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")
   lazy val timeoutDialogCountdown: Int = servicesConfig.getInt("timeoutDialogCountdown")
 
-  def taxYearErrorFeature: Boolean = servicesConfig.getBoolean("taxYearErrorFeatureSwitch")
+  def taxYearErrorFeature: Boolean = servicesConfig.getBoolean("feature-switch.taxYearErrorFeatureSwitch")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
