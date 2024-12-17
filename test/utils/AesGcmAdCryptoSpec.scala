@@ -35,7 +35,7 @@ class AesGcmAdCryptoSpec extends UnitTest
   }
 
   ".encrypt" when {
-    "useEncryption is true" should {
+    "feature-switch.useEncryption is true" should {
       val underTest: AesGcmAdCrypto = new AesGcmAdCrypto(new MockAppConfig, mockAesGcmAdCryptoFactory)
       "return encrypted value" in {
         (() => mockAesGcmAdCryptoFactory.instance())
@@ -46,7 +46,7 @@ class AesGcmAdCryptoSpec extends UnitTest
       }
     }
 
-    "useEncryption is false" should {
+    "feature-switch.useEncryption is false" should {
       val appConfig = new MockAppConfigEncryptionOff
       val underTest: AesGcmAdCrypto = new AesGcmAdCrypto(appConfig, mockAesGcmAdCryptoFactory)
       "return encrypted value" in {
@@ -56,7 +56,7 @@ class AesGcmAdCryptoSpec extends UnitTest
   }
 
   ".decrypt" when {
-    "useEncryption is true" should {
+    "feature-switch.useEncryption is true" should {
       val underTest: AesGcmAdCrypto = new AesGcmAdCrypto(new MockAppConfig, mockAesGcmAdCryptoFactory)
       "return encrypted value" in {
         (() => mockAesGcmAdCryptoFactory.instance())
@@ -67,7 +67,7 @@ class AesGcmAdCryptoSpec extends UnitTest
       }
     }
 
-    "useEncryption is false" should {
+    "feature-switch.useEncryption is false" should {
       val appConfig = new MockAppConfigEncryptionOff
       val underTest: AesGcmAdCrypto = new AesGcmAdCrypto(appConfig, mockAesGcmAdCryptoFactory)
       "return encrypted value" in {

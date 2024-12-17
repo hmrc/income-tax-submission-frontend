@@ -214,7 +214,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
 
   def emaSupportingAgentsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.ema-supporting-agents-enabled")
 
-  lazy val useEncryption: Boolean = servicesConfig.getBoolean("useEncryption")
+  lazy val useEncryption: Boolean = servicesConfig.getBoolean("feature-switch.useEncryption")
   lazy val encryptionKey: String = servicesConfig.getString("mongodb.encryption.key")
   def mongoTTL: Long = Duration(servicesConfig.getString("mongodb.timeToLive")).toDays.toInt
 

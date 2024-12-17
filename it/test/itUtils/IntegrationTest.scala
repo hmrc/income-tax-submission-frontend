@@ -135,7 +135,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.tailoringPhase2Enabled" -> tailoringPhase2Enabled.toString,
     "metrics.enabled" -> "false",
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
-    "useEncryption" -> useEncryption.toString,
+    "feature-switch.useEncryption" -> useEncryption.toString,
     "mongodb.encryption.key" -> (if (invalidEncryptionKey) "key" else "QmFyMTIzNDVCYXIxMjM0NQ==")
   )
 
