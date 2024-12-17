@@ -107,7 +107,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
             ): Map[String, String] = Map(
     "defaultTaxYear" -> taxYear.toString,
     "auditing.enabled" -> "false",
-    "taxYearErrorFeatureSwitch" -> taxYearErrorFeatureSwitch.toString,
+    "feature-switch.taxYearErrorFeatureSwitch" -> taxYearErrorFeatureSwitch.toString,
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.income-tax-submission.url" -> s"http://$wiremockHost:$wiremockPort",
     "microservice.services.income-tax-calculation.url" -> s"http://$wiremockHost:$wiremockPort",
@@ -135,7 +135,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     "feature-switch.tailoringPhase2Enabled" -> tailoringPhase2Enabled.toString,
     "metrics.enabled" -> "false",
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
-    "useEncryption" -> useEncryption.toString,
+    "feature-switch.useEncryption" -> useEncryption.toString,
     "mongodb.encryption.key" -> (if (invalidEncryptionKey) "key" else "QmFyMTIzNDVCYXIxMjM0NQ==")
   )
 

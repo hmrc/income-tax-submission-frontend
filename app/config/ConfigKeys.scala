@@ -41,5 +41,5 @@ object ConfigKeys {
   val tailorReturnFrontendUrl = "microservice.services.income-tax-tailor-returns-frontend.url"
 
   val defaultTaxYear = "defaultTaxYear"
-  val alwaysEOY = "alwaysEOY"
+  val alwaysEOY = "feature-switch.alwaysEOY"
 }
