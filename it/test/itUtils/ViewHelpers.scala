@@ -48,14 +48,20 @@ trait ViewHelpers { self: AnyWordSpecLike with Matchers with WireMockHelper =>
     !document().select(selector).isEmpty
   }
 
-  def titleCheck(title: String, isWelsh: Boolean)(implicit document: () => Document): Unit = {
+  def titleCheck(title: String, isWelsh: Boolean, showService: Boolean = true)(implicit document: () => Document): Unit = {
     if(isWelsh) {
       s"has a title of $title" in {
-        document().title() shouldBe s"$title - $serviceNameWelsh - $govUkExtension"
+        if (showService){
+          document().title() shouldBe s"$title - $serviceNameWelsh - $govUkExtension"
+        }else{
+          document().title() shouldBe s"$title - $govUkExtension"
+        }
       }
     } else {
       s"has a title of $title" in {
-        document().title() shouldBe s"$title - $serviceName - $govUkExtension"
+        if(showService){document().title() shouldBe s"$title - $serviceName - $govUkExtension"} else {
+          document().title() shouldBe s"$title - $govUkExtension"
+        }
       }
     }
   }
