@@ -42,6 +42,10 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
 
   override def internalServerErrorTemplate(implicit request: Request[_]): Html = internalServerErrorPage()
 
+  def internalServerError()(implicit request: Request[_]): Result = {
+    InternalServerError(internalServerErrorTemplate(request))
+  }
+
   def handleError(status: Int)(implicit request: Request[_]): Result = {
     status match {
       case SERVICE_UNAVAILABLE => ServiceUnavailable(serviceUnavailablePage())
