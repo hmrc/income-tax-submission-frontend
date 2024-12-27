@@ -17,7 +17,7 @@
 package controllers.predicates
 
 import common.{DelegatedAuthRules, EnrolmentIdentifiers, EnrolmentKeys, SessionValues}
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import controllers.routes
 import models.User
 import play.api.Logger
@@ -40,6 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthorisedAction @Inject()(appConfig: AppConfig,
                                  val agentAuthErrorPage: AgentAuthErrorPageView)
                                 (implicit val authService: AuthService,
+                                 errorHandler: ErrorHandler,
                                  val mcc: MessagesControllerComponents) extends ActionBuilder[User, AnyContent] with I18nSupport {
 
   implicit val executionContext: ExecutionContext = mcc.executionContext
@@ -65,6 +66,8 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
       }
     }
 
+  private val invokeBlockLogString: String = "[AuthorisedAction][invokeBlock]"
+
   override def invokeBlock[A](request: Request[A], block: User[A] => Future[Result]): Future[Result] = {
 
     implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request,request.session)
@@ -75,11 +78,14 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
       case _ => individualAuthentication(block)(request, headerCarrier)
     } recover {
       case _: NoActiveSession =>
-        logger.info(s"[AuthorisedAction][invokeBlock] - No active session. Redirecting to ${appConfig.signInUrl}")
+        logger.info(s"$invokeBlockLogString - No active session. Redirecting to ${appConfig.signInUrl}")
         Redirect(appConfig.signInUrl)
       case _: AuthorisationException =>
-        logger.info(s"[AuthorisedAction][invokeBlock] - User failed to authenticate")
+        logger.warn(s"$invokeBlockLogString - User failed to authenticate")
         Redirect(controllers.routes.UnauthorisedUserErrorController.show)
+      case e =>
+        logger.error(s"$invokeBlockLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught")
+        errorHandler.internalServerError()(request)
     }
   }
 
@@ -114,7 +120,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
             logger.info(s"[AuthorisedAction][individualAuthentication] - No active session. Redirecting to ${appConfig.signInUrl}")
             Future.successful(Redirect(appConfig.signInUrl))
           case (None, _) =>
-            logger.info(s"[AuthorisedAction][individualAuthentication] - User has no MTD IT enrolment. Redirecting user to sign up for MTD.")
+            logger.warn(s"[AuthorisedAction][individualAuthentication] - User has no MTD IT enrolment. Redirecting user to sign up for MTD.")
             Future.successful(Redirect(controllers.errors.routes.IndividualAuthErrorController.show))
         }
       case _ =>
@@ -133,17 +139,18 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
       .withIdentifier(EnrolmentIdentifiers.individualId, mtdId)
       .withDelegatedAuthRule(DelegatedAuthRules.supportingAgentDelegatedAuthRule)
 
+  private val agentAuthLogString: String = "[AuthorisedAction][agentAuthentication]"
+
   private[predicates] def agentAuthentication[A](block: User[A] => Future[Result])
                                                 (implicit request: Request[A], hc: HeaderCarrier): Future[Result] =
     (request.session.get(SessionValues.CLIENT_MTDITID), request.session.get(SessionValues.CLIENT_NINO)) match {
       case (Some(mtdItId), Some(nino)) =>
         authService
           .authorised(agentAuthPredicate(mtdItId))
-          .retrieve(allEnrolments) {
-            populateAgent(block, mtdItId, nino, _, isSecondaryAgent = false)
-          }.recoverWith(agentRecovery(block, mtdItId, nino))
+          .retrieve(allEnrolments)(populateAgent(block, mtdItId, nino, _, isSecondaryAgent = false))
+          .recoverWith(agentRecovery(block, mtdItId, nino))
       case (mtditid, nino) =>
-        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not session key values. Redirecting to view & change." +
+        logger.info(s"$agentAuthLogString - Agent does not session key values. Redirecting to view & change." +
           s"MTDITID missing:${mtditid.isEmpty}, NINO missing:${nino.isEmpty}")
         Future.successful(Redirect(appConfig.viewAndChangeEnterUtrUrl))
     }
@@ -153,7 +160,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
                                nino: String)
                               (implicit request: Request[A], hc: HeaderCarrier): PartialFunction[Throwable, Future[Result]] = {
     case _: NoActiveSession =>
-      logger.info(s"[AuthorisedAction][agentAuthentication] - No active session. Redirecting to ${appConfig.signInUrl}")
+      logger.warn(s"$agentAuthLogString - No active session. Redirecting to ${appConfig.signInUrl}")
       Future(Redirect(appConfig.signInUrl))
     case _: AuthorisationException =>
       if (appConfig.emaSupportingAgentsEnabled) {
@@ -162,14 +169,20 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
           .retrieve(allEnrolments) {
             populateAgent(block, mtdItId, nino, _, isSecondaryAgent = true)
           }.recoverWith {
-            case _ =>
-              logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have secondary delegated authority for Client.")
+            case _: AuthorisationException =>
+              logger.warn(s"$agentAuthLogString - Agent does not have secondary delegated authority for Client.")
               Future(Redirect(controllers.errors.routes.AgentAuthErrorController.show))
+            case e =>
+              logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
+              Future(errorHandler.internalServerError())
           }
       } else {
-        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client.")
+        logger.warn(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
         Future(Redirect(controllers.errors.routes.AgentAuthErrorController.show))
       }
+    case e =>
+      logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
+      Future(errorHandler.internalServerError())
   }
 
   private def populateAgent[A](block: User[A] => Future[Result],
@@ -180,13 +193,13 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
     enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
       case Some(arn) =>
         sessionIdBlock(
-          errorLogString = s"[AuthorisedAction][agentAuthentication] - No session id in request",
+          errorLogString = s"$agentAuthLogString - No session id in request",
           errorAction = Future.successful(Redirect(appConfig.signInUrl))
         )(sessionId =>
           block(User(mtdItId, Some(arn), nino, sessionId, isSecondaryAgent))
         )
       case None =>
-        logger.info("[AuthorisedAction][agentAuthentication] - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+        logger.warn("$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
         Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show))
     }
 

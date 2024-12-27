@@ -18,6 +18,7 @@ package controllers.predicates
 
 import common.{DelegatedAuthRules, EnrolmentIdentifiers, EnrolmentKeys, SessionValues}
 import config.AppConfig
+import mocks.MockErrorHandler
 import models.User
 import org.scalamock.handlers.{CallHandler0, CallHandler4}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -38,10 +39,20 @@ import views.html.authErrorPages.AgentAuthErrorPageView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthorisedActionSpec extends UnitTest with GuiceOneAppPerSuite {
+class AuthorisedActionSpec extends UnitTest
+  with GuiceOneAppPerSuite
+  with MockErrorHandler {
 
   val agentAuthErrorPageView: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
-  val authorisedAction = new AuthorisedAction(mockAppConfig, agentAuthErrorPageView)(mockAuthService, stubMessagesControllerComponents())
+
+  val authorisedAction = new AuthorisedAction(
+    appConfig = mockAppConfig,
+    agentAuthErrorPage = agentAuthErrorPageView
+  )(
+    authService = mockAuthService,
+    errorHandler = mockErrorHandler,
+    mcc = stubMessagesControllerComponents()
+  )
 
   val auth: AuthorisedAction = authorisedAction
   val nino: String = "AA123456A"
@@ -120,6 +131,7 @@ class AuthorisedActionSpec extends UnitTest with GuiceOneAppPerSuite {
         agentAuthErrorPage = agentAuthErrorPageView
       )(
         authService = mockAuthService,
+        errorHandler = mockErrorHandler,
         mcc = stubMessagesControllerComponents()
       )
     }
@@ -326,6 +338,45 @@ class AuthorisedActionSpec extends UnitTest with GuiceOneAppPerSuite {
         }
       }
 
+      "results in an unexpected error being thrown during primary agent auth call" should {
+        "return an InternalServerError page" in new AgentTest {
+          mockMultipleAgentsSwitch(false)
+
+          object OtherException extends IndexOutOfBoundsException("Some reason")
+          mockAuthReturnException(OtherException, primaryAgentPredicate(mtditid))
+          mockInternalServerError(InternalServerError("An unexpected error occurred"))
+
+          val result: Future[Result] = testAuth.agentAuthentication(testBlock)(
+            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
+            hc = emptyHeaderCarrier
+          )
+
+          status(result) shouldBe INTERNAL_SERVER_ERROR
+          bodyOf(result) shouldBe "An unexpected error occurred"
+        }
+      }
+
+      "results in an unexpected error being thrown during secondary agent auth call" should {
+        "return an InternalServerError page" in new AgentTest {
+          mockMultipleAgentsSwitch(true)
+
+          object AuthException extends AuthorisationException("Some reason")
+          object OtherException extends IndexOutOfBoundsException("Some reason")
+
+          mockAuthReturnException(AuthException, primaryAgentPredicate(mtditid))
+          mockAuthReturnException(OtherException, secondaryAgentPredicate(mtditid))
+          mockInternalServerError(InternalServerError("An unexpected error occurred"))
+
+          val result: Future[Result] = testAuth.agentAuthentication(testBlock)(
+            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
+            hc = emptyHeaderCarrier
+          )
+
+          status(result) shouldBe INTERNAL_SERVER_ERROR
+          bodyOf(result) shouldBe "An unexpected error occurred"
+        }
+      }
+
       "[EMA enabled] results in an AuthorisationException error being returned from Auth" should {
         "return a redirect to the agent error page when secondary agent auth call also fails" in new AgentTest {
           mockMultipleAgentsSwitch(true)
@@ -475,6 +526,20 @@ class AuthorisedActionSpec extends UnitTest with GuiceOneAppPerSuite {
         }
 
         status(result) shouldBe SEE_OTHER
+      }
+    }
+
+    "return an internal server error page" when {
+      "an unexpected error occurs during auth call" in {
+        object UnexpectedException extends IndexOutOfBoundsException("Some reason")
+
+        lazy val result = {
+          mockAuthReturnException(UnexpectedException)
+          mockInternalServerError(InternalServerError("An unexpected error occurred"))
+          auth.invokeBlock(fakeRequest, block)
+        }
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+        bodyOf(result) shouldBe "An unexpected error occurred"
       }
     }
   }
