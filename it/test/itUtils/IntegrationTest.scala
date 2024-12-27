@@ -19,7 +19,7 @@ package itUtils
 import org.apache.pekko.actor.ActorSystem
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.SessionValues
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import helpers.{PlaySessionCookieBaker, WireMockHelper}
 import models._
@@ -74,6 +74,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   val singleValidTaxYear: Seq[Int] = Seq(taxYearEndOfYearMinusOne)
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  private lazy val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
   val inYearAction = new InYearAction
 
   implicit val actorSystem: ActorSystem = ActorSystem()
@@ -244,7 +245,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   def authAction(stubbedRetrieval: Future[_]): AuthorisedAction = new AuthorisedAction(
     appConfig,
     agentAuthErrorPage
-  )(authService(stubbedRetrieval), mcc)
+  )(authService(stubbedRetrieval), errorHandler, mcc)
 
   def stubIncomeSources(incomeSources: IncomeSourcesModel, status: Int = OK): StubMapping = {
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", status, Json.toJson(incomeSources).toString())
