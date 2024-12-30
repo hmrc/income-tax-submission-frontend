@@ -176,5 +176,8 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
     case status@TaskStatus.CheckNow =>
       TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagBlue)))
+    case status@TaskStatus.UnderMaintenance =>
+      TaskListItemStatus(content = HtmlContent(messages(status.toString)),
+        classes = tagWhite)
   }
 }
