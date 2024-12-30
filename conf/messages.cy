@@ -337,3 +337,4 @@ notStarted = Heb ddechrau hyd yn hyn
 completed = Wedi cwblhau
 checkNow = Gwirio
 inProgress = Ar y gweill
+underMaintenance = Wrthi’n cynnal a chadw’r safle
