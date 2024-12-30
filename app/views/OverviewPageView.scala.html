@@ -54,7 +54,7 @@
                      additionalShowLinkCheck: Boolean) = {
     <span class="hmrc-status-tag" id="@messages(journeyKey)-@statusLink(journeyKey, enabledCondition,updatedCondition, cannotUpdateCondition, isMandatorySection, isUnavailable, additionalShowLinkCheck)">
         <strong class="govuk-tag maintenance">
-            @messages("common.underMaintenance")
+            @messages("underMaintenance")
         </strong>
     </span>
 }
@@ -83,7 +83,7 @@
                     messages("overview.notStarted")
                     }
                 } else {
-                    messages("common.underMaintenance")
+                    messages("underMaintenance")
                 }),
             classes = {
                 if(enabledCondition) {
