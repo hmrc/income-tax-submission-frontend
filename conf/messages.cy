@@ -18,7 +18,6 @@ common.property = Property
 common.stateBenefits = Budd-daliadau’r Wladwriaeth
 common.selfEmployment = Self employment
 common.interestWithSavings = Llog o gynilion a gwarantau
-common.underMaintenance = Wrthi’n cynnal a chadw’r safle
 common.govUk = GOV.UK
 common.return.button.individual = Yn ôl i’ch Ffurflen Dreth ar gyfer Treth Incwm
 common.return.button.agent = Yn ôl i’r Ffurflen Dreth ar gyfer Treth Incwm
