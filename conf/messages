@@ -48,6 +48,7 @@ startPage.charityBullet = donations to charity
 startPage.employmentBullet = PAYE employment
 startPage.employmentSLBullet = PAYE employment (including student loans)
 startPage.continue = Continue
+startPage.addSection = Add Section
 
 #TODO USE WHEN SECTIONS ADDED TO START PAGE
 startPage.cisBullet = Construction Industry Scheme deductions
