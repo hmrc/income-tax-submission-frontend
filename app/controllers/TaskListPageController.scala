@@ -54,10 +54,4 @@ class TaskListPageController @Inject()(inYearAction: InYearAction,
     }
   }
 
-  def addSection(taxYear: Int): Action[AnyContent] = {
-    Redirect(appConfig.tailorReturnAddSectionsPageUrl(taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
-  }
-
-
 }
-

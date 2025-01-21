@@ -53,7 +53,10 @@
 
     @vm.getTaskList
 
-    @button(Button(content = Text(messages("startPage.addSection")), href = Some(controllers.routes.TaskListPageController.addSection(taxYear).url)))
+    @button(Button(
+        content = Text(messages("startPage.addSection")),
+        href = Some(appConfig.tailorReturnAddSectionsPageUrl(taxYear))
+    ))
 
     @button(Button(content = Text(messages("startPage.continue"))))
 
