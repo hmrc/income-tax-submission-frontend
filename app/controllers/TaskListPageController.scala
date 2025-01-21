@@ -30,7 +30,7 @@ import viewmodels.TaskListPageViewModel
 import views.html.TaskListPageView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TaskListPageController @Inject()(inYearAction: InYearAction,
@@ -53,4 +53,11 @@ class TaskListPageController @Inject()(inYearAction: InYearAction,
         Ok(taskListPageView(user.isAgent, taxYear, isInYear, vm = TaskListPageViewModel(taskListData, prefix)))
     }
   }
+
+  def addSection(taxYear: Int): Action[AnyContent] = {
+    Redirect(appConfig.tailorReturnAddSectionsPageUrl(taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
+  }
+
+
 }
+

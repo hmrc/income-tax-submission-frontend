@@ -28,8 +28,9 @@
 
 @this(layout: Layout,
   heading: Heading,
+  formHelper: FormWithCSRF,
   p: ParagraphBody,
-  button: Button,
+  button: GovukButton,
   govukInsetText: GovukInsetText,
   formWithCSRF: FormWithCSRF,
   govUkButton: GovukButton,
@@ -52,7 +53,10 @@
 
     @vm.getTaskList
 
-    @button(messages("startPage.continue"))
+    @button(Button(content = Text(messages("startPage.addSection")), href = Some(controllers.routes.TaskListPageController.addSection(taxYear).url)))
+
+    @button(Button(content = Text(messages("startPage.continue"))))
+
 }
 
 @layout(pageTitle = messages(s"common.yourIncomeTaxReturn.$affinityText"), taxYear = Some(taxYear), isAgent = isAgent, isOverviewPage = true)(content)
