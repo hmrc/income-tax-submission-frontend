@@ -48,7 +48,8 @@ startPage.charityBullet = cyfraniadau at elusennau
 startPage.employmentBullet = cyflogaeth TWE
 startPage.employmentSLBullet = cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwyr)
 startPage.continue = Yn eich blaen
-#TODO -> startPage.addSection = Add Section
+#TODO - the Add Section needs confirming
+startPage.addSection = Ychwanegu Adrannau
 
 #TODO USE WHEN SECTIONS ADDED TO START PAGE
 startPage.cisBullet = didyniadau Cynllun y Diwydiant Adeiladu
