@@ -55,7 +55,8 @@
 
     @button(Button(
         content = Text(messages("startPage.addSection")),
-        href = Some(appConfig.tailorReturnAddSectionsPageUrl(taxYear))
+        href = Some(appConfig.tailorReturnAddSectionsPageUrl(taxYear)),
+        classes = "govuk-button--secondary"
     ))
 
     @button(Button(content = Text(messages("startPage.continue"))))
