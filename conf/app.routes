@@ -37,6 +37,8 @@ GET         /error/not-authorised-to-use-service            controllers.Unauthor
 
 GET         /error/you-need-client-authorisation            controllers.errors.AgentAuthErrorController.show
 
+GET         /error/support-agent-authorisation              controllers.errors.SupportingAgentAuthErrorController.show
+
 GET         /error/you-need-agent-services-account          controllers.errors.YouNeedAgentServicesController.show
 
 GET         /:taxYear/already-have-income-tax-return        controllers.errors.ReturnTaxYearExistsController.show(taxYear: Int)

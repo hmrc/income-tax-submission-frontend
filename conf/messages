@@ -208,6 +208,8 @@ error.tax-year.paragraph2 = Check that you’ve entered the correct web address.
 
 error.unauthorised.title = You are not authorised to use this service
 error.unauthorised.paragraph1 = You can:
+error.supp.agent.unauthorised.paragraph = You’re a supporting agent for this client. Only your client or their main agent, if they have one, can access and submit their tax return.
+error.supp.agent.unauthorised.link = Go back to account home
 
 error.address-has-changed.title.individual = Your address has changed
 error.address-has-changed.title.agent = Your client’s address has changed
