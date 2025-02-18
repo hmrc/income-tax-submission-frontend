@@ -31,14 +31,15 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import views.html.authErrorPages.AgentAuthErrorPageView
+import views.html.authErrorPages.{AgentAuthErrorPageView, SupportingAgentAuthErrorPageView}
 
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisedAction @Inject()(appConfig: AppConfig,
-                                 val agentAuthErrorPage: AgentAuthErrorPageView)
+                                 val agentAuthErrorPage: AgentAuthErrorPageView,
+                                 val supportingAgentAuthErrorPageView: SupportingAgentAuthErrorPageView)
                                 (implicit val authService: AuthService,
                                  errorHandler: ErrorHandler,
                                  val mcc: MessagesControllerComponents) extends ActionBuilder[User, AnyContent] with I18nSupport {
@@ -178,7 +179,8 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
           }
       } else {
         logger.warn(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
-        Future(Redirect(controllers.errors.routes.AgentAuthErrorController.show))
+        logger.warn("!!!!!!!!!!!!!!!!!!!!!!!!")
+        Future(Redirect(controllers.errors.routes.SupportingAgentAuthErrorController.show))
       }
     case e =>
       logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
