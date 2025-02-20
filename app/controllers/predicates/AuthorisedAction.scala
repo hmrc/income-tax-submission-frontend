@@ -164,24 +164,9 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
       logger.warn(s"$agentAuthLogString - No active session. Redirecting to ${appConfig.signInUrl}")
       Future(Redirect(appConfig.signInUrl))
     case _: AuthorisationException =>
-      if (appConfig.emaSupportingAgentsEnabled) {
-        authService
-          .authorised(secondaryAgentPredicate(mtdItId))
-          .retrieve(allEnrolments) {
-            populateAgent(block, mtdItId, nino, _, isSecondaryAgent = true)
-          }.recoverWith {
-            case _: AuthorisationException =>
-              logger.warn(s"$agentAuthLogString - Agent does not have secondary delegated authority for Client.")
-              Future(Redirect(controllers.errors.routes.AgentAuthErrorController.show))
-            case e =>
-              logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
-              Future(errorHandler.internalServerError())
-          }
-      } else {
-        logger.warn(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
-        logger.warn("!!!!!!!!!!!!!!!!!!!!!!!!")
-        Future(Redirect(controllers.errors.routes.SupportingAgentAuthErrorController.show))
-      }
+      logger.warn("!!!!!!!!!!!!!!!!!!!!!!!!")
+      logger.warn(s"$agentAuthLogString - Agent does not have secondary delegated authority for Client.")
+      Future(Redirect(controllers.errors.routes.SupportingAgentAuthErrorController.show))
     case e =>
       logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
       Future(errorHandler.internalServerError())
