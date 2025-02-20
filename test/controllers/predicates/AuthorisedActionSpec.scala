@@ -35,7 +35,7 @@ import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UnitTest
-import views.html.authErrorPages.AgentAuthErrorPageView
+import views.html.authErrorPages.{AgentAuthErrorPageView, SupportingAgentAuthErrorPageView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,10 +44,12 @@ class AuthorisedActionSpec extends UnitTest
   with MockErrorHandler {
 
   val agentAuthErrorPageView: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
+  val supportingAgentAuthErrorPageView: SupportingAgentAuthErrorPageView = app.injector.instanceOf[SupportingAgentAuthErrorPageView]
 
   val authorisedAction = new AuthorisedAction(
     appConfig = mockAppConfig,
-    agentAuthErrorPage = agentAuthErrorPageView
+    agentAuthErrorPage = agentAuthErrorPageView,
+    supportingAgentAuthErrorPageView = supportingAgentAuthErrorPageView
   )(
     authService = mockAuthService,
     errorHandler = mockErrorHandler,
@@ -82,12 +84,6 @@ class AuthorisedActionSpec extends UnitTest
       Enrolment(EnrolmentKeys.SupportingAgent)
         .withIdentifier(EnrolmentIdentifiers.individualId, mtdId)
         .withDelegatedAuthRule(DelegatedAuthRules.supportingAgentDelegatedAuthRule)
-
-    def mockMultipleAgentsSwitch(bool: Boolean): CallHandler0[Boolean] =
-      (mockAppConfig.emaSupportingAgentsEnabled _: () => Boolean)
-        .expects()
-        .returning(bool)
-        .anyNumberOfTimes()
 
     val primaryAgentEnrolment: Enrolments = Enrolments(Set(
       Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated"),
@@ -128,7 +124,8 @@ class AuthorisedActionSpec extends UnitTest
 
       new AuthorisedAction(
         appConfig = mockAppConfig,
-        agentAuthErrorPage = agentAuthErrorPageView
+        agentAuthErrorPage = agentAuthErrorPageView,
+        supportingAgentAuthErrorPageView = supportingAgentAuthErrorPageView
       )(
         authService = mockAuthService,
         errorHandler = mockErrorHandler,
@@ -323,7 +320,6 @@ class AuthorisedActionSpec extends UnitTest
 
       "[EMA disabled] results in an AuthorisationException error being returned from Auth" should {
         "return a redirect to the agent error page" in new AgentTest {
-          mockMultipleAgentsSwitch(false)
 
           object AuthException extends AuthorisationException("Some reason")
           mockAuthReturnException(AuthException, primaryAgentPredicate(mtditid))
@@ -340,7 +336,6 @@ class AuthorisedActionSpec extends UnitTest
 
       "results in an unexpected error being thrown during primary agent auth call" should {
         "return an InternalServerError page" in new AgentTest {
-          mockMultipleAgentsSwitch(false)
 
           object OtherException extends IndexOutOfBoundsException("Some reason")
           mockAuthReturnException(OtherException, primaryAgentPredicate(mtditid))
@@ -358,7 +353,6 @@ class AuthorisedActionSpec extends UnitTest
 
       "results in an unexpected error being thrown during secondary agent auth call" should {
         "return an InternalServerError page" in new AgentTest {
-          mockMultipleAgentsSwitch(true)
 
           object AuthException extends AuthorisationException("Some reason")
           object OtherException extends IndexOutOfBoundsException("Some reason")
@@ -379,7 +373,6 @@ class AuthorisedActionSpec extends UnitTest
 
       "[EMA enabled] results in an AuthorisationException error being returned from Auth" should {
         "return a redirect to the agent error page when secondary agent auth call also fails" in new AgentTest {
-          mockMultipleAgentsSwitch(true)
 
           object AuthException extends AuthorisationException("Some reason")
           mockAuthReturnException(AuthException, primaryAgentPredicate(mtditid))
@@ -391,11 +384,10 @@ class AuthorisedActionSpec extends UnitTest
           )
 
           status(result) shouldBe SEE_OTHER
-          redirectUrl(result) shouldBe s"$baseUrl/error/you-need-client-authorisation"
+          redirectUrl(result) shouldBe s"$baseUrl/error/supporting-agent-not-authorised"
         }
 
-        "handle appropriately when a supporting agent is properly authorised" in new AgentTest {
-          mockMultipleAgentsSwitch(true)
+        "handle appropriately when a supporting agent is not authorised" in new AgentTest {
 
           object AuthException extends AuthorisationException("Some reason")
           mockAuthReturnException(AuthException, primaryAgentPredicate(mtditid))
@@ -406,8 +398,8 @@ class AuthorisedActionSpec extends UnitTest
             hc = validHeaderCarrier
           )
 
-          status(result) shouldBe OK
-          bodyOf(result) shouldBe s"$mtditid $arn"
+          status(result) shouldBe SEE_OTHER
+          redirectUrl(result) shouldBe s"$baseUrl/error/supporting-agent-not-authorised"
         }
       }
 
