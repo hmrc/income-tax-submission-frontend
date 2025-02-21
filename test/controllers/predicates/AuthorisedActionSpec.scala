@@ -318,22 +318,6 @@ class AuthorisedActionSpec extends UnitTest
         }
       }
 
-      "[EMA disabled] results in an AuthorisationException error being returned from Auth" should {
-        "return a redirect to the agent error page" in new AgentTest {
-
-          object AuthException extends AuthorisationException("Some reason")
-          mockAuthReturnException(AuthException, primaryAgentPredicate(mtditid))
-
-          val result: Future[Result] = testAuth.agentAuthentication(testBlock)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
-            hc = emptyHeaderCarrier
-          )
-
-          status(result) shouldBe SEE_OTHER
-          redirectUrl(result) shouldBe s"$baseUrl/error/you-need-client-authorisation"
-        }
-      }
-
       "results in an unexpected error being thrown during primary agent auth call" should {
         "return an InternalServerError page" in new AgentTest {
 
@@ -371,7 +355,7 @@ class AuthorisedActionSpec extends UnitTest
         }
       }
 
-      "[EMA enabled] results in an AuthorisationException error being returned from Auth" should {
+      "results in an AuthorisationException error being returned from Auth" should {
         "return a redirect to the agent error page when secondary agent auth call also fails" in new AgentTest {
 
           object AuthException extends AuthorisationException("Some reason")
@@ -384,7 +368,7 @@ class AuthorisedActionSpec extends UnitTest
           )
 
           status(result) shouldBe SEE_OTHER
-          redirectUrl(result) shouldBe s"$baseUrl/error/supporting-agent-not-authorised"
+          redirectUrl(result) shouldBe s"$baseUrl/error/you-need-client-authorisation"
         }
 
         "handle appropriately when a supporting agent is not authorised" in new AgentTest {
