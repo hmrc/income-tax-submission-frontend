@@ -21,7 +21,7 @@
 @this(layout: Layout, heading: Heading, p: ParagraphBody)
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(messages("error.unauthorised.title")) {
+@layout(messages("error.unauthorised.title"), true) {
 
     @heading(messages("error.unauthorised.title"), "")
 
