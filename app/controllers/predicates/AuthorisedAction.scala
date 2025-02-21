@@ -187,7 +187,9 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
                                enrolments: Enrolments,
                                isSecondaryAgent: Boolean)(implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
     isSecondaryAgent match {
-      case true => Future.successful(Redirect(controllers.errors.routes.SupportingAgentAuthErrorController.show))
+      case true =>
+        logger.warn(s"$agentAuthLogString - Secondary agent unauthorised")
+        Future.successful(Redirect(controllers.errors.routes.SupportingAgentAuthErrorController.show))
       case false =>
         enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
           case Some(arn) =>
@@ -198,7 +200,7 @@ class AuthorisedAction @Inject()(appConfig: AppConfig,
               block(User(mtdItId, Some(arn), nino, sessionId, isSecondaryAgent))
             )
           case None =>
-            logger.warn("$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+            logger.warn(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
             Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show))
         }
     }
