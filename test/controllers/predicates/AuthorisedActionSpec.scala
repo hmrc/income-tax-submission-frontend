@@ -371,7 +371,7 @@ class AuthorisedActionSpec extends UnitTest
           redirectUrl(result) shouldBe s"$baseUrl/error/you-need-client-authorisation"
         }
 
-        "handle appropriately when a supporting agent is not authorised" in new AgentTest {
+        "redirect a supporting agent attempts to login with valid credentials" in new AgentTest {
 
           object AuthException extends AuthorisationException("Some reason")
           mockAuthReturnException(AuthException, primaryAgentPredicate(mtditid))
