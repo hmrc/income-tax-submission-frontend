@@ -47,7 +47,7 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
-import views.html.authErrorPages.AgentAuthErrorPageView
+import views.html.authErrorPages.{AgentAuthErrorPageView, SupportingAgentAuthErrorPageView}
 
 import java.time.{Instant, LocalDate}
 import java.util.UUID
@@ -222,6 +222,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   val emptyHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   lazy val agentAuthErrorPage: AgentAuthErrorPageView = app.injector.instanceOf[AgentAuthErrorPageView]
+  lazy val supportingAgentAuthErrorPage: SupportingAgentAuthErrorPageView = app.injector.instanceOf[SupportingAgentAuthErrorPageView]
   lazy val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
   val defaultAcceptedConfidenceLevels: Seq[ConfidenceLevel] = Seq(
@@ -244,7 +245,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
   def authAction(stubbedRetrieval: Future[_]): AuthorisedAction = new AuthorisedAction(
     appConfig,
-    agentAuthErrorPage
+    agentAuthErrorPage,
+    supportingAgentAuthErrorPage
   )(authService(stubbedRetrieval), errorHandler, mcc)
 
   def stubIncomeSources(incomeSources: IncomeSourcesModel, status: Int = OK): StubMapping = {

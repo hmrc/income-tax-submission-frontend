@@ -207,8 +207,6 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
     "cymraeg" -> Lang("cy")
   )
 
-  override def emaSupportingAgentsEnabled: Boolean = false
-
   override val useEncryption: Boolean = true
   override val encryptionKey: String = "1234556"
 

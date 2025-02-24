@@ -212,8 +212,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
     ).filter(!_._2).map(_._1)
   }
 
-  def emaSupportingAgentsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.ema-supporting-agents-enabled")
-
   lazy val useEncryption: Boolean = servicesConfig.getBoolean("feature-switch.useEncryption")
   lazy val encryptionKey: String = servicesConfig.getString("mongodb.encryption.key")
   def mongoTTL: Long = Duration(servicesConfig.getString("mongodb.timeToLive")).toDays.toInt
@@ -359,8 +357,6 @@ trait AppConfig {
   def tailorReturnAddSectionsPageUrl(taxYear: Int): String
 
   def excludedIncomeSources(taxYear: Int): Seq[String]
-
-  def emaSupportingAgentsEnabled: Boolean
 
   val useEncryption: Boolean
   val encryptionKey: String
