@@ -35,10 +35,9 @@ class SupportingAgentAuthErrorControllerISpec extends IntegrationTest with ViewH
 
     val headingWelsh: String = "Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn"
     val titleWelsh = "Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn"
-    // TODO: change English string to welsh
-    val suppAgentWelsh: String = "You’re a supporting agent for this client. Only your client or their main agent," +
-      " if they have one, can access and submit their tax return."
-    val accountHomeTextWelsh = "Go back to account home"
+    val suppAgentWelsh: String = "Rydych yn asiant ategol ar gyfer y cleient hwn. Dim ond eich cleient neu ei brif asiant," +
+      " os oes ganddo un, sy’n gallu cael at a chyflwyno ei Ffurflen Dreth."
+    val accountHomeTextWelsh = "Yn ôl i hafan y cyfrif"
   }
 
   object Selectors {
@@ -87,7 +86,7 @@ class SupportingAgentAuthErrorControllerISpec extends IntegrationTest with ViewH
         titleCheck(ExpectedResults.titleWelsh, isWelsh = true)
         h1Check(ExpectedResults.headingWelsh,"xl")
         textOnPageCheck(ExpectedResults.suppAgentWelsh, Selectors.suppAgent)
-        linkCheck(ExpectedResults.accountHomeText, Selectors.backToAccountHomeLinkSelector, ExpectedResults.accountHomeLink)
+        linkCheck(ExpectedResults.accountHomeTextWelsh, Selectors.backToAccountHomeLinkSelector, ExpectedResults.accountHomeLink)
       }
     }
   }
