@@ -17,26 +17,20 @@
 package models.sessionData
 
 import play.api.libs.json.{Json, OFormat}
-
-final case class SessionData(sessionID: String,
-                             mtditid: Option[String],
-                             nino: Option[String],
-                             saUtr: Option[String],
-                             clientFirstName: Option[String],
-                             clientLastName: Option[String],
-                             userType: Option[String])
+final case class SessionData(mtditid: Option[String],
+                       nino: Option[String],
+                       utr: Option[String],
+                       sessionId: String
+                      )
 
 object SessionData {
   implicit val formats: OFormat[SessionData] = Json.format[SessionData]
 
   def mkSessionData(sessionId: String, queryParams: Map[String, Seq[String]]): SessionData =
     SessionData(
-      sessionID = sessionId,
       mtditid = queryParams.get("ClientMTDID").flatMap(_.headOption),
       nino = queryParams.get("ClientNino").flatMap(_.headOption),
-      saUtr = queryParams.get("saUlt").flatMap(_.headOption).orElse(Some("Placeholder")),
-      clientFirstName = queryParams.get("clientFirstName").flatMap(_.headOption).orElse(Some("Placeholder")),
-      clientLastName = queryParams.get("clientLastName").flatMap(_.headOption).orElse(Some("Placeholder")),
-      userType = queryParams.get("userType").flatMap(_.headOption).orElse(Some("Placeholder"))
+      utr = queryParams.get("saUlt").flatMap(_.headOption).orElse(Some("Placeholder")),
+      sessionId = sessionId,
     )
 }

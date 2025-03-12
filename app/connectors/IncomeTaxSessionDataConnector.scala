@@ -35,9 +35,9 @@ class IncomeTaxSessionDataConnectorImpl @Inject() (http: HttpClient)(implicit ec
     extends IncomeTaxSessionDataConnector with Logging {
 
   def upsert(sessionId: String, sessionData: SessionData)(implicit hc: HeaderCarrier): Future[SessionDataResponse] = {
-    val url = s"http://localhost:9000/income-tax-session-data"
+    val url = s"http://localhost:30027/income-tax-session-data"
 
-    println(Json.toJson(sessionData))
+    println(s"TrackMe:: ${Json.toJson(sessionData)}")
 
     http.POST[SessionData, SessionDataResponse](url, sessionData).map { res =>
       logger.info(s"Upsert response: $res")
