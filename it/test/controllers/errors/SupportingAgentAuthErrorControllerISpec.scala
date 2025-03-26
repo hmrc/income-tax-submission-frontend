@@ -41,7 +41,7 @@ class SupportingAgentAuthErrorControllerISpec extends IntegrationTest with ViewH
   }
 
   object Selectors {
-    val suppAgent = "#main-content > div > div > p"
+    val suppAgentParagraph = "#main-content > div > div > p:nth-of-type(1)"
     val backToAccountHomeLinkSelector = "#account_home_link"
   }
 
@@ -64,7 +64,7 @@ class SupportingAgentAuthErrorControllerISpec extends IntegrationTest with ViewH
         welshToggleCheck("English")
         titleCheck(ExpectedResults.title, isWelsh = false)
         h1Check(ExpectedResults.heading,"xl")
-        textOnPageCheck(ExpectedResults.suppAgent, Selectors.suppAgent)
+        textOnPageCheck(ExpectedResults.suppAgent, Selectors.suppAgentParagraph)
         linkCheck(ExpectedResults.accountHomeText, Selectors.backToAccountHomeLinkSelector, ExpectedResults.accountHomeLink)
       }
     }
@@ -85,7 +85,7 @@ class SupportingAgentAuthErrorControllerISpec extends IntegrationTest with ViewH
         welshToggleCheck("Welsh")
         titleCheck(ExpectedResults.titleWelsh, isWelsh = true)
         h1Check(ExpectedResults.headingWelsh,"xl")
-        textOnPageCheck(ExpectedResults.suppAgentWelsh, Selectors.suppAgent)
+        textOnPageCheck(ExpectedResults.suppAgentWelsh, Selectors.suppAgentParagraph)
         linkCheck(ExpectedResults.accountHomeTextWelsh, Selectors.backToAccountHomeLinkSelector, ExpectedResults.accountHomeLink)
       }
     }
