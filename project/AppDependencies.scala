@@ -18,7 +18,7 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapPlay30Version = "9.8.0"
+  private val bootstrapPlay30Version = "9.11.0"
   private val hmrcMongoPlay30Version = "2.6.0"
   private val hmrcPlayFrontEndVersion = "10.13.0"
 
@@ -40,7 +40,7 @@ object AppDependencies {
 
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"             %% "bootstrap-test-play-30"   % bootstrapPlay30Version,
-    "org.jsoup"               %  "jsoup"                    % "1.17.2",
+    "org.jsoup"               %  "jsoup"                    % "1.19.1",
     "org.scalamock"           %% "scalamock"                % "5.2.0",
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-30"  % hmrcMongoPlay30Version
   ).map(_ % "test")
