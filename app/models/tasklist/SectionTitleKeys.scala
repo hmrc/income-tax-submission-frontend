@@ -16,7 +16,7 @@
 
 package models.tasklist
 
-
+// TODO: Remove. These keys are only used in the view model. This constants file causes indirection and is not needed.
 object SectionTitleKeys {
 
   val ABOUT_YOU_TITLE_KEY = "aboutYouTitle"
@@ -40,5 +40,11 @@ object SectionTitleKeys {
   val INTEREST_TITLE_KEY = "interestTitle"
 
   val DIVIDENDS_TITLE_KEY = "dividendsTitle"
+
+  val UK_PROPERTY_TITLE_KEY: String = "ukPropertyTitle"
+
+  val FOREIGN_PROPERTY_TITLE_KEY: String = "foreignPropertyTitle"
+
+  val UK_FOREIGN_PROPERTY_TITLE_KEY: String = "ukForeignPropertyTitle"
 
 }

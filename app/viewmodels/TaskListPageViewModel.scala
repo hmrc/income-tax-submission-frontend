@@ -110,6 +110,12 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
     numOfItems.sum.toString
   }
 
+  /*
+   * TODO: Refactor this.
+   *  This is a mapping of the API response to the keys.
+   *  The TaskTitle is meant to provide typesafety in pattern matches and there is no benefit gained
+   *  by having this in a map with does not leverage this.
+   */
   private def sectionItemOps: TaskTitle => String = { taskTitle =>
     Map(
       UkResidenceStatus.toString -> messages(prefix + RESIDENCE_STATUS_KEY),
@@ -142,7 +148,10 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       StockDividends.toString -> messages(prefix + STOCK_DIVIDENDS_KEY),
       DividendsFromUnitTrusts.toString -> messages(prefix + DIVIDENDS_FROM_UNIT_TRUSTS_KEY),
       FreeRedeemableShares.toString -> messages(prefix + FREE_REDEEMABLE_SHARES_KEY),
-      CloseCompanyLoans.toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY)
+      CloseCompanyLoans.toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY),
+      UkProperty.toString -> messages(prefix + UK_PROPERTY_KEY),
+      ForeignProperty.toString -> messages(prefix + FOREIGN_PROPERTY_KEY),
+      UkForeignProperty.toString -> messages(prefix + UK_FOREIGN_PROPERTY_KEY)
     )(taskTitle.toString)
   }
 
@@ -158,7 +167,10 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       InsuranceGainsTitle.toString -> messages(prefix + INSURANCE_GAINS_TITLE_KEY),
       PaymentsIntoPensionsTitle.toString -> messages(prefix + PAYMENTS_INTO_PENSIONS_TITLE_KEY),
       InterestTitle.toString -> messages(prefix + INTEREST_TITLE_KEY),
-      DividendsTitle.toString -> messages(prefix + DIVIDENDS_TITLE_KEY)
+      DividendsTitle.toString -> messages(prefix + DIVIDENDS_TITLE_KEY),
+      UkPropertyTitle.toString -> messages(prefix + UK_PROPERTY_TITLE_KEY),
+      ForeignPropertyTitle.toString -> messages(prefix + FOREIGN_PROPERTY_TITLE_KEY),
+      UkForeignPropertyTitle.toString -> messages(prefix + UK_FOREIGN_PROPERTY_TITLE_KEY)
     )(key)
   }
 
