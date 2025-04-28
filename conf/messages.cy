@@ -282,6 +282,15 @@ taskList.agent.employmentTask = Cyflogaeth TWE (gan gynnwys Benthyciadau Myfyrwy
 taskList.cisTask = Didyniadau Cynllun y Diwydiant Adeiladu
 taskList.agent.cisTask = Didyniadau Cynllun y Diwydiant Adeiladu
 
+taskList.checkSEDetails = Missing welsh message
+taskList.agent.checkSEDetails = Missing welsh message
+
+taskList.industrySector = Missing welsh message
+taskList.agent.industrySector = Missing welsh message
+
+taskList.yourIncome = Missing welsh message
+taskList.agent.yourIncome = Missing welsh message
+
 taskList.esaTask = Adolygu hawliadau Lwfans Cyflogaeth a Chymorth
 taskList.agent.esaTask = Adolygu hawliadau Lwfans Cyflogaeth a Chymorth
 

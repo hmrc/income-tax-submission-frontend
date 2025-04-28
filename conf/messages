@@ -300,8 +300,8 @@ taskList.agent.checkSEDetails = Check your self-employment details
 taskList.industrySector = Industry sectors and working abroad
 taskList.agent.industrySector = Industry sectors and working abroad
 
-taskList.yourIncome = Your income
-taskList.agent.yourIncome = Your income
+taskList.yourIncome = Income
+taskList.agent.yourIncome = Income
 
 taskList.esaTask = Review Employment and support allowance claims
 taskList.agent.esaTask = Review Employment and support allowance claims
