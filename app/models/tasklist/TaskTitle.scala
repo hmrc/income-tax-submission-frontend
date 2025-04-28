@@ -45,6 +45,9 @@ object TaskTitle extends Enum[TaskTitle] with PlayJsonEnum[TaskTitle] {
   case object PayeEmployment extends TaskTitle("PayeEmploymentTitle")
 
   // Self-employment
+  case object CheckSEDetails extends TaskTitle("CheckSEDetailsTitle")
+  case object IndustrySector extends TaskTitle("IndustrySectorTitle")
+  case object YourIncome extends TaskTitle("YourIncomeTitle")
   case object CIS extends TaskTitle("CISTitle")
 
   // Esa
