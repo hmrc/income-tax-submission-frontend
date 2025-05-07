@@ -102,10 +102,10 @@ object TaskTitle extends Enum[TaskTitle] with PlayJsonEnum[TaskTitle] {
   case object CloseCompanyLoans extends TaskTitle("CloseCompanyLoansTitle")
 
   // Property
-  case object UkProperty extends TaskTitle("UkProperty")
+  case object UkProperty extends TaskTitle("UkPropertyTitle")
 
-  case object ForeignProperty extends TaskTitle("ForeignProperty")
+  case object ForeignProperty extends TaskTitle("ForeignPropertyTitle")
 
-  case object UkForeignProperty extends TaskTitle("UkForeignProperty")
+  case object UkForeignProperty extends TaskTitle("UkForeignPropertyTitle")
 
 }
