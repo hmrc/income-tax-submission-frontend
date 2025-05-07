@@ -29,6 +29,9 @@ object TaskItemTitleKeys {
   val EMPLOYMENT_KEY: String = "employmentTask"
 
   val CIS_KEY: String = "cisTask"
+  val CHECK_SE_DETAILS_KEY: String = "checkSEDetails"
+  val INDUSTRY_SECTOR_KEY: String = "industrySector"
+  val YOUR_INCOME_KEY: String = "yourIncome"
 
   val ESA_KEY: String = "esaTask"
 

@@ -301,6 +301,15 @@ taskList.agent.employmentTask = PAYE employment (including student loans)
 taskList.cisTask = Construction Industry Schemes deductions
 taskList.agent.cisTask = Construction Industry Schemes deductions
 
+taskList.checkSEDetails = Check your self-employment details
+taskList.agent.checkSEDetails = Check your self-employment details
+
+taskList.industrySector = Industry sectors and working abroad
+taskList.agent.industrySector = Industry sectors and working abroad
+
+taskList.yourIncome = Income
+taskList.agent.yourIncome = Income
+
 taskList.esaTask = Review Employment and support allowance claims
 taskList.agent.esaTask = Review Employment and support allowance claims
 
