@@ -25,7 +25,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.{TaskListService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.ShaHashHelper
 import viewmodels.TaskListPageViewModel
 import views.html.TaskListPageView
 
@@ -40,7 +39,7 @@ class TaskListPageController @Inject()(inYearAction: InYearAction,
                                        implicit val validTaxYearListService: ValidTaxYearListService,
                                        implicit val errorHandler: ErrorHandler)
                                       (implicit appConfig: AppConfig, mcc: MessagesControllerComponents, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with ShaHashHelper with Logging {
+  extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     val isInYear: Boolean = inYearAction.inYear(taxYear)
@@ -49,8 +48,9 @@ class TaskListPageController @Inject()(inYearAction: InYearAction,
       case Right(None) =>
         Redirect(appConfig.tailorReturnAddSectionsPageUrl(taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
       case Right(taskListData) =>
-        val prefix: String = if (user.isAgent) "taskList.agent." else "taskList."
-        Ok(taskListPageView(user.isAgent, taxYear, isInYear, vm = TaskListPageViewModel(taskListData, prefix)))
+        val prefix = if (user.isAgent) "taskList.agent." else "taskList."
+        val vm = TaskListPageViewModel(taskListData, prefix)
+        Ok(taskListPageView(user.isAgent, taxYear, isInYear, vm))
     }
   }
 }

@@ -271,6 +271,13 @@ taskList.interestTitle = UK Interest
 taskList.agent.interestTitle = UK Interest
 taskList.dividendsTitle = UK dividends, shares and loans from limited companies
 taskList.agent.dividendsTitle = UK dividends, shares and loans from limited companies
+taskList.ukPropertyTitle = UK property
+taskList.agent.ukPropertyTitle = UK property
+taskList.foreignPropertyTitle = Foreign property
+taskList.agent.foreignPropertyTitle = Foreign property
+taskList.ukForeignPropertyTitle = UK and Foreign property
+taskList.agent.ukForeignPropertyTitle = UK and Foreign property
+
 
 ### Task List Item Titles ###
 
@@ -355,6 +362,13 @@ taskList.freeOrRedeemableSharesTask = Free or redeemable shares
 taskList.agent.freeOrRedeemableSharesTask = Free or redeemable shares
 taskList.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
 taskList.agent.closeCompanyLoansWrittenOffReleasedTask = Close company loans written off or released
+
+taskList.ukPropertyTask = About
+taskList.agent.ukPropertyTask = About
+taskList.foreignPropertyTask = Select country
+taskList.agent.foreignPropertyTask = Select country
+taskList.ukForeignPropertyTask = About
+taskList.agent.ukForeignPropertyTask = About
 
 notStarted = Not yet started
 completed = Completed

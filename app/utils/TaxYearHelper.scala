@@ -23,7 +23,18 @@ import java.time.LocalDate
 
 trait TaxYearHelper extends SessionDataHelper {
 
+  /*
+   * TODO: Fix.
+   *  Summary: This will memoize the date and can be lead to incorrect usage at call site.
+   *  Action: Remove and use a Clock instance set to UTC.
+   */
   private val dateNow: LocalDate = LocalDate.now()
+
+  /*
+   * TODO: Fix.
+   *  Summary: This will potentially return the wrong tax year if the app is not redeployed on a new tax year.
+   *  Action: Replace with a def and also pass Clock instance set to UTC
+   */
   private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")
 
   val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear

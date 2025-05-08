@@ -19,9 +19,7 @@ package models.tasklist
 import enumeratum.{Enum, EnumEntry}
 import models.PlayJsonEnum
 
-sealed abstract class TaskTitle(override val entryName: String) extends EnumEntry {
-  override def toString: String = entryName
-}
+sealed abstract class TaskTitle(override val entryName: String) extends EnumEntry
 
 object TaskTitle extends Enum[TaskTitle] with PlayJsonEnum[TaskTitle] {
 
@@ -102,4 +100,12 @@ object TaskTitle extends Enum[TaskTitle] with PlayJsonEnum[TaskTitle] {
   case object FreeRedeemableShares extends TaskTitle("FreeRedeemableSharesTitle")
 
   case object CloseCompanyLoans extends TaskTitle("CloseCompanyLoansTitle")
+
+  // Property
+  case object UkProperty extends TaskTitle("UkPropertyTitle")
+
+  case object ForeignProperty extends TaskTitle("ForeignPropertyTitle")
+
+  case object UkForeignProperty extends TaskTitle("UkForeignPropertyTitle")
+
 }

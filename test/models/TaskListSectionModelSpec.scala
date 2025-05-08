@@ -17,12 +17,11 @@
 package models
 
 import models.tasklist.SectionTitle.AboutYouTitle
-import models.tasklist._
+import models.tasklist.{SectionTitle, TaskListSection, TaskListSectionItem, TaskStatus, TaskTitle}
 import play.api.libs.json.{JsObject, Json}
 import utils.UnitTest
 
 class TaskListSectionModelSpec extends UnitTest {
-
 
   val taskListSectionTitleModel: SectionTitle = AboutYouTitle
   val jsonTaskListSectionTitleModel: JsObject = Json.obj(
@@ -36,7 +35,7 @@ class TaskListSectionModelSpec extends UnitTest {
   )
 
   val jsonTaskListItemModel: Seq[JsObject] = Seq(Json.obj(
-    "title" -> TaskTitle.UkResidenceStatus.toString,
+    "title" -> Json.toJson(TaskTitle.UkResidenceStatus),
     "status" -> "completed",
     "href" -> Some("")
   ))

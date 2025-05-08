@@ -16,6 +16,7 @@
 
 package models.tasklist
 
+// TODO: Remove. These keys are only used in the view model. This constants file causes indirection and is not needed.
 object TaskItemTitleKeys {
 
   val RESIDENCE_STATUS_KEY: String = "ukResidenceStatusTask"
@@ -61,5 +62,9 @@ object TaskItemTitleKeys {
   val DIVIDENDS_FROM_UNIT_TRUSTS_KEY: String = "dividendsUnitTrustsInvestmentCompaniesTask"
   val FREE_REDEEMABLE_SHARES_KEY: String = "freeOrRedeemableSharesTask"
   val CLOSE_COMPANY_LOANS_KEY: String = "closeCompanyLoansWrittenOffReleasedTask"
+
+  val UK_PROPERTY_KEY: String = "ukPropertyTask"
+  val FOREIGN_PROPERTY_KEY: String = "foreignPropertyTask"
+  val UK_FOREIGN_PROPERTY_KEY: String = "ukForeignPropertyTask"
 
 }
