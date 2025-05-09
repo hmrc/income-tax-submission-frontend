@@ -68,6 +68,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
     s"/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview-and-declaration/calculate"
   }
 
+  override val vcSessionServiceBaseUrl: String = "/incomeTaxSessionData"
+
   override lazy val defaultTaxYear: Int = 2021
 
   override def feedbackSurveyUrl(implicit isAgent: Boolean): String = "/feedbackUrl"
