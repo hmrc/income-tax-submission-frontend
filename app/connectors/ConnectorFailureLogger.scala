@@ -1,0 +1,5 @@
+package connectors
+
+object ConnectorFailureLogger {
+
+}
