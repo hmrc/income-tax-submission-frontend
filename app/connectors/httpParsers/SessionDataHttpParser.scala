@@ -17,7 +17,7 @@
 package connectors.httpParsers
 
 import models.APIErrorModel
-import models.session.SessionData
+import models.session.UserSessionData
 import play.api.http.Status._
 import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
@@ -25,7 +25,7 @@ import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.PagerDutyHelper.pagerDutyLog
 
 object SessionDataHttpParser extends APIParser {
-  type SessionDataResponse = Either[APIErrorModel, Option[SessionData]]
+  type SessionDataResponse = Either[APIErrorModel, Option[UserSessionData]]
 
   override val parserName: String = "SessionDataHttpParser"
   override val service: String = "income-tax-session-data"
@@ -34,7 +34,7 @@ object SessionDataHttpParser extends APIParser {
     override def read(method: String, url: String, response: HttpResponse): SessionDataResponse = {
       response.status match  {
         case OK =>
-          response.json.validate[SessionData] match {
+          response.json.validate[UserSessionData] match {
             case JsSuccess(parsedModel, _) => Right(Some(parsedModel))
             case _ => badSuccessJsonFromAPI
           }
