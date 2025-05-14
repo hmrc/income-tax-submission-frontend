@@ -111,6 +111,8 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
     s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview/calculate$vcPtaNavBarOrigin"
   }
 
+  lazy val vcSessionServiceBaseUrl: String = servicesConfig.baseUrl("income-tax-session-data")
+
   lazy private val appUrl: String = servicesConfig.getString("microservice.url")
   lazy val incomeTaxSubmissionFrontendUrl: String = s"$appUrl/update-and-submit-income-tax-return"
   def overviewUrl(taxYear: Int): String = s"$incomeTaxSubmissionFrontendUrl/$taxYear/view"
@@ -291,6 +293,8 @@ trait AppConfig {
 
   def viewAndChangeFinalCalculationUrl(taxYear: Int): String
   def viewAndChangeFinalCalculationUrlAgent(taxYear: Int): String
+
+  def vcSessionServiceBaseUrl: String
 
   val incomeTaxSubmissionFrontendUrl: String
   def overviewUrl(taxYear: Int): String
