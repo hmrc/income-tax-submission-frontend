@@ -26,7 +26,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.SessionDataHelper
 import views.html.errors.IVFailurePage
 
 import scala.concurrent.ExecutionContext
@@ -36,7 +35,7 @@ class IVFailureController @Inject()(implicit appConfig: AppConfig,
                                     mcc: MessagesControllerComponents,
                                     view: IVFailurePage,
                                     auditService: AuditService,
-                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper with Logging{
+                                    implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with Logging{
 
   def show(journeyId: Option[String]): Action[AnyContent] = Action { implicit request =>
 

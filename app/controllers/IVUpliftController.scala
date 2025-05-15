@@ -20,6 +20,7 @@ import audit.{AuditService, IVHandoffAuditDetail, IVSuccessAuditDetail}
 import common.SessionValues
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -34,12 +35,12 @@ import utils.SessionDataHelper
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IVUpliftController @Inject()(implicit appConfig: AppConfig,
+class IVUpliftController @Inject()(implicit val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents,
                                    auditService: AuditService,
                                    implicit val authService: AuthService,
                                    val authorisedAction: AuthorisedAction,
-                                   implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper{
+                                   implicit val ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
 
   val minimumConfidenceLevel :Int = ConfidenceLevel.L250.level
 

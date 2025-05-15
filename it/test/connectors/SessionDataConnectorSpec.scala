@@ -31,15 +31,15 @@ class SessionDataConnectorISpec extends IntegrationTest {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier().withExtraHeaders("X-Session-ID" -> sessionId)
 
-  lazy val connector: SessionDataConnector = app.injector.instanceOf[SessionDataConnector]
-
-  val stubGetUrl = s"/income-tax-session-data"
-  val sessionDataResponse: UserSessionData = UserSessionData(mtditid = mtditid, nino = nino, sessionId = sessionId)
-
   override lazy val app: Application =
     new GuiceApplicationBuilder()
       .configure("microservice.services.income-tax-session-data.port" -> wiremockPort)
       .build()
+
+  val connector: SessionDataConnector = app.injector.instanceOf[SessionDataConnector]
+
+  val stubGetUrl = s"/income-tax-session-data"
+  val sessionDataResponse: UserSessionData = UserSessionData(mtditid = mtditid, nino = nino, sessionId = sessionId)
 
 
   "calling .getSessionData()" should {

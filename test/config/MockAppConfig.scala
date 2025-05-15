@@ -22,7 +22,8 @@ import play.api.mvc.{Call, RequestHeader}
 import utils.TaxYearHelper
 
 //noinspection ScalaStyle
-class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
+@deprecated("Use `ScalamockAppConfig` instead, rather than this concrete class instance. Future refactor to remove this")
+class MockAppConfig extends AppConfig {
 
   override lazy val signInContinueUrl: String = "/signInContinue"
   override lazy val signInUrl: String = "/signIn"
@@ -32,6 +33,9 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override lazy val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
   override lazy val tailorReturnBaseUrl: String = "http://localhost:10007"
   override lazy val tailorReturnServiceUrl: String = s"$tailorReturnBaseUrl/update-and-submit-income-tax-return/tailored-return"
+
+  override val sessionCookieServiceEnabled: Boolean = false
+//  val appConfig: config.AppConfig = ???
 
   override lazy val incomeTaxCalculationServiceUrl: String = "/income-tax-calculation/income-tax"
   lazy val additionalInformationTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/additional-information"

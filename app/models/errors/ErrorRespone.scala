@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package models.session
+package models.errors
 
-import play.api.libs.json.{Format, Json}
+import scala.util.control.NoStackTrace
 
-case class UserSessionData(sessionId: String,
-                       mtditid: String,
-                       nino: String,
-                       utr: Option[String] = None)
-
-object UserSessionData {
-  implicit val format: Format[UserSessionData] = Json.format[UserSessionData]
+sealed trait ErrorResponse {
+  val message: String
+  val statusCode: Option[Int] = None
 }
+
+case class MissingAgentClientDetails(message: String) extends Exception(message) with NoStackTrace with ErrorResponse

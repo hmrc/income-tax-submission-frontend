@@ -31,4 +31,5 @@ class SessionDataConnector @Inject()(config: FrontendAppConfig,
     httpClient
       .get(url"${config.vcSessionServiceBaseUrl}/income-tax-session-data")
       .execute[SessionDataResponse]
+
 }
