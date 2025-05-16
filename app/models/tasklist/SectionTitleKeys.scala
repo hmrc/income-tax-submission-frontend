@@ -27,6 +27,14 @@ object SectionTitleKeys {
 
   val SELF_EMPLOYMENT_TITLE_KEY = "selfEmploymentTitle"
 
+  val SELF_EMPLOYMENT_CAPTION_KEY = "selfEmploymentCaption"
+
+  val EXPENSES_TITLE_KEY = "expensesTitle"
+
+  val CAPITAL_ALLOWANCES_TITLE_KEY = "capitalAllowancesTitle"
+
+  val ADJUSTMENTS_TITLE_KEY = "adjustmentsTitle"
+
   val ESA_TITLE_KEY = "esaTitle"
 
   val JSA_TITLE_KEY = "jsaTitle"

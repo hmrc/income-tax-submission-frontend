@@ -22,6 +22,7 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import controllers.predicates.{AuthorisedAction, InYearAction}
 import play.api.Logging
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc._
 import services.{TaskListService, ValidTaxYearListService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -45,7 +46,8 @@ class TaskListPageController @Inject()(inYearAction: InYearAction,
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).async { implicit user =>
     val isInYear: Boolean = inYearAction.inYear(taxYear)
     taskListService.getTaskList(user.nino, taxYear)(hc.withExtraHeaders("MTDITID" -> user.mtditid)).map {
-      case Left(error) => errorHandler.handleError(error.status)
+      case Left(error) =>
+        errorHandler.handleError(error.status)
       case Right(None) =>
         Redirect(appConfig.tailorReturnAddSectionsPageUrl(taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
       case Right(taskListData) =>

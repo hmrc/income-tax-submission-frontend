@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.tasklist
+@this()
 
-import play.api.libs.json.{Json, OFormat}
+@(heading: String, caption: Option[String], extraClasses: String = "")
 
-case class TaskListSection(sectionTitle: SectionTitle,
-                           taskItems: Option[Seq[TaskListSectionItem]],
-                           caption: Option[String] = None,
-                           isSubSection: Option[Boolean] = None,
-                           titleParams: Option[Seq[String]] = None)
-
-object TaskListSection {
-  implicit val format: OFormat[TaskListSection] = Json.format[TaskListSection]
-}
+  <h3 class="govuk-heading-s govuk-!-margin-0 govuk-!-margin-bottom-2 @extraClasses">
+    @heading
+  </h3>
+  @caption.map(content => <span class="govuk-caption-s">@content</span>)
