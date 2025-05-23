@@ -27,7 +27,7 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import views.html.templates.helpers.Heading2
+import views.html.templates.helpers.{Heading2, Heading3}
 
 import javax.inject.Inject
 
@@ -41,30 +41,44 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
   private val tagBlue: String = "govuk-tag--blue"
   private val tagLightBlue: String = "govuk-tag--light-blue"
   private val tagWhite: String = "govuk-tag--white"
-  private val tagGreen: String = "govuk-tag--green"
+  private val tagGrey: String = "govuk-tag--grey"
 
-  def getTaskList: Seq[HtmlFormat.Appendable] = {
+  def getTaskList: Seq[HtmlFormat.Appendable] =
     taskListData match {
       case Some(tasks) =>
-        for (section <- tasks.taskList) yield {
-          val subHeading: String = new Heading2().apply(sectionTitleKeyOps(section.sectionTitle.toString)).body
-
-          val taskItems: String = new GovukTaskList(new GovukTag)(TaskList(
-            section.taskItems.getOrElse(Seq()).map { item =>
-              TaskListItem(
-                title = TaskListItemTitle(Text(sectionItemOps(item.title))),
-                status = itemStatus(item.status),
-                href = item.href,
-                classes = item.title.toString
-              )
+        tasks.taskList.map{
+          section =>
+            val caption: Option[String] = section.caption.map(msg => sectionTitleKeyOps(msg, Nil))
+            val titleParams: Seq[String] = section.titleParams.getOrElse(Nil)
+            val subHeading: String = section.isSubSection match {
+              case Some(true) =>
+                val sub = sectionTitleKeyOps(section.sectionTitle.toString, titleParams)
+                val tradingName = if (titleParams.nonEmpty) titleParams.head else messages("taskList.noTradingName")
+                new Heading3().apply(
+                  sub,
+                  s"$sub for self-employed business $tradingName",
+                  // for now only self-employed can have sub-headings
+                  caption
+                ).body
+              case _ =>
+                new Heading2().apply(sectionTitleKeyOps(section.sectionTitle.toString, titleParams), caption).body
             }
-          )).body
-
-          HtmlFormat.raw(subHeading ++ taskItems)
+            val taskItems: String = new GovukTaskList(new GovukTag)(
+              TaskList(
+                section.taskItems.getOrElse(Seq()).map { item =>
+                  TaskListItem(
+                    title   = TaskListItemTitle(Text(sectionItemOps(item.title))),
+                    status  = itemStatus(item.status),
+                    href    = if (item.status == CannotStartYet) None else item.href,
+                    classes = item.title.toString
+                  )
+                }
+              )
+            ).body
+            HtmlFormat.raw(subHeading ++ taskItems)
         }
       case None => Seq.empty
     }
-  }
 
   def getCompletedText: String = {
     if (isComplete) messages(completedKey) else messages(incompleteKey)
@@ -75,7 +89,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
   }
 
   private def isComplete: Boolean =
-    if ((getCompletedCount.toInt == getAllSectionsCount.toInt) && getAllSectionsCount.toInt > ZERO) true else false
+    (getCompletedCount.toInt == getAllSectionsCount.toInt) && getAllSectionsCount.toInt > ZERO
 
   private def getCompletedCount: String = {
     taskListData match {
@@ -116,6 +130,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
    *  The TaskTitle is meant to provide typesafety in pattern matches and there is no benefit gained
    *  by having this in a map with does not leverage this.
    */
+  // scalastyle:off
   private def sectionItemOps: TaskTitle => String = { taskTitle =>
     Map(
       UkResidenceStatus.toString -> messages(prefix + RESIDENCE_STATUS_KEY),
@@ -125,9 +140,6 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       GiftsOfShares.toString -> messages(prefix + GIFTS_SHARES_SECURITIES_KEY),
       GiftsToOverseas.toString -> messages(prefix + GIFTS_TO_OVERSEAS_CHARITIES_KEY),
       PayeEmployment.toString -> messages(prefix + EMPLOYMENT_KEY),
-      CheckSEDetails.toString -> messages(prefix + CHECK_SE_DETAILS_KEY),
-      IndustrySector.toString -> messages(prefix + INDUSTRY_SECTOR_KEY),
-      YourIncome.toString -> messages(prefix + YOUR_INCOME_KEY),
       CIS.toString -> messages(prefix + CIS_KEY),
       ESA.toString -> messages(prefix + ESA_KEY),
       JSA.toString -> messages(prefix + JSA_KEY),
@@ -154,16 +166,56 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       CloseCompanyLoans.toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY),
       UkProperty.toString -> messages(prefix + UK_PROPERTY_KEY),
       ForeignProperty.toString -> messages(prefix + FOREIGN_PROPERTY_KEY),
-      UkForeignProperty.toString -> messages(prefix + UK_FOREIGN_PROPERTY_KEY)
+      UkForeignProperty.toString -> messages(prefix + UK_FOREIGN_PROPERTY_KEY),
+      CloseCompanyLoans.toString -> messages(prefix + CLOSE_COMPANY_LOANS_KEY),
+      SelfEmpTradeDetails.toString -> messages(prefix + SELF_EMP_TRADE_DETAILS_KEY),
+      SelfEmpAbroad.toString -> messages(prefix + SELF_EMP_ABROAD_KEY),
+      Income.toString -> messages(prefix + INCOME_KEY),
+      ExpensesCategories.toString -> messages(prefix + EXPENSES_CATEGORIES_KEY),
+      ExpensesGoodsToSellOrUse.toString -> messages(prefix + EXPENSES_GOODS_TO_SELL_OR_USE_KEY),
+      ExpensesRunningCosts.toString -> messages(prefix + EXPENSES_RUNNING_COSTS_KEY),
+      ExpensesRepairsMaintenance.toString -> messages(prefix + EXPENSES_REPAIRS_MAINTENANCE_KEY),
+      ExpensesAdvertisingMarketing.toString -> messages(prefix + EXPENSES_ADVERTISING_MARKETING_KEY),
+      ExpensesTravel.toString -> messages(prefix + EXPENSES_TRAVEL_KEY),
+      ExpensesOfficeSupplies.toString -> messages(prefix + EXPENSES_OFFICE_SUPPLIES_KEY),
+      ExpensesEntertainment.toString -> messages(prefix + EXPENSES_ENTERTAINMENT_KEY),
+      ExpensesStaffCosts.toString -> messages(prefix + EXPENSES_STAFF_COSTS_KEY),
+      ExpensesConstruction.toString -> messages(prefix + EXPENSES_CONSTRUCTION_KEY),
+      ExpensesProfessionalFees.toString -> messages(prefix + EXPENSES_PROFESSIONAL_FEES_KEY),
+      ExpensesInterest.toString -> messages(prefix + EXPENSES_INTEREST_KEY),
+      ExpensesOther.toString -> messages(prefix + EXPENSES_OTHER_KEY),
+      ExpensesFinancialCharges.toString -> messages(prefix + EXPENSES_FINANCIAL_CHARGES_KEY),
+      ExpensesDebts.toString -> messages(prefix + EXPENSES_DEBTS_KEY),
+      ExpensesDepreciation.toString -> messages(prefix + EXPENSES_DEPRECIATION_KEY),
+      CapitalAllowancesTailoring.toString -> messages(prefix + CAPITAL_ALLOWANCES_TAILORING_KEY),
+      CapitalAllowancesBalancing.toString -> messages(prefix + CAPITAL_ALLOWANCES_BALANCING_KEY),
+      CapitalAllowancesBalancingCharge.toString -> messages(prefix + CAPITAL_ALLOWANCES_BALANCING_CHARGE_KEY),
+      CapitalAllowancesWritingDown.toString -> messages(prefix + CAPITAL_ALLOWANCES_WRITING_DOWN_KEY),
+      CapitalAllowancesAIA.toString -> messages(prefix + CAPITAL_ALLOWANCES_AIA_KEY),
+      CapitalAllowancesSpecialTaxSites.toString -> messages(prefix + CAPITAL_ALLOWANCES_SPECIAL_TAX_SITES_KEY),
+      CapitalAllowancesBuildings.toString -> messages(prefix + CAPITAL_ALLOWANCES_BUILDINGS_KEY),
+      AdjustmentsProfitOrLoss.toString -> messages(prefix + ADJUSTMENTS_PROFIT_OR_LOSS_KEY),
     )(taskTitle.toString)
   }
 
-  private def sectionTitleKeyOps: String => String = { key =>
+  private def sectionTitleKeyOps(key: String, params: Seq[String]): String = {
     Map(
       AboutYouTitle.toString -> messages(prefix + ABOUT_YOU_TITLE_KEY),
       CharitableDonationsTitle.toString -> messages(prefix + CHARITABLE_DONATIONS_TITLE_KEY),
       EmploymentTitle.toString -> messages(prefix + EMPLOYMENT_TITLE_KEY),
       SelfEmploymentTitle.toString -> messages(prefix + SELF_EMPLOYMENT_TITLE_KEY),
+      SelfEmploymentTitle.toString -> {
+        if(params.isEmpty){
+          "Self-Employment" //this is a temp fix for CIS until the proper fix. It will not work for Welsh
+        } else {
+          val msg = messages(prefix + SELF_EMPLOYMENT_TITLE_KEY, params: _*)
+          if (msg.isEmpty) messages(prefix + "noTradingName") else msg
+        }
+      },
+      SelfEmploymentCaption.toString -> messages(prefix + SELF_EMPLOYMENT_CAPTION_KEY, params: _*),
+      ExpensesTitle.toString -> messages(prefix + EXPENSES_TITLE_KEY),
+      CapitalAllowancesTitle.toString -> messages(prefix + CAPITAL_ALLOWANCES_TITLE_KEY),
+      AdjustmentsTitle.toString -> messages(prefix + ADJUSTMENTS_TITLE_KEY),
       EsaTitle.toString -> messages(prefix + ESA_TITLE_KEY),
       JsaTitle.toString -> messages(prefix + JSA_TITLE_KEY),
       PensionsTitle.toString -> messages(prefix + PENSIONS_TITLE_KEY),
@@ -191,6 +243,9 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
     case status@TaskStatus.CheckNow =>
       TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
         classes = tagBlue)))
+    case status@TaskStatus.CannotStartYet =>
+      TaskListItemStatus(Some(Tag(content = HtmlContent(messages(status.toString)),
+        classes = tagGrey)))
     case status@TaskStatus.UnderMaintenance =>
       TaskListItemStatus(content = HtmlContent(messages(status.toString)),
         classes = tagWhite)
