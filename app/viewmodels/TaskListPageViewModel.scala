@@ -206,7 +206,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       SelfEmploymentTitle.toString -> messages(prefix + SELF_EMPLOYMENT_TITLE_KEY),
       SelfEmploymentTitle.toString -> {
         if(params.isEmpty){
-          "Self-Employment" //this is a temp fix for CIS until the proper fix. It will not work for Welsh
+          messages("Self-Employment") //this is a temp fix for CIS until the proper fix. It will not work for Welsh
         } else {
           val msg = messages(prefix + SELF_EMPLOYMENT_TITLE_KEY, params: _*)
           if (msg.isEmpty) messages(prefix + "noTradingName") else msg
