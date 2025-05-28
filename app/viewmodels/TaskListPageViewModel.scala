@@ -43,7 +43,6 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
   private val tagWhite: String = "govuk-tag--white"
   private val tagGrey: String = "govuk-tag--grey"
 
-  // scalastyle:off
   def getTaskList: Seq[HtmlFormat.Appendable] =
     taskListData match {
       case Some(tasks) =>
@@ -131,7 +130,6 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
    *  The TaskTitle is meant to provide typesafety in pattern matches and there is no benefit gained
    *  by having this in a map with does not leverage this.
    */
-  // scalastyle:off
   private def sectionItemOps: TaskTitle => String = { taskTitle =>
     Map(
       UkResidenceStatus.toString -> messages(prefix + RESIDENCE_STATUS_KEY),
