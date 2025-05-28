@@ -43,6 +43,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
   private val tagWhite: String = "govuk-tag--white"
   private val tagGrey: String = "govuk-tag--grey"
 
+  // scalastyle:off
   def getTaskList: Seq[HtmlFormat.Appendable] =
     taskListData match {
       case Some(tasks) =>
