@@ -195,7 +195,7 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       CapitalAllowancesAIA.toString -> messages(prefix + CAPITAL_ALLOWANCES_AIA_KEY),
       CapitalAllowancesSpecialTaxSites.toString -> messages(prefix + CAPITAL_ALLOWANCES_SPECIAL_TAX_SITES_KEY),
       CapitalAllowancesBuildings.toString -> messages(prefix + CAPITAL_ALLOWANCES_BUILDINGS_KEY),
-      AdjustmentsProfitOrLoss.toString -> messages(prefix + ADJUSTMENTS_PROFIT_OR_LOSS_KEY),
+      AdjustmentsProfitOrLoss.toString -> messages(prefix + ADJUSTMENTS_PROFIT_OR_LOSS_KEY)
     )(taskTitle.toString)
   }
 
@@ -229,7 +229,6 @@ case class TaskListPageViewModel @Inject()(taskListData: Option[TaskListModel], 
       UkForeignPropertyTitle.toString -> messages(prefix + UK_FOREIGN_PROPERTY_TITLE_KEY)
     )(key)
   }
-
 
   private def itemStatus: TaskStatus => TaskListItemStatus = {
     case status@TaskStatus.NotStarted =>
