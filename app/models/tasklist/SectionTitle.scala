@@ -35,6 +35,14 @@ object SectionTitle extends Enum[SectionTitle] with PlayJsonEnum[SectionTitle] {
 
   case object SelfEmploymentTitle extends SectionTitle("SelfEmployment")
 
+  case object SelfEmploymentCaption extends SectionTitle("SelfEmploymentCaption")
+
+  case object ExpensesTitle extends SectionTitle("Expenses")
+
+  case object CapitalAllowancesTitle extends SectionTitle("CapitalAllowances")
+
+  case object AdjustmentsTitle extends SectionTitle("Adjustments")
+
   case object EsaTitle extends SectionTitle("Esa")
 
   case object JsaTitle extends SectionTitle("Jsa")

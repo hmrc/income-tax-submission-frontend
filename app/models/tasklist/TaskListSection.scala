@@ -18,7 +18,11 @@ package models.tasklist
 
 import play.api.libs.json.{Json, OFormat}
 
-case class TaskListSection(sectionTitle: SectionTitle, taskItems: Option[Seq[TaskListSectionItem]])
+case class TaskListSection(sectionTitle: SectionTitle,
+                           taskItems: Option[Seq[TaskListSectionItem]],
+                           caption: Option[String] = None,
+                           isSubSection: Option[Boolean] = None,
+                           titleParams: Option[Seq[String]] = None)
 
 object TaskListSection {
   implicit val format: OFormat[TaskListSection] = Json.format[TaskListSection]
