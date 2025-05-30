@@ -34,6 +34,7 @@ trait SessionDataHelper extends Logging {
       Json.parse(stringValue).asOpt[T]
     }
   }
+
   def withSessionId[A](block: String => Future[Result])
                       (implicit request: Request[A], hc: HeaderCarrier): Future[Result] =
     hc.sessionId.map(_.value).orElse(request.headers.get(SessionKeys.sessionId)).fold {

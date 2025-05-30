@@ -22,8 +22,6 @@ import org.scalatest.TestSuite
 import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{Request, Result}
 
-import scala.concurrent.Future
-
 trait MockErrorHandler extends MockFactory { _: TestSuite =>
 
   protected val mockErrorHandler: ErrorHandler = mock[ErrorHandler]

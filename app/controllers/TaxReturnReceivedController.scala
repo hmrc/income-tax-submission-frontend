@@ -45,8 +45,6 @@ class TaxReturnReceivedController @Inject()(val authorisedAction: AuthorisedActi
                                             implicit val errorHandler: ErrorHandler) extends FrontendController(mcc)
   with I18nSupport with SessionDataHelper with ImplicitDateFormatter {
 
-//  lazy val logger: Logger = Logger.apply(this.getClass)
-
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).apply { implicit user =>
 
     val summaryDataReceived: Option[TaxReturnReceivedModel] = getSessionData[TaxReturnReceivedModel](SessionValues.SUMMARY_DATA)

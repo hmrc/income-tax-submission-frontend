@@ -72,8 +72,6 @@ class NrsServiceSpec extends UnitTest {
           .expects(nino, nrsSubmissionModel, "", headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "No user agent provided"), writesObject)
           .returning(Future.successful(expectedResult))
 
-        //val request: Request[_] = FakeRequest()
-
         val result = await(service.submit(nino, nrsSubmissionModel, mtditid, ""))
 
         result shouldBe expectedResult

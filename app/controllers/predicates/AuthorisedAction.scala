@@ -44,7 +44,7 @@ class AuthorisedAction @Inject()(
                                 (implicit val authService: AuthService,
                                  val appConfig: AppConfig,
                                  val mcc: MessagesControllerComponents
-                                ) extends ActionBuilder[User, AnyContent] with I18nSupport with SessionDataHelper{
+                                ) extends ActionBuilder[User, AnyContent] with I18nSupport with SessionDataHelper {
 
   implicit val executionContext: ExecutionContext = mcc.executionContext
   implicit val messagesApi: MessagesApi = mcc.messagesApi
@@ -55,16 +55,15 @@ class AuthorisedAction @Inject()(
 
   private val signInRedirectFutureResult: Future[Result] = Future.successful(Redirect(appConfig.signInUrl))
 
-
   override def invokeBlock[A](request: Request[A], block: User[A] => Future[Result]): Future[Result] = {
 
     implicit val req: Request[A] = request
     implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request,request.session)
-
     withSessionId { sessionId =>
       authService.authorised().retrieve(affinityGroup) {
         case Some(AffinityGroup.Agent) => agentAuthentication(block, sessionId)(request, headerCarrier)
         case Some(individualUser) => individualAuthentication(block, individualUser, sessionId)(request, headerCarrier)
+        case _ => Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show))
       } recover {
         case _: NoActiveSession =>
           Redirect(appConfig.signInUrl)
@@ -97,11 +96,9 @@ class AuthorisedAction @Inject()(
             logger.warn("[AuthorisedAction][individualAuthentication] - User has no MTD IT enrolment. Redirecting user to sign up for MTD.")
             Future.successful(Redirect(controllers.errors.routes.IndividualAuthErrorController.show))
         }
-
       case _ =>
         logger.warn("[AuthorisedAction][individualAuthentication] User has confidence level below 250, routing user to IV uplift.")
         Future(Redirect(routes.IVUpliftController.initialiseJourney))
-
     }
   }
 

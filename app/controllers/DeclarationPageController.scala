@@ -49,8 +49,6 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                                           implicit val errorHandler: ErrorHandler,
                                           auditService: AuditService) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
 
-//  lazy val logger: Logger = Logger.apply(this.getClass)
-
   val maxNrsAttempts = 3
   val interval = 100
 

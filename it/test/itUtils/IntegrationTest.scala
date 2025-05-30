@@ -245,15 +245,12 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
     new MockAuthConnector(stubbedRetrieval)
   )
 
-  def authAction(
-                  stubbedRetrieval: Future[_]
-                ): AuthorisedAction = new AuthorisedAction(
+  def authAction(stubbedRetrieval: Future[_]): AuthorisedAction = new AuthorisedAction(
     agentAuthErrorPage,
     supportingAgentAuthErrorPage,
     errorHandler,
     sessionDataService
   )(authService(stubbedRetrieval), appConfig, mcc)
-
 
   def stubIncomeSources(incomeSources: IncomeSourcesModel, status: Int = OK): StubMapping = {
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", status, Json.toJson(incomeSources).toString())
