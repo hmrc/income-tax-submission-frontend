@@ -16,13 +16,13 @@
 
 package config
 
-import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
 import utils.TaxYearHelper
 
 //noinspection ScalaStyle
-class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
+@deprecated("Use `ScalamockAppConfig` instead, rather than this concrete class instance. Future refactor to remove this")
+class MockAppConfig extends AppConfig with TaxYearHelper {
 
   override lazy val signInContinueUrl: String = "/signInContinue"
   override lazy val signInUrl: String = "/signIn"
@@ -32,6 +32,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override lazy val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
   override lazy val tailorReturnBaseUrl: String = "http://localhost:10007"
   override lazy val tailorReturnServiceUrl: String = s"$tailorReturnBaseUrl/update-and-submit-income-tax-return/tailored-return"
+
+  override val sessionCookieServiceEnabled: Boolean = false
 
   override lazy val incomeTaxCalculationServiceUrl: String = "/income-tax-calculation/income-tax"
   lazy val additionalInformationTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/additional-information"
@@ -67,6 +69,8 @@ class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
   override def viewAndChangeFinalCalculationUrlAgent(taxYear: Int): String = {
     s"/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview-and-declaration/calculate"
   }
+
+  override lazy val incomeTaxSubmissionIvRedirect: String = "/update-and-submit-income-tax-return/iv-uplift"
 
   override val vcSessionServiceBaseUrl: String = "/incomeTaxSessionData"
 

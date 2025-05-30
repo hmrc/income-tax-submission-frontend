@@ -27,7 +27,7 @@ import utils.SessionDataHelper
 import java.net.URI
 import scala.util.Try
 
-class LanguageSwitchController @Inject()(appConfig: AppConfig,
+class LanguageSwitchController @Inject()(val appConfig: AppConfig,
                                          override implicit val messagesApi: MessagesApi,
                                          val controllerComponents: MessagesControllerComponents
                                         ) extends FrontendBaseController with I18nSupport with SessionDataHelper{

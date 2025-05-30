@@ -18,9 +18,13 @@ package mocks
 
 import config.ErrorHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
+import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{Request, Result}
 
-trait MockErrorHandler extends MockFactory {
+import scala.concurrent.Future
+
+trait MockErrorHandler extends MockFactory { _: TestSuite =>
 
   protected val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
 
@@ -28,5 +32,11 @@ trait MockErrorHandler extends MockFactory {
     (mockErrorHandler.internalServerError()(_: Request[_]))
       .expects(*)
       .returns(result)
+  }
+
+  def mockInternalServerError(): Unit = {
+    (mockErrorHandler.internalServerError()(_: Request[_]))
+      .expects(*)
+      .returns(InternalServerError("There is a problem."))
   }
 }

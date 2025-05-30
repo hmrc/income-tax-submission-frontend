@@ -28,7 +28,7 @@ class TaskListServiceSpec extends UnitTest {
   val connector: TaskListConnector = mock[TaskListConnector]
   val service: TaskListService = new TaskListService(connector)
   val invalidTaxYear: Int = 1999
-  val nino: String = "AA123456A"
+  override val nino: String = "AA123456A"
 
   ".getTaskList" should {
 

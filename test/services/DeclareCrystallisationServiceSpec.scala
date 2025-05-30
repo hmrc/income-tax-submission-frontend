@@ -29,7 +29,7 @@ class DeclareCrystallisationServiceSpec extends UnitTest {
   val service: DeclareCrystallisationService = new DeclareCrystallisationService(connector)
 
 
-  val nino: String = "123456789"
+  override val nino: String = "123456789"
   val taxYear: Int = 1999
   val mtditid: String = "968501689"
   val calculationId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"

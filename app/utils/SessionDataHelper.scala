@@ -16,13 +16,28 @@
 
 package utils
 
+import config.AppConfig
+import play.api.Logging
 import play.api.libs.json.{Json, Reads}
-import play.api.mvc.Request
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Request, Result}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
-trait SessionDataHelper {
+import scala.concurrent.Future
+
+trait SessionDataHelper extends Logging {
+
+  val appConfig: AppConfig
+
   def getSessionData[T](key: String)(implicit request: Request[_], reads: Reads[T]): Option[T] = {
     request.session.get(key).flatMap { stringValue =>
       Json.parse(stringValue).asOpt[T]
     }
   }
+  def withSessionId[A](block: String => Future[Result])
+                      (implicit request: Request[A], hc: HeaderCarrier): Future[Result] =
+    hc.sessionId.map(_.value).orElse(request.headers.get(SessionKeys.sessionId)).fold {
+      logger.info("[SessionHelper][withSessionId] No session ID was found for the request. Redirecting user to login")
+      Future.successful(Redirect(appConfig.signInUrl))
+    }(block)
 }

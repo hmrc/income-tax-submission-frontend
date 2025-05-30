@@ -22,7 +22,7 @@ import utils.UnitTest
 class ResearchUserSpec extends UnitTest {
 
   val taxYear = 2021
-  val nino = "AA000000A"
+  override val nino = "AA000000A"
   val credentialStrength: CredentialStrength = CS_Strong
   val confidenceLevel: ConfidenceLevel = L250
   val affinityGroup: AffinityGroup = AG_Individual
