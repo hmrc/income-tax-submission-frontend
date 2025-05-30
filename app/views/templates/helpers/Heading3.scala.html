@@ -16,9 +16,11 @@
 
 @this()
 
-@(heading: String, caption: Option[String], extraClasses: String)
+@(heading: String, ariaLabel:String, caption: Option[String], extraClasses: String = "")
 
-  @caption.map(content => <span class="govuk-caption-m">{content}</span>).getOrElse("")
-  <h2 class="govuk-heading-m govuk-!-margin-0 govuk-!-margin-bottom-2 @extraClasses">
+  <h3 class="govuk-heading-s govuk-!-margin-0 govuk-!-margin-bottom-2 @extraClasses"
+      aria-label="@ariaLabel"
+  >
     @heading
-  </h2>
+  </h3>
+  @caption.map(content => <span class="govuk-caption-s">{content}</span>).getOrElse("")

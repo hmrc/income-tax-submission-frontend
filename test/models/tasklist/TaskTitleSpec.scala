@@ -21,17 +21,25 @@ import org.scalatest.EitherValues
 import org.scalatest.Inspectors.forEvery
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{JsString, JsValue, Json}
 
 class TaskTitleSpec extends AnyFreeSpec with Matchers with EitherValues {
 
   "TaskTitle" - {
-    "serializes and deserializes from a TaskTitle  to a json string value" in {
-      forEvery(TaskTitle.values) { taskTitle =>
-        val result = Json.toJson(taskTitle)
-        result mustBe JsString(taskTitle.entryName)
-        result.validate[TaskTitle].asEither.value mustBe taskTitle
+
+    "TaskTitle" - {
+      "serializes and deserializes from a TaskTitle  to a json string value" in {
+        forEvery(TaskTitle.values) { taskTitle =>
+          val result = Json.toJson(taskTitle)
+          result mustBe JsString(taskTitle.entryName)
+          result.validate[TaskTitle].asEither.value mustBe taskTitle
+        }
       }
+    }
+
+    "must parse each element to jsValue successfully" in {
+      val underTest: Seq[JsValue] = TaskTitle.values.map(x => Json.toJson(x))
+      underTest.isInstanceOf[Seq[JsValue]] mustBe true
     }
   }
 

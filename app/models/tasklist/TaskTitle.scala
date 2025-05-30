@@ -43,9 +43,6 @@ object TaskTitle extends Enum[TaskTitle] with PlayJsonEnum[TaskTitle] {
   case object PayeEmployment extends TaskTitle("PayeEmploymentTitle")
 
   // Self-employment
-  case object CheckSEDetails extends TaskTitle("CheckSEDetailsTitle")
-  case object IndustrySector extends TaskTitle("IndustrySectorTitle")
-  case object YourIncome extends TaskTitle("YourIncomeTitle")
   case object CIS extends TaskTitle("CISTitle")
 
   // Esa
@@ -107,5 +104,34 @@ object TaskTitle extends Enum[TaskTitle] with PlayJsonEnum[TaskTitle] {
   case object ForeignProperty extends TaskTitle("ForeignPropertyTitle")
 
   case object UkForeignProperty extends TaskTitle("UkForeignPropertyTitle")
+
+
+  case object SelfEmpTradeDetails extends TaskTitle("trade-details")
+  case object SelfEmpAbroad extends TaskTitle("self-employment-abroad")
+  case object Income extends TaskTitle("income")
+  case object ExpensesCategories extends TaskTitle("expenses-categories")
+  case object ExpensesGoodsToSellOrUse extends TaskTitle("expenses-goods-to-sell-or-use")
+  case object ExpensesRunningCosts extends TaskTitle("expenses-workplace-running-costs")
+  case object ExpensesRepairsMaintenance extends TaskTitle("expenses-repairs-and-maintenance")
+  case object ExpensesAdvertisingMarketing extends TaskTitle("expenses-advertising-marketing")
+  case object ExpensesTravel extends TaskTitle("travel-expenses")
+  case object ExpensesOfficeSupplies extends TaskTitle("expenses-office-supplies")
+  case object ExpensesEntertainment extends TaskTitle("expenses-entertainment")
+  case object ExpensesStaffCosts extends TaskTitle("expenses-staff-costs")
+  case object ExpensesConstruction extends TaskTitle("expenses-construction")
+  case object ExpensesProfessionalFees extends TaskTitle("expenses-professional-fees")
+  case object ExpensesInterest extends TaskTitle("expenses-interest")
+  case object ExpensesOther extends TaskTitle("expenses-other-expenses")
+  case object ExpensesFinancialCharges extends TaskTitle("expenses-financial-charges")
+  case object ExpensesDebts extends TaskTitle("expenses-irrecoverable-debts")
+  case object ExpensesDepreciation extends TaskTitle("expenses-depreciation")
+  case object CapitalAllowancesTailoring extends TaskTitle("capital-allowances-tailoring")
+  case object CapitalAllowancesBalancing extends TaskTitle("capital-allowances-balancing-allowance")
+  case object CapitalAllowancesBalancingCharge extends TaskTitle("capital-allowances-balancing-charge")
+  case object CapitalAllowancesWritingDown extends TaskTitle("capital-allowances-writing-down-allowance")
+  case object CapitalAllowancesAIA extends TaskTitle("capital-allowances-annual-investment-allowance")
+  case object CapitalAllowancesSpecialTaxSites extends TaskTitle("capital-allowances-special-tax-sites")
+  case object CapitalAllowancesBuildings extends TaskTitle("capital-allowances-structures-buildings")
+  case object AdjustmentsProfitOrLoss extends TaskTitle("profit-or-loss")
 
 }

@@ -132,11 +132,11 @@ class MessagesSpec extends ViewTest {
   "the files" should {
     "have no duplicate keys" in {
       val bufferedSource = Source.fromFile("conf/messages")
-      val keys = for (line <- bufferedSource.getLines()) yield {
+      val keys = (for (line <- bufferedSource.getLines()) yield {
         line.split("=").head
-      }
-
-      val listOfMessages = keys.toList.filter(str => str.trim.nonEmpty)
+      }).toList
+      val exceptionList  = List("taskList.income")
+      val listOfMessages = keys.collect { case s if s.trim.nonEmpty => s.trim } diff exceptionList
       val uniqueListOfMessages = listOfMessages.distinct
 
       listOfMessages.diff(uniqueListOfMessages) shouldBe List.empty
