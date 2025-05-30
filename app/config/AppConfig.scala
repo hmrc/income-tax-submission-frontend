@@ -47,6 +47,11 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   lazy val additionalInformationSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.additionalInformationFrontendUrl)
   lazy val additionalInformationSubmissionUrl: String =s"$additionalInformationSubmissionBaseUrl/update-and-submit-income-tax-return/additional-information"
 
+  lazy val sessionCookieServiceEnabled: Boolean = servicesConfig.getBoolean("feature-switch.sessionCookieServiceEnabled")
+
+  def incomeTaxSubmissionIvRedirect: String = incomeTaxSubmissionBaseUrl +
+    servicesConfig.getString("microservice.iv-redirect")
+
   //Income tax calculation service
   lazy val incomeTaxCalculationServiceUrl: String = s"$calculationBaseUrl/income-tax-calculation/income-tax"
 
@@ -224,19 +229,19 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
 @ImplementedBy(classOf[FrontendAppConfig])
 trait AppConfig {
   def defaultTaxYear: Int
-  val signInContinueUrl: String
+  def signInContinueUrl: String
   def signInUrl: String
-  val alwaysEOY: Boolean
+  def alwaysEOY: Boolean
 
-  val calculationBaseUrl: String
-  val nrsProxyBaseUrl: String
+  def calculationBaseUrl: String
+  def nrsProxyBaseUrl: String
 
-  val incomeTaxSubmissionBaseUrl: String
-  val incomeTaxSubmissionUrl: String
-  val personalIncomeTaxSubmissionBaseUrl: String
-  val personalIncomeTaxSubmissionUrl: String
+  def incomeTaxSubmissionBaseUrl: String
+  def incomeTaxSubmissionUrl: String
+  def personalIncomeTaxSubmissionBaseUrl: String
+  def personalIncomeTaxSubmissionUrl: String
 
-  val incomeTaxCalculationServiceUrl: String
+  def incomeTaxCalculationServiceUrl: String
   def personalIncomeTaxDividendsUrl(taxYear: Int): String
   def personalIncomeTaxDividendsTailorPage(taxYear: Int): String
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String
@@ -252,37 +257,41 @@ trait AppConfig {
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidGatewayUrl(taxYear: Int): String
 
+  def incomeTaxSubmissionIvRedirect: String
+
+  def sessionCookieServiceEnabled: Boolean
+
   def getExcludedJourneysUrl(taxYear: Int, nino: String): String
   def clearExcludedJourneysUrl(taxYear: Int, nino: String): String
 
-  val employmentIncomeTaxSubmissionBaseUrl: String
-  val employmentIncomeTaxSubmissionUrl: String
+  def employmentIncomeTaxSubmissionBaseUrl: String
+  def employmentIncomeTaxSubmissionUrl: String
   def employmentFEUrl(taxYear: Int): String
   def employmentFEGatewayUrl(taxYear: Int): String
 
-  val cisIncomeTaxSubmissionBaseUrl: String
-  val cisIncomeTaxSubmissionUrl: String
+  def cisIncomeTaxSubmissionBaseUrl: String
+  def cisIncomeTaxSubmissionUrl: String
   def cisFEUrl(taxYear: Int): String
   def cisFEGatewayUrl(taxYear: Int): String
 
-  val pensionsFrontendBaseUrl: String
-  val pensionsFrontendUrl: String
+  def pensionsFrontendBaseUrl: String
+  def pensionsFrontendUrl: String
   def pensionsSummaryUrl(taxYear: Int): String
 
-  val stateBenefitsBaseUrl: String
-  val stateBenefitsUrl: String
+  def stateBenefitsBaseUrl: String
+  def stateBenefitsUrl: String
   def stateBenefitsFEUrl(taxYear: Int): String
 
-  val selfEmploymentBaseUrl: String
-  val selfEmploymentUrl: String
+  def selfEmploymentBaseUrl: String
+  def selfEmploymentUrl: String
 
   def selfEmploymentFEUrl(taxYear: Int): String
 
-  val propertyBaseUrl: String
-  val propertyUrl: String
+  def propertyBaseUrl: String
+  def propertyUrl: String
   def propertyFEUrl(taxYear: Int): String
 
-  val vcBaseUrl: String
+  def vcBaseUrl: String
   def viewAndChangeViewUrl: String
   def viewAndChangeViewInYearEstimateUrl: String
   def viewAndChangeEnterUtrUrl: String
@@ -296,7 +305,7 @@ trait AppConfig {
 
   def vcSessionServiceBaseUrl: String
 
-  val incomeTaxSubmissionFrontendUrl: String
+  def incomeTaxSubmissionFrontendUrl: String
   def overviewUrl(taxYear: Int): String
 
   def contactFormServiceIdentifier(implicit isAgent: Boolean): String
@@ -307,15 +316,15 @@ trait AppConfig {
 
   def contactUrl(implicit isAgent: Boolean): String
 
-  val signOutUrl: String
+  def signOutUrl: String
 
-  val ivSuccessUrl: String
-  val ivFailureUrl: String
+  def ivSuccessUrl: String
+  def ivFailureUrl: String
 
-  val ivUpliftUrl: String
+  def ivUpliftUrl: String
 
-  val timeoutDialogTimeout: Int
-  val timeoutDialogCountdown: Int
+  def timeoutDialogTimeout: Int
+  def timeoutDialogCountdown: Int
 
   def taxYearErrorFeature: Boolean
 
@@ -326,45 +335,45 @@ trait AppConfig {
   val welshToggleEnabled: Boolean
 
   //Enabled income sources
-  val dividendsEnabled: Boolean
-  val interestEnabled: Boolean
-  val interestSavingsEnabled: Boolean
-  val giftAidEnabled: Boolean
-  val giftAidReleased: Boolean
-  val gainsEnabled: Boolean
-  val gainsReleased: Boolean
-  val stockDividendsEnabled: Boolean
-  val stockDividendsReleased: Boolean
-  val studentLoansEnabled: Boolean
-  val employmentEnabled: Boolean
-  val employmentReleased: Boolean
-  val employmentEOYEnabled: Boolean
-  val cisEnabled: Boolean
-  val cisReleased: Boolean
-  val pensionsEnabled: Boolean
-  val pensionsReleased: Boolean
-  val propertyEnabled: Boolean
-  val propertyReleased: Boolean
-  val stateBenefitsEnabled: Boolean
-  val stateBenefitsReleased: Boolean
-  val selfEmploymentEnabled: Boolean
-  val selfEmploymentReleased: Boolean
-  val nrsEnabled: Boolean
-  val crystallisationEnabled: Boolean
-  val tailoringEnabled: Boolean
+  def dividendsEnabled: Boolean
+  def interestEnabled: Boolean
+  def interestSavingsEnabled: Boolean
+  def giftAidEnabled: Boolean
+  def giftAidReleased: Boolean
+  def gainsEnabled: Boolean
+  def gainsReleased: Boolean
+  def stockDividendsEnabled: Boolean
+  def stockDividendsReleased: Boolean
+  def studentLoansEnabled: Boolean
+  def employmentEnabled: Boolean
+  def employmentReleased: Boolean
+  def employmentEOYEnabled: Boolean
+  def cisEnabled: Boolean
+  def cisReleased: Boolean
+  def pensionsEnabled: Boolean
+  def pensionsReleased: Boolean
+  def propertyEnabled: Boolean
+  def propertyReleased: Boolean
+  def stateBenefitsEnabled: Boolean
+  def stateBenefitsReleased: Boolean
+  def selfEmploymentEnabled: Boolean
+  def selfEmploymentReleased: Boolean
+  def nrsEnabled: Boolean
+  def crystallisationEnabled: Boolean
+  def tailoringEnabled: Boolean
 
   //Tailor return Phase2
-  val tailoringPhase2Enabled: Boolean
-  val tailorReturnBaseUrl: String
-  val tailorReturnServiceUrl: String
+  def tailoringPhase2Enabled: Boolean
+  def tailorReturnBaseUrl: String
+  def tailorReturnServiceUrl: String
   def tailorReturnStartPageUrl(taxYear: Int): String
   def tailorReturnAddSectionsPageUrl(taxYear: Int): String
 
   def excludedIncomeSources(taxYear: Int): Seq[String]
 
-  val useEncryption: Boolean
-  val encryptionKey: String
+  def useEncryption: Boolean
+  def encryptionKey: String
   def mongoTTL: Long
   //Test Only
-  val testOnly_authLoginUrl: String
+  def testOnly_authLoginUrl: String
 }

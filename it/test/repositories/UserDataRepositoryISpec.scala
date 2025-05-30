@@ -71,7 +71,7 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
 
     "update a document in the collection" in new EmptyDatabase {
       val testUser: User[AnyContent] = User(
-        mtditid, None, nino, sessionId
+        mtditid, None, nino, "individual", sessionId
       )(fakeRequest)
 
       val initialData: TailoringUserDataModel = TailoringUserDataModel(
@@ -117,7 +117,7 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
     )
 
     val testUser = User(
-      mtditid, None, nino, sessionId
+      mtditid, None, nino, "individual", sessionId
     )(fakeRequest)
 
     "get a document" in {

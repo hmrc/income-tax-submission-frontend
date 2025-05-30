@@ -75,7 +75,7 @@ class LiabilityCalculationServiceSpec extends UnitTest {
 
   }
   val mtditid = "1234567890"
-  val nino = "AA123456A"
+  override val nino = "AA123456A"
   val calculationId = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
   private val dateNow: LocalDate = LocalDate.now()
   private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")

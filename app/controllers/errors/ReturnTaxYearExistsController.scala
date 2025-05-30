@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 @Singleton
 class ReturnTaxYearExistsController @Inject()(val authorisedAction: AuthorisedAction,
-                                               val mcc: MessagesControllerComponents,
+                                              val mcc: MessagesControllerComponents,
                                               val returnTaxYearExistsView: ReturnTaxYearExistsView,
                                               implicit val inYearAction: InYearAction,
                                               implicit val appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {

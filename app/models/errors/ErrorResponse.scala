@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package models.errors
 
-import play.api.mvc.{Request, WrappedRequest}
+import scala.util.control.NoStackTrace
 
-case class User[T](mtditid: String,
-                   arn: Option[String],
-                   nino: String,
-                   affinityGroup: String,
-                   sessionId: String,
-                   isSecondaryAgent: Boolean = false)
-                  (implicit request: Request[T]) extends WrappedRequest[T](request) {
-  def isAgent: Boolean = arn.nonEmpty
+sealed trait ErrorResponse {
+  val message: String
+  val statusCode: Option[Int] = None
 }
+
+case class MissingAgentClientDetails(message: String) extends Exception(message) with NoStackTrace with ErrorResponse

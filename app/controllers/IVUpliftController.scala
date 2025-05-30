@@ -34,7 +34,7 @@ import utils.SessionDataHelper
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IVUpliftController @Inject()(implicit appConfig: AppConfig,
+class IVUpliftController @Inject()(implicit val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents,
                                    auditService: AuditService,
                                    implicit val authService: AuthService,

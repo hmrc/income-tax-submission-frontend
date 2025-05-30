@@ -166,7 +166,7 @@ trait WireMockHelper {
 
   def unauthorisedIndividualInsufficientConfidenceLevel(withNino: Boolean = true): StubMapping = {
     stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), None, Seq.empty[JsObject]: _*)))
-    stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(None, Some(ConfidenceLevel.L50), Seq(mtditEnrolment, ninoEnrolment): _*)))
+    stubPost(authoriseUri, OK, Json.prettyPrint(successfulAuthResponse(Some(AffinityGroup.Individual), Some(ConfidenceLevel.L50), Seq(mtditEnrolment, ninoEnrolment): _*)))
   }
 
   def unauthorisedInactiveSession(): StubMapping = {

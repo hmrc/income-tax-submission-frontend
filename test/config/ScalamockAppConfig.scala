@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,20 @@
  * limitations under the License.
  */
 
-package mocks
+package config
 
-import config.ErrorHandler
+import org.scalamock.handlers.CallHandler0
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import play.api.mvc.Results.InternalServerError
-import play.api.mvc.{Request, Result}
 
-trait MockErrorHandler extends MockFactory { _: TestSuite =>
+//TODO: This should be renamed to `MockAppConfig` but it is dependent on the existing `MockAppConfig` in the project being
+//      refactored and removed as per the deprecation notice in the `MockAppConfig` class.
+trait ScalamockAppConfig extends MockFactory { _: TestSuite =>
 
-  protected val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
+  val scalamockAppConfig: AppConfig = mock[AppConfig]
 
-  def mockInternalServerError(result: Result): Unit = {
-    (mockErrorHandler.internalServerError()(_: Request[_]))
-      .expects(*)
-      .returns(result)
-  }
-
-  def mockInternalServerError(): Unit = {
-    (mockErrorHandler.internalServerError()(_: Request[_]))
-      .expects(*)
-      .returns(InternalServerError("There is a problem."))
-  }
+  def mockSessionServiceEnabled(response: Boolean): CallHandler0[Boolean] =
+    (() => scalamockAppConfig.sessionCookieServiceEnabled)
+      .expects()
+      .returning(response)
 }

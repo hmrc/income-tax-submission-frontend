@@ -32,7 +32,7 @@ import views.html.errors.IVFailurePage
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class IVFailureController @Inject()(implicit appConfig: AppConfig,
+class IVFailureController @Inject()(implicit val appConfig: AppConfig,
                                     mcc: MessagesControllerComponents,
                                     view: IVFailurePage,
                                     auditService: AuditService,

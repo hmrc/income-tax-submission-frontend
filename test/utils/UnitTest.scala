@@ -22,6 +22,7 @@ import config.{AppConfig, MockAppConfig, MockAppConfigTaxYearFeatureOff}
 import controllers.predicates.InYearAction
 import models._
 import models.employment._
+import models.session.UserSessionData
 import models.tasklist._
 import org.apache.pekko.actor.ActorSystem
 import org.scalamock.scalatest.MockFactory
@@ -32,6 +33,7 @@ import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
 import play.api.test.Helpers.{CONFLICT, FORBIDDEN, INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE}
 import play.api.test.{FakeRequest, Helpers}
 import services.AuthService
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
@@ -39,8 +41,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAndAfterEach {
 
@@ -53,9 +54,13 @@ trait UnitTest extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
 
   implicit val actorSystem: ActorSystem = ActorSystem()
 
-  def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
+  val mtdItId: String = "1234567890"
+  val nino: String = "AA123456A"
+  val utr: String = "9999912345"
+  val sessionId = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
+  val sessionData: UserSessionData = UserSessionData(sessionId, mtdItId, nino, Some(utr))
 
-  val sessionId = "sessionId-1618a1e8-4979-41d8-a32e-5ffbe69fac81"
+  def await[T](awaitable: Future[T]): T = Helpers.await(awaitable)
 
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("sessionId" -> sessionId)
   lazy val fakeRequestWithMtditidAndNino: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withSession(
