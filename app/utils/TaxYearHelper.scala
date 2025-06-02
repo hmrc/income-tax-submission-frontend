@@ -16,12 +16,9 @@
 
 package utils
 
-import common.SessionValues
-import models.User
-
 import java.time.LocalDate
 
-trait TaxYearHelper extends SessionDataHelper {
+trait TaxYearHelper {
 
   /*
    * TODO: Fix.
