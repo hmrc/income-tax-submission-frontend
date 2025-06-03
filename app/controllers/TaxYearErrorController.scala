@@ -23,7 +23,7 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.TaxYearHelper
+import utils.SessionDataHelper
 import views.html.errors.WrongTaxYearPage
 
 import scala.concurrent.Future
@@ -32,11 +32,10 @@ class TaxYearErrorController @Inject()(val authorisedAction: AuthorisedAction,
                                        val mcc: MessagesControllerComponents,
                                        wrongTaxYearPage: WrongTaxYearPage,
                                        implicit val appConfig: AppConfig)
-  extends FrontendController(mcc) with I18nSupport with TaxYearHelper {
+  extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
 
-  def show: Action[AnyContent] = authorisedAction.async { implicit request =>
-
-    Future.successful(Ok(wrongTaxYearPage(firstClientTaxYear, latestClientTaxYear, singleValidTaxYear)))
+  def show: Action[AnyContent] = authorisedAction { implicit request =>
+    Ok(wrongTaxYearPage(firstClientTaxYear, latestClientTaxYear, singleValidTaxYear))
   }
 
 }

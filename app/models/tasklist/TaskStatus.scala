@@ -35,6 +35,8 @@ object TaskStatus extends Enum[TaskStatus] with PlayJsonEnum[TaskStatus] {
 
   case object CheckNow extends TaskStatus("checkNow")
 
+  case object CannotStartYet extends TaskStatus("cannotStartYet")
+
   case object UnderMaintenance extends TaskStatus("underMaintenance")
 
 }

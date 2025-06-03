@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@this()
 
-import com.google.inject.Singleton
+@(heading: String, ariaLabel:String, caption: Option[String], extraClasses: String = "")
 
-import java.time.{Clock, LocalDate}
-import javax.inject.Inject
-
-@Singleton
-class TaxYearHelper @Inject()(clock: Clock) {
-
-  def taxYear: Int = {
-    val now = LocalDate.now(clock)
-
-    //noinspection ScalaStyle
-    val taxYearCutoffDate: LocalDate = LocalDate.of(now.getYear, 4, 5)
-
-    if (now.isAfter(taxYearCutoffDate)) now.getYear + 1 else now.getYear
-  }
-
-}
+  <h3 class="govuk-heading-s govuk-!-margin-0 govuk-!-margin-bottom-2 @extraClasses"
+      aria-label="@ariaLabel"
+  >
+    @heading
+  </h3>
+  @caption.map(content => <span class="govuk-caption-s">{content}</span>).getOrElse("")

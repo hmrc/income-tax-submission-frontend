@@ -28,7 +28,9 @@ import javax.inject.Inject
 import scala.concurrent.duration.Duration
 
 //scalastyle:off
-class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppConfig with TaxYearHelper {
+class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig,
+                                  taxYearHelper: TaxYearHelper) extends AppConfig {
+
   private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
   def defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
   val alwaysEOY: Boolean = servicesConfig.getBoolean(ConfigKeys.alwaysEOY)
@@ -200,7 +202,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
   def tailorReturnAddSectionsPageUrl(taxYear: Int): String = s"$tailorReturnServiceUrl/$taxYear/add-sections"
 
   def excludedIncomeSources(inputTaxYear: Int): Seq[String] = {
-    val employmentFeatureEnabled: (String, Boolean) = if(inputTaxYear != taxYear) (EMPLOYMENT, employmentEOYEnabled) else (EMPLOYMENT, employmentEnabled)
+    val employmentFeatureEnabled: (String, Boolean) = if(inputTaxYear != taxYearHelper.taxYear) (EMPLOYMENT, employmentEOYEnabled) else (EMPLOYMENT, employmentEnabled)
     Seq(
       (DIVIDENDS, dividendsEnabled),
       (INTEREST, interestEnabled),

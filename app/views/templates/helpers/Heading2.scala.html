@@ -16,8 +16,9 @@
 
 @this()
 
-@(heading: String, extraClasses: String = "")
+@(heading: String, caption: Option[String], extraClasses: String)
 
- <h2 class="govuk-heading-m govuk-!-margin-0 govuk-!-margin-bottom-2 @extraClasses">
+  @caption.map(content => <span class="govuk-caption-m">{content}</span>).getOrElse("")
+  <h2 class="govuk-heading-m govuk-!-margin-0 govuk-!-margin-bottom-2 @extraClasses">
     @heading
- </h2>
+  </h2>

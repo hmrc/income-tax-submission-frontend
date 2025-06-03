@@ -18,11 +18,10 @@ package config
 
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
-import utils.TaxYearHelper
 
 //noinspection ScalaStyle
 //@deprecated("Use `ScalamockAppConfig` instead, rather than this concrete class instance. Future refactor to remove this")
-class MockAppConfig extends AppConfig with TaxYearHelper {
+class MockAppConfig extends AppConfig  {
 
   override lazy val signInContinueUrl: String = "/signInContinue"
   override lazy val signInUrl: String = "/signIn"
