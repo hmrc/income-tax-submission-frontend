@@ -49,9 +49,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig) extends AppCon
 
   lazy val sessionCookieServiceEnabled: Boolean = servicesConfig.getBoolean("feature-switch.sessionCookieServiceEnabled")
 
-  def incomeTaxSubmissionIvRedirect: String = incomeTaxSubmissionBaseUrl +
-    servicesConfig.getString("microservice.iv-redirect")
-
   //Income tax calculation service
   lazy val incomeTaxCalculationServiceUrl: String = s"$calculationBaseUrl/income-tax-calculation/income-tax"
 
@@ -256,8 +253,6 @@ trait AppConfig {
   def personalIncomeTaxGiftAidUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidSubmissionCYAUrl(taxYear: Int): String
   def personalIncomeTaxGiftAidGatewayUrl(taxYear: Int): String
-
-  def incomeTaxSubmissionIvRedirect: String
 
   def sessionCookieServiceEnabled: Boolean
 

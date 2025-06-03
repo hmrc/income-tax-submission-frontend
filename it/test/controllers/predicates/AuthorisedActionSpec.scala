@@ -34,39 +34,6 @@ class AuthorisedActionSpec extends IntegrationTest {
 
   lazy val auth: AuthorisedAction = app.injector.instanceOf[AuthorisedAction]
 
-  ".enrolmentGetIdentifierValue" should {
-    "return the value for the given identifier" in {
-      val returnValue = "anIdentifierValue"
-      val returnValueAgent = "anAgentIdentifierValue"
-      val enrolments = Enrolments(Set(
-        Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, returnValue)), "Activated"),
-        Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, returnValueAgent)), "Activated")
-      ))
-
-      authAction(Future.successful(None)).enrolmentGetIdentifierValue(EnrolmentKeys.Individual, EnrolmentIdentifiers.individualId, enrolments) shouldBe Some(returnValue)
-      authAction(Future.successful(None)).enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) shouldBe Some(returnValueAgent)
-    }
-
-    "return a None" when {
-      val key = "someKey"
-      val identifierKey = "anIdentifier"
-      val returnValue = "anIdentifierValue"
-
-      val enrolments = Enrolments(Set(Enrolment(key, Seq(EnrolmentIdentifier(identifierKey, returnValue)), "someState")))
-
-
-      "the given identifier cannot be found" in {
-        authAction(Future.successful(None)).enrolmentGetIdentifierValue(key, "someOtherIdentifier", enrolments) shouldBe None
-      }
-
-      "the given key cannot be found" in {
-        authAction(Future.successful(None)).enrolmentGetIdentifierValue("someOtherKey", identifierKey, enrolments) shouldBe None
-      }
-
-    }
-
-  }
-
   ".individualAuthentication" should {
 
     "perform the block action" when {

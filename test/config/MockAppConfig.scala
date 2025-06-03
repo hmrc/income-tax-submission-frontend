@@ -70,8 +70,6 @@ class MockAppConfig extends AppConfig with TaxYearHelper {
     s"/report-quarterly/income-and-expenses/view/agents/$taxYear/final-tax-overview-and-declaration/calculate"
   }
 
-  override lazy val incomeTaxSubmissionIvRedirect: String = "/update-and-submit-income-tax-return/iv-uplift"
-
   override val vcSessionServiceBaseUrl: String = "/incomeTaxSessionData"
 
   override lazy val defaultTaxYear: Int = 2021

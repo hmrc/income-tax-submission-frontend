@@ -162,15 +162,4 @@ class AuthorisedAction @Inject()(
       }
     }
 
-  private[predicates] def enrolmentGetIdentifierValue(
-                                                       checkedKey: String,
-                                                       checkedIdentifier: String,
-                                                       enrolments: Enrolments
-                                                     ): Option[String] = {
-    enrolments.enrolments.collectFirst {
-      case Enrolment(`checkedKey`, enrolmentIdentifiers, _, _) => enrolmentIdentifiers.collectFirst {
-        case EnrolmentIdentifier(`checkedIdentifier`, identifierValue) => identifierValue
-      }
-    }.flatten
-  }
 }

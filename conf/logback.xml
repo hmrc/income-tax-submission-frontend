@@ -30,7 +30,7 @@
     <logger name="org.mongodb" level="WARN"/>
     <logger name="connector" level="WARN"/>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>
