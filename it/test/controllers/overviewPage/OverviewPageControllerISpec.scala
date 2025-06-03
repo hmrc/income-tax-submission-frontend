@@ -30,7 +30,7 @@ import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.mvc.Result
-import play.api.test.Helpers.{OK, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{OK, redirectLocation, status, writeableOf_AnyContentAsEmpty}
 import play.api.test.{FakeRequest, Helpers}
 import repositories.TailoringUserDataRepository
 import services.{ExcludedJourneysService, IncomeSourcesService, LiabilityCalculationService, ValidTaxYearListService}
@@ -1598,11 +1598,11 @@ class OverviewPageControllerISpec extends IntegrationTest with ViewHelpers with 
           stubIncomeSources
           stubGetExcludedCall(taxYear, nino)
           unauthorisedIndividualInsufficientConfidenceLevel()
-          await(controller.show(taxYear)(fakeRequest.withSession(SessionKeys.authToken -> "mock-bearer-token")))
+          controller.show(taxYear)(fakeRequest.withSession(SessionKeys.authToken -> "mock-bearer-token"))
         }
 
-        result.header.status shouldBe SEE_OTHER
-        result.header.headers shouldBe Map("Location" -> "/update-and-submit-income-tax-return/iv-uplift")
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("/update-and-submit-income-tax-return/iv-uplift")
       }
     }
 

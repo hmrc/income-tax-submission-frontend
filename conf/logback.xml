@@ -22,15 +22,13 @@
         </encoder>
     </appender>
 
-    <logger name="com.google.inject" level="INFO"/>
-
-    <logger name="uk.gov" level="INFO"/>
-
-    <logger name="application" level="INFO"/>
-
-    <logger name="connector" level="TRACE">
-        <appender-ref ref="STDOUT"/>
-    </logger>
+    <logger name="com.google.inject" level="WARN"/>
+    <logger name="uk.gov" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="play" level="WARN"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="org.mongodb" level="WARN"/>
+    <logger name="connector" level="WARN"/>
 
     <root level="INFO">
         <appender-ref ref="FILE"/>

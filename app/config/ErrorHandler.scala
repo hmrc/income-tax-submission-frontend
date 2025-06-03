@@ -46,6 +46,10 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
     InternalServerError(internalServerErrorTemplate(request))
   }
 
+  def futureInternalServerError()(implicit user: Request[_]): Future[Result] = {
+    Future.successful(InternalServerError(internalServerErrorTemplate(user)))
+  }
+
   def handleError(status: Int)(implicit request: Request[_]): Result = {
     status match {
       case SERVICE_UNAVAILABLE => ServiceUnavailable(serviceUnavailablePage())

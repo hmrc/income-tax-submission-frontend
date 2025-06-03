@@ -26,7 +26,6 @@ import models.calculation.{CalculationResponseModel}
 import javax.inject.{Inject, Singleton}
 import models.{APIErrorBodyModel, APIErrorsBodyModel, DeclarationModel}
 import play.api.i18n.I18nSupport
-import play.api.Logger
 import play.api.mvc._
 import services.{DeclareCrystallisationService, LiabilityCalculationService, NrsService, ValidTaxYearListService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeclarationPageController @Inject()(declareCrystallisationService: DeclareCrystallisationService,
                                           nrsService: NrsService,
-                                          appConfig: AppConfig,
+                                          val appConfig: AppConfig,
                                           liabilityCalculationService: LiabilityCalculationService,
                                           implicit val mcc: MessagesControllerComponents,
                                           implicit val ec: ExecutionContext,
@@ -49,8 +48,6 @@ class DeclarationPageController @Inject()(declareCrystallisationService: Declare
                                           implicit val validTaxYearListService: ValidTaxYearListService,
                                           implicit val errorHandler: ErrorHandler,
                                           auditService: AuditService) extends FrontendController(mcc) with I18nSupport with SessionDataHelper {
-
-  lazy val logger: Logger = Logger.apply(this.getClass)
 
   val maxNrsAttempts = 3
   val interval = 100

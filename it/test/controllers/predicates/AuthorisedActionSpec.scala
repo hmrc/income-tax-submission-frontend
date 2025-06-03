@@ -23,7 +23,6 @@ import org.scalatest.events.TestFailed
 import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
-import play.api.test.FakeRequest
 import play.api.test.Helpers.status
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
@@ -34,39 +33,6 @@ import scala.concurrent.Future
 class AuthorisedActionSpec extends IntegrationTest {
 
   lazy val auth: AuthorisedAction = app.injector.instanceOf[AuthorisedAction]
-
-  ".enrolmentGetIdentifierValue" should {
-    "return the value for the given identifier" in {
-      val returnValue = "anIdentifierValue"
-      val returnValueAgent = "anAgentIdentifierValue"
-      val enrolments = Enrolments(Set(
-        Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, returnValue)), "Activated"),
-        Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, returnValueAgent)), "Activated")
-      ))
-
-      authAction(Future.successful(None)).enrolmentGetIdentifierValue(EnrolmentKeys.Individual, EnrolmentIdentifiers.individualId, enrolments) shouldBe Some(returnValue)
-      authAction(Future.successful(None)).enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) shouldBe Some(returnValueAgent)
-    }
-
-    "return a None" when {
-      val key = "someKey"
-      val identifierKey = "anIdentifier"
-      val returnValue = "anIdentifierValue"
-
-      val enrolments = Enrolments(Set(Enrolment(key, Seq(EnrolmentIdentifier(identifierKey, returnValue)), "someState")))
-
-
-      "the given identifier cannot be found" in {
-        authAction(Future.successful(None)).enrolmentGetIdentifierValue(key, "someOtherIdentifier", enrolments) shouldBe None
-      }
-
-      "the given key cannot be found" in {
-        authAction(Future.successful(None)).enrolmentGetIdentifierValue("someOtherKey", identifierKey, enrolments) shouldBe None
-      }
-
-    }
-
-  }
 
   ".individualAuthentication" should {
 
@@ -82,7 +48,7 @@ class AuthorisedActionSpec extends IntegrationTest {
 
         lazy val result: Future[Result] = {
           val retrieval = Future.successful(enrolments and ConfidenceLevel.L250)
-          authAction(retrieval).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
+          authAction(retrieval).individualAuthentication[AnyContent](block, AffinityGroup.Individual, sessionId)(fakeRequest, headerCarrierWithSession)
         }
 
         "returns an OK status" in {
@@ -104,7 +70,7 @@ class AuthorisedActionSpec extends IntegrationTest {
 
         lazy val result: Future[Result] = {
           val retrievals = Future.successful(enrolments and ConfidenceLevel.L250)
-          authAction(retrievals).individualAuthentication[AnyContent](block)(fallBackSessionIdFakeRequest, emptyHeaderCarrier)
+          authAction(retrievals).individualAuthentication[AnyContent](block, AffinityGroup.Individual, sessionId)(fallBackSessionIdFakeRequest, emptyHeaderCarrier)
         }
 
         "returns an OK status" in {
@@ -122,15 +88,13 @@ class AuthorisedActionSpec extends IntegrationTest {
 
       "the session id is missing" which {
         val block: User[AnyContent] => Future[Result] = user => Future.successful(Ok(user.mtditid))
-        val mtditid = "1234567890"
         val enrolments = Enrolments(Set(
-          Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid)), "Activated"),
           Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.ninoId, "AA123456A")), "Activated")
         ))
 
         lazy val result: Future[Result] = {
           val retrievals = Future.successful(enrolments and ConfidenceLevel.L250)
-          authAction(retrievals).individualAuthentication[AnyContent](block)(FakeRequest(), emptyHeaderCarrier)
+          authAction(retrievals).individualAuthentication[AnyContent](block, AffinityGroup.Individual, sessionId)(fakeRequest, emptyHeaderCarrier)
         }
 
         "returns an SEE_OTHER status" in {
@@ -145,7 +109,7 @@ class AuthorisedActionSpec extends IntegrationTest {
 
         lazy val result: Future[Result] = {
           val retrievals = Future.successful(enrolments and ConfidenceLevel.L250)
-          authAction(retrievals).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
+          authAction(retrievals).individualAuthentication[AnyContent](block, AffinityGroup.Individual, sessionId)(fakeRequest, headerCarrierWithSession)
         }
 
         "returns an Unauthorised" in {
@@ -164,7 +128,7 @@ class AuthorisedActionSpec extends IntegrationTest {
 
         lazy val result: Future[Result] = {
           val retrievals = Future.successful(enrolments and ConfidenceLevel.L250)
-          authAction(retrievals).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
+          authAction(retrievals).individualAuthentication[AnyContent](block, AffinityGroup.Individual, sessionId)(fakeRequest, headerCarrierWithSession)
         }
 
         "returns an Unauthorised" in {
@@ -189,7 +153,7 @@ class AuthorisedActionSpec extends IntegrationTest {
 
         lazy val result: Future[Result] = {
           val retrievals = Future.successful(enrolments and ConfidenceLevel.L50)
-          authAction(retrievals).individualAuthentication[AnyContent](block)(fakeRequest, headerCarrierWithSession)
+          authAction(retrievals).individualAuthentication[AnyContent](block, AffinityGroup.Individual, sessionId)(fakeRequest, headerCarrierWithSession)
         }
 
         "has a status of 303" in {
@@ -220,7 +184,7 @@ class AuthorisedActionSpec extends IntegrationTest {
 
         lazy val result = {
           val retrievals = Future.successful(enrolments)
-          authAction(retrievals).agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
+          authAction(retrievals).agentAuthentication(block, sessionId)(fakeRequestAgent, headerCarrierWithSession)
         }
 
         "has a status of OK" in {
@@ -238,7 +202,7 @@ class AuthorisedActionSpec extends IntegrationTest {
       "there is no MTDITID in session" which {
 
         lazy val result = {
-          authAction(Future.successful(None)).agentAuthentication(block)(fakeRequestAgentNoMtditid, headerCarrierWithSession)
+          authAction(Future.successful(None)).agentAuthentication(block, sessionId)(fakeRequestAgentNoMtditid, headerCarrierWithSession)
         }
 
         "has a status of SEE_OTHER(303)" in {
@@ -254,7 +218,7 @@ class AuthorisedActionSpec extends IntegrationTest {
       "there is no NINO in session" which {
 
         lazy val result = {
-          authAction(Future.successful(None)).agentAuthentication(block)(fakeRequestAgentNoNino, headerCarrierWithSession)
+          authAction(Future.successful(None)).agentAuthentication(block, sessionId)(fakeRequestAgentNoNino, headerCarrierWithSession)
         }
 
         "has a status of SEE_OTHER(303)" in {
@@ -280,7 +244,7 @@ class AuthorisedActionSpec extends IntegrationTest {
 
         lazy val result = {
           authoriseAgent()
-          auth.agentAuthentication(block)(fakeRequestAgent, emptyHeaderCarrier)
+          auth.agentAuthentication(block, sessionId)(fakeRequestAgent, emptyHeaderCarrier)
         }
 
         "has a status of SEE_OTHER" in {
@@ -291,7 +255,7 @@ class AuthorisedActionSpec extends IntegrationTest {
       "the authorisation service returns an AuthorisationException exception" in {
         lazy val result = {
           unauthorisedIndividualWrongCredentials()
-          auth.agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
+          auth.agentAuthentication(block, sessionId)(fakeRequestAgent, headerCarrierWithSession)
         }
         status(result) shouldBe SEE_OTHER
       }
@@ -303,7 +267,7 @@ class AuthorisedActionSpec extends IntegrationTest {
       "the authorisation service returns a NoActiveSession exception" in {
         lazy val result = {
           unauthorisedInactiveSession()
-          auth.agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
+          auth.agentAuthentication(block, sessionId)(fakeRequestAgent, headerCarrierWithSession)
         }
 
         status(result) shouldBe SEE_OTHER
@@ -320,7 +284,7 @@ class AuthorisedActionSpec extends IntegrationTest {
         ))
 
         lazy val result = {
-          authAction(Future.successful(enrolments)).agentAuthentication(block)(fakeRequestAgent, headerCarrierWithSession)
+          authAction(Future.successful(enrolments)).agentAuthentication(block, sessionId)(fakeRequestAgent, headerCarrierWithSession)
         }
         status(result) shouldBe SEE_OTHER
       }

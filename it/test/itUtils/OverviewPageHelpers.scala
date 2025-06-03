@@ -100,7 +100,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
   lazy val repo: TailoringUserDataRepository = app.injector.instanceOf[TailoringUserDataRepository]
 
-  implicit val mtdUser: User[AnyContent] = User("1234567890", None, "AA123456A", "1234567890")
+  implicit val mtdUser: User[AnyContent] = User("1234567890", None, "AA123456A", "1234567890", sessionId)
 
   def cleanDatabase(taxYear: Int): Seq[String] = {
     await(repo.clear(taxYear))

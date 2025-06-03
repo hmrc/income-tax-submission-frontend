@@ -31,7 +31,7 @@ class NrsServiceSpec extends UnitTest {
   val connector: NrsConnector = mock[NrsConnector]
   val service: NrsService = new NrsService(connector)
 
-  val nino: String = "AA123456A"
+  override val nino: String = "AA123456A"
   val taxYear: Int = 2020
   val mtditid: String = "968501689"
   val calculationId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
@@ -71,8 +71,6 @@ class NrsServiceSpec extends UnitTest {
         (connector.postNrsConnector(_: String, _: NrsSubmissionModel, _: String)(_: HeaderCarrier, _: Writes[NrsSubmissionModel]))
           .expects(nino, nrsSubmissionModel, "", headerCarrierWithSession.withExtraHeaders("mtditid" -> mtditid, "User-Agent" -> "income-tax-submission-frontend", "True-User-Agent" -> "No user agent provided"), writesObject)
           .returning(Future.successful(expectedResult))
-
-        //val request: Request[_] = FakeRequest()
 
         val result = await(service.submit(nino, nrsSubmissionModel, mtditid, ""))
 

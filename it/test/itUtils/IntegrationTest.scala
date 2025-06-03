@@ -41,7 +41,7 @@ import play.api.mvc._
 import play.api.test.Helpers.OK
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, Helpers}
 import play.api.{Application, Environment, Mode}
-import services.AuthService
+import services.{AuthService, SessionDataService}
 import testModels.PensionsModels.allPensionsModel
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
@@ -75,6 +75,8 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   private lazy val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+  lazy val sessionDataService: SessionDataService = app.injector.instanceOf[SessionDataService]
+
   val inYearAction = new InYearAction
 
   implicit val actorSystem: ActorSystem = ActorSystem()
@@ -210,7 +212,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
   val sessionId: String = "eb3158c2-0aff-4ce8-8d1b-f2208ace52fe"
-  implicit lazy val user: User[AnyContent] = new User[AnyContent](mtditid, None, nino, sessionId)(FakeRequest().withHeaders("X-Session-ID" -> sessionId))
+  implicit lazy val user: User[AnyContent] = new User[AnyContent](mtditid, None, nino, affinityGroup, sessionId)(FakeRequest())
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("X-Session-ID" -> sessionId)
   val fallBackSessionIdFakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders("sessionId" -> sessionId)
   val fakeRequestAgent: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
@@ -244,10 +246,11 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   )
 
   def authAction(stubbedRetrieval: Future[_]): AuthorisedAction = new AuthorisedAction(
-    appConfig,
     agentAuthErrorPage,
-    supportingAgentAuthErrorPage
-  )(authService(stubbedRetrieval), errorHandler, mcc)
+    supportingAgentAuthErrorPage,
+    errorHandler,
+    sessionDataService
+  )(authService(stubbedRetrieval), appConfig, mcc)
 
   def stubIncomeSources(incomeSources: IncomeSourcesModel, status: Int = OK): StubMapping = {
     stubGet(s"/income-tax-submission-service/income-tax/nino/AA123456A/sources\\?taxYear=$taxYear", status, Json.toJson(incomeSources).toString())

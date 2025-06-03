@@ -24,7 +24,6 @@ import controllers.predicates.TaxYearAction.taxYearAction
 import javax.inject.{Inject, Singleton}
 import models.TaxReturnReceivedModel
 import play.api.i18n.I18nSupport
-import play.api.Logger
 import play.api.mvc._
 import services.ValidTaxYearListService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -45,8 +44,6 @@ class TaxReturnReceivedController @Inject()(val authorisedAction: AuthorisedActi
                                             implicit val validTaxYearListService: ValidTaxYearListService,
                                             implicit val errorHandler: ErrorHandler) extends FrontendController(mcc)
   with I18nSupport with SessionDataHelper with ImplicitDateFormatter {
-
-  lazy val logger: Logger = Logger.apply(this.getClass)
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear)).apply { implicit user =>
 

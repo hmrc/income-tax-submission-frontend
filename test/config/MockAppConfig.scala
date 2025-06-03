@@ -16,12 +16,12 @@
 
 package config
 
-import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
 
 //noinspection ScalaStyle
-class MockAppConfig extends AppConfig with MockFactory {
+//@deprecated("Use `ScalamockAppConfig` instead, rather than this concrete class instance. Future refactor to remove this")
+class MockAppConfig extends AppConfig  {
 
   override lazy val signInContinueUrl: String = "/signInContinue"
   override lazy val signInUrl: String = "/signIn"
@@ -31,6 +31,8 @@ class MockAppConfig extends AppConfig with MockFactory {
   override lazy val personalIncomeTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/personal-income"
   override lazy val tailorReturnBaseUrl: String = "http://localhost:10007"
   override lazy val tailorReturnServiceUrl: String = s"$tailorReturnBaseUrl/update-and-submit-income-tax-return/tailored-return"
+
+  override val sessionCookieServiceEnabled: Boolean = false
 
   override lazy val incomeTaxCalculationServiceUrl: String = "/income-tax-calculation/income-tax"
   lazy val additionalInformationTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/additional-information"
