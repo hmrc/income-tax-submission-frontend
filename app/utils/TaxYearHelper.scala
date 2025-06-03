@@ -16,35 +16,21 @@
 
 package utils
 
-import common.SessionValues
-import models.User
+import com.google.inject.Singleton
 
-import java.time.LocalDate
+import java.time.{Clock, LocalDate}
+import javax.inject.Inject
 
-trait TaxYearHelper extends SessionDataHelper {
+@Singleton
+class TaxYearHelper @Inject()(clock: Clock) {
 
-  /*
-   * TODO: Fix.
-   *  Summary: This will memoize the date and can be lead to incorrect usage at call site.
-   *  Action: Remove and use a Clock instance set to UTC.
-   */
-  private val dateNow: LocalDate = LocalDate.now()
+  def taxYear: Int = {
+    val now = LocalDate.now(clock)
 
-  /*
-   * TODO: Fix.
-   *  Summary: This will potentially return the wrong tax year if the app is not redeployed on a new tax year.
-   *  Action: Replace with a def and also pass Clock instance set to UTC
-   */
-  private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")
+    //noinspection ScalaStyle
+    val taxYearCutoffDate: LocalDate = LocalDate.of(now.getYear, 4, 5)
 
-  val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
-
-  def retrieveTaxYearList(implicit user: User[_]): Seq[Int] = {
-    user.session.get(SessionValues.VALID_TAX_YEARS).getOrElse("").split(",").toSeq.map(_.toInt)
+    if (now.isAfter(taxYearCutoffDate)) now.getYear + 1 else now.getYear
   }
 
-  def firstClientTaxYear(implicit user: User[_]): Int = retrieveTaxYearList.head
-  def latestClientTaxYear(implicit user: User[_]): Int = retrieveTaxYearList.last
-
-  def singleValidTaxYear(implicit user: User[_]): Boolean = firstClientTaxYear == latestClientTaxYear
 }

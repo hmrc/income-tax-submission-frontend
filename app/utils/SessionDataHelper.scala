@@ -16,10 +16,21 @@
 
 package utils
 
+import common.SessionValues
+import models.User
 import play.api.libs.json.{Json, Reads}
 import play.api.mvc.Request
 
 trait SessionDataHelper {
+  def retrieveTaxYearList(implicit user: User[_]): Seq[Int] = {
+    user.session.get(SessionValues.VALID_TAX_YEARS).getOrElse("").split(",").toSeq.map(_.toInt)
+  }
+
+  def firstClientTaxYear(implicit user: User[_]): Int = retrieveTaxYearList.head
+  def latestClientTaxYear(implicit user: User[_]): Int = retrieveTaxYearList.last
+
+  def singleValidTaxYear(implicit user: User[_]): Boolean = firstClientTaxYear == latestClientTaxYear
+
   def getSessionData[T](key: String)(implicit request: Request[_], reads: Reads[T]): Option[T] = {
     request.session.get(key).flatMap { stringValue =>
       Json.parse(stringValue).asOpt[T]

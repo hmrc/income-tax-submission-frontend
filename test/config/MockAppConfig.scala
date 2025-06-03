@@ -19,10 +19,9 @@ package config
 import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
-import utils.TaxYearHelper
 
 //noinspection ScalaStyle
-class MockAppConfig extends AppConfig with MockFactory with TaxYearHelper {
+class MockAppConfig extends AppConfig with MockFactory {
 
   override lazy val signInContinueUrl: String = "/signInContinue"
   override lazy val signInUrl: String = "/signIn"
