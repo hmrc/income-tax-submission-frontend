@@ -29,22 +29,41 @@ To test the branch you're working on locally. You will need to run `sm2 --stop I
   which runs `sbt clean coverage test it/test coverageReport dependencyUpdates`
 
 ### Feature Switches
-| Feature                | Environments Enabled In            |
-|------------------------|------------------------------------|
-| Welsh                  | Local, QA, Staging                 |
-| NRS                    | Local, QA, Staging, Production     |
-| Tax Year Error         | Production                         |
-| Dividends              | Local, QA, Staging, Production, ET |
-| Interest               | Local, QA, Staging, Production, ET |
-| GiftAid                | Local, QA, Staging, Production, ET |
-| Student loans          | Local, QA, Staging, ET             |
-| EmploymentsEnabled     | Local, QA, Staging, Production, ET |
-| EmploymentsReleased    | Local, QA, Staging, Production, ET |
-| End of year employment | Local, QA, Staging, ET             |
-| CISEnabled             | Local, QA, Staging                 |
-| CISReleased            | Local, QA, Staging                 |
-| CrystallisationEnabled | Local, QA, Staging, Production, ET |
-| TailoringEnabled       | Local                              |
+| Feature                     | Description                                                                                              |
+|-----------------------------|----------------------------------------------------------------------------------------------------------|
+| welshToggleEnabled          | Enables a toggle to allow the user to change language to/from Welsh                                      |
+| dividendsEnabled            | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| interestEnabled             | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| interestSavingsEnabled      | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| giftAidEnabled              | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| giftAidReleased             | Sets visibility of tasklist item                                                                         |
+| gainsEnabled                | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| gainsReleased               | Sets visibility of tasklist item                                                                         |
+| stockDividendsEnabled       | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| stockDividendsReleased      | Nothing                                                                                                  |
+| studentLoansEnabled         | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| employmentEnabled           | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| employmentReleased          | Sets visibility of tasklist item                                                                         |
+| employmentEOYEnabled        | Updates cannotUpdateCondition in tasklist item                                                           |
+| cisEnabled                  | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| cisReleased                 | Sets visibility of tasklist item                                                                         |
+| pensionsEnabled             | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| pensionsReleased            | Sets visibility of tasklist item                                                                         |
+| propertyEnabled             | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| propertyReleased            | Sets visibility of tasklist item                                                                         |
+| stateBenefitsEnabled        | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| stateBenefitsReleased       | Sets visibility of tasklist item                                                                         |
+| selfEmploymentEnabled       | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| selfEmploymentReleased      | Sets visibility of tasklist item                                                                         |
+| nrsEnabled                  | Updates NRS when enabled                                                                                 |
+| crystallisationEnabled      | Allows user to update tax calculation                                                                    |
+| tailoringEnabled            | Enables tailoring service                                                                                |
+| tailoringPhase2Enabled      | Redirects automatically to tailored-return instead of update-and-submit-income-tax-return/:taxYear/start |
+| taxYearErrorFeatureSwitch   | Nothing                                                                                                  |
+| alwaysEOY                   | Returns false to inYear when enabled                                                                     |
+| useEncryption               | Enables SymmetricCryptoFactory instead of EncryptedValue                                                 |
+| sessionCookieServiceEnabled | Retrieves session data from V&C when enabled                                                             |
+
 
 ## Auth Setup - How to enter the service
 
