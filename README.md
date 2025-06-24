@@ -7,40 +7,63 @@ You will need to have the following:
 - Installed [MongoDB](https://docs.mongodb.com/manual/installation/)
 - Installed/configured [service manager v2](https://github.com/hmrc/sm2).
 
+This can be found in the [developer handbook](https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/)
+
 The service manager profile for this service is:
 
     sm2 --start INCOME_TAX_SUBMISSION_FRONTEND
 Run the following command to start the remaining services locally:
 
-    sudo mongod (If not already running)
-    sm2 --start INCOME_TAX_SUBMISSION_ALL -r
+    sm2 --start INCOME_TAX_SUBMISSION_ALL
 
 This service runs on port: `localhost:9302`
+
+To test the branch you're working on locally. You will need to run `sm2 --stop INCOME_TAX_SUBMISSION_FRONTEND` followed by
+`./run.sh`
 
 ### Running Tests
 - Run Unit Tests:  `sbt test`
 - Run Integration Tests: `sbt it/test`
 - Run Unit and Integration Tests: `sbt test it/test`
-- Run Unit and Integration Tests with coverage report: `sbt runAllChecks`<br/>
-  which runs `clean compile scalastyle coverage test it/test coverageReport`
+- Run Unit and Integration Tests with coverage report and dependency updates: `./check.sh`<br/>
+  which runs `sbt clean coverage test it/test coverageReport dependencyUpdates`
 
 ### Feature Switches
-| Feature                | Environments Enabled In            |
-|------------------------|------------------------------------|
-| Welsh                  | Local, QA, Staging                 |
-| NRS                    | Local, QA, Staging, Production     |
-| Tax Year Error         | Production                         |
-| Dividends              | Local, QA, Staging, Production, ET |
-| Interest               | Local, QA, Staging, Production, ET |
-| GiftAid                | Local, QA, Staging, Production, ET |
-| Student loans          | Local, QA, Staging, ET             |
-| EmploymentsEnabled     | Local, QA, Staging, Production, ET |
-| EmploymentsReleased    | Local, QA, Staging, Production, ET |
-| End of year employment | Local, QA, Staging, ET             |
-| CISEnabled             | Local, QA, Staging                 |
-| CISReleased            | Local, QA, Staging                 |
-| CrystallisationEnabled | Local, QA, Staging, Production, ET |
-| TailoringEnabled       | Local                              |
+| Feature                     | Description                                                                                              |
+|-----------------------------|----------------------------------------------------------------------------------------------------------|
+| welshToggleEnabled          | Enables a toggle to allow the user to change language to/from Welsh                                      |
+| dividendsEnabled            | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| interestEnabled             | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| interestSavingsEnabled      | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| giftAidEnabled              | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| giftAidReleased             | Sets visibility of tasklist item                                                                         |
+| gainsEnabled                | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| gainsReleased               | Sets visibility of tasklist item                                                                         |
+| stockDividendsEnabled       | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| stockDividendsReleased      | Nothing                                                                                                  |
+| studentLoansEnabled         | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| employmentEnabled           | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| employmentReleased          | Sets visibility of tasklist item                                                                         |
+| employmentEOYEnabled        | Updates cannotUpdateCondition in tasklist item                                                           |
+| cisEnabled                  | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| cisReleased                 | Sets visibility of tasklist item                                                                         |
+| pensionsEnabled             | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| pensionsReleased            | Sets visibility of tasklist item                                                                         |
+| propertyEnabled             | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| propertyReleased            | Sets visibility of tasklist item                                                                         |
+| stateBenefitsEnabled        | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| stateBenefitsReleased       | Sets visibility of tasklist item                                                                         |
+| selfEmploymentEnabled       | Enables/disables a tasklist item by setting the service to Under Maintenance and removing hyperlink      |
+| selfEmploymentReleased      | Sets visibility of tasklist item                                                                         |
+| nrsEnabled                  | Updates NRS when enabled                                                                                 |
+| crystallisationEnabled      | Allows user to update tax calculation                                                                    |
+| tailoringEnabled            | Enables tailoring service                                                                                |
+| tailoringPhase2Enabled      | Redirects automatically to tailored-return instead of update-and-submit-income-tax-return/:taxYear/start |
+| taxYearErrorFeatureSwitch   | Nothing                                                                                                  |
+| alwaysEOY                   | Returns false to inYear when enabled                                                                     |
+| useEncryption               | Enables SymmetricCryptoFactory instead of EncryptedValue                                                 |
+| sessionCookieServiceEnabled | Retrieves session data from V&C when enabled                                                             |
+
 
 ## Auth Setup - How to enter the service
 
@@ -52,30 +75,30 @@ auth-wizard - http://localhost:9949/auth-login-stub/gg-sign-in
 |---------------------|----------------------------------------------------------------------|
 | Redirect url        | http://localhost:9302/update-and-submit-income-tax-return/2022/start |
 | Credential Strength | strong                                                               |
-| Confidence Level     | 250                                                                  |
-| Affinity Group       | Individual                                                           |
+| Confidence Level    | 250                                                                  |
+| Affinity Group      | Individual                                                           |
 | Nino                | AA123456A                                                            |
 | Enrolment Key 1     | HMRC-MTD-IT                                                          |
-| Identifier Name 1    | MTDITID                                                              |
-| Identifier Value 1   | 1234567890                                                           |
+| Identifier Name 1   | MTDITID                                                              |
+| Identifier Value 1  | 1234567890                                                           |
 
 ### Example Auth Setup - Agent
 if running locally outside service manager ensure service is ran including testOnly Routes:
 
     sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes
 
-| FieldName            | Value                                                                             |
-|----------------------|-----------------------------------------------------------------------------------|
-| Redirect url         | /test-only/2022/additional-parameters?ClientNino=AA123457A&ClientMTDID=1234567890 |
-| Credential Strength  | weak                                                                              |
-| Confidence Level      | 250                                                                               |
-| Affinity Group        | Agent                                                                             |
-| Enrolment Key 1      | HMRC-MTD-IT                                                                       |
-| Identifier Name 1     | MTDITID                                                                           |
-| Identifier Value 1    | 1234567890                                                                        |
-| Enrolment Key 2      | HMRC-AS-AGENT                                                                     |
-| Identifier Name 2     | AgentReferenceNumber                                                              |
-| Identifier Value 2    | XARN1234567                                                                       |
+| FieldName           | Value                                                                             |
+|---------------------|-----------------------------------------------------------------------------------|
+| Redirect url        | /test-only/2022/additional-parameters?ClientNino=AA123457A&ClientMTDID=1234567890 |
+| Credential Strength | weak                                                                              |
+| Confidence Level    | 250                                                                               |
+| Affinity Group      | Agent                                                                             |
+| Enrolment Key 1     | HMRC-MTD-IT                                                                       |
+| Identifier Name 1   | MTDITID                                                                           |
+| Identifier Value 1  | 1234567890                                                                        |
+| Enrolment Key 2     | HMRC-AS-AGENT                                                                     |
+| Identifier Name 2   | AgentReferenceNumber                                                              |
+| Identifier Value 2  | XARN1234567                                                                       |
 
 ## Income Sources
 Income-Tax-Submission-Frontend is the root of the users journey and links outward to all income sources
@@ -553,7 +576,7 @@ It must be the end of the tax year for a user to submit for crystallisation.
 The user also requires the following extra enrollment:
 
 | IR-SA | UTR | Identifier Value, e.g. 1234567890 |
-|-------|-----|----------------------------------|
+|-------|-----|-----------------------------------|
 
 ### Crystallisation in Staging
 Currently, the crystallisation journey and tax account in staging can only be accessed using the following:
