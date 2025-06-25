@@ -24,6 +24,7 @@ import helpers.PlaySessionCookieBaker
 import itUtils.{IntegrationTest, ViewHelpers}
 import models.IncomeSourcesModel
 import models.mongo.{DatabaseError, TailoringUserDataModel}
+import org.apache.pekko.Done
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
@@ -194,15 +195,14 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
     await(tailoringRepository.ensureIndexes())
   }
 
-  private def insertJourneys(endOfYear: Boolean, journeys: String*): Either[DatabaseError, Boolean] = {
+  private def insertJourneys(endOfYear: Boolean, journeys: String*): Either[DatabaseError, Done] =
     await(tailoringRepository.create(TailoringUserDataModel(
       "AA123456A",
       if (endOfYear) taxYearEOY else taxYear,
       journeys
     )))
-  }
 
-  private def insertAllJourneys(endOfYear: Boolean = false): Either[DatabaseError, Boolean] = {
+  private def insertAllJourneys(endOfYear: Boolean = false): Either[DatabaseError, Done] =
     insertJourneys(
       endOfYear,
       "dividends",
@@ -217,7 +217,6 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       "self-employment",
       "stock-dividends"
     )
-  }
 
   val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
     UserScenario(isWelsh = false, isAgent = false, CommonExpectedEN, Some(ExpectedIndividualEN)),

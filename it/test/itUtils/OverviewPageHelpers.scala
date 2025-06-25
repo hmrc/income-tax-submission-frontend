@@ -19,6 +19,7 @@ package itUtils
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.mongo.{DatabaseError, TailoringUserDataModel}
 import models.{IncomeSourcesModel, LiabilityCalculationIdModel, User}
+import org.apache.pekko.Done
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.Helpers.OK
@@ -107,7 +108,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
     await(repo.ensureIndexes())
   }
 
-  def insertJourneys(endOfYear: Boolean, journeys: String*): Either[DatabaseError, Boolean] = {
+  def insertJourneys(endOfYear: Boolean, journeys: String*): Either[DatabaseError, Done] = {
     await(repo.create(TailoringUserDataModel(
       "AA123456A",
       if (endOfYear) taxYearEOY else taxYear,
@@ -115,7 +116,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
     )))
   }
 
-  def insertAllJourneys(endOfYear: Boolean = false): Either[DatabaseError, Boolean] = {
+  def insertAllJourneys(endOfYear: Boolean = false): Either[DatabaseError, Done] = {
     insertJourneys(
       endOfYear,
       "dividends",
@@ -128,7 +129,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
     )
   }
 
-  def insertStockDividendsJourney(endOfYear: Boolean = false): Either[DatabaseError, Boolean] = {
+  def insertStockDividendsJourney(endOfYear: Boolean = false): Either[DatabaseError, Done] = {
     insertJourneys(
       endOfYear,
       "stock-dividends"

@@ -19,7 +19,7 @@ package repositories
 import itUtils.IntegrationTest
 import models.User
 import models.mongo._
-import org.mongodb.scala.result.InsertOneResult
+import org.apache.pekko.Done
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.mvc.AnyContent
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits}
@@ -39,6 +39,7 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
   class EmptyDatabase {
     await(tailoringRepo.collection.drop().toFuture())
     await(tailoringRepo.ensureIndexes())
+    count mustBe 0
   }
 
   val tailoringUserData: TailoringUserDataModel = TailoringUserDataModel(
@@ -51,15 +52,14 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
 
   "create" should {
     "add a document to the collection" in new EmptyDatabase {
-      count mustBe 0
-      val result: Either[DatabaseError, Boolean] = await(tailoringRepo.create(tailoringUserData))
-      result mustBe Right(true)
+      val result: Either[DatabaseError, Done] = await(tailoringRepo.create(tailoringUserData))
+      result mustBe Right(Done)
       count mustBe 1
     }
+
     "fail to add a document to the collection when it already exists" in new EmptyDatabase {
-      count mustBe 0
       await(tailoringRepo.create(tailoringUserData))
-      val result: Either[DatabaseError, Boolean] = await(tailoringRepo.create(tailoringUserData))
+      val result: Either[DatabaseError, Done] = await(tailoringRepo.create(tailoringUserData))
       result mustBe Left(DataNotUpdated)
       count mustBe 1
     }
@@ -68,35 +68,25 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
   "update" should {
 
     "update a document in the collection" in new EmptyDatabase {
-      val testUser: User[AnyContent] = User(
-        mtditid, None, nino, "individual", sessionId
-      )(fakeRequest)
+
+      val testUser: User[AnyContent] = User(mtditid, None, nino, "individual", sessionId)(fakeRequest)
 
       val initialData: TailoringUserDataModel = TailoringUserDataModel(
         testUser.nino, taxYear,
         List("itr","div")
       )
 
-      val newUserData: TailoringUserDataModel = initialData.copy(
-        tailoring = List("gif","emp")
-      )
+      val newUserData: TailoringUserDataModel = initialData.copy(tailoring = List("gif","emp"))
 
       await(tailoringRepo.create(initialData))
       count mustBe 1
 
-      val res: Boolean = await(tailoringRepo.update(newUserData).map {
-        case Right(value) => value
-        case Left(value) => false
-      })
-      res mustBe true
+      val res: Either[DatabaseError, Done] = await(tailoringRepo.update(newUserData))
+      res mustBe Right(Done)
       count mustBe 1
 
-      val data: Option[TailoringUserDataModel] = await(tailoringRepo.find(taxYear)(testUser).map {
-        case Right(value) => value
-        case Left(value) => None
-      })
-
-      data.get.tailoring shouldBe List("gif","emp")
+      val data: Either[DatabaseError, Option[TailoringUserDataModel]] = await(tailoringRepo.find(taxYear)(testUser))
+      data.map(_.map(_.tailoring)) shouldBe Right(Some(List("gif","emp")))
     }
 
     "return a leftDataNotUpdated if the document cannot be found" in {
@@ -110,18 +100,12 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
 
   "find" should {
 
-    val testUser = User(
-      mtditid, None, nino, "individual", sessionId
-    )(fakeRequest)
+    val testUser = User(mtditid, None, nino, "individual", sessionId)(fakeRequest)
 
     "get a document" in {
       count mustBe 1
-      val dataAfter: Option[TailoringUserDataModel] = await(tailoringRepo.find(taxYear)(testUser).map {
-        case Right(value) => value
-        case Left(value) => None
-      })
-
-      dataAfter.get.tailoring mustBe List("gif","emp")
+      val dataAfter: Either[DatabaseError, Option[TailoringUserDataModel]] = await(tailoringRepo.find(taxYear)(testUser))
+      dataAfter.map(_.map(_.tailoring)) mustBe Right(Some(List("gif","emp")))
     }
 
     "return an encryptionDecryptionError" in {
@@ -135,29 +119,23 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
   "the set indexes" should {
 
     "enforce uniqueness" in {
-      val result: Either[Exception, InsertOneResult] = try {
-        Right(await(tailoringRepo.collection.insertOne(EncryptedTailoringUserDataModel(
+      val result =
+        intercept[Throwable](await(tailoringRepo.collection.insertOne(EncryptedTailoringUserDataModel(
           nino, taxYear, List(EncryptedValue("test", "test"))
         )).toFuture()))
-      } catch {
-        case e: Exception => Left(e)
-      }
-      result.isLeft mustBe true
-      result.left.e.swap.getOrElse(new Exception("wrong message")).getMessage must include(
+
+      result.getMessage must include(
         "E11000 duplicate key error collection: income-tax-submission-frontend.tailoringUserData index: UserDataLookupIndex dup key:")
     }
-
   }
 
   "clear" should {
 
     "clear the document for the current user" in new EmptyDatabase{
-      count shouldBe 0
       await(tailoringRepo.create(TailoringUserDataModel(nino, taxYear, List("gif"))))
       count shouldBe 1
       await(tailoringRepo.clear(taxYear))
       count shouldBe 0
     }
   }
-
 }

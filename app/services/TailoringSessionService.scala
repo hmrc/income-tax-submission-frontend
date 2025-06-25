@@ -38,7 +38,7 @@ class TailoringSessionService @Inject() (tailoringUserDataRepository: TailoringU
     }
   }
 
-  def createSessionData[A](dataModel: Seq[String], taxYear: Int)(onFail: A)(onSuccess: A)
+  def createSessionData[A](dataModel: Seq[String], taxYear: Int)(onFail: => A)(onSuccess: => A)
                           (implicit user: User[_], ec: ExecutionContext): Future[A] = {
 
     val userData: TailoringUserDataModel = TailoringUserDataModel(
@@ -56,7 +56,7 @@ class TailoringSessionService @Inject() (tailoringUserDataRepository: TailoringU
     }
   }
 
-  def updateSessionData[A](dataModel: Seq[String], taxYear: Int)(onFail: A)(onSuccess: A)
+  def updateSessionData[A](dataModel: Seq[String], taxYear: Int)(onFail: => A)(onSuccess: => A)
                           (implicit user: User[_], ec: ExecutionContext): Future[A] = {
 
     val userData: TailoringUserDataModel = TailoringUserDataModel(
