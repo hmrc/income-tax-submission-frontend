@@ -19,12 +19,10 @@ package repositories
 import itUtils.IntegrationTest
 import models.User
 import models.mongo._
-import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.result.InsertOneResult
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.mvc.AnyContent
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits}
-import uk.gov.hmrc.mongo.play.json.Codecs.toBson
 import uk.gov.hmrc.crypto.EncryptedValue
 
 class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with DefaultAwaitTimeout {
@@ -40,7 +38,7 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
 
   class EmptyDatabase {
     await(tailoringRepo.collection.drop().toFuture())
-    await(tailoringRepo.ensureIndexes)
+    await(tailoringRepo.ensureIndexes())
   }
 
   val tailoringUserData: TailoringUserDataModel = TailoringUserDataModel(
@@ -111,10 +109,6 @@ class UserDataRepositoryISpec extends IntegrationTest with FutureAwaits with Def
   }
 
   "find" should {
-    def filter(sessionId: String, mtdItId: String, nino: String, taxYear: Int): Bson = org.mongodb.scala.model.Filters.and(
-      org.mongodb.scala.model.Filters.equal("nino", toBson(nino)),
-      org.mongodb.scala.model.Filters.equal("taxYear", toBson(taxYear))
-    )
 
     val testUser = User(
       mtditid, None, nino, "individual", sessionId

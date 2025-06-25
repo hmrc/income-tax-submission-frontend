@@ -20,12 +20,12 @@ import config.AppConfig
 import models.userResearch.{AuthLoginAPIResponse, AuthLoginRequest, ResearchUser}
 import play.api.http.HeaderNames
 import play.api.http.Status.CREATED
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReadsInstances, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthLoginApiConnector @Inject()(appConfig: AppConfig, http: HttpClient)(implicit ec: ExecutionContext) {
+class AuthLoginApiConnector @Inject()(appConfig: AppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsInstances {
   
   def submitLoginRequest(user: ResearchUser)(implicit hc: HeaderCarrier): Future[Option[AuthLoginAPIResponse]] = {
     val url = s"${appConfig.testOnly_authLoginUrl}/government-gateway/session/login"

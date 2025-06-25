@@ -19,7 +19,7 @@
 
 @this(betaBar: BetaBar, govUkBackLink: GovukBackLink, breadcrumb: Breadcrumb, hmrcLanguageSelect : HmrcLanguageSelect)
 
-@(breadcrumbTaxYear: Option[Int] = None, isAgent: Boolean, isOverviewPage: Boolean, showBreadcrumbs: Boolean, backLink: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(breadcrumbTaxYear: Option[Int] = None, isAgent: Boolean, isOverviewPage: Boolean, showBreadcrumbs: Boolean, backLink: Boolean = false)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @betaBar(isAgent)
 

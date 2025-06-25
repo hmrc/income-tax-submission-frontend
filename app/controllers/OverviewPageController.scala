@@ -74,7 +74,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
         }
       case Left(e) =>
         logger.error(s"$getCorrelationId::[OverviewPageController][handleGetIncomeSources] tailoringUserDataRepository.find returned error $e")
-        Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        errorHandler.internalServerError()
     }
   }
 
@@ -92,8 +92,7 @@ class OverviewPageController @Inject()(inYearAction: InYearAction,
     val gainsRemove = incomeSourcesModel.gains.nonEmpty
     val stockDividendsRemove = incomeSourcesModel.stockDividends.exists(stockDividends => stockDividends.hasNonZeroData)
 
-    excludedJourneysService.getExcludedJourneys(taxYear, user.nino, user.mtditid).map {
-      case Right(data) =>
+    excludedJourneysService.getExcludedJourneys(taxYear, user.nino, user.mtditid).map { data =>
         val giftAidHash = incomeSourcesModel.giftAid.exists { model =>
           val nonUkCharitiesCharityNames = model.giftAidPayments.flatMap(_.nonUkCharitiesCharityNames).getOrElse(Seq.empty)
           val investmentsNonUkCharitiesCharityNames = model.gifts.flatMap(_.investmentsNonUkCharitiesCharityNames).getOrElse(Seq.empty)

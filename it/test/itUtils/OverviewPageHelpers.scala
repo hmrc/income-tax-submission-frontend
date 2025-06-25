@@ -104,7 +104,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
 
   def cleanDatabase(taxYear: Int): Seq[String] = {
     await(repo.clear(taxYear))
-    await(repo.ensureIndexes)
+    await(repo.ensureIndexes())
   }
 
   def insertJourneys(endOfYear: Boolean, journeys: String*): Either[DatabaseError, Boolean] = {
@@ -112,7 +112,7 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
       "AA123456A",
       if (endOfYear) taxYearEOY else taxYear,
       journeys
-    ))())
+    )))
   }
 
   def insertAllJourneys(endOfYear: Boolean = false): Either[DatabaseError, Boolean] = {

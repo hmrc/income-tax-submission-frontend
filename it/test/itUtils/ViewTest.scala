@@ -128,7 +128,7 @@ trait ViewTest extends IntegrationTest {
     elementText(selector) shouldBe text
   }
 
-  def checkMessagesAreUnique(msgFile: Map[String, String], exclusionKeys: Set[String] = Set()) {
+  def checkMessagesAreUnique(msgFile: Map[String, String], exclusionKeys: Set[String] = Set()): Unit = {
     val msgKeys = msgFile.keys
       .filter(keys => !exclusionKeys.contains(keys))
       .toSet

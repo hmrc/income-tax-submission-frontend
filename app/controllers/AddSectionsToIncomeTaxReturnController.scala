@@ -51,10 +51,10 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
     implicit user =>
       if (appConfig.tailoringEnabled) {
         incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
-          case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          case Left(_) => errorHandler.internalServerError()
           case Right(incomeSources) =>
             tailoringSessionService.getSessionData(taxYear).flatMap {
-              case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+              case Left(_) => errorHandler.internalServerError()
               case Right(value) => value.fold(
                 Future.successful(Ok(view(taxYear, user.isAgent, AddSectionsForm.addSectionsForm(incomeSources), allJourneys, incomeSources)))
               )(
@@ -75,7 +75,7 @@ class AddSectionsToIncomeTaxReturnController @Inject()(
       if (appConfig.tailoringEnabled) {
         val userAffinity = if (user.isAgent) "agent" else "individual"
         incomeSourcesService.getIncomeSources(user.nino, taxYear, user.mtditid).flatMap {
-          case Left(_) => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          case Left(_) => errorHandler.internalServerError()
           case Right(incomeSources) => addSectionsForm(incomeSources).bindFromRequest().fold({
             form =>
               Future.successful(Ok(view(taxYear, user.isAgent, form, allJourneys, incomeSources)))

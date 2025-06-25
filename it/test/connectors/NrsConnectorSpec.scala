@@ -36,7 +36,7 @@ class NrsConnectorSpec extends IntegrationTest {
       stubPost(url, OK, "{}")
       val result = await(connector.postNrsConnector(nino, nrsSubmissionModel, "itsa-crystallisation"))
 
-      result shouldBe Right()
+      result shouldBe Right(())
     }
 
     "return an InternalServerError" in {

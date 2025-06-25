@@ -186,12 +186,12 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config(tailoringEnabled = true))
-    .build
+    .build()
 
 
   private def cleanDatabase(taxYear: Int): Seq[String] = {
     await(tailoringRepository.clear(taxYear))
-    await(tailoringRepository.ensureIndexes)
+    await(tailoringRepository.ensureIndexes())
   }
 
   private def insertJourneys(endOfYear: Boolean, journeys: String*): Either[DatabaseError, Boolean] = {
@@ -199,7 +199,7 @@ class AddSectionsToIncomeTaxReturnControllerISpec extends IntegrationTest with V
       "AA123456A",
       if (endOfYear) taxYearEOY else taxYear,
       journeys
-    ))())
+    )))
   }
 
   private def insertAllJourneys(endOfYear: Boolean = false): Either[DatabaseError, Boolean] = {

@@ -168,8 +168,6 @@ class StartPageControllerISpec extends IntegrationTest with ViewHelpers {
         route(customApp(tailoringPhase2Enabled = true), request).get
       }
 
-      implicit def document: () => Document = () => Jsoup.parse(Helpers.contentAsString(result))
-
       "returns status of 303" in {
         status(result) shouldBe SEE_OTHER
       }

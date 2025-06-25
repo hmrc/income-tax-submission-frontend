@@ -39,7 +39,7 @@ class TailoringSessionServiceISpec extends IntegrationTest {
     "return true when successful and false when adding a duplicate" in {
 
       await(tailoringUserDataRepository.collection.drop().toFuture())
-      await(tailoringUserDataRepository.ensureIndexes)
+      await(tailoringUserDataRepository.ensureIndexes())
 
       val initialResult = await(tailoringSessionService.createSessionData(tailoringDataModel, taxYear)(false)(true))
       val duplicateResult = await(tailoringSessionService.createSessionData(tailoringDataModel, taxYear)(false)(true))
