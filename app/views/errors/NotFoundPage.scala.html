@@ -19,7 +19,7 @@
 
 @this(heading : Heading, layout: Layout)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = messages("errors.404.heading")) {
 

@@ -17,7 +17,7 @@
 package models.userResearch
 
 import models.userResearch.ResearchUser.Enrolments
-import org.apache.commons.lang3.RandomStringUtils.randomNumeric
+import org.apache.commons.lang3.RandomStringUtils
 import play.api.libs.json.{Json, Writes}
 
 case class AuthLoginRequest(
@@ -32,7 +32,7 @@ case class AuthLoginRequest(
 
 object AuthLoginRequest {
   implicit val writes: Writes[AuthLoginRequest] = Writes[AuthLoginRequest] { model =>
-    val credId: String = if(model.credId.nonEmpty) model.credId else randomNumeric(16)
+    val credId: String = if(model.credId.nonEmpty) model.credId else RandomStringUtils.secure().nextNumeric(16)
     
     Json.obj(
       "credId" -> credId,

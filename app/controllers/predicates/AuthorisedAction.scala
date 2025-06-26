@@ -25,9 +25,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc._
 import services.{AuthService, SessionDataService}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, confidenceLevel}
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.{EnrolmentHelper, SessionDataHelper}
@@ -64,12 +64,12 @@ class AuthorisedAction @Inject()(
         case Some(AffinityGroup.Agent) => agentAuthentication(block, sessionId)(request, headerCarrier)
         case Some(individualUser) => individualAuthentication(block, individualUser, sessionId)(request, headerCarrier)
         case _ => Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show))
-      } recover {
+      } recoverWith {
         case _: NoActiveSession =>
-          Redirect(appConfig.signInUrl)
+          Future.successful(Redirect(appConfig.signInUrl))
         case _: AuthorisationException =>
           logger.warn(s"[AuthorisedAction][invokeBlock] - User failed to authenticate")
-          Redirect(controllers.routes.UnauthorisedUserErrorController.show)
+          Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show))
         case e =>
           logger.error(s"[AuthorisedAction][invokeBlock] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
           errorHandler.internalServerError()(request)
@@ -129,17 +129,17 @@ class AuthorisedAction @Inject()(
         .retrieve(allEnrolments)(
           enrolments => handleForValidAgent(block, mtdItId, nino, enrolments, isSupportingAgent = true, sessionId = sessionId)
         )
-        .recover {
+        .recoverWith {
           case _: AuthorisationException =>
             logger.warn(s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client.")
-            Redirect(controllers.errors.routes.AgentAuthErrorController.show)
+            Future.successful(Redirect(controllers.errors.routes.AgentAuthErrorController.show))
           case e =>
             logger.error(s"[AuthorisedAction][agentAuthentication] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
             errorHandler.internalServerError()
         }
     case e =>
       logger.error(s"[AuthorisedAction][agentAuthentication] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
-      errorHandler.futureInternalServerError()
+      errorHandler.internalServerError()
   }
 
   private def handleForValidAgent[A](block: User[A] => Future[Result],

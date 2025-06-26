@@ -32,7 +32,8 @@ class IVFailureControllerSpec extends IntegrationTest with ViewHelpers {
   private val auditService = app.injector.instanceOf[AuditService]
   
   val controller = new IVFailureController()(
-    appConfig,stubMessagesControllerComponents, page, auditService, scala.concurrent.ExecutionContext.Implicits.global)
+    appConfig,stubMessagesControllerComponents(), page, auditService, scala.concurrent.ExecutionContext.Implicits.global
+  )
 
   def event(id: String): AuditModel[IVFailureAuditDetail] =
     AuditModel("LowConfidenceLevelIvOutcomeFail", "LowConfidenceLevelIvOutcomeFail", IVFailureAuditDetail(id))

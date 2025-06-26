@@ -237,11 +237,6 @@ class AuthorisedActionSpec extends IntegrationTest {
 
       "the session id is missing" which {
 
-        val enrolments: Enrolments = Enrolments(Set(
-          Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, "1234567890")), "Activated"),
-          Enrolment(EnrolmentKeys.Agent, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.agentReference, "0987654321")), "Activated")
-        ))
-
         lazy val result = {
           authoriseAgent()
           auth.agentAuthentication(block, sessionId)(fakeRequestAgent, emptyHeaderCarrier)

@@ -29,7 +29,7 @@ class IVUpliftControllerISpec extends IntegrationTest with WireMockHelper {
 
   private def controller = new IVUpliftController()(
     appConfig,
-    stubMessagesControllerComponents,
+    stubMessagesControllerComponents(),
     app.injector.instanceOf[AuditService],
     app.injector.instanceOf[AuthService],
     app.injector.instanceOf[AuthorisedAction],

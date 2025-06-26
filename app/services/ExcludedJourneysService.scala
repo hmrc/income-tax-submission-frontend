@@ -17,25 +17,31 @@
 package services
 
 import connectors.ExcludedJourneysConnector
-import connectors.httpParsers.ClearExcludedJourneysHttpParser._
-import connectors.httpParsers.GetExcludedJourneysHttpParser._
-import models.ClearExcludedJourneysRequestModel
+import models.{ClearExcludedJourneysRequestModel, GetExcludedJourneysResponseModel}
+import org.apache.pekko.Done
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class ExcludedJourneysService @Inject()(excludedJourneysConnector: ExcludedJourneysConnector) {
+class ExcludedJourneysService @Inject()(excludedJourneysConnector: ExcludedJourneysConnector) extends Logging {
 
-  def getExcludedJourneys(taxYear: Int, nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[GetExcludedJourneysResponse] = {
-    excludedJourneysConnector.getExcludedJourneys(taxYear, nino)(hc.withExtraHeaders("mtditid" -> mtditid))
-  }
+  def getExcludedJourneys(taxYear: Int, nino: String, mtditid: String)
+                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetExcludedJourneysResponseModel] =
+    excludedJourneysConnector.getExcludedJourneys(taxYear, nino)(hc.withExtraHeaders("mtditid" -> mtditid)).map {
+      case Right(data) => data
+      case Left(error) =>
+        logger.warn(s"[getExcludedJourneys] Failed to retrieve excluded journeys for tax year: $taxYear, mtditid: $mtditid, returned error: $error")
+        throw new RuntimeException(s"Failed to retrieve excluded journeys for tax year: $taxYear, mtditid: $mtditid")
+    }
 
   def clearExcludedJourneys(taxYear: Int, nino: String, mtditid: String, data: ClearExcludedJourneysRequestModel)
-                           (implicit hc: HeaderCarrier): Future[ClearExcludedJourneysResponse] = {
-
-    excludedJourneysConnector.clearExcludedJourneys(taxYear, nino, data)(hc.withExtraHeaders("mtditid" -> mtditid))
-
-  }
-
+                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Done] =
+    excludedJourneysConnector.clearExcludedJourneys(taxYear, nino, data)(hc.withExtraHeaders("mtditid" -> mtditid)).map {
+      case Right(_) => Done
+      case Left(error) =>
+        logger.warn(s"[clearExcludedJourneys] Failed to clear excluded journeys for tax year: $taxYear, mtditid: $mtditid. Returned error: $error")
+        throw new RuntimeException(s"Failed to clear excluded journeys for tax year: $taxYear, mtditid: $mtditid")
+    }
 }

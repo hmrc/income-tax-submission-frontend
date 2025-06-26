@@ -145,7 +145,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config())
-    .build
+    .build()
 
   def customApp(useEncryption: Boolean = true,
                 invalidEncryptionKey: Boolean = false,
@@ -191,7 +191,7 @@ trait IntegrationTest extends AnyWordSpecLike with Matchers with GuiceOneServerP
         tailoringEnabled,
         tailoringPhase2Enabled
       )
-    ).build
+    ).build()
 
   //scalastyle:on
 

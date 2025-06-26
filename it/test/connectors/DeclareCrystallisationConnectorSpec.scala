@@ -32,13 +32,12 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
   ".DeclareCrystallisationConnector" should {
 
     "return a NO_CONTENT" in {
-      val expectedResult = Right()
 
       stubPost(declareUrl, NO_CONTENT, "")
 
       val result = await(connector.postDeclareCrystallisation(nino, taxYearEOY, calculationId))
 
-      result shouldBe expectedResult
+      result shouldBe Right(())
     }
 
     "return a INTERNAL_SERVER_ERROR" in {

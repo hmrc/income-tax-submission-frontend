@@ -23,10 +23,28 @@
 
 @import views.html.helper.CSPNonce
 
-@this(layout: Layout, heading: Heading, button: Button, govukInsetText : GovukInsetText, formWithCSRF: FormWithCSRF, govUkButton: GovukButton, govukTag: GovukTag, notificationBanner: NotificationBanner, link: Link)
-@(isAgent: Boolean, incomeSources: Option[IncomeSourcesModel], tailoring: OverviewTailoringModel, taxYear: Int, isInYear: Boolean, excludedJourneys: Seq[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@this(
+        layout: Layout,
+        heading: Heading,
+        button: Button,
+        govukInsetText: GovukInsetText,
+        formWithCSRF: FormWithCSRF,
+        govUkButton: GovukButton,
+        govukTag: GovukTag,
+        notificationBanner: NotificationBanner,
+        link: Link
+)
 
-@statusLink(journeyKey: String, enabledCondition: Boolean = true, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, isUnavailable: Boolean, additionalShowLinkCheck: Boolean) = @{
+@(
+        isAgent: Boolean,
+        incomeSources: Option[IncomeSourcesModel],
+        tailoring: OverviewTailoringModel,
+        taxYear: Int,
+        isInYear: Boolean,
+        excludedJourneys: Seq[String]
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@statusLink(journeyKey: String, enabledCondition: Boolean, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean, isMandatorySection: Boolean, isUnavailable: Boolean, additionalShowLinkCheck: Boolean) = @{
     if(enabledCondition && additionalShowLinkCheck && !isUnavailable){
         if (statusTagUpdatedCondition) {
             Some(messages("overview.tag.updated"))
@@ -128,7 +146,17 @@
     }
 }
 
-@taskListItem(show: Boolean, enabled: Boolean, linkId: String, taskNameKey: String, href: String, journeyKey: String, statusTagUpdatedCondition: Boolean, cannotUpdateCondition: Boolean = false, isMandatorySection: Boolean = false, isUnavailable: Boolean = false, additionalShowLinkCheck: Boolean = true) = {
+@taskListItem(show: Boolean,
+    enabled: Boolean,
+    linkId: String,
+    taskNameKey: String,
+    href: String,
+    journeyKey: String,
+    statusTagUpdatedCondition: Boolean,
+    cannotUpdateCondition: Boolean = false,
+isMandatorySection: Boolean = false,
+isUnavailable: Boolean,
+additionalShowLinkCheck: Boolean = true) = {
     @if(!appConfig.tailoringEnabled || show) {
         <li class="app-task-list__item">
             <span class="app-task-list__task-name">
@@ -406,7 +434,7 @@
 }
 
 
-    
+
 @overview = {
      @if(appConfig.tailoringEnabled){
         @TailoringContent
@@ -421,7 +449,7 @@
     }
 
     <h2 class="govuk-heading-m" id="heading-tasklist">@messages(s"overview.$affinityText.task1.heading")</h2>
-    
+
     @if(isAgent) {
         @taskWithActionList(messages("overview.task1.caption"), None, incomeSources.getOrElse(IncomeSourcesModel(None,None)), messages(s"overview.crystallisation.warning.agent"))
     } else {
@@ -441,7 +469,7 @@
             @messages(s"overview.paragraph.5.$affinityText")
         </p>
     }
-    
+
     @checkSubmitIncomeTaxReturn(messages(s"overview.crystallisation.paragraph.$affinityText"), messages(s"overview.crystallisation.heading.EOY.$affinityText"))
     @updateTaxCalculationInYear
 

@@ -52,8 +52,7 @@ class SessionIdFilterSpec extends IntegrationTest with OneAppPerSuiteWithCompone
           )
       }
       case GET(p"/test2") => defaultActionBuilder.apply {
-        implicit request =>
-          Results.Ok.addingToSession("foo" -> "bar")
+        Results.Ok.addingToSession("foo" -> "bar")
       }
     }
   }

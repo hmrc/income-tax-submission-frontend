@@ -20,44 +20,41 @@ import common.StatusMessage
 import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
-import play.api.mvc.{Request, RequestHeader, Result}
+import play.api.mvc.{RequestHeader, Result}
 import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.LegacyFrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.errors._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject()(val messagesApi: MessagesApi,
-                             internalServerErrorPage: InternalServerErrorPage, notFoundPage: NotFoundPage,
-                             serviceUnavailablePage: ServiceUnavailablePage)(implicit appConfig: AppConfig)
+                             internalServerErrorPage: InternalServerErrorPage,
+                             notFoundPage: NotFoundPage,
+                             serviceUnavailablePage: ServiceUnavailablePage
+                            )(implicit appConfig: AppConfig, val ec: ExecutionContext) extends FrontendErrorHandler {
 
-  extends LegacyFrontendErrorHandler {
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] =
+    Future.successful(internalServerErrorPage())
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    internalServerErrorPage()
+  override def notFoundTemplate(implicit request: RequestHeader): Future[Html] =
+    Future.successful(notFoundPage())
 
-  override def notFoundTemplate(implicit request: Request[_]): Html = notFoundPage()
+  override def internalServerErrorTemplate(implicit request: RequestHeader): Future[Html] =
+    Future.successful(internalServerErrorPage())
 
-  override def internalServerErrorTemplate(implicit request: Request[_]): Html = internalServerErrorPage()
+  def internalServerError()(implicit request: RequestHeader): Future[Result] =
+    internalServerErrorTemplate.map(InternalServerError(_))
 
-  def internalServerError()(implicit request: Request[_]): Result = {
-    InternalServerError(internalServerErrorTemplate(request))
-  }
-
-  def futureInternalServerError()(implicit user: Request[_]): Future[Result] = {
-    Future.successful(InternalServerError(internalServerErrorTemplate(user)))
-  }
-
-  def handleError(status: Int)(implicit request: Request[_]): Result = {
+  def handleError(status: Int)(implicit request: RequestHeader): Result = {
     status match {
       case SERVICE_UNAVAILABLE => ServiceUnavailable(serviceUnavailablePage())
       case _ => InternalServerError(internalServerErrorPage())
     }
   }
 
-  def handleIntentToCrystalliseError(status: Int, taxYear: Int)(implicit request: Request[_]): Result = {
+  def handleIntentToCrystalliseError(status: Int, taxYear: Int)(implicit request: RequestHeader): Result = {
     status match {
       case FORBIDDEN => Redirect(controllers.errors.routes.NoUpdatesProvidedPageController.show(taxYear))
       case CONFLICT => Redirect(controllers.errors.routes.ReturnTaxYearExistsController.show(taxYear))
@@ -67,7 +64,7 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
     }
   }
 
-  def handleDeclareCrystallisationError(status: Int, errorMessage: String, taxYear: Int)(implicit request: Request[_]): Result = {
+  def handleDeclareCrystallisationError(status: Int, errorMessage: String, taxYear: Int)(implicit request: RequestHeader): Result = {
     (status, errorMessage) match {
       case (CONFLICT, StatusMessage.residencyChanged) => Redirect(controllers.errors.routes.AddressHasChangedPageController.show(taxYear))
       case (CONFLICT, StatusMessage.finalDeclarationReceived) => Redirect(controllers.errors.routes.ReturnTaxYearExistsController.show(taxYear))
@@ -78,12 +75,12 @@ class ErrorHandler @Inject()(val messagesApi: MessagesApi,
     }
   }
 
-  override def onClientError(requestHeader: RequestHeader, statusCode: Int, message: String): Future[Result] = Future.successful {
+  override def onClientError(requestHeader: RequestHeader, statusCode: Int, message: String): Future[Result] = {
     statusCode match {
       case NOT_FOUND =>
-        NotFound(notFoundTemplate(requestHeader.withBody("")))
+        notFoundTemplate(requestHeader).map(NotFound(_))
       case _ =>
-        InternalServerError(internalServerErrorPage()(requestHeader.withBody(""), messagesApi.preferred(requestHeader), appConfig))
+        internalServerError()(requestHeader)
     }
   }
 }

@@ -18,15 +18,13 @@ package controllers
 
 import config.AppConfig
 import controllers.predicates.AuthorisedAction
-
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionDataHelper
 import views.html.errors.WrongTaxYearPage
 
-import scala.concurrent.Future
+import javax.inject.Inject
 
 class TaxYearErrorController @Inject()(val authorisedAction: AuthorisedAction,
                                        val mcc: MessagesControllerComponents,
