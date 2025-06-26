@@ -24,7 +24,7 @@ import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.Updates.set
 import org.mongodb.scala.model.{FindOneAndReplaceOptions, FindOneAndUpdateOptions}
-import uk.gov.hmrc.mongo.play.json.Codecs.{logger, toBson}
+import uk.gov.hmrc.mongo.play.json.Codecs.toBson
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.play.http.logging.Mdc
 import utils.PagerDutyHelper.PagerDutyKeys._
@@ -60,15 +60,15 @@ trait UserDataRepository[C <: UserDataTemplate] {
         filter = filter(user.nino, taxYear),
         update = set("lastUpdated", toBson(Instant.now())),
         options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
-      ).toFutureOption().map { data =>
-        Try(data.map(decryptionMethod)).fold(
-          handleEncryptionDecryptionException(_, s"[$repoName][find]"),
-          Right(_)
-        )
-      }.recover { exception =>
-        pagerDutyLog(FAILED_TO_FIND_DATA, Some(s"[$repoName][find] Failed when trying to find user data. Exception: ${exception.getMessage}"))
-        Left(DataNotFound)
-      }
+      ).toFutureOption()
+    }.map { data =>
+      Try(data.map(decryptionMethod)).fold(
+        handleEncryptionDecryptionException(_, s"[$repoName][find]"),
+        Right(_)
+      )
+    }.recover { exception =>
+      pagerDutyLog(FAILED_TO_FIND_DATA, Some(s"[$repoName][find] Failed when trying to find user data. Exception: ${exception.getMessage}"))
+      Left(DataNotFound)
     }
 
   def update(userData: UserData): Future[Either[DatabaseError, Done]] =
@@ -78,13 +78,13 @@ trait UserDataRepository[C <: UserDataTemplate] {
           filter = filter(encryptedData.nino, encryptedData.taxYear),
           replacement = encryptedData,
           options = FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER)
-        ).toFutureOption().map {
-          case Some(_) => Right(Done)
-          case _ => Left(DataNotUpdated)
-        }.recover { exception =>
-          pagerDutyLog(FAILED_TO_UPDATE_DATA, Some(s"[$repoName][update] Failed to update user data. Exception: ${exception.getMessage}"))
-          Left(DataNotUpdated)
-        }
+        ).toFutureOption()
+      }.map {
+        case Some(_) => Right(Done)
+        case _ => Left(DataNotUpdated)
+      }.recover { exception =>
+        pagerDutyLog(FAILED_TO_UPDATE_DATA, Some(s"[$repoName][update] Failed to update user data. Exception: ${exception.getMessage}"))
+        Left(DataNotUpdated)
       }
     }
 
