@@ -18,18 +18,20 @@ package connectors
 
 import config.AppConfig
 import connectors.httpParsers.DeclareCrystallisationHttpParser.{DeclareCrystallisationHttpReads, DeclareCrystallisationResponse}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclareCrystallisationConnector @Inject()(val http: HttpClient,
+class DeclareCrystallisationConnector @Inject()(val http: HttpClientV2,
                                                 val config: AppConfig
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def postDeclareCrystallisation(nino: String, taxYear: Int, calculationId: String)(implicit hc: HeaderCarrier): Future[DeclareCrystallisationResponse] = {
     val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/$calculationId/declare-crystallisation"
-    http.POSTEmpty[DeclareCrystallisationResponse](Url)
+    http.post(url"$Url")
+      .execute[DeclareCrystallisationResponse]
   }
 
 

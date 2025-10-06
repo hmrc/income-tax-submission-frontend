@@ -18,18 +18,21 @@ package connectors
 
 import config.AppConfig
 import connectors.httpParsers.NrsSubmissionHttpParser._
-import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.{Json, Writes}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NrsConnector @Inject()(val http: HttpClient,
+class NrsConnector @Inject()(val http: HttpClientV2,
                              val config: AppConfig
                                   )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def postNrsConnector[A](nino: String, payload: A, notableEvent: String)(implicit hc: HeaderCarrier, writes: Writes[A]): Future[NrsSubmissionResponse] = {
     val url: String = config.nrsProxyBaseUrl + s"/income-tax-nrs-proxy/$nino/$notableEvent"
-    http.POST[A, NrsSubmissionResponse](url, payload)
+    http.post(url"$url")
+      .withBody(Json.toJson(payload))
+      .execute[NrsSubmissionResponse]
   }
 }

@@ -17,20 +17,25 @@
 package connectors.testOnly
 
 import config.AppConfig
-import models.userResearch.{AuthLoginAPIResponse, AuthLoginRequest, ResearchUser}
+import models.userResearch.{AuthLoginAPIResponse, ResearchUser}
 import play.api.http.HeaderNames
 import play.api.http.Status.CREATED
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReadsInstances, HttpResponse}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReadsInstances, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthLoginApiConnector @Inject()(appConfig: AppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsInstances {
+class AuthLoginApiConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)(implicit ec: ExecutionContext) extends HttpReadsInstances {
   
   def submitLoginRequest(user: ResearchUser)(implicit hc: HeaderCarrier): Future[Option[AuthLoginAPIResponse]] = {
     val url = s"${appConfig.testOnly_authLoginUrl}/government-gateway/session/login"
-    
-    http.POST[AuthLoginRequest, HttpResponse](url, user.toLoginRequest).map { response =>
+
+    http.post(url"$url")
+      .withBody(Json.toJson(user.toLoginRequest))
+      .execute[HttpResponse]
+      .map { response =>
       response.status match {
         case `CREATED` =>
           (response.header(HeaderNames.AUTHORIZATION), response.header(HeaderNames.LOCATION), (response.json \ "gatewayToken").asOpt[String]) match {

@@ -18,22 +18,25 @@ package connectors
 
 import config.AppConfig
 import connectors.httpParsers.LiabilityCalculationHttpParser.{LiabilityCalculationHttpReads, LiabilityCalculationResponse}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import javax.inject.Inject
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class LiabilityCalculationConnector @Inject()(http: HttpClient,
+class LiabilityCalculationConnector @Inject()(http: HttpClientV2,
                                               config: AppConfig
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def getCalculationId(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
     val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation"
-    http.GET[LiabilityCalculationResponse](Url)
+    http.get(url"$Url")
+      .execute[LiabilityCalculationResponse]
   }
 
   def getIntentToCrystallise(nino: String, taxYear: Int, crystallise: Boolean)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
     val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation?crystallise=$crystallise"
-    http.GET[LiabilityCalculationResponse](Url)
+    http.get(url"$Url")
+      .execute[LiabilityCalculationResponse]
   }
 }

@@ -19,18 +19,20 @@ package connectors
 import config.AppConfig
 import connectors.httpParsers.IncomeSourcesHttpParser.{IncomeSourcesHttpReads, IncomeSourcesResponse}
 import play.api.Logging
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IncomeSourcesConnector @Inject()(val http: HttpClient,
+class IncomeSourcesConnector @Inject()(val http: HttpClientV2,
                                        val config: AppConfig
                                       )(implicit ec: ExecutionContext) extends RawResponseReads with Logging{
 
   def getIncomeSources(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[IncomeSourcesResponse] = {
     val incomeSourcesUrl: String = config.incomeTaxSubmissionUrl + s"/nino/$nino/sources?taxYear=$taxYear"
-    http.GET[IncomeSourcesResponse](incomeSourcesUrl)(IncomeSourcesHttpReads, hcWithExcludedIncomeSources(taxYear), ec)
+    http.get(url"$incomeSourcesUrl")(hcWithExcludedIncomeSources(taxYear))
+      .execute[IncomeSourcesResponse]
   }
 
   private[connectors] def hcWithExcludedIncomeSources(taxYear: Int)(implicit hc: HeaderCarrier): HeaderCarrier = {
