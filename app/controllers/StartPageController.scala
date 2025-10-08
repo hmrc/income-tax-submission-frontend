@@ -18,11 +18,10 @@ package controllers
 
 import audit.{AuditService, EnterUpdateAndSubmissionServiceAuditDetail}
 import common.SessionValues
-import controllers.predicates.{AuthorisedAction, InYearAction}
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.TaxYearAction.taxYearAction
-
-import javax.inject.{Inject, Singleton}
+import controllers.predicates.{AuthorisedAction, InYearAction}
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.{AuthService, ValidTaxYearListService}
@@ -30,6 +29,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.StartPageView
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -44,10 +44,11 @@ class StartPageController @Inject()(val authorisedAction: AuthorisedAction,
                                     implicit val ec: ExecutionContext,
                                     implicit val validTaxYearListService: ValidTaxYearListService,
                                     implicit val errorHandler: ErrorHandler
-                                   ) extends FrontendController(mcc) with I18nSupport {
+                                   ) extends FrontendController(mcc) with I18nSupport with Logging{
 
   def show(taxYear: Int): Action[AnyContent] = (authorisedAction andThen taxYearAction(taxYear, missingTaxYearReset = false)) {
     implicit user =>
+      logger.error("Feedback url: " + appConfig.betaFeedbackUrl(implicitly, false))
       if(appConfig.tailoringPhase2Enabled) {
         Redirect(appConfig.tailorReturnStartPageUrl(taxYear)).addingToSession(SessionValues.TAX_YEAR -> taxYear.toString)
       } else {
