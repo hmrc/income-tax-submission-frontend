@@ -59,7 +59,6 @@ class AuthorisedAction @Inject()(
 
     implicit val req: Request[A] = request
     implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request,request.session)
-    logger.error("Feedback url: " + appConfig.betaFeedbackUrl(implicitly, false))
     withSessionId { sessionId =>
       authService.authorised().retrieve(affinityGroup) {
         case Some(AffinityGroup.Agent) => agentAuthentication(block, sessionId)(request, headerCarrier)
@@ -72,7 +71,6 @@ class AuthorisedAction @Inject()(
           logger.warn(s"[AuthorisedAction][invokeBlock] - User failed to authenticate")
           Future.successful(Redirect(controllers.routes.UnauthorisedUserErrorController.show))
         case e =>
-          logger.error(s"[AuthorisedAction][invokeBlock] - User authentication failed with exception of type '${e.getMessage()}'")
           logger.error(s"[AuthorisedAction][invokeBlock] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
           errorHandler.internalServerError()(request)
       }

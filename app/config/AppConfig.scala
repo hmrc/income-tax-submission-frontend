@@ -21,21 +21,16 @@ import common.IncomeSources._
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
-import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
-import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utils.TaxYearHelper
 
+import java.net.URLEncoder
 import javax.inject.Inject
 import scala.concurrent.duration.Duration
-import java.net.URLEncoder
 //scalastyle:off
 class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig,
                                   taxYearHelper: TaxYearHelper,
                                   configuration: Configuration) extends AppConfig {
-
-//  private lazy val allowedHosts: Seq[String] = configuration.get[Seq[String]]("microservice.allowedRedirects")
-//  private lazy val redirectPolicy = OnlyRelative | AbsoluteWithHostnameFromAllowlist(allowedHosts:_*)
 
   private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
   def defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
