@@ -28,20 +28,20 @@ import utils.TaxYearHelper
 
 import javax.inject.Inject
 import scala.concurrent.duration.Duration
-
+import java.net.URLEncoder
 //scalastyle:off
 class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig,
                                   taxYearHelper: TaxYearHelper,
                                   configuration: Configuration) extends AppConfig {
 
-  private lazy val allowedHosts: Seq[String] = configuration.get[Seq[String]]("microservice.allowedRedirects")
-  private lazy val redirectPolicy = OnlyRelative | AbsoluteWithHostnameFromAllowlist(allowedHosts:_*)
+//  private lazy val allowedHosts: Seq[String] = configuration.get[Seq[String]]("microservice.allowedRedirects")
+//  private lazy val redirectPolicy = OnlyRelative | AbsoluteWithHostnameFromAllowlist(allowedHosts:_*)
 
   private lazy val signInBaseUrl: String = servicesConfig.getString(ConfigKeys.signInUrl)
   def defaultTaxYear: Int = servicesConfig.getInt(ConfigKeys.defaultTaxYear)
   val alwaysEOY: Boolean = servicesConfig.getBoolean(ConfigKeys.alwaysEOY)
   private lazy val signInContinueBaseUrl: String = servicesConfig.getString(ConfigKeys.signInContinueUrl)
-  lazy val signInContinueUrl: String = RedirectUrl(signInContinueBaseUrl).get(redirectPolicy).encodedUrl
+  lazy val signInContinueUrl: String = URLEncoder.encode(signInContinueBaseUrl, "UTF-8")
   private lazy val signInOrigin = servicesConfig.getString("appName")
   def signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
 
@@ -132,7 +132,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig,
   lazy private val contactFormServiceAgent = "update-and-submit-income-tax-return-agent"
   def contactFormServiceIdentifier(implicit isAgent: Boolean): String = if(isAgent) contactFormServiceAgent else contactFormServiceIndividual
 
-  private def requestUri(implicit request: RequestHeader): String = RedirectUrl(appUrl + request.uri).get(redirectPolicy).encodedUrl
+  private def requestUri(implicit request: RequestHeader): String = URLEncoder.encode(appUrl + request.uri, "UTF-8")
 
   def betaFeedbackUrl(implicit request: RequestHeader, isAgent: Boolean): String = {
     s"$contactFrontEndUrl/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=$requestUri"
