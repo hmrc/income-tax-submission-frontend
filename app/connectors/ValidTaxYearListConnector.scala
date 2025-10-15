@@ -18,18 +18,20 @@ package connectors
 
 import config.AppConfig
 import connectors.httpParsers.ValidTaxYearListHttpParser.{ValidTaxYearListHttpReads, ValidTaxYearListResponse}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ValidTaxYearListConnector @Inject()(val http: HttpClient,
+class ValidTaxYearListConnector @Inject()(val http: HttpClientV2,
                                           val config: AppConfig
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def getValidTaxYearList(nino: String)(implicit hc: HeaderCarrier): Future[ValidTaxYearListResponse] = {
     val url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/tax-years"
-    http.GET[ValidTaxYearListResponse](url)
+    http.get(url"$url")
+      .execute[ValidTaxYearListResponse]
   }
 
 }

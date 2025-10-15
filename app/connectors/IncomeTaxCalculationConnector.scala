@@ -19,13 +19,14 @@ package connectors
 
 import config.AppConfig
 import connectors.httpParsers.CalculationDetailsHttpParser.{CalculationDetailResponse, CalculationDetailsHttpReads}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeTaxCalculationConnector @Inject()(http: HttpClient,
+class IncomeTaxCalculationConnector @Inject()(http: HttpClientV2,
                                               config: AppConfig) extends RawResponseReads {
 
   private def getCalculationResponseByCalcIdUrl(nino: String, calcId: String): String =
@@ -35,9 +36,7 @@ class IncomeTaxCalculationConnector @Inject()(http: HttpClient,
                                     (implicit headerCarrier: HeaderCarrier,
                                      ec: ExecutionContext): Future[CalculationDetailResponse] = {
     val Url: String = getCalculationResponseByCalcIdUrl(nino, calcId)
-    http.GET[CalculationDetailResponse](Url)(
-      CalculationDetailsHttpReads,
-      headerCarrier.withExtraHeaders("mtditid" -> mtditid), ec
-    )
+    http.get(url"$Url")(headerCarrier.withExtraHeaders("mtditid" -> mtditid))
+      .execute[CalculationDetailResponse]
   }
 }

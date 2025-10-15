@@ -19,18 +19,20 @@ package connectors
 import config.AppConfig
 import connectors.httpParsers.TaskListHttpParser.{TaskListHttpReads, TaskListResponse}
 import play.api.Logging
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaskListConnector @Inject()(val http: HttpClient,
+class TaskListConnector @Inject()(val http: HttpClientV2,
                                   val config: AppConfig
                                       )(implicit ec: ExecutionContext) extends RawResponseReads with Logging{
 
   def getTaskList(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[TaskListResponse] = {
     val taskListUrl: String = config.incomeTaxSubmissionUrl + s"/nino/$nino/sources/task-list/$taxYear"
-    http.GET[TaskListResponse](taskListUrl)
+    http.get(url"$taskListUrl")
+      .execute[TaskListResponse]
   }
 
 }

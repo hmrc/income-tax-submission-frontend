@@ -20,21 +20,27 @@ import config.AppConfig
 import connectors.httpParsers.ClearExcludedJourneysHttpParser._
 import connectors.httpParsers.GetExcludedJourneysHttpParser._
 import models.ClearExcludedJourneysRequestModel
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExcludedJourneysConnector @Inject()(http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
+class ExcludedJourneysConnector @Inject()(http: HttpClientV2, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   def getExcludedJourneys(taxYear: Int, nino: String)(implicit hc: HeaderCarrier): Future[GetExcludedJourneysResponse] = {
-    http.GET[GetExcludedJourneysResponse](appConfig.getExcludedJourneysUrl(taxYear, nino))
+    val excludedUrl: String = appConfig.getExcludedJourneysUrl(taxYear, nino)
+    http.get(url"$excludedUrl")
+      .execute[GetExcludedJourneysResponse]
   }
 
   def clearExcludedJourneys(taxYear: Int, nino: String, data: ClearExcludedJourneysRequestModel)
                            (implicit hc: HeaderCarrier): Future[ClearExcludedJourneysResponse] = {
-
-    http.POST[ClearExcludedJourneysRequestModel, ClearExcludedJourneysResponse](appConfig.clearExcludedJourneysUrl(taxYear, nino), data)
+    val excludedUrl = appConfig.clearExcludedJourneysUrl(taxYear, nino)
+    http.post(url"$excludedUrl")
+      .withBody(Json.toJson(data))
+      .execute[ClearExcludedJourneysResponse]
   }
 
 }
