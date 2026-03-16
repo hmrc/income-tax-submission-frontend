@@ -53,9 +53,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig,
 
   lazy val sessionCookieServiceEnabled: Boolean = servicesConfig.getBoolean("feature-switch.sessionCookieServiceEnabled")
 
-  //Income tax calculation service
-  lazy val incomeTaxCalculationServiceUrl: String = s"$calculationBaseUrl/income-tax-calculation/income-tax"
-
   def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-uk-companies"
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-income-from-dividends"
   def personalIncomeTaxInterestSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/interest/check-interest"
@@ -243,7 +240,6 @@ trait AppConfig {
   def personalIncomeTaxSubmissionBaseUrl: String
   def personalIncomeTaxSubmissionUrl: String
 
-  def incomeTaxCalculationServiceUrl: String
   def personalIncomeTaxDividendsUrl(taxYear: Int): String
   def personalIncomeTaxDividendsTailorPage(taxYear: Int): String
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String

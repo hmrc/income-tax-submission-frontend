@@ -30,7 +30,7 @@ class IncomeTaxCalculationConnector @Inject()(http: HttpClientV2,
                                               config: AppConfig) extends RawResponseReads {
 
   private def getCalculationResponseByCalcIdUrl(nino: String, calcId: String): String =
-    s"${config.incomeTaxCalculationServiceUrl}/nino/$nino/calc-id/$calcId/calculation-details"
+    s"${config.calculationStubBaseUrl}/income-tax-calculation/income-tax/nino/$nino/calc-id/$calcId/calculation-details"
 
   def getCalculationResponseByCalcId(mtditid: String, nino: String, calcId: String, taxYear: Int)
                                     (implicit headerCarrier: HeaderCarrier,

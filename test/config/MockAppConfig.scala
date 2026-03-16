@@ -34,7 +34,6 @@ class MockAppConfig extends AppConfig  {
 
   override val sessionCookieServiceEnabled: Boolean = false
 
-  override lazy val incomeTaxCalculationServiceUrl: String = "/income-tax-calculation/income-tax"
   lazy val additionalInformationTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/additional-information"
 
   override lazy val ivSuccessUrl: String = s"/update-and-submit-income-tax-return/iv-uplift-callback"
