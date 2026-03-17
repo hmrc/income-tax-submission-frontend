@@ -29,13 +29,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncomeTaxCalculationConnector @Inject()(http: HttpClientV2,
                                               config: AppConfig) extends RawResponseReads {
 
-  private def getCalculationResponseByCalcIdUrl(nino: String, calcId: String): String =
-    s"${config.calculationStubBaseUrl}/income-tax-calculation/income-tax/nino/$nino/calc-id/$calcId/calculation-details"
+  private def getCalculationResponseByCalcIdUrl(taxYear: Int, nino: String, calcId: String): String =
+    s"${config.calculationStubBaseUrl}/income-tax/view/calculations/liability/$taxYear/$nino/$calcId"
 
   def getCalculationResponseByCalcId(mtditid: String, nino: String, calcId: String, taxYear: Int)
                                     (implicit headerCarrier: HeaderCarrier,
                                      ec: ExecutionContext): Future[CalculationDetailResponse] = {
-    val Url: String = getCalculationResponseByCalcIdUrl(nino, calcId)
+    val Url: String = getCalculationResponseByCalcIdUrl(taxYear, nino, calcId)
     http.get(url"$Url")(headerCarrier.withExtraHeaders("mtditid" -> mtditid))
       .execute[CalculationDetailResponse]
   }

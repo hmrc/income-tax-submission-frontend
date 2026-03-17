@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class DeclarationPageControllerISpec extends IntegrationTest with ViewHelpers {
 
-  private val crystallisationUrl: String = s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYearEOY/string/declare-crystallisation"
+  private val crystallisationUrl: String = s"/income-tax/$taxYearEOY/calculation/AA123456A/string/crystallise"
 
   object ExpectedResults {
     val heading: String = "Declaration"

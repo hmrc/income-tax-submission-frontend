@@ -88,15 +88,15 @@ trait OverviewPageHelpers extends IntegrationTest with ViewHelpers {
   }
 
   def stubInYearLiabilityCalculation(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
-    stubGet(s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/tax-calculation\\?crystallise=false", returnStatus, Json.toJson(response).toString())
+    stubGet(s"/income-tax/nino/AA123456A/taxYear/$taxYear/tax-calculation\\?crystallise=false", returnStatus, Json.toJson(response).toString())
   }
 
   def stubLiabilityCalculation(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
-    stubGet(s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYear/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
+    stubGet(s"/income-tax/nino/AA123456A/taxYear/$taxYear/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
   }
 
   def stubLiabilityCalculationEOY(response: Option[LiabilityCalculationIdModel], returnStatus: Int = OK): StubMapping = {
-    stubGet(s"/income-tax-calculation/income-tax/nino/AA123456A/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
+    stubGet(s"/income-tax/nino/AA123456A/taxYear/$taxYearEOY/tax-calculation\\?crystallise=true", returnStatus, Json.toJson(response).toString())
   }
 
   lazy val repo: TailoringUserDataRepository = app.injector.instanceOf[TailoringUserDataRepository]
