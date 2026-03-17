@@ -18,6 +18,7 @@ package connectors
 
 import config.AppConfig
 import connectors.httpParsers.DeclareCrystallisationHttpParser.{DeclareCrystallisationHttpReads, DeclareCrystallisationResponse}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
@@ -30,7 +31,7 @@ class DeclareCrystallisationConnector @Inject()(val http: HttpClientV2,
 
   def postDeclareCrystallisation(nino: String, taxYear: Int, calculationId: String)(implicit hc: HeaderCarrier): Future[DeclareCrystallisationResponse] = {
     val Url: String = config.calculationStubBaseUrl + s"/income-tax/$taxYear/calculation/$nino/$calculationId/crystallise"
-    http.post(url"$Url")
+    http.post(url"$Url").withBody(Json.toJson(""))
       .execute[DeclareCrystallisationResponse]
   }
 
