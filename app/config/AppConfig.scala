@@ -40,7 +40,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig,
   private lazy val signInOrigin = servicesConfig.getString("appName")
   def signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
 
-  lazy val calculationBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCalculationUrl)
   lazy val calculationStubBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCalculationStubUrl)
   lazy val nrsProxyBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxNrsProxyUrl)
 
@@ -231,7 +230,6 @@ trait AppConfig {
   def signInUrl: String
   def alwaysEOY: Boolean
 
-  def calculationBaseUrl: String
   def calculationStubBaseUrl: String
   def nrsProxyBaseUrl: String
 

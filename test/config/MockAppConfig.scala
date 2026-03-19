@@ -150,7 +150,6 @@ class MockAppConfig extends AppConfig  {
 
   override def viewAndChangeViewInYearEstimateUrlAgent: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"
 
-  override val calculationBaseUrl: String = "/calculation"
   override val calculationStubBaseUrl: String = "/calculation"
   override val nrsProxyBaseUrl: String = "/nrs"
 
