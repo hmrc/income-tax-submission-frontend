@@ -32,7 +32,7 @@ class ValidTaxYearListConnectorSpec extends IntegrationTest {
       "return a ValidTaxYearListModel" in {
         val expectedResult = ValidTaxYearListModel(Seq(2020, 2021, 2022, 2023))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/tax-years", OK, Json.toJson(expectedResult).toString())
+        stubGet(s"/income-tax/nino/$nino/tax-years", OK, Json.toJson(expectedResult).toString())
 
         val result = await(connector.getValidTaxYearList(nino))
 
@@ -46,7 +46,7 @@ class ValidTaxYearListConnectorSpec extends IntegrationTest {
           "NotId" -> ""
         )
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/tax-years", OK, Json.toJson(invalidJson).toString())
+        stubGet(s"/income-tax/nino/$nino/tax-years", OK, Json.toJson(invalidJson).toString())
 
         val result = await(connector.getValidTaxYearList(nino))
 
@@ -56,7 +56,7 @@ class ValidTaxYearListConnectorSpec extends IntegrationTest {
       "return a ValidTaxYearListErrorServiceUnavailableError" in {
         val expectedResult = APIErrorModel(SERVICE_UNAVAILABLE, APIErrorBodyModel("SERVICE_UNAVAILABLE", "Service unavailable"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/tax-years", SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
+        stubGet(s"/income-tax/nino/$nino/tax-years", SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
 
         val result = await(connector.getValidTaxYearList(nino))
 
@@ -66,7 +66,7 @@ class ValidTaxYearListConnectorSpec extends IntegrationTest {
       "return a INTERNAL_SERVER_ERROR" in {
         val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal server error"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/tax-years", INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
+        stubGet(s"/income-tax/nino/$nino/tax-years", INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
 
         val result = await(connector.getValidTaxYearList(nino))
 
@@ -77,7 +77,7 @@ class ValidTaxYearListConnectorSpec extends IntegrationTest {
         val expectedResult = APIErrorModel(UNPROCESSABLE_ENTITY, APIErrorBodyModel(
           "UNPROCESSABLE_ENTITY", "The remote endpoint has indicated that crystallisation can not occur until after the end of tax year."))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/tax-years", UNPROCESSABLE_ENTITY, expectedResult.toJson.toString())
+        stubGet(s"/income-tax/nino/$nino/tax-years", UNPROCESSABLE_ENTITY, expectedResult.toJson.toString())
 
         val result = await(connector.getValidTaxYearList(nino))
 
@@ -88,7 +88,7 @@ class ValidTaxYearListConnectorSpec extends IntegrationTest {
         val expectedResult = APIErrorModel(FORBIDDEN, APIErrorBodyModel(
           "FORBIDDEN", "The remote endpoint has indicated that no income submissions exist."))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/tax-years", FORBIDDEN, expectedResult.toJson.toString())
+        stubGet(s"/income-tax/nino/$nino/tax-years", FORBIDDEN, expectedResult.toJson.toString())
 
         val result = await(connector.getValidTaxYearList(nino))
 
@@ -98,7 +98,7 @@ class ValidTaxYearListConnectorSpec extends IntegrationTest {
       "return a PARSING_ERROR when unexpected response code" in {
         val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/tax-years", GONE, "{}")
+        stubGet(s"/income-tax/nino/$nino/tax-years", GONE, "{}")
 
         val result = await(connector.getValidTaxYearList(nino))
 
@@ -108,7 +108,7 @@ class ValidTaxYearListConnectorSpec extends IntegrationTest {
       "return a INVALID_IDTYPE" in {
         val expectedResult = APIErrorModel(BAD_REQUEST, APIErrorBodyModel("INVALID_IDTYPE", "Invalid id type"))
 
-        stubGet(s"/income-tax-calculation/income-tax/nino/$nino/tax-years", BAD_REQUEST, expectedResult.toJson.toString())
+        stubGet(s"/income-tax/nino/$nino/tax-years", BAD_REQUEST, expectedResult.toJson.toString())
 
         val result = await(connector.getValidTaxYearList(nino))
 

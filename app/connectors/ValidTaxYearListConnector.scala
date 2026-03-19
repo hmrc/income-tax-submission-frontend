@@ -29,7 +29,7 @@ class ValidTaxYearListConnector @Inject()(val http: HttpClientV2,
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def getValidTaxYearList(nino: String)(implicit hc: HeaderCarrier): Future[ValidTaxYearListResponse] = {
-    val url: String = config.calculationStubBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/tax-years"
+    val url: String = config.calculationStubBaseUrl + s"/income-tax/nino/$nino/tax-years"
     http.get(url"$url")
       .execute[ValidTaxYearListResponse]
   }
