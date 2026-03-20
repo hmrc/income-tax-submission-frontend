@@ -26,7 +26,7 @@ object ValidTaxYearListHttpParser extends APIParser {
   type ValidTaxYearListResponse = Either[APIErrorModel, ValidTaxYearListModel]
 
   override val parserName: String = "TaxYearValidListHttpParser"
-  override val service: String = "income-tax-calculation"
+  override val service: String = "income-submission-stub"
 
   implicit object ValidTaxYearListHttpReads extends HttpReads[ValidTaxYearListResponse] {
     override def read(method: String, url: String, response: HttpResponse): ValidTaxYearListResponse = {

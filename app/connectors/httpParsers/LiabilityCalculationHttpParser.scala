@@ -26,7 +26,7 @@ object LiabilityCalculationHttpParser extends APIParser {
   type LiabilityCalculationResponse = Either[APIErrorModel, LiabilityCalculationIdModel]
 
   override val parserName: String = "LiabilityCalculationHttpParser"
-  override val service: String = "income-tax-calculation"
+  override val service: String = "income-submission-stub"
 
   implicit object LiabilityCalculationHttpReads extends HttpReads[LiabilityCalculationResponse] {
     override def read(method: String, url: String, response: HttpResponse): LiabilityCalculationResponse = {
