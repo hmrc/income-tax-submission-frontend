@@ -28,7 +28,7 @@ import utils.PagerDutyHelper._
 object CalculationDetailsHttpParser extends APIParser with Logging {
   type CalculationDetailResponse = Either[APIErrorModel, CalculationResponseModel]
   override val parserName: String = "CalculationDetailsHttpParser"
-  override val service: String = "income-tax-calculation"
+  override val service: String = "income-submission-stub"
 
   implicit object CalculationDetailsHttpReads extends HttpReads[CalculationDetailResponse] {
     override def read(method: String, url: String, response: HttpResponse): CalculationDetailResponse = {

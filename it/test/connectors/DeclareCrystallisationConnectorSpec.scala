@@ -27,7 +27,7 @@ class DeclareCrystallisationConnectorSpec extends IntegrationTest {
   
   private val calculationId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
 
-  private val declareUrl: String = s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYearEOY/$calculationId/declare-crystallisation"
+  private val declareUrl: String = s"/income-tax/$taxYearEOY/calculation/$nino/$calculationId/crystallise"
 
   ".DeclareCrystallisationConnector" should {
 

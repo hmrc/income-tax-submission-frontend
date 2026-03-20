@@ -39,15 +39,15 @@ class IncomeTaxCalculationConnectorISpec extends IntegrationTest {
     "metadata" -> Json.obj("calculationTimestamp" -> "2019-02-15T09:35:15.094Z", "crystallised" -> false,
       "calculationReason" -> "customerRequest"))
 
-  private def getCalculationResponseByCalcIdUrl(nino: String, calcId: String): String =
-    s"/income-tax-calculation/income-tax/nino/$nino/calc-id/$calcId/calculation-details"
+  private def getCalculationResponseByCalcIdUrl(taxYear: Int, nino: String, calcId: String): String =
+    s"/income-tax/view/calculations/liability/$taxYear/$nino/$calcId"
 
   ".IncomeTaxCalculationConnector" should {
 
     "while calling .getCalculationResponseByCalcId" should {
 
       "return a CalculationDetailResponse" in {
-        stubGet(getCalculationResponseByCalcIdUrl(nino,calculationId), OK, Json.toJson(calculationResponseModel).toString())
+        stubGet(getCalculationResponseByCalcIdUrl(taxYearEOY, nino,calculationId), OK, Json.toJson(calculationResponseModel).toString())
 
         val result = await(connector.getCalculationResponseByCalcId(mtditid, nino, calculationId, taxYearEOY))
 
@@ -64,7 +64,7 @@ class IncomeTaxCalculationConnectorISpec extends IntegrationTest {
           "NotId" -> ""
         )
 
-        stubGet(getCalculationResponseByCalcIdUrl(nino,calculationId), OK, Json.toJson(invalidJson).toString())
+        stubGet(getCalculationResponseByCalcIdUrl(taxYearEOY, nino,calculationId), OK, Json.toJson(invalidJson).toString())
         val result = await(connector.getCalculationResponseByCalcId(mtditid, nino, calculationId, taxYearEOY))
         result shouldBe Left(expectedResult)
       }
@@ -72,7 +72,7 @@ class IncomeTaxCalculationConnectorISpec extends IntegrationTest {
       "return a CalculationIdErrorServiceUnavailableError" in {
         val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("SERVICE_UNAVAILABLE", "Service unavailable"))
 
-        stubGet(getCalculationResponseByCalcIdUrl(nino,calculationId), SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
+        stubGet(getCalculationResponseByCalcIdUrl(taxYearEOY, nino,calculationId), SERVICE_UNAVAILABLE, expectedResult.toJson.toString())
 
         val result = await(connector.getCalculationResponseByCalcId(mtditid, nino, calculationId, taxYearEOY))
 
@@ -82,7 +82,7 @@ class IncomeTaxCalculationConnectorISpec extends IntegrationTest {
       "return a INTERNAL_SERVER_ERROR" in {
         val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("INTERNAL_SERVER_ERROR", "Internal server error"))
 
-        stubGet(getCalculationResponseByCalcIdUrl(nino,calculationId), INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
+        stubGet(getCalculationResponseByCalcIdUrl(taxYearEOY, nino,calculationId), INTERNAL_SERVER_ERROR, expectedResult.toJson.toString())
 
         val result = await(connector.getCalculationResponseByCalcId(mtditid, nino, calculationId, taxYearEOY))
 
@@ -94,7 +94,7 @@ class IncomeTaxCalculationConnectorISpec extends IntegrationTest {
         val expectedResult = APIErrorModel(BAD_REQUEST, APIErrorBodyModel(
           "UNPROCESSABLE_ENTITY", "The remote endpoint has indicated that crystallisation can not occur until after the end of tax year."))
 
-        stubGet(getCalculationResponseByCalcIdUrl(nino,calculationId), UNPROCESSABLE_ENTITY, expectedResult.toJson.toString())
+        stubGet(getCalculationResponseByCalcIdUrl(taxYearEOY, nino,calculationId), UNPROCESSABLE_ENTITY, expectedResult.toJson.toString())
 
         val result = await(connector.getCalculationResponseByCalcId(mtditid, nino, calculationId, taxYearEOY))
 
@@ -105,7 +105,7 @@ class IncomeTaxCalculationConnectorISpec extends IntegrationTest {
       "return a PARSING_ERROR when unexpected response code" in {
         val expectedResult = APIErrorModel(INTERNAL_SERVER_ERROR, APIErrorBodyModel("PARSING_ERROR", "Error parsing response from API"))
 
-        stubGet(getCalculationResponseByCalcIdUrl(nino,calculationId), GONE, "{}")
+        stubGet(getCalculationResponseByCalcIdUrl(taxYearEOY, nino,calculationId), GONE, "{}")
 
         val result = await(connector.getCalculationResponseByCalcId(mtditid, nino, calculationId, taxYearEOY))
 
@@ -115,7 +115,7 @@ class IncomeTaxCalculationConnectorISpec extends IntegrationTest {
       "return a INVALID_IDTYPE" in {
         val expectedResult = APIErrorModel(BAD_REQUEST, APIErrorBodyModel("INVALID_IDTYPE", "Invalid id type"))
 
-        stubGet(getCalculationResponseByCalcIdUrl(nino,calculationId), BAD_REQUEST, expectedResult.toJson.toString())
+        stubGet(getCalculationResponseByCalcIdUrl(taxYearEOY, nino,calculationId), BAD_REQUEST, expectedResult.toJson.toString())
 
         val result = await(connector.getCalculationResponseByCalcId(mtditid, nino, calculationId, taxYearEOY))
 

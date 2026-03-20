@@ -18,6 +18,7 @@ package connectors
 
 import config.AppConfig
 import connectors.httpParsers.LiabilityCalculationHttpParser.{LiabilityCalculationHttpReads, LiabilityCalculationResponse}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
@@ -29,14 +30,14 @@ class LiabilityCalculationConnector @Inject()(http: HttpClientV2,
                                      )(implicit ec: ExecutionContext) extends RawResponseReads {
 
   def getCalculationId(nino: String, taxYear: Int)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
-    val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation"
-    http.get(url"$Url")
+    val Url: String = config.calculationStubBaseUrl + s"/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation"
+    http.post(url"$Url").withBody(Json.toJson(""))
       .execute[LiabilityCalculationResponse]
   }
 
   def getIntentToCrystallise(nino: String, taxYear: Int, crystallise: Boolean)(implicit hc: HeaderCarrier): Future[LiabilityCalculationResponse] = {
-    val Url: String = config.calculationBaseUrl + s"/income-tax-calculation/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation?crystallise=$crystallise"
-    http.get(url"$Url")
+    val Url: String = config.calculationStubBaseUrl + s"/income-tax/nino/$nino/taxYear/$taxYear/tax-calculation?crystallise=$crystallise"
+    http.post(url"$Url").withBody(Json.toJson(""))
       .execute[LiabilityCalculationResponse]
   }
 }

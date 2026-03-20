@@ -40,7 +40,7 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig,
   private lazy val signInOrigin = servicesConfig.getString("appName")
   def signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrl&origin=$signInOrigin"
 
-  lazy val calculationBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCalculationUrl)
+  lazy val calculationStubBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxCalculationStubUrl)
   lazy val nrsProxyBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxNrsProxyUrl)
 
   lazy val incomeTaxSubmissionBaseUrl: String = servicesConfig.getString(ConfigKeys.incomeTaxSubmissionUrl)
@@ -51,9 +51,6 @@ class FrontendAppConfig @Inject()(servicesConfig: ServicesConfig,
   lazy val additionalInformationSubmissionUrl: String =s"$additionalInformationSubmissionBaseUrl/update-and-submit-income-tax-return/additional-information"
 
   lazy val sessionCookieServiceEnabled: Boolean = servicesConfig.getBoolean("feature-switch.sessionCookieServiceEnabled")
-
-  //Income tax calculation service
-  lazy val incomeTaxCalculationServiceUrl: String = s"$calculationBaseUrl/income-tax-calculation/income-tax"
 
   def personalIncomeTaxDividendsUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/dividends-from-uk-companies"
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = s"$personalIncomeTaxSubmissionUrl/$taxYear/dividends/check-income-from-dividends"
@@ -233,7 +230,7 @@ trait AppConfig {
   def signInUrl: String
   def alwaysEOY: Boolean
 
-  def calculationBaseUrl: String
+  def calculationStubBaseUrl: String
   def nrsProxyBaseUrl: String
 
   def incomeTaxSubmissionBaseUrl: String
@@ -241,7 +238,6 @@ trait AppConfig {
   def personalIncomeTaxSubmissionBaseUrl: String
   def personalIncomeTaxSubmissionUrl: String
 
-  def incomeTaxCalculationServiceUrl: String
   def personalIncomeTaxDividendsUrl(taxYear: Int): String
   def personalIncomeTaxDividendsTailorPage(taxYear: Int): String
   def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String

@@ -34,7 +34,6 @@ class MockAppConfig extends AppConfig  {
 
   override val sessionCookieServiceEnabled: Boolean = false
 
-  override lazy val incomeTaxCalculationServiceUrl: String = "/income-tax-calculation/income-tax"
   lazy val additionalInformationTaxSubmissionUrl: String = s"$personalIncomeTaxSubmissionBaseUrl/additional-information"
 
   override lazy val ivSuccessUrl: String = s"/update-and-submit-income-tax-return/iv-uplift-callback"
@@ -151,7 +150,7 @@ class MockAppConfig extends AppConfig  {
 
   override def viewAndChangeViewInYearEstimateUrlAgent: String = "http://localhost:9081/report-quarterly/income-and-expenses/view/agents/tax-overview"
 
-  override val calculationBaseUrl: String = "/calculation"
+  override val calculationStubBaseUrl: String = "/calculation"
   override val nrsProxyBaseUrl: String = "/nrs"
 
   override def personalIncomeTaxDividendsSubmissionCYAUrl(taxYear: Int): String = ???

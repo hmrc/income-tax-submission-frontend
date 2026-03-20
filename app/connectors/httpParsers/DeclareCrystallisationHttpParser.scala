@@ -26,7 +26,7 @@ object DeclareCrystallisationHttpParser extends APIParser {
   type DeclareCrystallisationResponse = Either[APIErrorModel, Unit]
 
   override val parserName: String = "DeclareCrystallisationHttpParser"
-  override val service: String = "income-tax-calculation"
+  override val service: String = "income-submission-stub"
 
   implicit object DeclareCrystallisationHttpReads extends HttpReads[DeclareCrystallisationResponse] {
     override def read(method: String, url: String, response: HttpResponse): DeclareCrystallisationResponse = {
